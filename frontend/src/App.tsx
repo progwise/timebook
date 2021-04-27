@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {FooterNavigation} from './components/footerNavigation';
+import {MainNavigation} from './components/mainNavigation';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export const App = () => {
+    return (
+        <>
+            <BrowserRouter>
+                <header>
+                    <h1>time booking and invoicing services for developers</h1>
+                    <MainNavigation></MainNavigation>
+                </header>
+                <main>
+                    <h2>Main</h2>
+
+                    <Switch>
+
+                        <Route path="/timetable">
+                            <p>
+                                This is your time table
+                            </p>
+                        </Route>
+                        <Route path="/projects">
+                            <p>
+                                Project list
+                            </p>
+                        </Route>
+                        <Route path="/">
+                            <p>
+                                Welcome to timebook
+                            </p>
+                        </Route>
+                    </Switch>
+                </main>
+                <footer>
+                    <h3>Powered by progwise</h3>
+                    <FooterNavigation></FooterNavigation>
+                </footer>
+
+            </BrowserRouter>
+        </>
+    )
 }
-
-export default App;
