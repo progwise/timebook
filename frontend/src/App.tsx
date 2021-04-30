@@ -14,9 +14,7 @@ export const App = () => {
                 </header>
                 <main>
                     <h2>Main</h2>
-
                     <Switch>
-
                         <Route path="/timetable">
                             <p>
                                 This is your time table
@@ -29,7 +27,7 @@ export const App = () => {
                         </Route>
                         <Route path="/">
                             <p>
-                                Welcome to timebook
+                                Welcome to time-book
                             </p>
                         </Route>
                     </Switch>
@@ -38,7 +36,6 @@ export const App = () => {
                     <h3>Powered by progwise</h3>
                     <FooterNavigation></FooterNavigation>
                 </footer>
-
             </BrowserRouter>
         </>
     )
