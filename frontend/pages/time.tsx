@@ -1,9 +1,10 @@
 import { HourInput } from '../components/hourInput';
 import { WeekSelector} from '../components/weekSelector';
 
-const Timetable = () => {
+const Time = () => {
   return (
-    <div className="p-6 m-4 bg-white rounded-xl shadow-md space-y-3 ">
+    <article>
+      <h2>Your timetable</h2>
       <WeekSelector />
       <table className="w-full table-auto">
         <thead>
@@ -29,8 +30,8 @@ const Timetable = () => {
         </tr>
         </tbody>
       </table>
-    </div>
+    </article>
   )
 }
 
-export default Timetable
+export default Time
