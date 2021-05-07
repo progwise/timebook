@@ -1,11 +1,10 @@
 import '../styles/globals.css'
-import {TopNavigation} from '../components/topNavigation';
+import {TopNavigation} from '../components/topNavigation/topNavigation';
 
 function MyApp({Component, pageProps}) {
   return (
     <>
-      <header>
-        <h1>Welcome to timetable</h1>
+      <header className='bg-indigo-50'>
         <TopNavigation />
       </header>
       <main>

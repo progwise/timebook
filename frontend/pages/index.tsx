@@ -10,6 +10,7 @@ export default function Home() {
       </Head>
 
       <article>
+        <h2>Welcome</h2>
         This is the new app to maintain your hours and report them
       </article>
     </>
