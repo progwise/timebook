@@ -2,3 +2,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+main > article {
+    @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border
+}
+
+main > article > h2 {
+    @apply border-b-2 font-bold mb-3
+}
