@@ -4,23 +4,31 @@
 @tailwind utilities;
 
 main > article {
-  @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border;
+    @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border;
 }
 
 main > article > h2 {
-  @apply border-b-2 font-bold mb-3;
+    @apply border-b-2 font-bold mb-3;
 }
 
 @layer components {
-  .btn {
-    @apply font-normal py-2 px-4 rounded;
-  }
+    .btn {
+        @apply font-normal py-1 px-4 rounded;
+    }
 
-  .btn-blue {
-    @apply bg-blue-500 text-white;
-  }
+    .btn-gray1 {
+        @apply bg-gray-500 text-white;
+    }
 
-  .btn-blue:hover {
-    @apply bg-blue-700;
-  }
+    .btn-gray1:hover {
+        @apply bg-gray-700;
+    }
+
+    .btn-blue {
+        @apply bg-blue-500 text-white;
+    }
+
+    .btn-blue:hover {
+        @apply bg-blue-700;
+    }
 }

@@ -32,7 +32,7 @@ export const ItemTable = (props: IItemTableProps) => {
         <thead>
           <tr>
             {props.columns.map((c) => (
-              <th className="bg-blue-100 border text-left px-2 pb-4">
+              <th className="bg-blue-100 border text-left px-2 pb-2">
                 {c.title}
               </th>
             ))}
@@ -56,31 +56,33 @@ export const ItemTable = (props: IItemTableProps) => {
         <tfoot>
           <tr>
             <td
-              className="bg-blue-100 border text-right px-1 pt-4 pb-1"
+              className="bg-blue-100 border text-right px-1 pt-2 pb-1"
               colSpan={props.columns.length}
             >
               <button
+                title=" first page"
                 className="btn btn-blue mr-3"
                 onClick={props.page.onFirst}
               >
-                first
+                &lt;&lt;
               </button>
               <button
+                title="previous page"
                 className="btn btn-blue mr-3"
                 onClick={props.page.onPrevious}
               >
-                previous
+                &lt;
               </button>
               <span>
-                item {props.page.firstItemIndex} -{" "}
+                {props.page.firstItemIndex} -{" "}
                 {props.page.firstItemIndex + props.items.length} /{" "}
                 {props.page.totalItemCount}
               </span>
-              <button className="btn btn-blue ml-3" onClick={props.page.onNext}>
-                next
+              <button title="next page" className="btn btn-blue ml-3" onClick={props.page.onNext}>
+                &gt;
               </button>
-              <button className="btn btn-blue ml-3" onClick={props.page.onLast}>
-                last
+              <button title="last page" className="btn btn-blue ml-3" onClick={props.page.onLast}>
+                &gt;&gt;
               </button>
             </td>
           </tr>
