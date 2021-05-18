@@ -45,7 +45,12 @@ const Projects = () => {
 
   return (
     <article>
-      <h2>Your projects</h2>
+      <h2 className="flex justify-between">
+        <span>Your projects</span>
+        <span>
+          <button className="btn btn-gray1">Add</button>
+        </span>
+      </h2>
       <ItemTable
         columns={tableColumns}
         items={projectList}
