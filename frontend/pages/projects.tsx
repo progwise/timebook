@@ -1,14 +1,71 @@
-import {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
+import {
+  IItemTableItem,
+  ItemTable,
+  SortDirection,
+} from "../components/itemTable/itemTable";
 
-const Projects = () => {
-  useState()
-  useEffect(() => {
-
-  })
-  return <article>
-    <h2>Your projects</h2>
-
-  </article>
+interface IProject {
+  name: string;
+  startDate: Date;
+  endDate: Date;
 }
 
-export default Projects
+const Projects = () => {
+  useState();
+  useEffect(() => {});
+
+  const tableColumns = [
+    {
+      title: "Name",
+      value: (item: IProject) => item.name,
+      onClick: () => {},
+    },
+    {
+      title: "Duration",
+      value: (item: IProject) =>
+        `${item.startDate.toLocaleDateString()}-${item.endDate.toLocaleDateString()}`,
+      onClick: () => {},
+      orderedBy: SortDirection.DESC,
+    },
+  ];
+
+  const projectList = [
+    {
+      name: "Testproject",
+      startDate: new Date(2021, 1, 1),
+      endDate: new Date(2021, 12, 31),
+    },
+    {
+      name: "Testproject2",
+      startDate: new Date(2020, 1, 1),
+      endDate: new Date(2022, 12, 31),
+    },
+  ];
+
+  return (
+    <article>
+      <h2 className="flex justify-between">
+        <span>Your projects</span>
+        <span>
+          <button className="btn btn-gray1">Add</button>
+        </span>
+      </h2>
+      <ItemTable
+        columns={tableColumns}
+        items={projectList}
+        page={{
+          totalItemCount: 521,
+          firstItemIndex: 11,
+          itemsPerPage: 10,
+          onPrevious: () => {},
+          onFirst: () => {},
+          onNext: () => {},
+          onLast: () => {},
+        }}
+      ></ItemTable>
+    </article>
+  );
+};
+
+export default Projects;
