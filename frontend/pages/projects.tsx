@@ -4,6 +4,7 @@ import {
   ItemTable,
   SortDirection,
 } from "../components/itemTable/itemTable";
+import {useRouter} from 'next/router';
 
 interface IProject {
   name: string;
@@ -12,8 +13,7 @@ interface IProject {
 }
 
 const Projects = () => {
-  useState();
-  useEffect(() => {});
+  const router = useRouter()
 
   const tableColumns = [
     {
@@ -43,12 +43,16 @@ const Projects = () => {
     },
   ];
 
+  const handleAddProject = async () => {
+    await router.push('/projects/new')
+  }
+
   return (
     <article>
       <h2 className="flex justify-between">
         <span>Your projects</span>
         <span>
-          <button className="btn btn-gray1">Add</button>
+          <button className="btn btn-gray1" onClick={handleAddProject}>Add</button>
         </span>
       </h2>
       <ItemTable
@@ -63,7 +67,7 @@ const Projects = () => {
           onNext: () => {},
           onLast: () => {},
         }}
-      ></ItemTable>
+      />
     </article>
   );
 };
