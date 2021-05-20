@@ -64,6 +64,14 @@ describe('My First Test', () => {
 })
 ```
 
+## Most important cy-commands
+
+* cy.visit
+* cy.get & cy.contains => https://docs.cypress.io/api/commands/contains
+* cy.url
+* chai assertions with should... => https://docs.cypress.io/api/commands/should
+*
+
 # Links
 https://docs.cypress.io/
 

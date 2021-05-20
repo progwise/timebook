@@ -7,7 +7,7 @@ function MyApp({Component, pageProps}) {
       <header className='bg-indigo-50'>
         <TopNavigation />
       </header>
-      <main>
+      <main className="md:m-auto md:w-2/3">
         <Component {...pageProps} />
       </main>
       <footer>
