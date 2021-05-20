@@ -31,8 +31,8 @@ export const ItemTable = (props: IItemTableProps) => {
       <table className="shadow-lg bg-white w-full">
         <thead>
           <tr>
-            {props.columns.map((c) => (
-              <th className="bg-blue-100 border text-left px-2 pb-2">
+            {props.columns.map((c, colIndex) => (
+              <th key={colIndex} className="bg-blue-100 border text-left px-2 pb-2">
                 {c.title}
               </th>
             ))}
