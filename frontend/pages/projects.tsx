@@ -1,37 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  IItemTableItem,
   ItemTable,
   SortDirection,
 } from "../components/itemTable/itemTable";
 import {useRouter} from 'next/router';
+import {IProject, useProjects} from '../hooks/useProjects';
 
-interface IProject {
-  id: string;
-  name: string;
-  startDate: Date;
-  endDate: Date;
-}
-
-const initialProjectList: Array<IProject> = [
-  {
-    id: '1',
-    name: "Testproject",
-    startDate: new Date(2021, 1, 1),
-    endDate: new Date(2021, 12, 31),
-  },
-  {
-    id: '2',
-    name: "Testproject2",
-    startDate: new Date(2020, 1, 1),
-    endDate: new Date(2022, 12, 31),
-  },
-];
 
 const Projects = () => {
 
-  const [ projectList, setProjectList ] = useState(initialProjectList)
-
+  const { projectList, setProjectList } = useProjects()
   const router = useRouter()
 
   const tableColumns = [
@@ -79,6 +57,7 @@ const Projects = () => {
       <ItemTable
         columns={tableColumns}
         items={projectList}
+        itemClick={handleProjectDetails}
         page={{
           totalItemCount: 521,
           firstItemIndex: 11,

@@ -8,7 +8,7 @@ main > article {
 }
 
 main > article > h2 {
-    @apply border-b-2 font-bold mb-3;
+    @apply font-bold mb-3 text-gray-400 font-extrabold text-xl
 }
 
 form {
@@ -33,7 +33,7 @@ form > label > span {
 
 @layer components {
     .btn {
-        @apply font-normal py-1 px-4 rounded border-gray-800 cursor-pointer m-0.5}
+        @apply font-normal py-1 px-4 rounded border border-gray-500 cursor-pointer m-0.5 text-xs}
 
     .btn-gray1 {
         @apply bg-gray-500 text-white;
