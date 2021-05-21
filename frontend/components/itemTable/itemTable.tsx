@@ -32,7 +32,7 @@ export const ItemTable = (props: IItemTableProps) => {
         <thead>
           <tr>
             {props.columns.map((c, colIndex) => (
-              <th key={colIndex} className="bg-blue-100 border text-left px-2 pb-2">
+              <th key={colIndex} className="bg-blue-100 border text-left px-2 pb-2 text-gray-600">
                 {c.title}
               </th>
             ))}
