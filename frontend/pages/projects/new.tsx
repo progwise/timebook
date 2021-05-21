@@ -6,6 +6,9 @@ const NewProject = () => {
   const handleSubmit = async () => {
     await router.push('/projects')
   }
+  const handleCancel = async () => {
+    await router.push('/projects')
+  }
   return <article>
     <form>
       <h2>New Project</h2>
@@ -21,8 +24,9 @@ const NewProject = () => {
         <span>End</span>
         <input type="date" defaultValue="End" />
       </label>
-      <div>
-        <input type="submit" className="btn btn-green1" onClick={handleSubmit} title="Save" />
+      <div className="flex justify-center">
+          <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
+          <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
       </div>
     </form>
   </article>
