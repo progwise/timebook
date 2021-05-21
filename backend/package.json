@@ -1,0 +1,25 @@
+{
+  "name": "timebook-prisma",
+  "version": "1.0.0",
+  "description": "maintaining dev-hours and invoice them.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/progwise/timebook.git"
+  },
+  "author": "Michael H. Vogt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/progwise/timebook/issues"
+  },
+  "homepage": "https://github.com/progwise/timebook#readme",
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "prisma": "^2.22.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
