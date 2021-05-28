@@ -14,7 +14,6 @@ const ProjectDetails = () => {
   const {projectList, setProjectList } = useProjects()
   const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
 
-console.log('render', currentProject)
   const router = useRouter()
   const {id} = router.query
   const handleSubmit = async () => {
@@ -32,9 +31,14 @@ console.log('render', currentProject)
     }
   })
 
+  const isNewProject = () => currentProject.id === newProject.id
+
   return <article>
     <form key={currentProject.id}>
-      <h2>New Project</h2>
+      { isNewProject()
+        ? <h2>Create Project</h2>
+        : <h2>Edit Project</h2>
+      }
       <label className="text-gray-500">
         <span>Id</span>
         <input type="text" defaultValue={currentProject.id}/>
