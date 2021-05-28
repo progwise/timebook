@@ -27,7 +27,11 @@ export interface IItemTableProps {
 export interface IItemTableItem {
 }
 
-export const ItemTable = (props: IItemTableProps) => {
+export function ItemTable2(props: IItemTableProps): JSX.Element {
+  return <></>
+}
+
+export const ItemTable = (props: IItemTableProps): JSX.Element => {
 
   const handleItemClick = (item: any) => props?.itemClick(item)
   return (
