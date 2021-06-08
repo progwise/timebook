@@ -5,14 +5,9 @@ export interface IWorkDuration {
   minutes: number;
 }
 
-export const getWorkDuration = (s: string): IWorkDuration => {
-  let parts = s.split(":");
-  if (parts.length === 1) {
-    return {
-      hours: parseInt(parts[0]),
-      minutes: 0,
-    };
-  } else if (parts.length > 1) {
+export const getWorkDuration = (timeString: string): IWorkDuration => {
+  let parts = timeString.split(":");
+  if (parts.length > 1) {
     return {
       hours: parseInt(parts[0]),
       minutes: parseInt(parts[1]),
@@ -20,25 +15,20 @@ export const getWorkDuration = (s: string): IWorkDuration => {
   }
 
   return {
-    hours: parseInt(s),
+    hours: parseInt(timeString),
     minutes: 0,
   };
 };
 
-function pad(d) {
-  return d < 10 ? "0" + d.toString() : d.toString();
+function pad(value: number) {
+  return value < 10 ? "0" + value.toString() : value.toString();
 }
 
 export const HourInput = () => {
-  const [workDuration, setWorkDuration] = useState<IWorkDuration>({
-    hours: 0,
-    minutes: 0,
-  });
   const [formattedDuration, setFormattedDuration] = useState("0:00");
 
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
     const newDuration = getWorkDuration(event.target.value);
-    setWorkDuration(newDuration);
     setFormattedDuration(`${newDuration.hours}:${pad(newDuration.minutes)}`);
   };
 
