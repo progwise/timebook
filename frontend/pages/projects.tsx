@@ -1,47 +1,49 @@
 import React, { useEffect, useState } from "react";
 import {
-  IItemTableItem,
   ItemTable,
   SortDirection,
 } from "../components/itemTable/itemTable";
 import {useRouter} from 'next/router';
+import {IProject, useProjects} from '../hooks/useProjects';
 
-interface IProject {
-  name: string;
-  startDate: Date;
-  endDate: Date;
-}
 
 const Projects = () => {
+
+  const { projectList } = useProjects()
   const router = useRouter()
+
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [firstItemIndex, setFirstItemIndex] = useState(1)
 
   const tableColumns = [
     {
       title: "Name",
-      value: (item: IProject) => item.name,
+      value: (item: IProject) => item.title,
       onClick: () => {},
     },
     {
       title: "Duration",
       value: (item: IProject) =>
-        `${item.startDate.toLocaleDateString()}-${item.endDate.toLocaleDateString()}`,
+        `${item.startDate?.toLocaleDateString()}-${item.endDate?.toLocaleDateString()}`,
       onClick: () => {},
       orderedBy: SortDirection.DESC,
     },
+    {
+      title: '',
+      value: (item: IProject) => <span className="float-right">
+          <button className="btn btn-gray2 mr-3" onClick={() => handleDeleteProject(item)}>Delete</button>
+          <button className="btn btn-gray2" onClick={() => handleProjectDetails(item)}>Details</button>
+        </span>
+    }
   ];
 
-  const projectList = [
-    {
-      name: "Testproject",
-      startDate: new Date(2021, 1, 1),
-      endDate: new Date(2021, 12, 31),
-    },
-    {
-      name: "Testproject2",
-      startDate: new Date(2020, 1, 1),
-      endDate: new Date(2022, 12, 31),
-    },
-  ];
+  const handleProjectDetails = async (project: IProject) => {
+    await router.push(`/projects/${project.id}`)
+  }
+
+  const handleDeleteProject = (project: IProject) => {
+    // setProjectList(projectList.filter(p => p.id !== project.id))
+  }
 
   const handleAddProject = async () => {
     await router.push('/projects/new')
@@ -55,19 +57,29 @@ const Projects = () => {
           <button className="btn btn-gray1" onClick={handleAddProject}>Add</button>
         </span>
       </h2>
-      <ItemTable
-        columns={tableColumns}
-        items={projectList}
-        page={{
-          totalItemCount: 521,
-          firstItemIndex: 11,
-          itemsPerPage: 10,
-          onPrevious: () => {},
-          onFirst: () => {},
-          onNext: () => {},
-          onLast: () => {},
-        }}
-      />
+      {!projectList.data
+        ? <div>loading</div>
+        :
+        <ItemTable
+          columns={tableColumns}
+          items={projectList.data.projects}
+          itemClick={handleProjectDetails}
+          page={{
+            totalItemCount: 521,
+            firstItemIndex: firstItemIndex,
+            itemsPerPage: itemsPerPage,
+            onPrevious: () => {
+            },
+            onFirst: () => {
+            },
+            onNext: () => {
+              setFirstItemIndex(firstItemIndex + itemsPerPage)
+            },
+            onLast: () => {
+            },
+          }}
+        />
+      }
     </article>
   );
 };

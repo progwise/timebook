@@ -1,0 +1,12 @@
+type user {
+    id: ID
+    name: String
+    email: String
+}
+
+type project {
+    id: ID
+    title: String
+    author: user
+
+}
