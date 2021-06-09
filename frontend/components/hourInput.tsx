@@ -8,14 +8,19 @@ export interface IWorkDuration {
 export const parseDuration = (timeString: string): IWorkDuration => {
   let parts = timeString.split(":");
   if (parts.length > 1) {
-    return {
-      hours: parseInt(parts[0]),
-      minutes: parseInt(parts[1]),
+    const hours = parseInt(parts[0])
+    const minutes = parseInt(parts[1])
+    const duration = {
+      hours: isNaN(hours) ? 0 : hours,
+      minutes:  isNaN(minutes) ? 0 : minutes,
     };
+    return duration
   }
 
+  const onlyHours = parseInt(timeString)
+
   return {
-    hours: parseInt(timeString),
+    hours: isNaN(onlyHours) ? 0 : onlyHours,
     minutes: 0,
   };
 };
