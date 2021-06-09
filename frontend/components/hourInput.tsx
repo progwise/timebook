@@ -5,7 +5,7 @@ export interface IWorkDuration {
   minutes: number;
 }
 
-export const getWorkDuration = (timeString: string): IWorkDuration => {
+export const parseDuration = (timeString: string): IWorkDuration => {
   let parts = timeString.split(":");
   if (parts.length > 1) {
     return {
@@ -28,7 +28,7 @@ export const HourInput = () => {
   const [formattedDuration, setFormattedDuration] = useState("0:00");
 
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
-    const newDuration = getWorkDuration(event.target.value);
+    const newDuration = parseDuration(event.target.value);
     setFormattedDuration(`${newDuration.hours}:${pad(newDuration.minutes)}`);
   };
 
