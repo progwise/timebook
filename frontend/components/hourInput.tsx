@@ -1,3 +1,4 @@
+import { time } from "console";
 import { ChangeEvent, FocusEvent, useState } from "react";
 
 export interface IWorkDuration {
@@ -5,27 +6,61 @@ export interface IWorkDuration {
   minutes: number;
 }
 
-export const parseDuration = (timeString: string): IWorkDuration => {
-  let parts = timeString.split(":");
-  if (parts.length > 1) {
-    const hours = parseInt(parts[0])
-    const minutes = parseInt(parts[1])
-    const duration = {
-      hours: isNaN(hours) ? 0 : hours,
-      minutes:  isNaN(minutes) ? 0 : minutes,
-    };
-    return duration
+function validateDuration(duration: IWorkDuration): IWorkDuration {
+  if (duration.hours > 23 && duration.minutes > 0) {
+    throw new Error("A single day has only 24 hours");
   }
+  return duration;
+}
 
-  const onlyHours = parseInt(timeString)
+function parseIntNoNaN(valueAsString: string): number {
+  let valueAsNumber = parseInt(valueAsString);
+  if (isNaN(valueAsNumber)) {
+    return 0;
+  }
+  return valueAsNumber;
+}
 
-  return {
-    hours: isNaN(onlyHours) ? 0 : onlyHours,
-    minutes: 0,
-  };
+function parseFloatNoNaN(valueAsString: string): number {
+  let valueAsNumber = parseFloat(valueAsString);
+  if (isNaN(valueAsNumber)) {
+    return 0;
+  }
+  return valueAsNumber;
+}
+
+export const parseDuration = (timeString: string): IWorkDuration => {
+  try {
+    let parts = timeString.split(":");
+    if (parts.length > 1) {
+      let hours = parseIntNoNaN(parts[0]);
+      let minutes = parseIntNoNaN(parts[1]);
+
+      if (minutes > 59) {
+        const remainer = minutes % 60;
+        hours = hours + (minutes - remainer) / 60;
+        minutes = remainer;
+      }
+
+      return validateDuration({
+        hours,
+        minutes,
+      });
+    }
+
+    let durationAsFloat = parseFloatNoNaN(parts[0]);
+
+    return validateDuration({
+      hours: Math.floor(durationAsFloat),
+      minutes: Math.floor((durationAsFloat % 1) * 60),
+    });
+  } catch (error) {
+    alert(error);
+    return { hours: 0, minutes: 0 };
+  }
 };
 
-function pad(value: number) {
+function pad(value: number): string {
   return value < 10 ? "0" + value.toString() : value.toString();
 }
 
