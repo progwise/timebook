@@ -5,13 +5,13 @@ import {IProject, useProjects} from '../../hooks/useProjects';
 const now  = new Date()
 const newProject: IProject = {
     id: 'new project',
-    name: '',
+    title: '',
     startDate: new Date(now.getFullYear(), now.getMonth(), 1),
     endDate: new Date(now.getFullYear(), 12, 31)
 }
 
 const ProjectDetails = () => {
-  const {projectList, setProjectList } = useProjects()
+  const {projectList } = useProjects()
   const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
 
   const router = useRouter()
@@ -24,7 +24,7 @@ const ProjectDetails = () => {
   }
 
   useEffect(() => {
-    const selectedProject = projectList.find(p => p.id === id)
+    const selectedProject = projectList.data.find(p => p.id === id)
     if (selectedProject) {
       console.log('found project with id')
       setCurrentProject(selectedProject)
@@ -45,7 +45,7 @@ const ProjectDetails = () => {
       </label>
       <label className="text-gray-500">
         <span>Name</span>
-        <input type="text" defaultValue={currentProject.name}/>
+        <input type="text" defaultValue={currentProject.title}/>
       </label>
       <label>
         <span>Start</span>
