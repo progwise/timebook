@@ -26,8 +26,6 @@ describe("the hour input control should display ...", () => {
     hourBox.focus();
     fireEvent.change(hourBox, { target: { value: "1" } });
     getByText(/click me!/i).focus();
-
-    screen.debug();
     expect(hourBox).toHaveValue("1:00");
   });
 
@@ -42,8 +40,6 @@ describe("the hour input control should display ...", () => {
       hourBox.focus();
       fireEvent.change(hourBox, { target: { value: "abc" } });
       getByText(/click me!/i).focus();
-
-      screen.debug();
       expect(hourBox).toHaveValue("0:00");
     });
 
@@ -98,8 +94,7 @@ describe("the hour input control should display ...", () => {
 
   it("... typing 24.018 reports an error", () => {
     window.alert = jest.fn();
-
-    const { getByRole, getByText, getByDisplayValue } = render(testNode);
+    const { getByRole, getByText } = render(testNode);
     const hourBox = getByRole("textbox");
     hourBox.focus();
     fireEvent.change(hourBox, { target: { value: "24.017" } });
