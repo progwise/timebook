@@ -1,3 +1,4 @@
+import { time } from "console";
 import { ChangeEvent, FocusEvent, useState } from "react";
 
 export interface IWorkDuration {
@@ -5,22 +6,61 @@ export interface IWorkDuration {
   minutes: number;
 }
 
-export const getWorkDuration = (timeString: string): IWorkDuration => {
-  let parts = timeString.split(":");
-  if (parts.length > 1) {
-    return {
-      hours: parseInt(parts[0]),
-      minutes: parseInt(parts[1]),
-    };
+function validateDuration(duration: IWorkDuration): IWorkDuration {
+  if (duration.hours > 23 && duration.minutes > 0) {
+    throw new Error("A single day has only 24 hours");
   }
+  return duration;
+}
 
-  return {
-    hours: parseInt(timeString),
-    minutes: 0,
-  };
+function parseIntNoNaN(valueAsString: string): number {
+  let valueAsNumber = parseInt(valueAsString);
+  if (isNaN(valueAsNumber)) {
+    return 0;
+  }
+  return valueAsNumber;
+}
+
+function parseFloatNoNaN(valueAsString: string): number {
+  let valueAsNumber = parseFloat(valueAsString);
+  if (isNaN(valueAsNumber)) {
+    return 0;
+  }
+  return valueAsNumber;
+}
+
+export const parseDuration = (timeString: string): IWorkDuration => {
+  try {
+    let parts = timeString.split(":");
+    if (parts.length > 1) {
+      let hours = parseIntNoNaN(parts[0]);
+      let minutes = parseIntNoNaN(parts[1]);
+
+      if (minutes > 59) {
+        const remainer = minutes % 60;
+        hours = hours + (minutes - remainer) / 60;
+        minutes = remainer;
+      }
+
+      return validateDuration({
+        hours,
+        minutes,
+      });
+    }
+
+    let durationAsFloat = parseFloatNoNaN(parts[0]);
+
+    return validateDuration({
+      hours: Math.floor(durationAsFloat),
+      minutes: Math.floor((durationAsFloat % 1) * 60),
+    });
+  } catch (error) {
+    alert(error);
+    return { hours: 0, minutes: 0 };
+  }
 };
 
-function pad(value: number) {
+function pad(value: number): string {
   return value < 10 ? "0" + value.toString() : value.toString();
 }
 
@@ -28,7 +68,7 @@ export const HourInput = () => {
   const [formattedDuration, setFormattedDuration] = useState("0:00");
 
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
-    const newDuration = getWorkDuration(event.target.value);
+    const newDuration = parseDuration(event.target.value);
     setFormattedDuration(`${newDuration.hours}:${pad(newDuration.minutes)}`);
   };
 
