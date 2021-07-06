@@ -4,7 +4,7 @@
  */
 
 
-import { IContext } from "./../../context"
+import type { IContext } from "./../../context"
 
 
 
@@ -127,6 +127,8 @@ export interface NexusGenTypes {
 
 declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginInputTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
   }
