@@ -7,10 +7,14 @@ const Time = () => {
     return <th className="text-left">{props.children}</th>;
   };
 
+  const handleSelectedWeekChange = (year: number, week: number) => {
+    console.log("receive changed week", year, week);
+  };
+
   return (
     <article>
       <h2>Your timetable</h2>
-      <WeekSelector />
+      <WeekSelector onChange={handleSelectedWeekChange} />
       <table className="w-full table-auto">
         <thead>
           <tr>
