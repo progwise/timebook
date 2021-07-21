@@ -1,5 +1,7 @@
 import React, { ReactChild, ReactChildren } from "react";
+//import { DaySelector } from "../components/daySelector";
 import { HourInput } from "../components/hourInput";
+import { CalendarSelector } from "../components/calendarSelector";
 import { WeekSelector } from "../components/weekSelector";
 
 const Time = () => {
@@ -14,7 +16,10 @@ const Time = () => {
   return (
     <article>
       <h2>Your timetable</h2>
-      <WeekSelector onChange={handleSelectedWeekChange} />
+      <div>
+        <CalendarSelector />
+        <WeekSelector onChange={handleSelectedWeekChange} />
+      </div>
       <table className="w-full table-auto">
         <thead>
           <tr>

@@ -4,58 +4,59 @@
 @tailwind utilities;
 
 main > article {
-    @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border;
+  @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border;
 }
 
 main > article > h2 {
-    @apply font-bold mb-3 text-gray-400 font-extrabold text-xl
+  @apply font-bold mb-3 text-gray-400 text-xl;
 }
 
 form {
-    @apply md:mx-auto
+  @apply md:mx-auto;
 }
 
 form > label {
-    @apply flex flex-col mb-4
+  @apply flex flex-col mb-4;
 }
 
 form > div {
-    @apply flex-1
+  @apply flex-1;
 }
 
 form > label > input {
-    @apply p-0.5 m-0.5 border-2 rounded
+  @apply p-0.5 m-0.5 border-2 rounded;
 }
 
 form > label > span {
-    @apply m-0.5 text-gray-500 w-3.5
+  @apply m-0.5 text-gray-500 w-3.5;
 }
 
 @layer components {
-    .btn {
-        @apply font-normal py-1 px-4 rounded border border-gray-500 cursor-pointer m-0.5 text-xs}
+  .btn {
+    @apply font-normal py-1 px-4 rounded border border-gray-500 cursor-pointer m-0.5 text-xs;
+  }
 
-    .btn-gray1 {
-        @apply bg-gray-500 text-white;
-    }
+  .btn-gray1 {
+    @apply bg-gray-500 text-white;
+  }
 
-    .btn-gray1:hover {
-        @apply bg-gray-700;
-    }
+  .btn-gray1:hover {
+    @apply bg-gray-700;
+  }
 
-    .btn-gray2 {
-        @apply bg-gray-200 text-gray-800
-    }
+  .btn-gray2 {
+    @apply bg-gray-200 text-gray-800;
+  }
 
-    .btn-gray2:hover {
-        @apply bg-gray-300 text-black;
-    }
+  .btn-gray2:hover {
+    @apply bg-gray-300 text-black;
+  }
 
-    .btn-blue {
-        @apply bg-blue-500 text-white;
-    }
+  .btn-blue {
+    @apply bg-blue-500 text-white;
+  }
 
-    .btn-blue:hover {
-        @apply bg-blue-700;
-    }
+  .btn-blue:hover {
+    @apply bg-blue-700;
+  }
 }
