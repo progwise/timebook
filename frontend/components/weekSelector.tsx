@@ -13,7 +13,6 @@ export const WeekSelector = (props: {
     const weekNum = Math.floor(
       ((now.getTime() - start.getTime()) / 86400000 + start.getDay() + 1) / 7
     );
-    console.log(weekNum);
     return weekNum;
   });
 
@@ -45,8 +44,8 @@ export const WeekSelector = (props: {
   };
 
   return (
-    <label className="space-x-4">
-      <span>
+    <label className="flex flex-row mt-6 space-x-4">
+      <span className="space-x-10">
         {selectedWeek}/{selectedYear}
       </span>
       <div>
