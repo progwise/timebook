@@ -1,11 +1,11 @@
-import {useState} from 'react';
-import {useQuery} from 'urql';
+import { useState } from 'react'
+import { useQuery } from 'urql'
 
 export interface IProject {
-  id: string;
-  title: string;
-  startDate: Date;
-  endDate: Date;
+    id: string
+    title: string
+    startDate: Date
+    endDate: Date
 }
 
 // const initialProjectList: Array<IProject> = [
@@ -33,7 +33,7 @@ const projectQuery = `
 `
 
 export const useProjects = () => {
-  //const [ projectList, setProjectList ] = useState(initialProjectList)
-const [ projectList ] = useQuery({ query: projectQuery})
-  return { projectList }
+    //const [ projectList, setProjectList ] = useState(initialProjectList)
+    const [projectList] = useQuery({ query: projectQuery })
+    return { projectList }
 }
