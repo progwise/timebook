@@ -3,7 +3,7 @@ import { ItemTable, SortDirection } from '../components/itemTable/itemTable'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../hooks/useProjects'
 
-const Projects = () => {
+const Projects = (): JSX.Element => {
     const { projectList } = useProjects()
     const router = useRouter()
 
@@ -14,12 +14,16 @@ const Projects = () => {
         {
             title: 'Name',
             value: (item: IProject) => item.title,
-            onClick: () => {},
+            onClick: () => {
+                console.log('name click')
+            },
         },
         {
             title: 'Duration',
             value: (item: IProject) => `${item.startDate?.toLocaleDateString()}-${item.endDate?.toLocaleDateString()}`,
-            onClick: () => {},
+            onClick: () => {
+                console.log('Duration click')
+            },
             orderedBy: SortDirection.DESC,
         },
         {
@@ -70,12 +74,18 @@ const Projects = () => {
                         totalItemCount: 521,
                         firstItemIndex: firstItemIndex,
                         itemsPerPage: itemsPerPage,
-                        onPrevious: () => {},
-                        onFirst: () => {},
+                        onPrevious: () => {
+                            console.log('onPrevious')
+                        },
+                        onFirst: () => {
+                            console.log('onFirst')
+                        },
                         onNext: () => {
                             setFirstItemIndex(firstItemIndex + itemsPerPage)
                         },
-                        onLast: () => {},
+                        onLast: () => {
+                            console.log('onLast')
+                        },
                     }}
                 />
             )}

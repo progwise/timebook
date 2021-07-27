@@ -21,5 +21,8 @@ module.exports = {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
         'react/react-in-jsx-scope': 'off',
+        '@typescript-eslint/no-empty-interface': 'warn',
+        'react/display-name': 'warn',
+        'react/prop-types': 'warn',
     },
-};
+}

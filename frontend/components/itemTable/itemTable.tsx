@@ -24,7 +24,10 @@ export interface IItemTableProps {
     }
 }
 
-export interface IItemTableItem {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IItemTableItem {
+    // todo
+}
 
 export function ItemTable2(props: IItemTableProps): JSX.Element {
     return <></>

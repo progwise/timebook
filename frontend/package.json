@@ -8,7 +8,7 @@
     "start": "next start",
     "test": "jest --config jest.config.js",
     "test:watch": "jest --config jest.config.js --watchAll",
-    "lint": "eslint \"*/**/*.{ts,tsx}\" --fix"
+    "lint": "next lint --fix"
   },
   "dependencies": {
     "graphql": "^15.5.1",
@@ -24,23 +24,25 @@
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
-    "@testing-library/user-event": "^13.1.9",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^16.0.0",
-    "@types/react": "^17.0.13",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.3",
+    "@types/react": "^17.0.15",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
-    "autoprefixer": "^10.2.6",
+    "autoprefixer": "^10.3.1",
     "eslint": "^7.31.0",
+    "eslint-config-next": "^11.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
-    "postcss": "^8.3.5",
-    "tailwindcss": "^2.2.4",
-    "ts-jest": "^27.0.3",
-    "ts-node": "^10.0.0",
+    "postcss": "^8.3.6",
+    "prettier": "^2.3.2",
+    "tailwindcss": "^2.2.7",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
   }
 }

@@ -6,7 +6,7 @@ const client = createClient({
     url: 'http://localhost:4000/graphql',
 })
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }): JSX.Element {
     return (
         <Provider value={client}>
             <header className="bg-indigo-50">
