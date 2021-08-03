@@ -76,8 +76,40 @@ describe('the custom calendar should ...', () => {
         })
         it('... today is selected', () => {
             const today = new Date().getDate()
-            const selectedDayElement = screen.getByTitle('Selected day')
+            const selectedDayElement = screen.getByTitle(/^Selected Day/)
             expect(selectedDayElement).toHaveTextContent(today.toString())
+        })
+
+        describe('...and select the 15th of the current month', () => {
+            beforeEach(() => {
+                fireEvent.click(screen.getByText(/^15$/))
+            })
+
+            it('...the 15th is selected', () => {
+                const selectedDayElement = screen.getByTitle(/^Selected Day/)
+                expect(selectedDayElement).toHaveTextContent(/15/)
+                const valueElement = screen.getByTitle(/Display value/i)
+                expect(valueElement).toHaveTextContent(/^15\//)
+            })
+
+            it('...and select the 14th of the current month', () => {
+                fireEvent.click(screen.getByText(/^14$/))
+                const selectedDayElement = screen.getByTitle(/^Selected Day/)
+                expect(selectedDayElement).toHaveTextContent(/14/)
+                const valueElement = screen.getByTitle(/Display value/i)
+                expect(valueElement).toHaveTextContent(/^14\//)
+            })
+
+            it('...and click the goto today button', () => {
+                fireEvent.click(screen.getByText(/^16$/))
+                let selectedDayElement = screen.getByTitle(/^Selected Day/)
+                expect(selectedDayElement).toHaveTextContent(/16/)
+                fireEvent.click(screen.getByTitle(/Goto today/))
+                const today = new Date()
+                const todayOfMonth = today.getDate()
+                selectedDayElement = screen.getByTitle(/^Selected Day/)
+                expect(selectedDayElement).toHaveTextContent(todayOfMonth.toString())
+            })
         })
     })
 })
