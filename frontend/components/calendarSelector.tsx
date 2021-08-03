@@ -58,7 +58,7 @@ export const CalendarSelector = () => {
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
 
-    const node = useRef()
+    const componentNode = useRef(null)
 
     useEffect(() => {
         if (calendarExpanded) {
@@ -72,16 +72,13 @@ export const CalendarSelector = () => {
     }, [calendarExpanded])
 
     const handleClickOutside = (e: Event) => {
-        console.log('handleClickOutside')
-        if (node.current && node.current.contains(e.target)) {
+        if (componentNode.current && componentNode.current.contains(e.target)) {
             // inside click
             return
         }
         // outside click
         setCalendarExpanded(false)
     }
-
-    console.log('??')
 
     const toggleCalendarExpanded = () => (calendarExpanded ? setCalendarExpanded(false) : setCalendarExpanded(true))
 
@@ -135,7 +132,7 @@ export const CalendarSelector = () => {
     const monthTitle = getSelectedMonthTitle()
 
     return (
-        <section ref={node}>
+        <section ref={componentNode}>
             <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
                 <span className="ml-2" title="Display value">
                     {selectedDate.toLocaleDateString()}
