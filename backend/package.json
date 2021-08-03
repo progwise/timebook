@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "maintaining dev-hours and invoice them.",
   "main": "cli.ts",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:graphql:server": "ts-node graphql/server.ts"
+    "start:graphql:server": "ts-node graphql/server.ts",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
