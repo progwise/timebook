@@ -89,7 +89,7 @@ describe('the custom calendar should ...', () => {
                 const selectedDayElement = screen.getByTitle(/^Selected Day/)
                 expect(selectedDayElement).toHaveTextContent(/15/)
                 const valueElement = screen.getByTitle(/Display value/i)
-                expect(valueElement).toHaveTextContent(/^15\//)
+                expect(valueElement).toHaveTextContent(/15\//)
             })
 
             it('...and select the 14th of the current month', () => {
@@ -97,7 +97,7 @@ describe('the custom calendar should ...', () => {
                 const selectedDayElement = screen.getByTitle(/^Selected Day/)
                 expect(selectedDayElement).toHaveTextContent(/14/)
                 const valueElement = screen.getByTitle(/Display value/i)
-                expect(valueElement).toHaveTextContent(/^14\//)
+                expect(valueElement).toHaveTextContent(/14\//)
             })
 
             it('...and click the goto today button', () => {
