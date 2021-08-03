@@ -3,8 +3,19 @@ import backIcon from '../assets/backIcon.svg'
 import forwardIcon from '../assets/forwardIcon.svg'
 import home from '../assets/home.svg'
 import { useState } from 'react'
-import Image, { ImageProps } from 'next/image'
 import CalendarIcon from './calendarIcon'
+
+export const getMonthTitle = (day: Date): string => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const monthName = monthNames[day.getMonth()]
+    return `${monthName} ${day.getFullYear()}`
+}
+
+export const getDayTitle = (day: Date): string => {
+    const monthTitle = getMonthTitle(day)
+    const dayString = day.getDate()
+    return `${dayString} ${monthTitle}`
+}
 
 const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) => void }): JSX.Element => {
     const day = props.day
@@ -23,8 +34,11 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
         classNames.push('italic')
     }
 
+    let title = getDayTitle(day)
+
     if (selectedDate.toLocaleDateString() === day.toLocaleDateString()) {
         classNames.push('border-red-700')
+        title = `Selected Day, ${title}`
     }
 
     if (day.getDay() === 6 || day.getDay() === 0) {
@@ -34,7 +48,7 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
     }
 
     return (
-        <div className={classNames.join(' ')} onClick={() => props.onClick(day)}>
+        <div title={title} className={classNames.join(' ')} onClick={() => props.onClick(day)}>
             {dayString}
         </div>
     )
@@ -90,10 +104,7 @@ export const CalendarSelector = () => {
     }
 
     const getSelectedMonthTitle = (): string => {
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-        const monthName = monthNames[selectedDate.getMonth()]
-        return `${monthName} ${selectedDate.getFullYear()}`
+        return getMonthTitle(selectedDate)
     }
 
     const monthTitle = getSelectedMonthTitle()
