@@ -1,6 +1,7 @@
 export type CalendarIconChildPosition = 'left' | 'right'
 
 export interface ICalendarIconProps {
+    title?: string
     onClick?: () => void
     src: string
     className?: string
@@ -23,7 +24,11 @@ const CalendarIcon = (props: ICalendarIconProps): JSX.Element => {
     }
 
     return (
-        <div title="Calendar icon" onClick={handleClick} className="flex items-center cursor-pointer">
+        <div
+            title={props.title && props.title.length ? props.title : 'Calendar icon'}
+            onClick={handleClick}
+            className="flex items-center cursor-pointer"
+        >
             {props.children && childPosition === 'left' && props.children}
             <img className={classNames} src={props.src} />
             {props.children && childPosition === 'right' && props.children}

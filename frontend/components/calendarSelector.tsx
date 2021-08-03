@@ -112,16 +112,28 @@ export const CalendarSelector = () => {
     return (
         <section>
             <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
-                <span className="ml-2">{selectedDate.toLocaleDateString()}</span>
+                <span className="ml-2" title="Display value">
+                    {selectedDate.toLocaleDateString()}
+                </span>
             </CalendarIcon>
             {calendarExpanded && (
                 <section className="text-sm absolute mt-5 border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
                     <header className="flex justify-between p-0 pb-2 font-bold">
-                        <CalendarIcon onClick={gotoPreviousMonth} src={backIcon} className="w-5 h-5" />
-                        <CalendarIcon onClick={goToToday} src={home} className="w-5 h-5">
+                        <CalendarIcon
+                            title="Goto previous month"
+                            onClick={gotoPreviousMonth}
+                            src={backIcon}
+                            className="w-5 h-5"
+                        />
+                        <CalendarIcon title="Goto today" onClick={goToToday} src={home} className="w-5 h-5">
                             <h2 className="ml-2">{monthTitle}</h2>
                         </CalendarIcon>
-                        <CalendarIcon onClick={gotoNextMonth} src={forwardIcon} className="w-5 h-5" />
+                        <CalendarIcon
+                            title="Goto next month"
+                            onClick={gotoNextMonth}
+                            src={forwardIcon}
+                            className="w-5 h-5"
+                        />
                     </header>
                     <div className="grid grid-cols-7 gap-3">
                         {weekDays.map((weekDay, index) => {
