@@ -2,7 +2,7 @@ import calendarIcon from '../assets/calendarIcon.svg'
 import backIcon from '../assets/backIcon.svg'
 import forwardIcon from '../assets/forwardIcon.svg'
 import home from '../assets/home.svg'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CalendarIcon from './calendarIcon'
 
 export const getMonthTitle = (day: Date): string => {
@@ -58,6 +58,31 @@ export const CalendarSelector = () => {
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
 
+    const node = useRef()
+
+    useEffect(() => {
+        if (calendarExpanded) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [calendarExpanded])
+
+    const handleClickOutside = (e: Event) => {
+        console.log('handleClickOutside')
+        if (node.current && node.current.contains(e.target)) {
+            // inside click
+            return
+        }
+        // outside click
+        setCalendarExpanded(false)
+    }
+
+    console.log('??')
+
     const toggleCalendarExpanded = () => (calendarExpanded ? setCalendarExpanded(false) : setCalendarExpanded(true))
 
     const goToToday = () => {
@@ -110,7 +135,7 @@ export const CalendarSelector = () => {
     const monthTitle = getSelectedMonthTitle()
 
     return (
-        <section>
+        <section ref={node}>
             <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
                 <span className="ml-2" title="Display value">
                     {selectedDate.toLocaleDateString()}
