@@ -4,6 +4,5 @@ WORKDIR /app
 
 COPY . ./
 RUN npm install
-RUN npm run build
 
-CMD [ "node", "./dist/graphql/server.js" ]
+CMD [ "npm", "run", "start:graphql:server" ]

@@ -6,7 +6,6 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "baseUrl": ".",
-    "module": "es6",
     "moduleResolution": "node",
     "paths": {
       "*": ["*", "generated/*"]
