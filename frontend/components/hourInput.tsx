@@ -1,4 +1,3 @@
-import { time } from 'console'
 import { ChangeEvent, FocusEvent, useState } from 'react'
 
 export interface IWorkDuration {

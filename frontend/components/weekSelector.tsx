@@ -1,4 +1,3 @@
-import { getDefaultSettings } from 'http2'
 import { useState } from 'react'
 
 export const WeekSelector = (props: { onChange: (year: number, week: number) => void }) => {

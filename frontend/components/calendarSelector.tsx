@@ -54,7 +54,11 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
     )
 }
 
-export const CalendarSelector = () => {
+export interface ICalendarSelectorProps {
+    onSelectedDateChange?: (newDate: Date) => void
+}
+
+export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
 
@@ -82,8 +86,15 @@ export const CalendarSelector = () => {
 
     const toggleCalendarExpanded = () => (calendarExpanded ? setCalendarExpanded(false) : setCalendarExpanded(true))
 
+    const selectNewDate = (targetDate: Date): void => {
+        setSelectedDate(targetDate)
+        if (props.onSelectedDateChange) {
+            props.onSelectedDateChange(targetDate)
+        }
+    }
+
     const goToToday = () => {
-        setSelectedDate(new Date())
+        selectNewDate(new Date())
     }
 
     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -95,6 +106,7 @@ export const CalendarSelector = () => {
         if (dayOfWeek === 1) {
             return startDate
         }
+
         const newDate = startDate
         if (dayOfWeek === 0) {
             newDate.setDate(startDate.getDate() - 6)
@@ -118,11 +130,11 @@ export const CalendarSelector = () => {
     const daysToRender = getDaysToRender()
 
     const gotoPreviousMonth = () => {
-        setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))
+        selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))
     }
 
     const gotoNextMonth = () => {
-        setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))
+        selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))
     }
 
     const getSelectedMonthTitle = (): string => {
@@ -175,7 +187,7 @@ export const CalendarSelector = () => {
                                 key={index}
                                 day={day}
                                 selectedDate={selectedDate}
-                                onClick={setSelectedDate}
+                                onClick={selectNewDate}
                             ></DayItem>
                         ))}
                     </div>
