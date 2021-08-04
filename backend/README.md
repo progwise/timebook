@@ -12,3 +12,5 @@ docker run -p 4000:4000 timebook-graphql
 ```
 docker-compose up
 ```
+
+you can ignore seeding error messages because of unique constraint violations for the moment

@@ -5,7 +5,8 @@
   "main": "cli.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:graphql:server": "ts-node graphql/server.ts"
+    "start:graphql:server": "ts-node graphql/server.ts",
+    "seed": "ts-node prisma/seed.ts"
   },
   "repository": {
     "type": "git",
