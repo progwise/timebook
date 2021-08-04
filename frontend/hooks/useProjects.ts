@@ -13,7 +13,8 @@ const projectQuery = `
    projects {
      id
      title
-
+     startDate
+     endDate
    }
 }
 `;
@@ -25,8 +26,8 @@ export interface IUseProjectsResult {
 }
 
 export const useProjects = (): IUseProjectsResult => {
-  const [queryResult] = useQuery({ query: projectQuery });
+  const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectQuery });
   const { data, fetching, error } = queryResult;
   const projects = data && data.projects ? data.projects : [];
-  return { projects: projects, fetching, error };
+  return { projects, fetching, error };
 };
