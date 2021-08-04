@@ -1,25 +1,46 @@
-import React, { ReactChild, ReactChildren } from 'react'
-//import { DaySelector } from "../components/daySelector";
+import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
 import { HourInput } from '../components/hourInput'
 import { CalendarSelector } from '../components/calendarSelector'
-import { WeekSelector } from '../components/weekSelector'
+// import { WeekSelector } from '../components/weekSelector'
 
 const Time = () => {
     const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
         return <th className="text-left">{props.children}</th>
     }
 
-    const handleSelectedWeekChange = (year: number, week: number) => {
-        console.log('receive changed week', year, week)
+    const [selectedDate, setSelectedDate] = useState(new Date())
+
+    const todayNumber = selectedDate.getDay()
+    const mondayNumber = 1 - todayNumber
+    const sundayNumber = 7 - todayNumber
+    const monday = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + mondayNumber)
+    const sunday = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + sundayNumber)
+
+    const handleSelectedDateChange = (newDate: Date) => {
+        setSelectedDate(newDate)
     }
 
     return (
         <article>
             <h2>Your timetable</h2>
             <div>
-                <CalendarSelector />
-                <WeekSelector onChange={handleSelectedWeekChange} />
+                <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
+                {/* <WeekSelector onChange={handleSelectedWeekChange} /> */}
             </div>
+            <table className="w-full table-auto">
+                <thead>
+                    <tr>
+                        <td>
+                            <span>{monday.toLocaleDateString()}</span>
+                        </td>
+
+                        <td className="flex justify-end mr-10">
+                            <span>{sunday.toLocaleDateString()}</span>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+
             <table className="w-full table-auto">
                 <thead>
                     <tr>
