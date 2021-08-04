@@ -46,11 +46,11 @@ const ProjectDetails = () => {
         </label>
         <label>
           <span>Start</span>
-          <input type="text" defaultValue={currentProject.startDate.toLocaleDateString()} />
+          <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
         </label>
         <label>
           <span>End</span>
-          <input type="text" defaultValue={currentProject.endDate.toLocaleDateString()} />
+          <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
         </label>
         <div className="flex justify-center">
           <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />

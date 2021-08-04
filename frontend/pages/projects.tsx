@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { IProject, useProjects } from "../hooks/useProjects";
 
 const Projects = () => {
-  const { projects } = useProjects();
+  const { projects, error } = useProjects();
   const router = useRouter();
 
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -49,6 +49,8 @@ const Projects = () => {
     await router.push("/projects/new");
   };
 
+  console.log(projects);
+
   return (
     <article>
       <h2 className="flex justify-between">
@@ -59,8 +61,10 @@ const Projects = () => {
           </button>
         </span>
       </h2>
+
+      {error && <span>{error.message}</span>}
       {!projects ? (
-        <div>loading</div>
+        <div>...loading</div>
       ) : (
         <ItemTable
           columns={tableColumns}
