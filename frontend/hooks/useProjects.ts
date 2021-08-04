@@ -28,12 +28,15 @@ const projectQuery = `
    projects {
      id
      title
+
    }
 }
 `
 
 export const useProjects = () => {
   //const [ projectList, setProjectList ] = useState(initialProjectList)
-const [ projectList ] = useQuery({ query: projectQuery})
-  return { projectList }
+const [ projectList, reexecuteQuery] = useQuery({ query: projectQuery})
+const { data, fetching, error } = projectList;
+  return { data }
+
 }

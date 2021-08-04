@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import {IProject, useProjects} from '../../hooks/useProjects';
-
+import {gql, useQuery} from 'urql';
 const now  = new Date()
 const newProject: IProject = {
     id: 'new project',
@@ -23,8 +23,10 @@ const ProjectDetails = () => {
     await router.push('/projects')
   }
 
+
   useEffect(() => {
-    const selectedProject = projectList.data.find(p => p.id === id)
+
+    const selectedProject = projectList.find(p => p.id === id)
     if (selectedProject) {
       console.log('found project with id')
       setCurrentProject(selectedProject)
