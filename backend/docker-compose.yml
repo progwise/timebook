@@ -1,5 +1,22 @@
 version: "3"
 services:
+  graphql:
+    image: "timebook-graphql"
+    ports:
+      - 4000:4000
+    environment:
+      DATABASE_URL: "postgresql://timebookdbuser:Test123@database:5432/timebookdb?schema=public"
+    depends_on:
+      - database
+      - migrate
+  migrate:
+    image: "timebook-graphql"
+    environment:
+      DATABASE_URL: "postgresql://timebookdbuser:Test123@database:5432/timebookdb?schema=public"
+    depends_on:
+      - database
+    command: >
+      sh -c "npx prisma migrate dev && npm run seed"
   database:
     image: "postgres" # use latest official postgres version
     ports:

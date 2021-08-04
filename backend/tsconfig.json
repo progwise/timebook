@@ -4,6 +4,11 @@
     "outDir": "dist",
     "strict": false,
     "lib": ["esnext"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "paths": {
+      "*": ["*", "generated/*"]
+    }
   }
 }
