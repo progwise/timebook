@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useQuery } from 'urql'
+import { CombinedError, useQuery } from 'urql'
 
 export interface IProject {
     id: string
@@ -8,32 +7,26 @@ export interface IProject {
     endDate: Date
 }
 
-// const initialProjectList: Array<IProject> = [
-//   {
-//     id: '1',
-//     name: "Testproject",
-//     startDate: new Date(2021, 1, 1),
-//     endDate: new Date(2021, 12, 31),
-//   },
-//   {
-//     id: '2',
-//     name: "Testproject2",
-//     startDate: new Date(2020, 1, 1),
-//     endDate: new Date(2022, 12, 31),
-//   },
-// ];
-
 const projectQuery = `
   query {
    projects {
      id
      title
+     startDate
+     endDate
    }
 }
 `
 
-export const useProjects = () => {
-    //const [ projectList, setProjectList ] = useState(initialProjectList)
-    const [projectList] = useQuery({ query: projectQuery })
-    return { projectList }
+export interface IUseProjectsResult {
+    projects: Array<IProject>
+    fetching: boolean
+    error: CombinedError
+}
+
+export const useProjects = (): IUseProjectsResult => {
+    const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectQuery })
+    const { data, fetching, error } = queryResult
+    const projects = data && data.projects ? data.projects : []
+    return { projects, fetching, error }
 }
