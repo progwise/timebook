@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../../hooks/useProjects'
+import { CalendarSelector } from '../../components/calendarSelector'
 const now = new Date()
 const newProject: IProject = {
     id: 'new project',
@@ -12,7 +13,10 @@ const newProject: IProject = {
 const ProjectDetails = (): JSX.Element => {
     const { projects } = useProjects()
     const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
-
+    const [ currentStartDate, setCurrentStartDate] = useState(new Date());
+    const [currentEndDate, setCurrentEndDate] = useState(new Date());
+    currentProject.startDate = currentStartDate;
+    currentProject.endDate = currentEndDate;
     const router = useRouter()
     const { id } = router.query
     const handleSubmit = async () => {
@@ -46,14 +50,18 @@ const ProjectDetails = (): JSX.Element => {
                 <label>
                     <span>Start</span>
                     <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
+                    <CalendarSelector onSelectedDateChange={setCurrentStartDate}/>
                 </label>
                 <label>
                     <span>End</span>
                     <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                    <CalendarSelector onSelectedDateChange={setCurrentEndDate}/>
+
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
                     <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
+
                 </div>
             </form>
         </article>
