@@ -14,11 +14,11 @@ const Projects = () => {
     {
       title: "Name",
       value: (item: IProject) => item.title,
-      onClick: () => {},
+      onClick: () => console.log("ONCLICK"),
     },
     {
       title: "Duration",
-      value: (item: IProject) => `${item.startDate?.toLocaleDateString()}-${item.endDate?.toLocaleDateString()}`,
+      value: (item: IProject) => `${item.startDate != undefined ? item.startDate?.toLocaleDateString : "Start of the work"} to ${item.endDate != undefined ? item.endDate?.toLocaleDateString : "End of the work"}`,
       onClick: () => {},
       orderedBy: SortDirection.DESC,
     },
