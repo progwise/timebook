@@ -8,6 +8,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native","debian-openssl-1.1.x"]
 }
 
 model Project {
@@ -17,6 +18,8 @@ model Project {
   title     String   @db.VarChar(255)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+  startDate DateTime?
+  endDate   DateTime?
 }
 
 model Profile {

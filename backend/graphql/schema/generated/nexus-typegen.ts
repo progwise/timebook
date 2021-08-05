@@ -29,7 +29,9 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Project: { // root type
+    endDate?: string | null; // String
     id: string; // ID!
+    startDate?: string | null; // String
     title: string; // String!
   }
   Query: {};
@@ -47,7 +49,9 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
   Project: { // field return type
+    endDate: string | null; // String
     id: string; // ID!
+    startDate: string | null; // String
     title: string; // String!
   }
   Query: { // field return type
@@ -57,7 +61,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenFieldTypeNames {
   Project: { // field return type name
+    endDate: 'String'
     id: 'ID'
+    startDate: 'String'
     title: 'String'
   }
   Query: { // field return type name

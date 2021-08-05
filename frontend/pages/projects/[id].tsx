@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../../hooks/useProjects'
-
 const now = new Date()
 const newProject: IProject = {
     id: 'new project',
@@ -10,8 +9,8 @@ const newProject: IProject = {
     endDate: new Date(now.getFullYear(), 12, 31),
 }
 
-const ProjectDetails = () => {
-    const { projectList } = useProjects()
+const ProjectDetails = (): JSX.Element => {
+    const { projects } = useProjects()
     const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
 
     const router = useRouter()
@@ -24,9 +23,8 @@ const ProjectDetails = () => {
     }
 
     useEffect(() => {
-        const selectedProject = projectList.data.find((p) => p.id === id)
+        const selectedProject = projects.find((p) => p.id === id)
         if (selectedProject) {
-            console.log('found project with id')
             setCurrentProject(selectedProject)
         }
     })
@@ -47,11 +45,11 @@ const ProjectDetails = () => {
                 </label>
                 <label>
                     <span>Start</span>
-                    <input type="text" defaultValue={currentProject.startDate.toLocaleDateString()} />
+                    <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
                 </label>
                 <label>
                     <span>End</span>
-                    <input type="text" defaultValue={currentProject.endDate.toLocaleDateString()} />
+                    <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
