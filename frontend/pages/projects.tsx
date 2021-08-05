@@ -18,7 +18,7 @@ const Projects = () => {
     },
     {
       title: "Duration",
-      value: (item: IProject) => `${item.startDate != undefined ? item.startDate?.toLocaleDateString : "Start of the work"} to ${item.endDate != undefined ? item.endDate?.toLocaleDateString : "End of the work"}`,
+      value: (item: IProject) => `${item.startDate != undefined ? item.startDate?.toLocaleDateString : "Here comes the start"}    -    ${item.endDate != undefined ? item.endDate?.toLocaleDateString : "Here comes the End"}`,
       onClick: () => {},
       orderedBy: SortDirection.DESC,
     },
