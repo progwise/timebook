@@ -3,8 +3,11 @@
 
 
 type Project {
+  endDate: String
+
   """identifies the project"""
   id: ID!
+  startDate: String
   title: String!
 }
 
