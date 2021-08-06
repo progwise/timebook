@@ -57,9 +57,9 @@ const ProjectDetails = (): JSX.Element => {
                 <label>
                     <span>End</span>
                     <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
-                    {currentStartDate >= currentEndDate ? <p> it doesnt make sense </p> : <p></p>}
+                    {currentStartDate >= currentEndDate ? <p> wow, you can work back in time? if not, please put the end after the start </p> : <p></p>}
                     <CalendarSelector onSelectedDateChange={setCurrentEndDate}/>
-                    
+
 
                 </label>
                 <div className="flex justify-center">
