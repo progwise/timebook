@@ -30,14 +30,14 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
         selectedDate.getFullYear() === day.getFullYear() && selectedDate.getMonth() === day.getMonth()
 
     if (isSelectedYearAndMonth) {
-    }  else {
+    } else {
         classNames.push('italic')
     }
 
     let title = getDayTitle(day)
 
     if (selectedDate.toLocaleDateString() === day.toLocaleDateString()) {
-        classNames.push('border-red-800')
+        classNames.push('border-red-700')
         title = `Selected Day, ${title}`
     }
 

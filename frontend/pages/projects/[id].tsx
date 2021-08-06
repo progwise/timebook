@@ -59,7 +59,7 @@ const ProjectDetails = (): JSX.Element => {
                     <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
                     {currentStartDate >= currentEndDate ? <p> it doesnt make sense </p> : <p></p>}
                     <CalendarSelector onSelectedDateChange={setCurrentEndDate}/>
-          
+                    
 
                 </label>
                 <div className="flex justify-center">
