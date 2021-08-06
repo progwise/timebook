@@ -1,7 +1,7 @@
-import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
+import React, { ReactChild, ReactChildren, useState } from 'react'
 import { HourInput } from '../components/hourInput'
 import { CalendarSelector } from '../components/calendarSelector'
-// import { WeekSelector } from '../components/weekSelector'
+import { useProjects } from '../hooks/useProjects'
 
 const Time = () => {
     const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
@@ -9,6 +9,7 @@ const Time = () => {
     }
 
     const [selectedDate, setSelectedDate] = useState(new Date())
+    const { projects, error } = useProjects()
 
     const todayNumber = selectedDate.getDay()
     const mondayNumber = 1 - todayNumber
@@ -25,24 +26,23 @@ const Time = () => {
             <h2>Your timetable</h2>
             <div>
                 <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
-                {/* <WeekSelector onChange={handleSelectedWeekChange} /> */}
             </div>
+            <tr>
+                {projects.map((p, rows) => {
+                    return (
+                        <th className="grid grid-cols-4" key={rows}>
+                            {p.title}
+                        </th>
+                    )
+                })}
+            </tr>
             <table className="w-full table-auto">
                 <thead>
                     <tr>
-                        <td>
-                            <span>{monday.toLocaleDateString()}</span>
-                        </td>
-
-                        <td className="flex justify-end mr-10">
-                            <span>{sunday.toLocaleDateString()}</span>
-                        </td>
+                        <th className="text-left">{monday.toLocaleDateString()}</th>
+                        <th colSpan={5} />
+                        <th className="text-left">{sunday.toLocaleDateString()}</th>
                     </tr>
-                </thead>
-            </table>
-
-            <table className="w-full table-auto">
-                <thead>
                     <tr>
                         <ColumnHeader>M</ColumnHeader>
                         <ColumnHeader>T</ColumnHeader>
@@ -53,7 +53,77 @@ const Time = () => {
                         <ColumnHeader>Su</ColumnHeader>
                     </tr>
                 </thead>
+
                 <tbody>
+                    <tr>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                        <td>
+                            <HourInput></HourInput>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <HourInput></HourInput>
