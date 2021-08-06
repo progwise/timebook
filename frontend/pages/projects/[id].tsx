@@ -11,12 +11,14 @@ const newProject: IProject = {
 }
 
 const ProjectDetails = (): JSX.Element => {
+
     const { projects } = useProjects()
     const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
     const [ currentStartDate, setCurrentStartDate] = useState(new Date());
     const [currentEndDate, setCurrentEndDate] = useState(new Date());
     currentProject.startDate = currentStartDate;
     currentProject.endDate = currentEndDate;
+
     const router = useRouter()
     const { id } = router.query
     const handleSubmit = async () => {
@@ -55,7 +57,9 @@ const ProjectDetails = (): JSX.Element => {
                 <label>
                     <span>End</span>
                     <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                    {currentStartDate >= currentEndDate ? <p> it doesnt make sense </p> : <p></p>}
                     <CalendarSelector onSelectedDateChange={setCurrentEndDate}/>
+          
 
                 </label>
                 <div className="flex justify-center">
