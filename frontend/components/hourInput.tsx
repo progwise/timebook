@@ -9,7 +9,6 @@ function validateDuration(duration: IWorkDuration): IWorkDuration {
     if (duration.hours > 23 && duration.minutes > 0) {
         throw new Error('A single day has only 24 hours')
     }
-    return duration
 }
 
 function parseIntNoNaN(valueAsString: string): number {
@@ -28,7 +27,7 @@ function parseFloatNoNaN(valueAsString: string): number {
     return valueAsNumber
 }
 
-export const parseDuration = (timeString: string): IWorkDuration => {
+export const parseWorkHours = (timeString: string): number => {
     try {
         const parts = timeString.split(':')
         if (parts.length > 1) {
@@ -41,21 +40,26 @@ export const parseDuration = (timeString: string): IWorkDuration => {
                 minutes = remainer
             }
 
-            return validateDuration({
+            validateDuration({
                 hours,
                 minutes,
             })
+
+            return hours + minutes / 60
         }
 
         const durationAsFloat = parseFloatNoNaN(parts[0])
-
-        return validateDuration({
+        const duration = {
             hours: Math.floor(durationAsFloat),
             minutes: Math.floor((durationAsFloat % 1) * 60),
-        })
+        }
+
+        validateDuration(duration)
+
+        return duration.hours + duration.minutes / 60
     } catch (error) {
         alert(error)
-        return { hours: 0, minutes: 0 }
+        return 0
     }
 }
 
@@ -63,17 +67,32 @@ function pad(value: number): string {
     return value < 10 ? '0' + value.toString() : value.toString()
 }
 
-export const HourInput = () => {
-    const [formattedDuration, setFormattedDuration] = useState('0:00')
+export const getFormattedWorkHours = (workHours: number) => {
+    const hours = Math.floor(workHours)
+    const minutes = Math.floor((workHours - hours) * 100)
+    return `${hours}:${pad(minutes)}`
+}
+
+export const HourInput = (props: { workHours: number; onChange: (workHours: number) => void }): JSX.Element => {
+    const [workHours, setWorkHours] = useState(props.workHours)
 
     const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
-        const newDuration = parseDuration(event.target.value)
-        setFormattedDuration(`${newDuration.hours}:${pad(newDuration.minutes)}`)
+        const workHours = parseWorkHours(event.target.value)
+
+        props.onChange(workHours)
+        setWorkHours(workHours)
     }
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setFormattedDuration(event.target.value)
+        const durationParts = event.target.value.split(':')
+        console.log(event.target.value)
+        console.log(durationParts)
+        const hours = parseInt(durationParts[0])
+        const minutes = parseInt(durationParts[1])
+        //setWorkHours(hours + (isNaN(minutes) ? 0 : minutes / 60))
     }
+
+    const formattedDuration = getFormattedWorkHours(workHours)
 
     return (
         <div className="border w-14">
@@ -83,7 +102,7 @@ export const HourInput = () => {
                 name="hours"
                 placeholder="0:00"
                 onBlur={handleOnBlur}
-                value={formattedDuration}
+                defaultValue={formattedDuration}
                 onChange={handleOnChange}
             />
         </div>
