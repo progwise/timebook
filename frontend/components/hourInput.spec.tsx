@@ -1,6 +1,5 @@
-import { fireEvent, getByDisplayValue, render, screen } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import { HourInput } from './hourInput'
-import userEvent from '@testing-library/user-event'
 
 describe('the hour input control should display ...', () => {
     const testNode = (
