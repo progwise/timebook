@@ -11,7 +11,7 @@ export interface IProjectTimeEntry {
 
 const Time = (): JSX.Element => {
     const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
-        return <th className="text-left">{props.children}</th>
+        return <th className="text-center">{props.children}</th>
     }
 
     const [selectedDate, setSelectedDate] = useState(new Date())
@@ -25,31 +25,31 @@ const Time = (): JSX.Element => {
             project: p,
             times: [
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 1),
                     workHours: 1,
                 },
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 2),
                     workHours: 1,
                 },
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 3),
                     workHours: 1,
                 },
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 4),
                     workHours: 1,
                 },
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 5),
                     workHours: 1,
                 },
                 {
-                    date: monday,
+                    date: getDateForWeekday(selectedDate, 6),
                     workHours: 1,
                 },
                 {
-                    date: sunday,
+                    date: getDateForWeekday(selectedDate, 7),
                     workHours: 1,
                 },
             ],
@@ -57,11 +57,8 @@ const Time = (): JSX.Element => {
         setTimeData(newData)
     }, [projects])
 
-    const todayNumber = selectedDate.getDay()
-    const mondayNumber = 1 - todayNumber
-    const sundayNumber = 7 - todayNumber
-    const monday = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + mondayNumber)
-    const sunday = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + sundayNumber)
+    const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
+        new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
 
     const handleSelectedDateChange = (newDate: Date) => {
         setSelectedDate(newDate)
@@ -101,9 +98,13 @@ const Time = (): JSX.Element => {
                 <thead>
                     <tr>
                         <th>&nbsp;</th>
-                        <th className="text-left">{monday.toLocaleDateString()}</th>
-                        <th colSpan={5} />
-                        <th className="text-left">{sunday.toLocaleDateString()}</th>
+                        <th colSpan={3} className="text-left">
+                            {getDateForWeekday(selectedDate, 1).toLocaleDateString()}
+                        </th>
+                        <th />
+                        <th colSpan={3} className="text-right">
+                            {getDateForWeekday(selectedDate, 7).toLocaleDateString()}
+                        </th>
                     </tr>
                     <tr>
                         <ColumnHeader>&nbsp;</ColumnHeader>
@@ -122,7 +123,7 @@ const Time = (): JSX.Element => {
                         <tr key={timeEntry.project.id}>
                             <td>{timeEntry.project.title}</td>
                             {timeEntry.times.map(({ date, workHours }, index) => (
-                                <td key={index}>
+                                <td className="pl-2 pr-2 min-w-min" key={index}>
                                     <HourInput
                                         onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
                                         workHours={workHours}
@@ -135,13 +136,11 @@ const Time = (): JSX.Element => {
                 <tfoot>
                     <tr>
                         <td></td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(1))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(2))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(3))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(4))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(5))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(6))}</td>
-                        <td>{getFormattedWorkHours(getWeekdayDurationSum(0))}</td>
+                        {Array.from({ length: 7 }).map((_, i) => (
+                            <td className="text-center" key={i}>
+                                {getFormattedWorkHours(getWeekdayDurationSum((i + 1) % 7))}
+                            </td>
+                        ))}
                     </tr>
                 </tfoot>
             </table>
