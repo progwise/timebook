@@ -1,4 +1,4 @@
-import { ChangeEvent, FocusEvent, useState } from 'react'
+import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
 
 export interface IWorkDuration {
     hours: number
@@ -35,8 +35,8 @@ export const parseWorkHours = (timeString: string): number => {
             let minutes = parseIntNoNaN(parts[1])
 
             if (minutes > 59) {
-                const remainer = minutes % 60
-                hours = hours + (minutes - remainer) / 60
+                const remainer = minutes % 60.0
+                hours = hours + (minutes - remainer) / 60.0
                 minutes = remainer
             }
 
@@ -45,7 +45,7 @@ export const parseWorkHours = (timeString: string): number => {
                 minutes,
             })
 
-            return hours + minutes / 60
+            return hours + minutes / 60.0
         }
 
         const durationAsFloat = parseFloatNoNaN(parts[0])
@@ -67,42 +67,46 @@ function pad(value: number): string {
     return value < 10 ? '0' + value.toString() : value.toString()
 }
 
-export const getFormattedWorkHours = (workHours: number) => {
+export const getFormattedWorkHours = (workHours: number): string => {
     const hours = Math.floor(workHours)
-    const minutes = Math.floor((workHours - hours) * 100)
+    const minutes = workHours * 60 - hours * 60
+    console.log(minutes)
     return `${hours}:${pad(minutes)}`
 }
 
 export const HourInput = (props: { workHours: number; onChange: (workHours: number) => void }): JSX.Element => {
-    const [workHours, setWorkHours] = useState(props.workHours)
-
+    const [workHours, setWorkHours] = useState(0)
+    const [formattedValue, setFormattedValue] = useState('0:00')
     const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
         const workHours = parseWorkHours(event.target.value)
 
         props.onChange(workHours)
         setWorkHours(workHours)
+        setFormattedValue(getFormattedWorkHours(workHours))
     }
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const durationParts = event.target.value.split(':')
-        console.log(event.target.value)
-        console.log(durationParts)
-        const hours = parseInt(durationParts[0])
-        const minutes = parseInt(durationParts[1])
-        //setWorkHours(hours + (isNaN(minutes) ? 0 : minutes / 60))
+        setFormattedValue(event.target.value)
     }
 
-    const formattedDuration = getFormattedWorkHours(workHours)
+    useEffect(() => {
+        setWorkHours(props.workHours)
+        setFormattedValue(getFormattedWorkHours(workHours))
+    }, [props.workHours])
+
+    useEffect(() => {
+        setFormattedValue(getFormattedWorkHours(workHours))
+    }, [workHours])
 
     return (
-        <div className="border w-14">
+        <div className="border w-full">
             <input
                 className="w-full text-center p-1"
                 type="text"
                 name="hours"
                 placeholder="0:00"
                 onBlur={handleOnBlur}
-                defaultValue={formattedDuration}
+                value={formattedValue}
                 onChange={handleOnChange}
             />
         </div>
