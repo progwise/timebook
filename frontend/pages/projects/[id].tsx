@@ -42,30 +42,51 @@ const ProjectDetails = (): JSX.Element => {
         <article>
             <form key={currentProject.id}>
                 {isNewProject() ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
-                <label className="text-gray-500">
+                <label className="text-gray-500" >
                     <span>Id</span>
                     <input type="text" defaultValue={currentProject.id} />
                 </label>
-                <label className="text-gray-500">
+                <label className="text-gray-500" >
+                  
                     <span>Name</span>
                     <input type="text" defaultValue={currentProject.title} />
+                  
+        
                 </label>
-                <label>
-                    <span>Start</span>
-                    <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
-                    <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleStartDate} />
-                </label>
-                <label>
-                    <span>End</span>
-                    <input type="text" class="rounded-full" defaultValue={currentProject.endDate?.toLocaleDateString()} />
-                    {currentProject.startDate > currentProject.endDate ? (
-                        <p> wow, you can work back in time? if not, please put the end after the start </p>
-                    ) : (
-                        <p></p>
-                    )}
-                    <CalendarSelector class="w-64" hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
-                </label>
-                <div className="flex justify-center">
+    
+                <div class="flex flex-wrap -mx--34 mb-6">
+                    <div class="w-10"></div>
+                    <label>
+                        <span>Start</span>
+                            <div class="flex items-center ">
+                            
+                                <input type="text" class="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.startDate?.toLocaleDateString()} />
+                         
+                                <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleStartDate} />
+                            </div>
+                     </label>
+                    <div class="w-20">
+                    </div>
+            
+                    <label >
+                        <span >End</span>
+                            <div class="flex items-center ">
+                            
+                                <input type="text" class="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                                    
+                                <CalendarSelector  hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
+                                
+                            </div>
+                            
+                    </label>
+                    
+                </div>
+                {currentProject.startDate > currentProject.endDate ? (
+                    <p className="flex justify-center"> end must be after start </p>
+                ) : (
+                    <p></p>
+                )}
+                <div class="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
                     <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
                 </div>

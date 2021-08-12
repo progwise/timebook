@@ -53,10 +53,15 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
         </div>
     )
 }
-
+enum fieldDirection {
+    Left,
+    Right,
+    Middle
+}
 export interface ICalendarSelectorProps {
     onSelectedDateChange?: (newDate: Date) => void
     hideSelectedDate?: boolean
+    
 }
 
 export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
