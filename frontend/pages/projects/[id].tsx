@@ -53,7 +53,7 @@ const ProjectDetails = (): JSX.Element => {
                 <label>
                     <span>Start</span>
                     <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
-                    <CalendarSelector onSelectedDateChange={handleStartDate} />
+                    <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleStartDate} />
                 </label>
                 <label>
                     <span>End</span>
@@ -63,7 +63,7 @@ const ProjectDetails = (): JSX.Element => {
                     ) : (
                         <p></p>
                     )}
-                    <CalendarSelector onSelectedDateChange={handleEndDate} />
+                    <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />

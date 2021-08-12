@@ -56,6 +56,7 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
 
 export interface ICalendarSelectorProps {
     onSelectedDateChange?: (newDate: Date) => void
+    hideSelectedDate?: boolean
 }
 
 export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
@@ -146,9 +147,11 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     return (
         <section ref={componentNode}>
             <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
-                <span className="ml-2" title="Display value">
-                    {selectedDate.toLocaleDateString()}
-                </span>
+                {!props.hideSelectedDate && (
+                    <span className="ml-2" title="Display value">
+                        {selectedDate.toLocaleDateString()}
+                    </span>
+                )}
             </CalendarIcon>
             {calendarExpanded && (
                 <section className="text-sm absolute mt-5 border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
