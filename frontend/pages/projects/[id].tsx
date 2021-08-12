@@ -57,13 +57,13 @@ const ProjectDetails = (): JSX.Element => {
                 </label>
                 <label>
                     <span>End</span>
-                    <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                    <input type="text" class="rounded-full" defaultValue={currentProject.endDate?.toLocaleDateString()} />
                     {currentProject.startDate > currentProject.endDate ? (
                         <p> wow, you can work back in time? if not, please put the end after the start </p>
                     ) : (
                         <p></p>
                     )}
-                    <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
+                    <CalendarSelector class="w-64" hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
