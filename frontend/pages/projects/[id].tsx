@@ -11,10 +11,8 @@ const newProject: IProject = {
 }
 
 const ProjectDetails = (): JSX.Element => {
-
     const { projects } = useProjects()
     const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
-
 
     const router = useRouter()
     const { id } = router.query
@@ -25,21 +23,17 @@ const ProjectDetails = (): JSX.Element => {
         await router.push('/projects')
     }
     const handleStartDate = (startDate: Date) => {
-      setCurrentProject({...currentProject,
-      startDate: startDate});
+        setCurrentProject({ ...currentProject, startDate: startDate })
     }
     const handleEndDate = (endDate: Date) => {
-      setCurrentProject({...currentProject,
-      endDate: endDate});
+        setCurrentProject({ ...currentProject, endDate: endDate })
     }
 
     useEffect(() => {
         const selectedProject = projects.find((p) => p.id === id)
         if (selectedProject) {
             setCurrentProject(selectedProject)
-
         }
-
     })
 
     const isNewProject = () => currentProject.id === newProject.id
@@ -64,17 +58,16 @@ const ProjectDetails = (): JSX.Element => {
                 <label>
                     <span>End</span>
                     <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
-                    {currentProject.startDate > currentProject.endDate
-                      ? <p> wow, you can work back in time? if not, please put the end after the start </p>
-                      : <p></p>}
+                    {currentProject.startDate > currentProject.endDate ? (
+                        <p> wow, you can work back in time? if not, please put the end after the start </p>
+                    ) : (
+                        <p></p>
+                    )}
                     <CalendarSelector onSelectedDateChange={handleEndDate} />
-
-
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
                     <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
-
                 </div>
             </form>
         </article>
