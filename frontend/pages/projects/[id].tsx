@@ -31,7 +31,6 @@ const ProjectDetails = (): JSX.Element => {
     const handleEndDate = (endDate: Date) => {
       setCurrentProject({...currentProject,
       endDate: endDate});
-    
     }
 
     useEffect(() => {
@@ -43,7 +42,7 @@ const ProjectDetails = (): JSX.Element => {
 
     })
 
-    const isNewProject = () => currentProject.id === newProject.id;
+    const isNewProject = () => currentProject.id === newProject.id
 
     return (
         <article>
