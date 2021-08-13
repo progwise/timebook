@@ -8,7 +8,7 @@
         "start": "next start",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watchAll",
-        "lint": "eslint \"*/**/*.{ts,tsx}\" --fix"
+        "lint": "eslint \"*/**/*.{ts,tsx,js,jsx}\""
     },
     "dependencies": {
         "graphql": "^15.5.1",
@@ -36,6 +36,7 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-react": "^7.24.0",
+        "eslint-plugin-unicorn": "^35.0.0",
         "jest": "^27.0.6",
         "jest-transform-stub": "^2.0.0",
         "postcss": "^8.3.6",

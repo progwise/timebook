@@ -45,7 +45,7 @@ const Projects = (): JSX.Element => {
     }
 
     // TODO: fix both errors
-    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
     const handleDeleteProject = (project: IProject) => {}
 
     const handleAddProject = async () => {

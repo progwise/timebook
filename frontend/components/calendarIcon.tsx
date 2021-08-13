@@ -25,7 +25,7 @@ const CalendarIcon = (props: ICalendarIconProps): JSX.Element => {
 
     return (
         <div
-            title={props.title && props.title.length ? props.title : 'Calendar icon'}
+            title={props.title && props.title.length > 0 ? props.title : 'Calendar icon'}
             onClick={handleClick}
             className="flex items-center cursor-pointer"
         >
