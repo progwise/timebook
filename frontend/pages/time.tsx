@@ -1,9 +1,8 @@
-import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
+import React, { ReactChild, ReactChildren, useState } from 'react'
 import { HourInput } from '../components/hourInput'
 import { CalendarSelector } from '../components/calendarSelector'
-// import { WeekSelector } from '../components/weekSelector'
 
-const Time = () => {
+const Time = (): JSX.Element => {
     const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
         return <th className="text-left">{props.children}</th>
     }
@@ -25,7 +24,6 @@ const Time = () => {
             <h2>Your timetable</h2>
             <div>
                 <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
-                {/* <WeekSelector onChange={handleSelectedWeekChange} /> */}
             </div>
             <table className="w-full table-auto">
                 <thead>

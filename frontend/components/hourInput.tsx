@@ -63,7 +63,7 @@ function pad(value: number): string {
     return value < 10 ? '0' + value.toString() : value.toString()
 }
 
-export const HourInput = () => {
+export const HourInput = (): JSX.Element => {
     const [formattedDuration, setFormattedDuration] = useState('0:00')
 
     const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
