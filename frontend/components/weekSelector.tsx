@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export const WeekSelector = (props: { onChange: (year: number, week: number) => void }) => {
+export const WeekSelector = (props: { onChange: (year: number, week: number) => void }): JSX.Element => {
     const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear())
     const [selectedWeek, setSelectedWeek] = useState(() => {
         const now = new Date()
