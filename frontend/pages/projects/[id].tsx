@@ -30,6 +30,7 @@ const ProjectDetails = (): JSX.Element => {
     }
 
     useEffect(() => {
+        
         const selectedProject = projects.find((p) => p.id === id)
         if (selectedProject) {
             setCurrentProject(selectedProject)
@@ -54,25 +55,25 @@ const ProjectDetails = (): JSX.Element => {
         
                 </label>
     
-                <div class="flex flex-wrap -mx--34 mb-6">
-                    <div class="w-10"></div>
+                <div className="flex flex-wrap -mx--34 mb-6">
+                    <div className="w-10"></div>
                     <label>
                         <span>Start</span>
-                            <div class="flex items-center ">
+                            <div className="flex items-center ">
                             
-                                <input type="text" class="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.startDate?.toLocaleDateString()} />
+                                <input type="text" className="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.startDate?.toLocaleDateString()} />
                          
                                 <CalendarSelector hideSelectedDate={true} onSelectedDateChange={handleStartDate} />
                             </div>
                      </label>
-                    <div class="w-20">
+                    <div className="w-20">
                     </div>
             
                     <label >
                         <span >End</span>
-                            <div class="flex items-center ">
+                            <div className="flex items-center ">
                             
-                                <input type="text" class="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                                <input type="text" className="rounded  border-2 border-gray-200 px-2 py-1" defaultValue={currentProject.endDate?.toLocaleDateString()} />
                                     
                                 <CalendarSelector  hideSelectedDate={true} onSelectedDateChange={handleEndDate} />
                                 
@@ -86,7 +87,7 @@ const ProjectDetails = (): JSX.Element => {
                 ) : (
                     <p></p>
                 )}
-                <div class="flex justify-center">
+                <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
                     <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
                 </div>
