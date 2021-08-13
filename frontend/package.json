@@ -8,7 +8,9 @@
         "start": "next start",
         "test": "jest --config jest.config.js",
         "test:watch": "jest --config jest.config.js --watchAll",
-        "lint": "eslint \"*/**/*.{ts,tsx}\" --fix"
+        "lint": "eslint \"*/**/*.{ts,tsx}\" --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
     },
     "dependencies": {
         "graphql": "^15.5.1",
