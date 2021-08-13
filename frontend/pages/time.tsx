@@ -54,25 +54,25 @@ const Time = (): JSX.Element => {
                 <tbody>
                     <tr>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                         <td>
-                            <HourInput></HourInput>
+                            <HourInput />
                         </td>
                     </tr>
                 </tbody>
