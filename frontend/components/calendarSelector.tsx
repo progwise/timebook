@@ -173,12 +173,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
                             )
                         })}
                         {daysToRender.map((day, index) => (
-                            <DayItem
-                                key={index}
-                                day={day}
-                                selectedDate={selectedDate}
-                                onClick={selectNewDate}
-                            ></DayItem>
+                            <DayItem key={index} day={day} selectedDate={selectedDate} onClick={selectNewDate} />
                         ))}
                     </div>
                 </section>

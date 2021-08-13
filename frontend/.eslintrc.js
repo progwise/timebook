@@ -32,5 +32,6 @@ module.exports = {
         'unicorn/filename-case': ['error', { case: 'camelCase' }],
         'no-console': 'warn',
         'testing-library/prefer-user-event': 'error',
+        'react/self-closing-comp': 'error',
     },
 }
