@@ -24,8 +24,8 @@ export const WeekSelector = (props: { onChange: (year: number, week: number) => 
 
     const years = arrayOfYears()
 
-    const handleWeekChange = (event) => {
-        const newWeek = event.target.value
+    const handleWeekChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newWeek = Number.parseInt(event.target.value)
         setSelectedWeek(newWeek)
         props.onChange(selectedYear, newWeek)
     }
