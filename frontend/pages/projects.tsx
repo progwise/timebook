@@ -14,7 +14,6 @@ const Projects = (): JSX.Element => {
         {
             title: 'Name',
             value: (item: IProject) => item.title,
-            onClick: () => console.log('ONCLICK'),
         },
         {
             title: 'Duration',
@@ -51,8 +50,6 @@ const Projects = (): JSX.Element => {
     const handleAddProject = async () => {
         await router.push('/projects/new')
     }
-
-    console.log(projects)
 
     return (
         <article>

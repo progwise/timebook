@@ -26,5 +26,6 @@ module.exports = {
         'react/react-in-jsx-scope': 'off',
         'unicorn/prevent-abbreviations': ['error', { allowList: { props: true, Props: true } }],
         'unicorn/filename-case': ['error', { case: 'camelCase' }],
+        'no-console': 'warn',
     },
 }
