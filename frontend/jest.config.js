@@ -1,5 +1,7 @@
 // jest.config.ts
 
+/* eslint-disable unicorn/prefer-module */
+
 // Or async function
 module.exports = async () => {
     return {
@@ -15,5 +17,5 @@ module.exports = async () => {
         transform: {
             '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
         },
-    };
-};
+    }
+}

@@ -116,17 +116,12 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         return newDate
     }
 
-    const getDaysToRender = (): Array<Date> => {
-        const days = new Array<Date>()
-        const start = getPreviousMonday(firstDayOfSelectedMonth)
-        for (let index = 0; index < 35; index++) {
-            const dayToAdd = new Date(start.getTime() + index * 24 * 60 * 60 * 1000)
-            days.push(dayToAdd)
-        }
-        return days
+    const daysToRender = new Array<Date>()
+    const start = getPreviousMonday(firstDayOfSelectedMonth)
+    for (let index = 0; index < 35; index++) {
+        const dayToAdd = new Date(start.getTime() + index * 24 * 60 * 60 * 1000)
+        daysToRender.push(dayToAdd)
     }
-
-    const daysToRender = getDaysToRender()
 
     const gotoPreviousMonth = () => {
         selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))
@@ -136,11 +131,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))
     }
 
-    const getSelectedMonthTitle = (): string => {
-        return getMonthTitle(selectedDate)
-    }
-
-    const monthTitle = getSelectedMonthTitle()
+    const monthTitle = getMonthTitle(selectedDate)
 
     return (
         <section ref={componentNode}>
