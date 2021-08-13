@@ -22,15 +22,14 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
     const selectedDate = props.selectedDate
     const dayString = day.getDate()
 
-    const classNames = Array<string>()
+    const classNames = new Array<string>()
 
     classNames.push('text-center border cursor-pointer p-0')
 
     const isSelectedYearAndMonth =
         selectedDate.getFullYear() === day.getFullYear() && selectedDate.getMonth() === day.getMonth()
 
-    if (isSelectedYearAndMonth) {
-    } else {
+    if (!isSelectedYearAndMonth) {
         classNames.push('italic')
     }
 
@@ -75,8 +74,8 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         }
     }, [calendarExpanded])
 
-    const handleClickOutside = (e: Event) => {
-        if (componentNode.current && componentNode.current.contains(e.target)) {
+    const handleClickOutside = (event: Event) => {
+        if (componentNode.current && componentNode.current.contains(event.target)) {
             // inside click
             return
         }
@@ -118,13 +117,13 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     }
 
     const getDaysToRender = (): Array<Date> => {
-        const ret = new Array<Date>()
+        const days = new Array<Date>()
         const start = getPreviousMonday(firstDayOfSelectedMonth)
-        for (let i = 0; i < 35; i++) {
-            const dayToAdd = new Date(start.getTime() + i * 24 * 60 * 60 * 1000)
-            ret.push(dayToAdd)
+        for (let index = 0; index < 35; index++) {
+            const dayToAdd = new Date(start.getTime() + index * 24 * 60 * 60 * 1000)
+            days.push(dayToAdd)
         }
-        return ret
+        return days
     }
 
     const daysToRender = getDaysToRender()

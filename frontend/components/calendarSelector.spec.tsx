@@ -88,7 +88,7 @@ describe('the custom calendar should ...', () => {
             it('...the 15th is selected', () => {
                 const selectedDayElement = screen.getByTitle(/^Selected Day/)
                 expect(selectedDayElement).toHaveTextContent(/15/)
-                const valueElement = screen.getByTitle(/Display value/i)
+                const valueElement = screen.getByTitle(/display value/i)
                 expect(valueElement).toHaveTextContent(/15\//)
             })
 
@@ -96,7 +96,7 @@ describe('the custom calendar should ...', () => {
                 fireEvent.click(screen.getByText(/^14$/))
                 const selectedDayElement = screen.getByTitle(/^Selected Day/)
                 expect(selectedDayElement).toHaveTextContent(/14/)
-                const valueElement = screen.getByTitle(/Display value/i)
+                const valueElement = screen.getByTitle(/display value/i)
                 expect(valueElement).toHaveTextContent(/14\//)
             })
 

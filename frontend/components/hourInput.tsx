@@ -13,16 +13,16 @@ function validateDuration(duration: IWorkDuration): IWorkDuration {
 }
 
 function parseIntNoNaN(valueAsString: string): number {
-    const valueAsNumber = parseInt(valueAsString)
-    if (isNaN(valueAsNumber)) {
+    const valueAsNumber = Number.parseInt(valueAsString)
+    if (Number.isNaN(valueAsNumber)) {
         return 0
     }
     return valueAsNumber
 }
 
 function parseFloatNoNaN(valueAsString: string): number {
-    const valueAsNumber = parseFloat(valueAsString)
-    if (isNaN(valueAsNumber)) {
+    const valueAsNumber = Number.parseFloat(valueAsString)
+    if (Number.isNaN(valueAsNumber)) {
         return 0
     }
     return valueAsNumber
