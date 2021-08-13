@@ -19,6 +19,10 @@ module.exports = {
         'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
         'plugin:unicorn/recommended',
+        'plugin:jest/recommended',
+        'plugin:jest/style',
+        'plugin:testing-library/react',
+        'plugin:jest-dom/recommended',
     ],
     rules: {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
@@ -27,5 +31,6 @@ module.exports = {
         'unicorn/prevent-abbreviations': ['error', { allowList: { props: true, Props: true } }],
         'unicorn/filename-case': ['error', { case: 'camelCase' }],
         'no-console': 'warn',
+        'testing-library/prefer-user-event': 'error',
     },
 }
