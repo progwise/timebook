@@ -61,7 +61,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
 
-    const componentNode = useRef(null)
+    const componentNode = useRef<HTMLElement>(null)
 
     useEffect(() => {
         if (calendarExpanded) {
@@ -74,8 +74,11 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         }
     }, [calendarExpanded])
 
-    const handleClickOutside = (event: Event) => {
-        if (componentNode.current && componentNode.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+        // TODO: fix typescript error
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (componentNode.current && event.target && componentNode.current?.contains(event.target)) {
             // inside click
             return
         }

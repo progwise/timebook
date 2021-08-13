@@ -8,7 +8,7 @@ const client = createClient({
 
 interface MyAppProps {
     Component: new (props: unknown) => React.Component
-    pageProps: unknown
+    pageProps: never
 }
 
 function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
