@@ -5,7 +5,7 @@ export interface IWorkDuration {
     minutes: number
 }
 
-function validateDuration(duration: IWorkDuration): IWorkDuration {
+function validateDuration(duration) {
     if (duration.hours > 23 && duration.minutes > 0) {
         throw new Error('A single day has only 24 hours')
     }
