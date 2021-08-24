@@ -1,17 +1,23 @@
+import React from 'react'
 import { fireEvent, render } from '@testing-library/react'
 import { HourInput } from './hourInput'
 
 describe('the hour input control should display ...', () => {
     const testNode = (
         <>
-            <HourInput></HourInput>
+            <HourInput
+                workHours={1}
+                onChange={(workHours): void => {
+                    console.log(workHours)
+                }}
+            ></HourInput>
             <button>Click me!</button>
         </>
     )
 
-    it('... 0:00 in the beginning', async () => {
+    it('... 0:00 in the beginning', () => {
         const { findByDisplayValue } = render(testNode)
-        expect(await findByDisplayValue('0:00')).toBeDefined()
+        expect(findByDisplayValue('0:00')).toBeDefined()
     })
 
     it('... 1:00 if the user types "1"', () => {
@@ -24,7 +30,7 @@ describe('the hour input control should display ...', () => {
     })
 
     it('... display "0:00" user types "abc"', () => {
-        const renderResult = render(testNode)
+        render(testNode)
     })
 
     describe('... should allow "hh:mm" input when ...', () => {
@@ -94,5 +100,15 @@ describe('the hour input control should display ...', () => {
         fireEvent.change(hourBox, { target: { value: '24.017' } })
         getByText(/click me!/i).focus()
         expect(window.alert).toHaveBeenCalledTimes(1)
+    })
+
+    it('... 1:00 + 1:00 + 1:00 + 1:00 gives a total of 4:00', () => {
+        const { getByRole, getByText, getByDisplayValue } = render(testNode)
+        const hourBox = getByRole('textbox')
+        hourBox.focus()
+        fireEvent.change(hourBox, { target: { value: '4:00' } })
+        getByText(/click me!/i).focus()
+        const resultElement = getByDisplayValue('4:00')
+        expect(resultElement).toBeInTheDocument()
     })
 })

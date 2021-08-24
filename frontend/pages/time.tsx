@@ -17,7 +17,7 @@ const Time = (): JSX.Element => {
 
     const [timeData, setTimeData] = useState([])
 
-    const { projects, error } = useProjects()
+    const { projects } = useProjects()
 
     useEffect(() => {
         const newData = projects.map((p) => ({
