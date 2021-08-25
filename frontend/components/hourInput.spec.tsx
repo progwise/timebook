@@ -112,15 +112,4 @@ describe('the hour input control should display ...', () => {
         expect(resultElement).toBeInTheDocument()
         screen.logTestingPlaygroundURL()
     })
-
-    it('... and the total working hours are added up for each day', () => {
-        const { getByRole, getByText, getByDisplayValue } = render(testNode)
-        const hourBox = getByRole('textbox')
-        hourBox.focus()
-        fireEvent.change(hourBox, { target: { value: 'total' } })
-        getByText(/click me!/i).focus()
-        const resultElement = getByDisplayValue('total')
-        expect(resultElement).toBeInTheDocument()
-        screen.logTestingPlaygroundURL()
-    })
 })
