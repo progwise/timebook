@@ -5,8 +5,8 @@ export interface IWorkDuration {
     minutes: number
 }
 
-function validateDuration(duration) {
-    if (duration.hours > 23 && duration.minutes > 0) {
+function validateDuration(duration: IWorkDuration): void {
+    if ((duration.hours > 23 && duration.minutes > 0) || duration.hours > 24) {
         throw new Error('A single day has only 24 hours')
     }
 }
@@ -53,6 +53,7 @@ export const parseWorkHours = (timeString: string): number => {
             hours: Math.floor(durationAsFloat),
             minutes: Math.floor((durationAsFloat % 1) * 60),
         }
+        console.log(duration)
 
         validateDuration(duration)
 
