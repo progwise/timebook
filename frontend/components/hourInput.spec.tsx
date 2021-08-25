@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { HourInput } from './hourInput'
 
 describe('the hour input control should display ...', () => {
@@ -102,7 +102,7 @@ describe('the hour input control should display ...', () => {
         expect(window.alert).toHaveBeenCalledTimes(1)
     })
 
-    it('... 1:00 + 1:00 + 1:00 + 1:00 gives a total of 4:00', () => {
+    it('... and the default total working hours are added up for each day', () => {
         const { getByRole, getByText, getByDisplayValue } = render(testNode)
         const hourBox = getByRole('textbox')
         hourBox.focus()
@@ -110,5 +110,17 @@ describe('the hour input control should display ...', () => {
         getByText(/click me!/i).focus()
         const resultElement = getByDisplayValue('4:00')
         expect(resultElement).toBeInTheDocument()
+        screen.logTestingPlaygroundURL()
+    })
+
+    it('... and the total working hours are added up for each day', () => {
+        const { getByRole, getByText, getByDisplayValue } = render(testNode)
+        const hourBox = getByRole('textbox')
+        hourBox.focus()
+        fireEvent.change(hourBox, { target: { value: 'total' } })
+        getByText(/click me!/i).focus()
+        const resultElement = getByDisplayValue('total')
+        expect(resultElement).toBeInTheDocument()
+        screen.logTestingPlaygroundURL()
     })
 })
