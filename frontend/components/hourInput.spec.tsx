@@ -6,9 +6,14 @@ describe('the hour input control should display ...', () => {
     beforeEach(() => {
         render(
             <>
-                <HourInput />
-                <button>Click me!</button>
-            </>,
+            <HourInput
+                workHours={1}
+                onChange={(workHours): void => {
+                    console.log(workHours)
+                }}
+            ></HourInput>
+            <button>Click me!</button>
+        </>,
         )
     })
 
@@ -68,6 +73,24 @@ describe('the hour input control should display ...', () => {
             expect(hourBox).toHaveDisplayValue('24:00')
         })
 
+        it('... typing 1:02 is should stay 1:02', () => {
+            const hourBox = screen.getByRole('textbox')
+            hourBox.focus()
+            userEvent.type(hourBox, '1:02')
+            screen.getByText(/click me!/i).focus()
+            const resultElement = screen.getByDisplayValue('1:02')
+            expect(resultElement).toBeInTheDocument()
+        })
+
+        it('... typing 1:55 is should stay 1:55', () => {
+            const hourBox = screen.getByRole('textbox')
+            hourBox.focus()
+            userEvent.type(hourBox, '1:55')
+            screen.getByText(/click me!/i).focus()
+            const resultElement = screen.getByDisplayValue('1:55')
+            expect(resultElement).toBeInTheDocument()
+        })
+
         it('... typing 12.45 is changed to 12:26', () => {
             const hourBox = screen.getByRole('textbox')
 
@@ -109,5 +132,14 @@ describe('the hour input control should display ...', () => {
 
         expect(window.alert).toHaveBeenCalledTimes(1)
         expect(hourBox).toHaveDisplayValue('0:00')
+    })
+
+    it('... and the default total working hours are added up for each day', () => {
+        const hourBox = screen.getByRole('textbox')
+        hourBox.focus()
+        userEvent.type(hourBox, '4:00')
+        screen.getByText(/click me!/i).focus()
+        const resultElement = screen.getByDisplayValue('4:00')
+        expect(resultElement).toBeInTheDocument()
     })
 })
