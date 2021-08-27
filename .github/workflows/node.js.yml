@@ -27,7 +27,11 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
 
+<<<<<<< HEAD
   eslint:
+=======
+  prettier:
+>>>>>>> main
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,4 +43,8 @@ jobs:
       with:
         node-version: '14.x'
     - run: npm ci
+<<<<<<< HEAD
     - run: npm run lint
+=======
+    - run: npm run format:check
+>>>>>>> main
