@@ -21,7 +21,7 @@ const projectQuery = `
 export interface IUseProjectsResult {
     projects: Array<IProject>
     fetching: boolean
-    error: CombinedError
+    error?: CombinedError
 }
 
 export const useProjects = (): IUseProjectsResult => {

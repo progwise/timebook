@@ -12,16 +12,16 @@ function validateDuration(duration: IWorkDuration): void {
 }
 
 function parseIntNoNaN(valueAsString: string): number {
-    const valueAsNumber = parseInt(valueAsString)
-    if (isNaN(valueAsNumber)) {
+    const valueAsNumber = Number.parseInt(valueAsString)
+    if (Number.isNaN(valueAsNumber)) {
         return 0
     }
     return valueAsNumber
 }
 
 function parseFloatNoNaN(valueAsString: string): number {
-    const valueAsNumber = parseFloat(valueAsString)
-    if (isNaN(valueAsNumber)) {
+    const valueAsNumber = Number.parseFloat(valueAsString)
+    if (Number.isNaN(valueAsNumber)) {
         return 0
     }
     return valueAsNumber
@@ -35,8 +35,8 @@ export const parseWorkHours = (timeString: string): number => {
             let minutes = parseIntNoNaN(parts[1])
 
             if (minutes > 59) {
-                const remainer = minutes % 60.0
-                hours = hours + (minutes - remainer) / 60.0
+                const remainer = minutes % 60
+                hours = hours + (minutes - remainer) / 60
                 minutes = remainer
             }
 
@@ -45,7 +45,7 @@ export const parseWorkHours = (timeString: string): number => {
                 minutes,
             })
 
-            return hours + minutes / 60.0
+            return hours + minutes / 60
         }
 
         const durationAsFloat = parseFloatNoNaN(parts[0])
@@ -53,7 +53,6 @@ export const parseWorkHours = (timeString: string): number => {
             hours: Math.floor(durationAsFloat),
             minutes: Math.floor((durationAsFloat % 1) * 60),
         }
-        console.log(duration)
 
         validateDuration(duration)
 
