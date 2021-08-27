@@ -70,8 +70,7 @@ function pad(value: number): string {
 
 export const getFormattedWorkHours = (workHours: number): string => {
     const hours = Math.floor(workHours)
-    const minutes = workHours * 60 - hours * 60
-    console.log(minutes)
+    const minutes = Math.round(workHours * 60 - hours * 60)
     return `${hours}:${pad(minutes)}`
 }
 
@@ -80,10 +79,10 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
     const [formattedValue, setFormattedValue] = useState('0:00')
     const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
         const workHours = parseWorkHours(event.target.value)
-
+        const formattedWorkHours = getFormattedWorkHours(workHours)
         props.onChange(workHours)
         setWorkHours(workHours)
-        setFormattedValue(getFormattedWorkHours(workHours))
+        setFormattedValue(formattedWorkHours)
     }
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
