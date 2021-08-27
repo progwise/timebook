@@ -1,18 +1,23 @@
-import { fireEvent, getByDisplayValue, render, screen } from '@testing-library/react'
+import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { HourInput } from './hourInput'
-import userEvent from '@testing-library/user-event'
 
 describe('the hour input control should display ...', () => {
     const testNode = (
         <>
-            <HourInput></HourInput>
+            <HourInput
+                workHours={1}
+                onChange={(workHours): void => {
+                    console.log(workHours)
+                }}
+            ></HourInput>
             <button>Click me!</button>
         </>
     )
 
-    it('... 0:00 in the beginning', async () => {
-        const { findByDisplayValue } = render(testNode)
-        expect(await findByDisplayValue('0:00')).toBeDefined()
+    it('... 1:00 in the beginning', () => {
+        const { getByDisplayValue } = render(testNode)
+        expect(getByDisplayValue('1:00')).toBeDefined()
     })
 
     it('... 1:00 if the user types "1"', () => {
@@ -25,7 +30,12 @@ describe('the hour input control should display ...', () => {
     })
 
     it('... display "0:00" user types "abc"', () => {
-        const renderResult = render(testNode)
+        const { getByRole, getByText } = render(testNode)
+        const hourBox = getByRole('textbox')
+        hourBox.focus()
+        fireEvent.change(hourBox, { target: { value: 'abc' } })
+        getByText(/click me!/i).focus()
+        expect(hourBox).toHaveValue('0:00')
     })
 
     describe('... should allow "hh:mm" input when ...', () => {
@@ -53,6 +63,26 @@ describe('the hour input control should display ...', () => {
             fireEvent.change(hourBox, { target: { value: '24:00' } })
             getByText(/click me!/i).focus()
             const resultElement = getByDisplayValue('24:00')
+            expect(resultElement).toBeInTheDocument()
+        })
+
+        it('... typing 1:02 is should stay 1:02', () => {
+            const { getByRole, getByText, getByDisplayValue } = render(testNode)
+            const hourBox = getByRole('textbox')
+            hourBox.focus()
+            fireEvent.change(hourBox, { target: { value: '1:02' } })
+            getByText(/click me!/i).focus()
+            const resultElement = getByDisplayValue('1:02')
+            expect(resultElement).toBeInTheDocument()
+        })
+
+        it('... typing 1:55 is should stay 1:55', () => {
+            const { getByRole, getByText, getByDisplayValue } = render(testNode)
+            const hourBox = getByRole('textbox')
+            hourBox.focus()
+            fireEvent.change(hourBox, { target: { value: '1:55' } })
+            getByText(/click me!/i).focus()
+            const resultElement = getByDisplayValue('1:55')
             expect(resultElement).toBeInTheDocument()
         })
 
@@ -95,5 +125,16 @@ describe('the hour input control should display ...', () => {
         fireEvent.change(hourBox, { target: { value: '24.017' } })
         getByText(/click me!/i).focus()
         expect(window.alert).toHaveBeenCalledTimes(1)
+    })
+
+    it('... and the default total working hours are added up for each day', () => {
+        const { getByRole, getByText, getByDisplayValue } = render(testNode)
+        const hourBox = getByRole('textbox')
+        hourBox.focus()
+        fireEvent.change(hourBox, { target: { value: '4:00' } })
+        getByText(/click me!/i).focus()
+        const resultElement = getByDisplayValue('4:00')
+        expect(resultElement).toBeInTheDocument()
+        screen.logTestingPlaygroundURL()
     })
 })

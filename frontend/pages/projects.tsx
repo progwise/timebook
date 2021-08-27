@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ItemTable, SortDirection } from '../components/itemTable/itemTable'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../hooks/useProjects'
 
-const Projects = () => {
+const Projects = (): JSX.Element => {
     const { projects, error } = useProjects()
     const router = useRouter()
 
