@@ -6,14 +6,14 @@ describe('the hour input control should display ...', () => {
     beforeEach(() => {
         render(
             <>
-            <HourInput
-                workHours={1}
-                onChange={(workHours): void => {
-                    console.log(workHours)
-                }}
-            ></HourInput>
-            <button>Click me!</button>
-        </>,
+                <HourInput
+                    workHours={0}
+                    onChange={(workHours): void => {
+                        console.log(workHours)
+                    }}
+                />
+                <button>Click me!</button>
+            </>,
         )
     })
 
@@ -73,22 +73,20 @@ describe('the hour input control should display ...', () => {
             expect(hourBox).toHaveDisplayValue('24:00')
         })
 
-        it('... typing 1:02 is should stay 1:02', () => {
+        it('... typing 1:02 should stay 1:02', () => {
             const hourBox = screen.getByRole('textbox')
-            hourBox.focus()
+            userEvent.clear(hourBox)
             userEvent.type(hourBox, '1:02')
-            screen.getByText(/click me!/i).focus()
-            const resultElement = screen.getByDisplayValue('1:02')
-            expect(resultElement).toBeInTheDocument()
+            userEvent.click(screen.getByRole('button'))
+            expect(hourBox).toHaveDisplayValue('1:02')
         })
 
         it('... typing 1:55 is should stay 1:55', () => {
             const hourBox = screen.getByRole('textbox')
-            hourBox.focus()
+            userEvent.clear(hourBox)
             userEvent.type(hourBox, '1:55')
-            screen.getByText(/click me!/i).focus()
-            const resultElement = screen.getByDisplayValue('1:55')
-            expect(resultElement).toBeInTheDocument()
+            userEvent.click(screen.getByRole('button'))
+            expect(hourBox).toHaveDisplayValue('1:55')
         })
 
         it('... typing 12.45 is changed to 12:26', () => {
@@ -134,12 +132,12 @@ describe('the hour input control should display ...', () => {
         expect(hourBox).toHaveDisplayValue('0:00')
     })
 
-    it('... and the default total working hours are added up for each day', () => {
+    it('... and the default total working hours are added up for each day', async () => {
         const hourBox = screen.getByRole('textbox')
-        hourBox.focus()
+        userEvent.clear(hourBox)
         userEvent.type(hourBox, '4:00')
-        screen.getByText(/click me!/i).focus()
-        const resultElement = screen.getByDisplayValue('4:00')
+        userEvent.click(screen.getByRole('button'))
+        const resultElement = await screen.findByDisplayValue('4:00')
         expect(resultElement).toBeInTheDocument()
     })
 })
