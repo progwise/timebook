@@ -7,14 +7,13 @@ const Projects = (): JSX.Element => {
     const { projects, error } = useProjects()
     const router = useRouter()
 
-    const [itemsPerPage, setItemsPerPage] = useState(10)
+    const itemsPerPage = 10
     const [firstItemIndex, setFirstItemIndex] = useState(1)
 
     const tableColumns = [
         {
             title: 'Name',
             value: (item: IProject) => item.title,
-            onClick: () => console.log('ONCLICK'),
         },
         {
             title: 'Duration',
@@ -22,11 +21,11 @@ const Projects = (): JSX.Element => {
                 `${item.startDate != undefined ? item.startDate?.toLocaleDateString : ''}-${
                     item.endDate != undefined ? item.endDate?.toLocaleDateString : ''
                 }`,
-            onClick: () => {},
             orderedBy: SortDirection.DESC,
         },
         {
             title: '',
+            // eslint-disable-next-line react/display-name
             value: (item: IProject) => (
                 <span className="float-right">
                     <button className="btn btn-gray2 mr-3" onClick={() => handleDeleteProject(item)}>
@@ -44,15 +43,13 @@ const Projects = (): JSX.Element => {
         await router.push(`/projects/${project.id}`)
     }
 
-    const handleDeleteProject = (project: IProject) => {
-        // setProjectList(projectList.filter(p => p.id !== project.id))
-    }
+    // TODO: fix both errors
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
+    const handleDeleteProject = (project: IProject) => {}
 
     const handleAddProject = async () => {
         await router.push('/projects/new')
     }
-
-    console.log(projects)
 
     return (
         <article>
@@ -77,12 +74,9 @@ const Projects = (): JSX.Element => {
                         totalItemCount: 521,
                         firstItemIndex: firstItemIndex,
                         itemsPerPage: itemsPerPage,
-                        onPrevious: () => {},
-                        onFirst: () => {},
                         onNext: () => {
                             setFirstItemIndex(firstItemIndex + itemsPerPage)
                         },
-                        onLast: () => {},
                     }}
                 />
             )}

@@ -22,15 +22,14 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
     const selectedDate = props.selectedDate
     const dayString = day.getDate()
 
-    const classNames = Array<string>()
+    const classNames = new Array<string>()
 
     classNames.push('text-center border cursor-pointer p-0')
 
     const isSelectedYearAndMonth =
         selectedDate.getFullYear() === day.getFullYear() && selectedDate.getMonth() === day.getMonth()
 
-    if (isSelectedYearAndMonth) {
-    } else {
+    if (!isSelectedYearAndMonth) {
         classNames.push('italic')
     }
 
@@ -62,7 +61,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
 
-    const componentNode = useRef(null)
+    const componentNode = useRef<HTMLElement>(null)
 
     useEffect(() => {
         if (calendarExpanded) {
@@ -75,8 +74,11 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         }
     }, [calendarExpanded])
 
-    const handleClickOutside = (e: Event) => {
-        if (componentNode.current && componentNode.current.contains(e.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+        // TODO: fix typescript error
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (componentNode.current && event.target && componentNode.current?.contains(event.target)) {
             // inside click
             return
         }
@@ -117,17 +119,12 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         return newDate
     }
 
-    const getDaysToRender = (): Array<Date> => {
-        const ret = new Array<Date>()
-        const start = getPreviousMonday(firstDayOfSelectedMonth)
-        for (let i = 0; i < 35; i++) {
-            const dayToAdd = new Date(start.getTime() + i * 24 * 60 * 60 * 1000)
-            ret.push(dayToAdd)
-        }
-        return ret
+    const daysToRender = new Array<Date>()
+    const start = getPreviousMonday(firstDayOfSelectedMonth)
+    for (let index = 0; index < 35; index++) {
+        const dayToAdd = new Date(start.getTime() + index * 24 * 60 * 60 * 1000)
+        daysToRender.push(dayToAdd)
     }
-
-    const daysToRender = getDaysToRender()
 
     const gotoPreviousMonth = () => {
         selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))
@@ -137,11 +134,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))
     }
 
-    const getSelectedMonthTitle = (): string => {
-        return getMonthTitle(selectedDate)
-    }
-
-    const monthTitle = getSelectedMonthTitle()
+    const monthTitle = getMonthTitle(selectedDate)
 
     return (
         <section ref={componentNode}>
@@ -183,12 +176,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
                             )
                         })}
                         {daysToRender.map((day, index) => (
-                            <DayItem
-                                key={index}
-                                day={day}
-                                selectedDate={selectedDate}
-                                onClick={selectNewDate}
-                            ></DayItem>
+                            <DayItem key={index} day={day} selectedDate={selectedDate} onClick={selectNewDate} />
                         ))}
                     </div>
                 </section>

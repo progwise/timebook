@@ -1,5 +1,7 @@
 // jest.config.ts
 
+/* eslint-disable unicorn/prefer-module */
+
 // Or async function
 module.exports = async () => {
     return {

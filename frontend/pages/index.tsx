@@ -1,8 +1,7 @@
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-export default function Home() {
+export default function Home(): JSX.Element {
     const router = useRouter()
 
     const reroute = async () => router.push('/home')
