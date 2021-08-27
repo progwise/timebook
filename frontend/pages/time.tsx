@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import React, { ReactChild, ReactChildren, useState } from 'react'
-import { HourInput } from '../components/hourInput'
-import { CalendarSelector } from '../components/calendarSelector'
-
-=======
 import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
 import { getFormattedWorkHours, HourInput } from '../components/hourInput'
 import { CalendarSelector } from '../components/calendarSelector'
@@ -14,7 +8,6 @@ export interface IProjectTimeEntry {
     times: Array<{ date: Date; workHours: number }>
 }
 
->>>>>>> main
 const Time = (): JSX.Element => {
     const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
         return <th className="text-center">{props.children}</th>
@@ -22,7 +15,7 @@ const Time = (): JSX.Element => {
 
     const [selectedDate, setSelectedDate] = useState(new Date())
 
-    const [timeData, setTimeData] = useState([])
+    const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
     const { projects } = useProjects()
 
@@ -70,20 +63,23 @@ const Time = (): JSX.Element => {
         setSelectedDate(newDate)
     }
     const getWeekdayDurationSum = (weekday: number): number => {
-        let result = 0.0
-        timeData.forEach((projectData) => {
+        let result = 0
+        for (const projectData of timeData) {
             const timesForWeekday = projectData.times
                 .filter((t) => t.date.getDay() === weekday)
                 .map((entry) => entry.workHours)
-            if (timesForWeekday.length) {
+            if (timesForWeekday.length > 0) {
                 result = result + timesForWeekday.reduce((a, b) => a + b)
             }
-        })
+        }
         return result
     }
 
     const setWorkHours = (project: IProject, date: Date, workHours: number) => {
         const projectEntry = timeData.find((entry) => entry.project.id === project.id)
+        if (!projectEntry) {
+            throw new Error(`project entry not found for ${project.id}`)
+        }
         const dateEntry = projectEntry.times.find((t) => t.date.toLocaleDateString() === date.toLocaleDateString())
         if (!dateEntry) {
             projectEntry.times.push({ date, workHours })
@@ -133,7 +129,7 @@ const Time = (): JSX.Element => {
                                     <HourInput
                                         onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
                                         workHours={workHours}
-                                    ></HourInput>
+                                    />
                                 </td>
                             ))}
                         </tr>
@@ -141,36 +137,12 @@ const Time = (): JSX.Element => {
                 </tbody>
                 <tfoot>
                     <tr>
-<<<<<<< HEAD
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-                        <td>
-                            <HourInput />
-                        </td>
-=======
-                        <td></td>
-                        {Array.from({ length: 7 }).map((_, i) => (
-                            <td className="text-center" key={i}>
-                                {getFormattedWorkHours(getWeekdayDurationSum((i + 1) % 7))}
+                        <td />
+                        {Array.from({ length: 7 }).map((_, index) => (
+                            <td className="text-center" key={index}>
+                                {getFormattedWorkHours(getWeekdayDurationSum((index + 1) % 7))}
                             </td>
                         ))}
->>>>>>> main
                     </tr>
                 </tfoot>
             </table>
