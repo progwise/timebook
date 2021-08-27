@@ -1,9 +1,14 @@
 /// <reference types="cypress" />
 
-describe('when a user visits https://test-setup.com/cypress/wp-admin/', () => {
+
+const url = Cypress.env('login_url')
+describe(`when a user visits ${url}`, () => {
 
   before(() => {
-    cy.visit('https://test-setup.com/cypress/wp-admin/')
+    cy.clearLocalStorage()
+    cy.clearCookies()
+     cy.reload(true);
+    cy.visit(url)
   })
 
   it('the login screen is rendered', () => {

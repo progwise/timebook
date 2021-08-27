@@ -10,7 +10,17 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add('login', (username, password) => { 
+  const url = Cypress.env('login_url')
+  cy.clearLocalStorage()
+  cy.clearCookies()
+   cy.reload(true);
+  cy.visit(url)
+  cy.get('#user_login').type(username)
+  cy.get('#user_pass').type(password)
+  cy.get('#wp-submit').click()
+  cy.get('.wp-menu-name').contains('Advanced Ads')
+ })
 //
 //
 // -- This is a child command --
