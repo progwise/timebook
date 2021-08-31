@@ -8,9 +8,14 @@ export interface IProjectTimeEntry {
     times: Array<{ date: Date; workHours: number }>
 }
 
+
+
+const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
+new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
+
 const Time = (): JSX.Element => {
-    const ColumnHeader = (props: { children: ReactChildren | ReactChild }) => {
-        return <th className="text-center">{props.children}</th>
+    const ColumnHeader = (props: { children: ReactChildren | ReactChild, className?: string }) => {
+        return <th className={`text-center ${props.className}`}>{props.children}</th>
     }
 
     const [selectedDate, setSelectedDate] = useState(new Date())
@@ -25,39 +30,80 @@ const Time = (): JSX.Element => {
             times: [
                 {
                     date: getDateForWeekday(selectedDate, 1),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 2),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 3),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 4),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 5),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 6),
-                    workHours: 1,
+                    workHours: 1
                 },
                 {
                     date: getDateForWeekday(selectedDate, 7),
-                    workHours: 1,
+                    workHours: 1
                 },
             ],
         }))
         setTimeData(newData)
     }, [projects])
 
-    const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
-        new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
+    const days = [
+        {
+            date: getDateForWeekday(selectedDate, 1),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 2),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 3),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 4),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 5),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 6),
+            workHours: 1
+        },
+        {
+            date: getDateForWeekday(selectedDate, 7),
+            workHours: 1
+        },
+    ]
+
+    const getTitleForWeekday = (date: Date) => {
+        switch (date.getDay()) {
+            case 1: return 'M'
+            case 2: return 'T'
+            case 3: return 'W'
+            case 4: return 'Th'
+            case 5: return 'F'
+            case 6: return 'S'
+            case 0: return 'Su'
+        }
+        return '?'
+    }
 
     const handleSelectedDateChange = (newDate: Date) => {
         setSelectedDate(newDate)
@@ -110,13 +156,9 @@ const Time = (): JSX.Element => {
                     </tr>
                     <tr>
                         <ColumnHeader>&nbsp;</ColumnHeader>
-                        <ColumnHeader>M</ColumnHeader>
-                        <ColumnHeader>T</ColumnHeader>
-                        <ColumnHeader>W</ColumnHeader>
-                        <ColumnHeader>Th</ColumnHeader>
-                        <ColumnHeader>F</ColumnHeader>
-                        <ColumnHeader>S</ColumnHeader>
-                        <ColumnHeader>Su</ColumnHeader>
+                        { days.map((day) => day.date.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader className="text-green-600">{getTitleForWeekday(day.date)}</ColumnHeader>) : (<ColumnHeader>{getTitleForWeekday(day.date)}</ColumnHeader>) )
+                        }
+                        
                     </tr>
                 </thead>
 
