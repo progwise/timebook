@@ -28,6 +28,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Mutation: {};
   Project: { // root type
     endDate?: string | null; // String
     id: string; // ID!
@@ -35,6 +36,12 @@ export interface NexusGenObjects {
     title: string; // String!
   }
   Query: {};
+  WorkHour: { // root type
+    comment: string; // String!
+    date?: string | null; // String
+    hours?: string | null; // String
+    id: string; // ID!
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -48,30 +55,61 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Mutation: { // field return type
+    createWorkHourEntry: NexusGenRootTypes['WorkHour']; // WorkHour!
+  }
   Project: { // field return type
     endDate: string | null; // String
     id: string; // ID!
     startDate: string | null; // String
     title: string; // String!
+    workhours: NexusGenRootTypes['WorkHour'][]; // [WorkHour!]!
   }
   Query: { // field return type
     projects: NexusGenRootTypes['Project'][]; // [Project!]!
+    workhours: NexusGenRootTypes['WorkHour'][]; // [WorkHour!]!
+  }
+  WorkHour: { // field return type
+    comment: string; // String!
+    date: string | null; // String
+    hours: string | null; // String
+    id: string; // ID!
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  Mutation: { // field return type name
+    createWorkHourEntry: 'WorkHour'
+  }
   Project: { // field return type name
     endDate: 'String'
     id: 'ID'
     startDate: 'String'
     title: 'String'
+    workhours: 'WorkHour'
   }
   Query: { // field return type name
     projects: 'Project'
+    workhours: 'WorkHour'
+  }
+  WorkHour: { // field return type name
+    comment: 'String'
+    date: 'String'
+    hours: 'String'
+    id: 'ID'
   }
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    createWorkHourEntry: { // args
+      comment: string; // String!
+      date: string; // String!
+      hours: number; // Float!
+      projectId: number; // Int!
+      userId: number; // Int!
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {

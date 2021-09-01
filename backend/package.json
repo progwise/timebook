@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node graphql/server.ts",
+    "dev:watch": "nodemon --watch '**' --ext 'ts,json' --ignore '**/*.spec.ts' --exec 'ts-node graphql/server.ts'",
     "seed": "ts-node prisma/seed.ts",
     "migrate:dev": "prisma migrate dev"
   },
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/node": "^16.4.10",
+    "nodemon": "^2.0.12",
     "prisma": "^2.28.0",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"

@@ -2,6 +2,10 @@
 ### Do not make changes to this file directly
 
 
+type Mutation {
+  createWorkHourEntry(comment: String!, date: String!, hours: Float!, projectId: Int!, userId: Int!): WorkHour!
+}
+
 type Project {
   endDate: String
 
@@ -9,8 +13,19 @@ type Project {
   id: ID!
   startDate: String
   title: String!
+  workhours: [WorkHour!]!
 }
 
 type Query {
   projects: [Project!]!
+  workhours: [WorkHour!]!
+}
+
+type WorkHour {
+  comment: String!
+  date: String
+  hours: String
+
+  """identifies the work entry"""
+  id: ID!
 }
