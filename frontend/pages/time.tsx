@@ -24,41 +24,18 @@ const Time = (): JSX.Element => {
 
     const { projects } = useProjects()
 
-   
-      const daysOfWeek = [{
-          date: getDateForWeekday(selectedDate, 1),
-          workHours: 1
-      },
-      {
-          date: getDateForWeekday(selectedDate, 2),
-          workHours: 1
-      },
-      {
-          date: getDateForWeekday(selectedDate, 3),
-          workHours: 1
-      },
-      {
-          date: getDateForWeekday(selectedDate, 4),
-          workHours: 1
-      },
-      {
-          date: getDateForWeekday(selectedDate, 5),
-          workHours: 1
-      },
-        {
-          date: getDateForWeekday(selectedDate, 6),
-          workHours: 1
-      },
-        {
-          date: getDateForWeekday(selectedDate, 7),
-          workHours: 1
-      }]
 
+    const getNewDayEntry = (weekday: number) => ({
+        date: getDateForWeekday(selectedDate, weekday),
+        workHours: 0
+    })
+   
+    const datesOfTheWeek = [1,2,3,4,5,6,7].map(weekday => getDateForWeekday(selectedDate, weekday))
 
     useEffect(() => {
         const newData = projects.map((p) => ({
             project: p,
-            times: daysOfWeek
+            times: [1,2,3,4,5,6,7].map(weekday => getNewDayEntry(weekday))
         }))
         setTimeData(newData)
     }, [projects])
@@ -127,7 +104,7 @@ const Time = (): JSX.Element => {
                     </tr>
                     <tr>
                         <ColumnHeader>&nbsp;</ColumnHeader>
-                        { daysOfWeek.map((day) => day.date.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader className="text-green-600">{getTitleForWeekday(day.date)}</ColumnHeader>) : (<ColumnHeader>{getTitleForWeekday(day.date)}</ColumnHeader>) )
+                        { datesOfTheWeek.map((day, index) => day.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader key={index} className="text-green-600">{getTitleForWeekday(day)}</ColumnHeader>) : (<ColumnHeader key={index} >{getTitleForWeekday(day)}</ColumnHeader>) )
                         }
                         
                     </tr>
