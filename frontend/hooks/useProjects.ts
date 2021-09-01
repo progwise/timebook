@@ -5,6 +5,7 @@ export interface IProject {
     title: string
     startDate: Date
     endDate: Date
+    workhours: Array<{comment: string, date: Date, hours: number}>
 }
 
 const projectQuery = `
@@ -14,6 +15,12 @@ const projectQuery = `
      title
      startDate
      endDate
+     workhours {
+      comment
+      id
+      date
+      hours
+    }
    }
 }
 `

@@ -77,6 +77,7 @@ const Query = extendType({
       type: WorkHour,
       resolve: async (source, args, context, info) => {
         const workHourList = await context.prisma.workHour.findMany();
+        console.log(workHourList)
         return workHourList.map((workHourEntry) => ({
           id: workHourEntry.id.toString(),
           comment: workHourEntry.comment,

@@ -25,17 +25,28 @@ const Time = (): JSX.Element => {
     const { projects } = useProjects()
 
 
-    const getNewDayEntry = (weekday: number) => ({
-        date: getDateForWeekday(selectedDate, weekday),
-        workHours: 0
-    })
+    const getNewDayEntry = (weekday: number, project: IProject) => {
+        const date = getDateForWeekday(selectedDate, weekday)
+        const foundWorkHour = project.workhours.find(entry => (new Date(parseInt(entry.date))).toLocaleDateString() === date.toLocaleDateString())
+        let hours = 0
+        if ( foundWorkHour ) {
+            hours = foundWorkHour.hours
+            console.log(new Date(parseInt(foundWorkHour.date)))
+        }
+
+        return {
+            date: getDateForWeekday(selectedDate, weekday),
+            workHours: hours
+        }
+    }
+
    
     const datesOfTheWeek = [1,2,3,4,5,6,7].map(weekday => getDateForWeekday(selectedDate, weekday))
 
     useEffect(() => {
         const newData = projects.map((p) => ({
             project: p,
-            times: [1,2,3,4,5,6,7].map(weekday => getNewDayEntry(weekday))
+            times: [1,2,3,4,5,6,7].map(weekday => getNewDayEntry(weekday, p))
         }))
         setTimeData(newData)
     }, [projects, selectedDate])
