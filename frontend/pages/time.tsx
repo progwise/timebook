@@ -38,7 +38,7 @@ const Time = (): JSX.Element => {
             times: [1,2,3,4,5,6,7].map(weekday => getNewDayEntry(weekday))
         }))
         setTimeData(newData)
-    }, [projects])
+    }, [projects, selectedDate])
 
     const getTitleForWeekday = (date: Date) => {
         switch (date.getDay()) {
