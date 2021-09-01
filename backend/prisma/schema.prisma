@@ -7,32 +7,45 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native","debian-openssl-1.1.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 model Project {
-  id        Int      @default(autoincrement()) @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  author    User     @relation(fields: [authorId], references: [id])
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  title     String     @db.VarChar(255)
+  author    User       @relation(fields: [authorId], references: [id])
   authorId  Int
   startDate DateTime?
   endDate   DateTime?
+  WorkHour  WorkHour[]
 }
 
 model Profile {
-  id     Int     @default(autoincrement()) @id
+  id     Int     @id @default(autoincrement())
   bio    String?
   user   User    @relation(fields: [userId], references: [id])
   userId Int     @unique
 }
 
 model User {
-  id      Int      @default(autoincrement()) @id
-  email   String   @unique
-  name    String?
-  projects   Project[]
-  profile Profile?
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  name     String?
+  projects Project[]
+  profile  Profile?
+  WorkHour WorkHour[]
+}
+
+model WorkHour {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  hours     Float
+  project   Project  @relation(fields: [projectId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  comment   String?
+  projectId Int
+  userId    Int
 }
