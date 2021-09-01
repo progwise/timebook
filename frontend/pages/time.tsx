@@ -24,73 +24,44 @@ const Time = (): JSX.Element => {
 
     const { projects } = useProjects()
 
+   
+      const daysOfWeek = [{
+          date: getDateForWeekday(selectedDate, 1),
+          workHours: 1
+      },
+      {
+          date: getDateForWeekday(selectedDate, 2),
+          workHours: 1
+      },
+      {
+          date: getDateForWeekday(selectedDate, 3),
+          workHours: 1
+      },
+      {
+          date: getDateForWeekday(selectedDate, 4),
+          workHours: 1
+      },
+      {
+          date: getDateForWeekday(selectedDate, 5),
+          workHours: 1
+      },
+        {
+          date: getDateForWeekday(selectedDate, 6),
+          workHours: 1
+      },
+        {
+          date: getDateForWeekday(selectedDate, 7),
+          workHours: 1
+      }]
+
+
     useEffect(() => {
         const newData = projects.map((p) => ({
             project: p,
-            times: [
-                {
-                    date: getDateForWeekday(selectedDate, 1),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 2),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 3),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 4),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 5),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 6),
-                    workHours: 1
-                },
-                {
-                    date: getDateForWeekday(selectedDate, 7),
-                    workHours: 1
-                },
-            ],
+            times: daysOfWeek
         }))
         setTimeData(newData)
     }, [projects])
-
-    const days = [
-        {
-            date: getDateForWeekday(selectedDate, 1),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 2),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 3),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 4),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 5),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 6),
-            workHours: 1
-        },
-        {
-            date: getDateForWeekday(selectedDate, 7),
-            workHours: 1
-        },
-    ]
 
     const getTitleForWeekday = (date: Date) => {
         switch (date.getDay()) {
@@ -156,7 +127,7 @@ const Time = (): JSX.Element => {
                     </tr>
                     <tr>
                         <ColumnHeader>&nbsp;</ColumnHeader>
-                        { days.map((day) => day.date.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader className="text-green-600">{getTitleForWeekday(day.date)}</ColumnHeader>) : (<ColumnHeader>{getTitleForWeekday(day.date)}</ColumnHeader>) )
+                        { daysOfWeek.map((day) => day.date.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader className="text-green-600">{getTitleForWeekday(day.date)}</ColumnHeader>) : (<ColumnHeader>{getTitleForWeekday(day.date)}</ColumnHeader>) )
                         }
                         
                     </tr>
