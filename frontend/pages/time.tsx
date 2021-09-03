@@ -8,13 +8,11 @@ export interface IProjectTimeEntry {
     times: Array<{ date: Date; workHours: number }>
 }
 
-
-
 const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
-new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
+    new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
 
 const Time = (): JSX.Element => {
-    const ColumnHeader = (props: { children: ReactChildren | ReactChild, className?: string }) => {
+    const ColumnHeader = (props: { children: ReactChildren | ReactChild; className?: string }) => {
         return <th className={`text-center ${props.className}`}>{props.children}</th>
     }
 
@@ -24,31 +22,37 @@ const Time = (): JSX.Element => {
 
     const { projects } = useProjects()
 
-
     const getNewDayEntry = (weekday: number) => ({
         date: getDateForWeekday(selectedDate, weekday),
-        workHours: 0
+        workHours: 0,
     })
-   
-    const datesOfTheWeek = [1,2,3,4,5,6,7].map(weekday => getDateForWeekday(selectedDate, weekday))
+
+    const datesOfTheWeek = [1, 2, 3, 4, 5, 6, 7].map((weekday) => getDateForWeekday(selectedDate, weekday))
 
     useEffect(() => {
         const newData = projects.map((p) => ({
             project: p,
-            times: [1,2,3,4,5,6,7].map(weekday => getNewDayEntry(weekday))
+            times: [1, 2, 3, 4, 5, 6, 7].map((weekday) => getNewDayEntry(weekday)),
         }))
         setTimeData(newData)
     }, [projects, selectedDate])
 
     const getTitleForWeekday = (date: Date) => {
         switch (date.getDay()) {
-            case 1: return 'M'
-            case 2: return 'T'
-            case 3: return 'W'
-            case 4: return 'Th'
-            case 5: return 'F'
-            case 6: return 'S'
-            case 0: return 'Su'
+            case 1:
+                return 'M'
+            case 2:
+                return 'T'
+            case 3:
+                return 'W'
+            case 4:
+                return 'Th'
+            case 5:
+                return 'F'
+            case 6:
+                return 'S'
+            case 0:
+                return 'Su'
         }
         return '?'
     }
@@ -104,9 +108,15 @@ const Time = (): JSX.Element => {
                     </tr>
                     <tr>
                         <ColumnHeader>&nbsp;</ColumnHeader>
-                        { datesOfTheWeek.map((day, index) => day.toLocaleDateString() === (new Date()).toLocaleDateString() ? (<ColumnHeader key={index} className="text-green-600">{getTitleForWeekday(day)}</ColumnHeader>) : (<ColumnHeader key={index} >{getTitleForWeekday(day)}</ColumnHeader>) )
-                        }
-                        
+                        {datesOfTheWeek.map((day, index) =>
+                            day.toLocaleDateString() === new Date().toLocaleDateString() ? (
+                                <ColumnHeader key={index} className="text-green-600">
+                                    {getTitleForWeekday(day)}
+                                </ColumnHeader>
+                            ) : (
+                                <ColumnHeader key={index}>{getTitleForWeekday(day)}</ColumnHeader>
+                            ),
+                        )}
                     </tr>
                 </thead>
 
