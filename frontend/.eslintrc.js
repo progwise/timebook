@@ -33,5 +33,6 @@ module.exports = {
         'no-console': 'warn',
         'testing-library/prefer-user-event': 'error',
         'react/self-closing-comp': 'error',
+        'unicorn/prefer-node-protocol': 'off',
     },
 }
