@@ -1,7 +1,7 @@
 import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
-import { getFormattedWorkHours, HourInput } from '../components/hourInput'
-import { CalendarSelector } from '../components/calendarSelector'
-import { IProject, useProjects } from '../hooks/useProjects'
+import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInput'
+import { CalendarSelector } from '../frontend/components/calendarSelector'
+import { IProject, useProjects } from '../frontend/hooks/useProjects'
 
 export interface IProjectTimeEntry {
     project: IProject

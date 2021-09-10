@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { ItemTable, SortDirection } from '../components/itemTable/itemTable'
+import { ItemTable, SortDirection } from '../frontend/components/itemTable/itemTable'
 import { useRouter } from 'next/router'
-import { IProject, useProjects } from '../hooks/useProjects'
+import { IProject, useProjects } from '../frontend/hooks/useProjects'
 
 const Projects = (): JSX.Element => {
     const { projects, error } = useProjects()
