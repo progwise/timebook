@@ -1,9 +1,10 @@
 import path from 'path'
 import { makeSchema } from 'nexus'
 import { projectsQueryField } from './project'
+import { createWorkHourMutationField } from './workHour'
 
 export const schema = makeSchema({
-    types: [projectsQueryField],
+    types: [createWorkHourMutationField, projectsQueryField],
     outputs: {
         typegen: path.join(process.env.ROOT ?? '', '/backend/generated', 'nexus-typegen.ts'),
         schema: path.join(process.env.ROOT ?? '', '/backend/generated', 'schema.graphql'),
@@ -23,6 +24,7 @@ export const schema = makeSchema({
         ],
         mapping: {
             Project: 'prisma.Project',
+            WorkHour: 'prisma.WorkHour',
         },
     },
 })
