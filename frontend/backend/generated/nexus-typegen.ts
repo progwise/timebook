@@ -3,6 +3,7 @@
  * Do not make changes to this file directly
  */
 
+import type * as prisma from '@prisma/client'
 import type { Context } from './../context'
 
 declare global {
@@ -22,13 +23,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-    Project: {
-        // root type
-        endDate?: string | null // String
-        id: string // ID!
-        startDate?: string | null // String
-        title: string // String!
-    }
+    Project: prisma.Project
     Query: {}
 }
 
