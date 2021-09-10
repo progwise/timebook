@@ -10,12 +10,19 @@
         "test:watch": "jest --config jest.config.js --watchAll",
         "lint": "eslint \"*/**/*.{ts,tsx,js,jsx}\"",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "migrate:dev": "prisma migrate dev",
+        "seed": "prisma db seed --preview-feature",
+        "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\""
     },
     "dependencies": {
+        "@prisma/client": "^2.30.3",
+        "apollo-server-core": "^3.3.0",
+        "apollo-server-micro": "^3.3.0",
         "graphql": "^15.5.1",
         "next": "^11.0.1",
         "next-images": "^1.8.1",
+        "nexus": "^1.1.0",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "react-modern-calendar-datepicker": "^3.1.6",
@@ -46,6 +53,7 @@
         "jest-transform-stub": "^2.0.0",
         "postcss": "^8.3.6",
         "prettier": "^2.3.2",
+        "prisma": "^2.30.3",
         "tailwindcss": "^2.2.7",
         "ts-jest": "^27.0.4",
         "ts-node": "^10.1.0",
