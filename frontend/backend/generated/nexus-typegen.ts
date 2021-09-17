@@ -3,6 +3,7 @@
  * Do not make changes to this file directly
  */
 
+import type * as prisma from '@prisma/client'
 import type { Context } from './../context'
 
 declare global {
@@ -22,14 +23,10 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-    Project: {
-        // root type
-        endDate?: string | null // String
-        id: string // ID!
-        startDate?: string | null // String
-        title: string // String!
-    }
+    Mutation: {}
+    Project: prisma.Project
     Query: {}
+    WorkHour: prisma.WorkHour
 }
 
 export interface NexusGenInterfaces {}
@@ -41,34 +38,71 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+    Mutation: {
+        // field return type
+        createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
+    }
     Project: {
         // field return type
         endDate: string | null // String
         id: string // ID!
         startDate: string | null // String
         title: string // String!
+        workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
     }
     Query: {
         // field return type
         projects: NexusGenRootTypes['Project'][] // [Project!]!
     }
+    WorkHour: {
+        // field return type
+        comment: string | null // String
+        date: string // String!
+        hours: number // Float!
+        id: string // ID!
+        project: NexusGenRootTypes['Project'] // Project!
+    }
 }
 
 export interface NexusGenFieldTypeNames {
+    Mutation: {
+        // field return type name
+        createWorkHour: 'WorkHour'
+    }
     Project: {
         // field return type name
         endDate: 'String'
         id: 'ID'
         startDate: 'String'
         title: 'String'
+        workHours: 'WorkHour'
     }
     Query: {
         // field return type name
         projects: 'Project'
     }
+    WorkHour: {
+        // field return type name
+        comment: 'String'
+        date: 'String'
+        hours: 'Float'
+        id: 'ID'
+        project: 'Project'
+    }
 }
 
-export interface NexusGenArgTypes {}
+export interface NexusGenArgTypes {
+    Mutation: {
+        createWorkHour: {
+            // args
+            comment?: string | null // String
+            date: string // String!
+            hours: number // Float!
+            projectId: string // ID!
+            userId: string // ID!
+        }
+    }
+}
 
 export interface NexusGenAbstractTypeMembers {}
 
