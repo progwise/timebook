@@ -1,5 +1,5 @@
-import '../styles/globals.css'
-import { TopNavigation } from '../components/topNavigation/topNavigation'
+import '../frontend/styles/globals.css'
+import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import { createClient, Provider } from 'urql'
 
 const client = createClient({ url: '/api/graphql' })

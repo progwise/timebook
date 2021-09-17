@@ -6,12 +6,12 @@ import { createWorkHourMutationField } from './workHour'
 export const schema = makeSchema({
     types: [createWorkHourMutationField, projectsQueryField],
     outputs: {
-        typegen: path.join(process.env.ROOT ?? '', '/backend/generated', 'nexus-typegen.ts'),
-        schema: path.join(process.env.ROOT ?? '', '/backend/generated', 'schema.graphql'),
+        typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
+        schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
     },
     prettierConfig: path.join(process.env.ROOT ?? '', './.prettierrc.js'),
     contextType: {
-        module: path.join(process.env.ROOT ?? '', '/backend', 'context.ts'),
+        module: path.join(process.env.ROOT ?? '', '/backend/graphql', 'context.ts'),
         export: 'Context',
     },
     nonNullDefaults: { input: true, output: true },

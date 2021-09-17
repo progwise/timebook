@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { IProject, useProjects } from '../../hooks/useProjects'
+import { IProject, useProjects } from '../../frontend/hooks/useProjects'
 const now = new Date()
 const newProject: IProject = {
     id: 'new project',
