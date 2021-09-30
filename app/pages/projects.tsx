@@ -17,10 +17,7 @@ const Projects = (): JSX.Element => {
         },
         {
             title: 'Duration',
-            value: (item: IProject) =>
-                `${item.startDate != undefined ? item.startDate?.toLocaleDateString : ''}-${
-                    item.endDate != undefined ? item.endDate?.toLocaleDateString : ''
-                }`,
+            value: (item: IProject) => `${item.startDate ? item.startDate : ''}-${item.endDate ? item.endDate : ''}`,
             orderedBy: SortDirection.DESC,
         },
         {
