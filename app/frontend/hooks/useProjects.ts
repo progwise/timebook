@@ -7,6 +7,17 @@ export interface IProject {
     endDate: Date
 }
 
+const projectsQuery = `
+  query {
+   projects {
+     id
+     title
+     startDate
+     endDate
+   }
+}
+`
+
 const projectQuery = `
   query {
    projects {
@@ -25,7 +36,7 @@ export interface IUseProjectsResult {
 }
 
 export const useProjects = (): IUseProjectsResult => {
-    const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectQuery })
+    const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectsQuery })
     const { data, fetching, error } = queryResult
     const projects = data && data.projects ? data.projects : []
     return { projects, fetching, error }
