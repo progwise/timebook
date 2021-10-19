@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../../frontend/hooks/useProjects'
 import { useForm } from 'react-hook-form';
+import { CalendarSelector } from '../../frontend/components/calendarSelector';
+
 
 
 const now = new Date()
@@ -15,7 +17,7 @@ const newProject: IProject = {
 const ProjectDetails = (): JSX.Element => {
     const { projects } = useProjects()
     const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
-
+    
     const {register, handleSubmit, formState: {errors}} = useForm()
     const onSubmit = async (data: any) => {
       console.log(data);
@@ -53,11 +55,15 @@ const ProjectDetails = (): JSX.Element => {
                 </label>
                 <label>
                     <span>Start</span>
-                    <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
+                    <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} {...register('StartDate', { required: true })}/>
+                    {errors.StartDate && <span>Invalid Date</span>}
+                    <CalendarSelector hideLabel={true}/>
                 </label>
                 <label>
                     <span>End</span>
-                    <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
+                    <input type="date" defaultValue={currentProject.endDate?.toLocaleDateString()} {...register('EndDate', { required: true})}/>
+                    {errors.EndDate && <span>Invalid Date</span>}
+                    <CalendarSelector hideLabel={true}/>
                 </label>
                 <div className="flex justify-center">
                     <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
