@@ -61,7 +61,6 @@ export interface ICalendarSelectorProps {
 export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [calendarExpanded, setCalendarExpanded] = useState(false)
-    
 
     const componentNode = useRef<HTMLElement>(null)
 
@@ -95,7 +94,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
         if (props.onSelectedDateChange) {
             props.onSelectedDateChange(targetDate)
         }
-      }
+    }
 
     const goToToday = () => {
         selectNewDate(new Date())
@@ -141,13 +140,13 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     return (
         <section ref={componentNode}>
             <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
-              <>
-                {!props.hideLabel && (
-                  <span className="ml-2" title="Display value">
-                    {selectedDate.toLocaleDateString()}
-                  </span>
-                )}
-              </>
+                <>
+                    {!props.hideLabel && (
+                        <span className="ml-2" title="Display value">
+                            {selectedDate.toLocaleDateString()}
+                        </span>
+                    )}
+                </>
             </CalendarIcon>
             {calendarExpanded && (
                 <section className="text-sm absolute mt-5 border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
