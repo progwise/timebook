@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { IProject } from '../../hooks/useProjects'
 import { CalendarSelector } from '../calendarSelector'
@@ -35,10 +34,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {isNewProject ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
-            <label className="text-gray-500">
-                <span>Id</span>
-                {/* <input type="text" defaultValue={currentProject.id} /> */}
-            </label>
             <label className="text-gray-500">
                 <span>Name</span>
                 <input type="text" {...register('name', { required: true })} />

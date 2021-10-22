@@ -8,7 +8,7 @@ const ProjectDetails = (): JSX.Element => {
     const { id } = router.query
     const selectedProject = projects.find((p) => p.id === id)
 
-    const onSubmit = async (data: ProjectFormState) => {
+    const handleSubmit = async (data: ProjectFormState) => {
         // eslint-disable-next-line no-console
         console.log(data)
         await router.push('/projects')
@@ -28,7 +28,7 @@ const ProjectDetails = (): JSX.Element => {
 
     return (
         <article>
-            <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={onSubmit} />
+            <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
         </article>
     )
 }
