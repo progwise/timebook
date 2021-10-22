@@ -18,17 +18,6 @@ const projectsQuery = `
 }
 `
 
-// const projectQuery = `
-//   query {
-//    projects {
-//      id
-//      title
-//      startDate
-//      endDate
-//    }
-// }
-// `
-
 export interface IUseProjectsResult {
     projects: Array<IProject>
     fetching: boolean
