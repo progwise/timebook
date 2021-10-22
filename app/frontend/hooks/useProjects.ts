@@ -3,8 +3,8 @@ import { CombinedError, useQuery } from 'urql'
 export interface IProject {
     id: string
     title: string
-    startDate: Date
-    endDate: Date
+    startDate?: string
+    endDate?: string
 }
 
 const projectsQuery = `
