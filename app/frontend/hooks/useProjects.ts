@@ -3,11 +3,11 @@ import { CombinedError, useQuery } from 'urql'
 export interface IProject {
     id: string
     title: string
-    startDate: Date
-    endDate: Date
+    startDate?: string
+    endDate?: string
 }
 
-const projectQuery = `
+const projectsQuery = `
   query {
    projects {
      id
@@ -25,7 +25,7 @@ export interface IUseProjectsResult {
 }
 
 export const useProjects = (): IUseProjectsResult => {
-    const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectQuery })
+    const [queryResult] = useQuery<{ projects: IProject[] }>({ query: projectsQuery })
     const { data, fetching, error } = queryResult
     const projects = data && data.projects ? data.projects : []
     return { projects, fetching, error }

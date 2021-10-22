@@ -9,7 +9,7 @@ export const Project = objectType({
         // eslint-disable-next-line unicorn/no-null
         t.nullable.string('startDate', { resolve: (project) => project.startDate?.toISOString() ?? null })
         // eslint-disable-next-line unicorn/no-null
-        t.nullable.string('endDate', { resolve: (project) => project.startDate?.toISOString() ?? null })
+        t.nullable.string('endDate', { resolve: (project) => project.endDate?.toISOString() ?? null })
         t.list.field('workHours', {
             type: WorkHour,
             resolve: (project, _arguments, context) =>
