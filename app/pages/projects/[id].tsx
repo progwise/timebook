@@ -1,61 +1,34 @@
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { IProject, useProjects } from '../../frontend/hooks/useProjects'
-const now = new Date()
-const newProject: IProject = {
-    id: 'new project',
-    title: '',
-    startDate: new Date(now.getFullYear(), now.getMonth(), 1),
-    endDate: new Date(now.getFullYear(), 12, 31),
-}
+import { useProjects } from '../../frontend/hooks/useProjects'
+import { ProjectForm, ProjectFormState } from '../../frontend/components/projectForm/projectForm'
 
 const ProjectDetails = (): JSX.Element => {
-    const { projects } = useProjects()
-    const [currentProject, setCurrentProject] = useState<IProject>(() => newProject)
-
+    const { projects, fetching } = useProjects()
     const router = useRouter()
     const { id } = router.query
-    const handleSubmit = async () => {
+    const selectedProject = projects.find((p) => p.id === id)
+
+    const handleSubmit = async (data: ProjectFormState) => {
+        // eslint-disable-next-line no-console
+        console.log(data)
         await router.push('/projects')
     }
+
     const handleCancel = async () => {
         await router.push('/projects')
     }
 
-    useEffect(() => {
-        const selectedProject = projects.find((p) => p.id === id)
-        if (selectedProject) {
-            setCurrentProject(selectedProject)
-        }
-    })
+    if (fetching) {
+        return <div>Loading...</div>
+    }
 
-    const isNewProject = () => currentProject.id === newProject.id
+    if (!selectedProject) {
+        return <div>Project not found</div>
+    }
 
     return (
         <article>
-            <form key={currentProject.id}>
-                {isNewProject() ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
-                <label className="text-gray-500">
-                    <span>Id</span>
-                    <input type="text" defaultValue={currentProject.id} />
-                </label>
-                <label className="text-gray-500">
-                    <span>Name</span>
-                    <input type="text" defaultValue={currentProject.title} />
-                </label>
-                <label>
-                    <span>Start</span>
-                    <input type="text" defaultValue={currentProject.startDate?.toLocaleDateString()} />
-                </label>
-                <label>
-                    <span>End</span>
-                    <input type="text" defaultValue={currentProject.endDate?.toLocaleDateString()} />
-                </label>
-                <div className="flex justify-center">
-                    <input type="reset" className="btn btn-gray1" onClick={handleCancel} title="Reset" />
-                    <input type="submit" className="btn btn-gray1" onClick={handleSubmit} title="Save" />
-                </div>
-            </form>
+            <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
         </article>
     )
 }
