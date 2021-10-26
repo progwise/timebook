@@ -1,7 +1,11 @@
-import { format } from 'date-fns'
+import { format, parse } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import { IProject } from '../../hooks/useProjects'
 import { CalendarSelector } from '../calendarSelector'
+
+const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
+const isValidDateString = (dateString: string): boolean =>
+    acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
 export interface ProjectFormState {
     name: string
@@ -37,19 +41,17 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             <label className="text-gray-500">
                 <span>Name</span>
                 <input type="text" {...register('name', { required: true })} />
-                {errors.name && <span>Name Required</span>}
+                {errors.name && <span>Required</span>}
             </label>
             <label>
                 <span>Start</span>
                 <input
                     type="text"
                     {...register('start', {
-                        required: true,
-                        valueAsDate: true,
-                        validate: (value) => !!new Date(value).getDate(),
+                        validate: (value) => value === '' || isValidDateString(value),
                     })}
                 />
-                {errors.start && <span>Start Date Required</span>}
+                {errors.start && <span className="whitespace-nowrap">Required</span>}
                 <CalendarSelector
                     hideLabel={true}
                     onSelectedDateChange={(newDate) => setValue('start', newDate.toLocaleDateString())}
@@ -60,15 +62,14 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 <input
                     type="text"
                     {...register('end', {
-                        required: true,
-                        valueAsDate: true,
-                        validate: (value) => !!new Date(value).getDate(),
+                        validate: (value) => value === '' || isValidDateString(value),
                     })}
                 />
-                {errors.end && <span>End Date Required</span>}
+                {errors.end && <span className="whitespace-nowrap">Required</span>}
+
                 <CalendarSelector
                     hideLabel={true}
-                    onSelectedDateChange={(newDate) => setValue('end', newDate.toLocaleTimeString())}
+                    onSelectedDateChange={(newDate) => setValue('end', newDate.toLocaleDateString())}
                 />
             </label>
             <div className="flex justify-center">
