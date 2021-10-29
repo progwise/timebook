@@ -1,12 +1,20 @@
+import { signIn, signOut, useSession } from 'next-auth/react'
 import { TopNavigationLink } from './topNavigationLink'
 
 export const TopNavigation = (): JSX.Element => {
+    const session = useSession()
+
     return (
         <nav className="md:container md:mx-auto flex justify-center">
-            <TopNavigationLink href="/home" title="Home" />
-            <TopNavigationLink href="/time" title="Time" />
-            <TopNavigationLink href="/projects" title="Projects" />
-            <TopNavigationLink href="/reports" title="Reports" />
+            <TopNavigationLink href="/home">Home</TopNavigationLink>
+            <TopNavigationLink href="/time">Time</TopNavigationLink>
+            <TopNavigationLink href="/projects">Projects</TopNavigationLink>
+            <TopNavigationLink href="/reports">Reports</TopNavigationLink>
+            {session.status === 'authenticated' ? (
+                <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
+            ) : (
+                <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
+            )}
         </nav>
     )
 }
