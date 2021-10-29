@@ -51,7 +51,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                         validate: (value) => value === '' || isValidDateString(value),
                     })}
                 />
-                {errors.start && <span className="whitespace-nowrap">Required</span>}
+                {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
                 <CalendarSelector
                     hideLabel={true}
                     onSelectedDateChange={(newDate) => setValue('start', newDate.toLocaleDateString())}
@@ -65,7 +65,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                         validate: (value) => value === '' || isValidDateString(value),
                     })}
                 />
-                {errors.end && <span className="whitespace-nowrap">Required</span>}
+                {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
 
                 <CalendarSelector
                     hideLabel={true}
