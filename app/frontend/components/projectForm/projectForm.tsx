@@ -1,7 +1,8 @@
 import { format, parse } from 'date-fns'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { IProject } from '../../hooks/useProjects'
 import { CalendarSelector } from '../calendarSelector'
+import InputMask from 'react-input-mask'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -26,11 +27,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         handleSubmit,
         formState: { errors },
         setValue,
+        control,
     } = useForm<ProjectFormState>({
         defaultValues: {
             name: project?.title,
-            start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
-            end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : '',
+            start: project?.startDate ? format(new Date(project.startDate), 'MM-dd-yyyy') : '',
+            end: project?.endDate ? format(new Date(project.endDate), 'MM-dd-yyyy') : '',
         },
     })
 
@@ -45,32 +47,37 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </label>
             <label>
                 <span>Start</span>
-                <input
-                    type="text"
-                    {...register('start', {
-                        validate: (value) => value === '' || isValidDateString(value),
-                    })}
+                <Controller
+                    control={control}
+                    rules={{ validate: (value) => value === '' || isValidDateString(value) }}
+                    name="start"
+                    render={({ field: { onChange, onBlur, ref, value } }) => (
+                        <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} inputRef={ref} value={value} />
+                    )}
                 />
-                {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
-                <CalendarSelector
-                    hideLabel={true}
-                    onSelectedDateChange={(newDate) => setValue('start', newDate.toLocaleDateString())}
-                />
-            </label>
-            <label>
-                <span>End</span>
-                <input
-                    type="text"
-                    {...register('end', {
-                        validate: (value) => value === '' || isValidDateString(value),
-                    })}
-                />
-                {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
 
                 <CalendarSelector
                     hideLabel={true}
-                    onSelectedDateChange={(newDate) => setValue('end', newDate.toLocaleDateString())}
+                    onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
                 />
+                {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+            </label>
+            <label>
+                <span>End</span>
+                <Controller
+                    control={control}
+                    rules={{ validate: (value) => value === '' || isValidDateString(value) }}
+                    name="end"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} value={value} />
+                    )}
+                />
+
+                <CalendarSelector
+                    hideLabel={true}
+                    onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+                />
+                {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
             </label>
             <div className="flex justify-center">
                 <input type="reset" className="btn btn-gray1" onClick={onCancel} title="Reset" />
