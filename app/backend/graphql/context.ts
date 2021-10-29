@@ -8,7 +8,7 @@ export interface Context {
     session: Session | null
 }
 
-const prisma = new PrismaClient({ log: ['query'] })
+const prisma = new PrismaClient()
 
 export const context = async ({ req: request }: { req: NextApiRequest }): Promise<Context> => {
     const session = await getSession({ req: request })
