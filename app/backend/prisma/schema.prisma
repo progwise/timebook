@@ -117,7 +117,7 @@ model User {
   sessions Session[]
 
   // Relations outside of next-auth:
-  workhour    WorkHour[]
+  workhours   WorkHour[]
   memberships Membership[]
 }
 
