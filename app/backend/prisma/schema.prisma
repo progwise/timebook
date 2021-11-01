@@ -21,7 +21,7 @@ model Project {
   endDate   DateTime?
 
   memberships Membership[]
-  WorkHour    WorkHour[]
+  tasks       Task[]
 }
 
 enum Role {
@@ -42,16 +42,30 @@ model Membership {
   @@id([userId, projectId])
 }
 
-model WorkHour {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  hours     Float
-  comment   String?
+model Task {
+  id        String    @id @default(cuid())
+  title     String    @db.VarChar(255)
   projectId Int
-  userId    String
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
 
-  project Project @relation(fields: [projectId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project   Project    @relation(fields: [projectId], references: [id])
+  workHours WorkHour[]
+}
+
+model WorkHour {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  hours   Float
+  comment String?
+  taskId  String
+  userId  String
+
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Account {
