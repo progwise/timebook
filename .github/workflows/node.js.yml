@@ -54,3 +54,19 @@ jobs:
         node-version: '14.x'
     - run: npm ci
     - run: npm run format:check
+
+  graphql-code-generator:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - run: npm ci
+    - run: npm run graphql:generate
+    # error when generated graphql file has changed
+    - run: if git diff-index --name-only HEAD frontend/generated/graphql.ts; then exit 1; fi
