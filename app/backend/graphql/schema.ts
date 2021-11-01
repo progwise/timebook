@@ -2,9 +2,10 @@ import path from 'path'
 import { fieldAuthorizePlugin, makeSchema } from 'nexus'
 import { projectsQueryField } from './project'
 import { createWorkHourMutationField } from './workHour'
+import { DateScalar } from './scalars/date'
 
 export const schema = makeSchema({
-    types: [createWorkHourMutationField, projectsQueryField],
+    types: [createWorkHourMutationField, projectsQueryField, DateScalar],
     outputs: {
         typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
         schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
