@@ -1,5 +1,6 @@
-import { floatArg, idArg, mutationField, nullable, stringArg } from 'nexus'
+import { arg, floatArg, idArg, mutationField, nullable, stringArg } from 'nexus'
 import { WorkHour } from '..'
+import { DateScalar } from '../../scalars/date'
 
 export const createWorkHourMutationField = mutationField('createWorkHour', {
     type: WorkHour,
@@ -7,8 +8,7 @@ export const createWorkHourMutationField = mutationField('createWorkHour', {
     args: {
         hours: floatArg(),
         projectId: idArg(),
-        userId: idArg(),
-        date: stringArg(),
+        date: arg({ type: DateScalar }),
         comment: nullable(stringArg()),
     },
     authorize: (_source, _arguments, context) => !!context.session?.user.id,

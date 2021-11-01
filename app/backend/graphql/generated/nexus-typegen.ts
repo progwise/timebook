@@ -6,6 +6,26 @@
 import type * as prisma from '@prisma/client'
 import type { Context } from './../context'
 import type { FieldAuthorizeResolver } from 'nexus/dist/plugins/fieldAuthorizePlugin'
+import type { core } from 'nexus'
+declare global {
+    interface NexusGenCustomInputMethods<TypeName extends string> {
+        /**
+         * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+         */
+        date<FieldName extends string>(
+            fieldName: FieldName,
+            opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
+        ): void // "Date";
+    }
+}
+declare global {
+    interface NexusGenCustomOutputMethods<TypeName extends string> {
+        /**
+         * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+         */
+        date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Date";
+    }
+}
 
 declare global {
     interface NexusGen extends NexusGenTypes {}
@@ -21,6 +41,7 @@ export interface NexusGenScalars {
     Float: number
     Boolean: boolean
     ID: string
+    Date: any
 }
 
 export interface NexusGenObjects {
@@ -45,9 +66,9 @@ export interface NexusGenFieldTypes {
     }
     Project: {
         // field return type
-        endDate: string | null // String
+        endDate: NexusGenScalars['Date'] | null // Date
         id: string // ID!
-        startDate: string | null // String
+        startDate: NexusGenScalars['Date'] | null // Date
         title: string // String!
         workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
     }
@@ -58,7 +79,7 @@ export interface NexusGenFieldTypes {
     WorkHour: {
         // field return type
         comment: string | null // String
-        date: string // String!
+        date: NexusGenScalars['Date'] // Date!
         hours: number // Float!
         id: string // ID!
         project: NexusGenRootTypes['Project'] // Project!
@@ -72,9 +93,9 @@ export interface NexusGenFieldTypeNames {
     }
     Project: {
         // field return type name
-        endDate: 'String'
+        endDate: 'Date'
         id: 'ID'
-        startDate: 'String'
+        startDate: 'Date'
         title: 'String'
         workHours: 'WorkHour'
     }
@@ -85,7 +106,7 @@ export interface NexusGenFieldTypeNames {
     WorkHour: {
         // field return type name
         comment: 'String'
-        date: 'String'
+        date: 'Date'
         hours: 'Float'
         id: 'ID'
         project: 'Project'
@@ -97,10 +118,9 @@ export interface NexusGenArgTypes {
         createWorkHour: {
             // args
             comment?: string | null // String
-            date: string // String!
+            date: NexusGenScalars['Date'] // Date!
             hours: number // Float!
             projectId: string // ID!
-            userId: string // ID!
         }
     }
 }

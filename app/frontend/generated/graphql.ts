@@ -14,6 +14,8 @@ export type Scalars = {
     Boolean: boolean
     Int: number
     Float: number
+    /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+    Date: any
 }
 
 export type Mutation = {
@@ -24,18 +26,17 @@ export type Mutation = {
 
 export type MutationCreateWorkHourArgs = {
     comment?: Maybe<Scalars['String']>
-    date: Scalars['String']
+    date: Scalars['Date']
     hours: Scalars['Float']
     projectId: Scalars['ID']
-    userId: Scalars['ID']
 }
 
 export type Project = {
     __typename?: 'Project'
-    endDate?: Maybe<Scalars['String']>
+    endDate?: Maybe<Scalars['Date']>
     /** identifies the project */
     id: Scalars['ID']
-    startDate?: Maybe<Scalars['String']>
+    startDate?: Maybe<Scalars['Date']>
     title: Scalars['String']
     workHours: Array<WorkHour>
 }
@@ -49,7 +50,7 @@ export type Query = {
 export type WorkHour = {
     __typename?: 'WorkHour'
     comment?: Maybe<Scalars['String']>
-    date: Scalars['String']
+    date: Scalars['Date']
     hours: Scalars['Float']
     /** Identifies the work hour */
     id: Scalars['ID']
@@ -64,8 +65,8 @@ export type ProjectsQuery = {
         __typename?: 'Project'
         id: string
         title: string
-        startDate?: string | null | undefined
-        endDate?: string | null | undefined
+        startDate?: any | null | undefined
+        endDate?: any | null | undefined
     }>
 }
 
@@ -73,8 +74,8 @@ export type ProjectFragment = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: any | null | undefined
+    endDate?: any | null | undefined
 }
 
 export const ProjectFragmentDoc = gql`
