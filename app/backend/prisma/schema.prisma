@@ -17,12 +17,29 @@ model Project {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   title     String    @db.VarChar(255)
-  authorId  String
   startDate DateTime?
   endDate   DateTime?
 
-  author   User       @relation(fields: [authorId], references: [id])
-  WorkHour WorkHour[]
+  memberships Membership[]
+  WorkHour    WorkHour[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model Membership {
+  invitedAt        DateTime? @default(now())
+  inviteAcceptedAt DateTime?
+  userId           String
+  projectId        Int
+  role             Role      @default(MEMBER)
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@id([userId, projectId])
 }
 
 model WorkHour {
@@ -78,8 +95,8 @@ model User {
   sessions Session[]
 
   // Relations outside of next-auth:
-  workhour WorkHour[]
-  projects Project[]
+  workhour    WorkHour[]
+  memberships Membership[]
 }
 
 model VerificationToken {
