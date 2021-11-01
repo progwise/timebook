@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
                 <main className="md:m-auto md:w-2/3">
                     <Component {...pageProps} />
                 </main>
-                <footer>Impress</footer>
+                <footer className="text-right mr-28 mt-80">Impress</footer>
             </Provider>
         </SessionProvider>
     )
