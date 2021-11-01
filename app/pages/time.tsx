@@ -1,11 +1,11 @@
 import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
 import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInput'
 import { CalendarSelector } from '../frontend/components/calendarSelector'
-import { IProject, useProjects } from '../frontend/hooks/useProjects'
 import { ProtectedPage } from '../frontend/components/protectedPage'
+import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
 
 export interface IProjectTimeEntry {
-    project: IProject
+    project: ProjectFragment
     times: Array<{ date: Date; workHours: number }>
 }
 
@@ -21,7 +21,7 @@ const Time = (): JSX.Element => {
 
     const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
-    const { projects } = useProjects()
+    const [{ data }] = useProjectsQuery()
 
     const getNewDayEntry = (weekday: number) => ({
         date: getDateForWeekday(selectedDate, weekday),
@@ -31,12 +31,13 @@ const Time = (): JSX.Element => {
     const datesOfTheWeek = [1, 2, 3, 4, 5, 6, 7].map((weekday) => getDateForWeekday(selectedDate, weekday))
 
     useEffect(() => {
-        const newData = projects.map((p) => ({
-            project: p,
-            times: [1, 2, 3, 4, 5, 6, 7].map((weekday) => getNewDayEntry(weekday)),
-        }))
+        const newData =
+            data?.projects.map((p) => ({
+                project: p,
+                times: [1, 2, 3, 4, 5, 6, 7].map((weekday) => getNewDayEntry(weekday)),
+            })) ?? []
         setTimeData(newData)
-    }, [projects, selectedDate])
+    }, [data?.projects, selectedDate])
 
     const getTitleForWeekday = (date: Date) => {
         switch (date.getDay()) {
@@ -74,7 +75,7 @@ const Time = (): JSX.Element => {
         return result
     }
 
-    const setWorkHours = (project: IProject, date: Date, workHours: number) => {
+    const setWorkHours = (project: ProjectFragment, date: Date, workHours: number) => {
         const projectEntry = timeData.find((entry) => entry.project.id === project.id)
         if (!projectEntry) {
             throw new Error(`project entry not found for ${project.id}`)

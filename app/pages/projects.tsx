@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { ItemTable, SortDirection } from '../frontend/components/itemTable/itemTable'
 import { useRouter } from 'next/router'
-import { IProject, useProjects } from '../frontend/hooks/useProjects'
 import { ProtectedPage } from '../frontend/components/protectedPage'
+import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
 
 const Projects = (): JSX.Element => {
-    const { projects, error } = useProjects()
+    const [{ data, error }] = useProjectsQuery()
     const router = useRouter()
 
     const itemsPerPage = 10
@@ -14,17 +14,18 @@ const Projects = (): JSX.Element => {
     const tableColumns = [
         {
             title: 'Name',
-            value: (item: IProject) => item.title,
+            value: (item: ProjectFragment) => item.title,
         },
         {
             title: 'Duration',
-            value: (item: IProject) => `${item.startDate ? item.startDate : ''}-${item.endDate ? item.endDate : ''}`,
+            value: (item: ProjectFragment) =>
+                `${item.startDate ? item.startDate : ''}-${item.endDate ? item.endDate : ''}`,
             orderedBy: SortDirection.DESC,
         },
         {
             title: '',
             // eslint-disable-next-line react/display-name
-            value: (item: IProject) => (
+            value: (item: ProjectFragment) => (
                 <span className="float-right">
                     <button className="btn btn-gray2 mr-3" onClick={() => handleDeleteProject(item)}>
                         Delete
@@ -37,13 +38,13 @@ const Projects = (): JSX.Element => {
         },
     ]
 
-    const handleProjectDetails = async (project: IProject) => {
+    const handleProjectDetails = async (project: ProjectFragment) => {
         await router.push(`/projects/${project.id}`)
     }
 
     // TODO: fix both errors
     // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
-    const handleDeleteProject = (project: IProject) => {}
+    const handleDeleteProject = (project: ProjectFragment) => {}
 
     const handleAddProject = async () => {
         await router.push('/projects/new')
@@ -62,12 +63,12 @@ const Projects = (): JSX.Element => {
                 </h2>
 
                 {error && <span>{error.message}</span>}
-                {!projects ? (
+                {!data?.projects ? (
                     <div>...loading</div>
                 ) : (
                     <ItemTable
                         columns={tableColumns}
-                        items={projects}
+                        items={data.projects}
                         itemClick={handleProjectDetails}
                         page={{
                             totalItemCount: 521,

@@ -20,9 +20,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
-        node-version: '14.x'
+        node-version: '16.x'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
@@ -35,9 +35,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
-        node-version: '14.x'
+        node-version: '16.x'
     - run: npm ci
     - run: npm run lint
 
@@ -51,6 +51,6 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '16.x'
     - run: npm ci
     - run: npm run format:check
