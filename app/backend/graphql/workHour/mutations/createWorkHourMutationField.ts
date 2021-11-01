@@ -1,13 +1,14 @@
-import { arg, floatArg, idArg, mutationField, nullable, stringArg } from 'nexus'
+import { arg, idArg, mutationField, nullable, stringArg } from 'nexus'
 import { WorkHour } from '..'
 import { DateScalar } from '../../scalars/date'
+import { TimeScalar } from '../../scalars/time'
 
 export const createWorkHourMutationField = mutationField('createWorkHour', {
     type: WorkHour,
     description: 'Create a new WorkHour',
     args: {
-        hours: floatArg(),
-        projectId: idArg(),
+        duration: arg({ type: TimeScalar }),
+        taskId: idArg(),
         date: arg({ type: DateScalar }),
         comment: nullable(stringArg()),
     },
@@ -19,9 +20,9 @@ export const createWorkHourMutationField = mutationField('createWorkHour', {
 
         return context.prisma.workHour.create({
             data: {
-                date: new Date(arguments_.date),
-                hours: arguments_.hours,
-                projectId: Number.parseInt(arguments_.projectId),
+                date: arguments_.date,
+                duration: arguments_.duration,
+                taskId: arguments_.taskId,
                 userId: context.session.user.id,
                 comment: arguments_.comment,
             },

@@ -11,7 +11,7 @@ export const Project = objectType({
         t.list.field('workHours', {
             type: WorkHour,
             resolve: (project, _arguments, context) =>
-                context.prisma.workHour.findMany({ where: { projectId: project.id } }),
+                context.prisma.workHour.findMany({ where: { task: { projectId: project.id } } }),
         })
     },
 })
