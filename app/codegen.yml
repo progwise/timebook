@@ -1,0 +1,17 @@
+overwrite: true
+schema: backend/graphql/generated/schema.graphql
+documents: frontend/**/*.graphql
+generates:
+    frontend/generated/graphql.ts:
+        plugins:
+            - add:
+                  content:
+                      - /* eslint-disable unicorn/prevent-abbreviations */
+                      - /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+            - typescript
+            - typescript-operations
+            - typescript-urql
+
+hooks:
+    afterAllFileWrite:
+        - prettier --write
