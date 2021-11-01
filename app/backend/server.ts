@@ -3,4 +3,8 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 import { schema } from './graphql/schema'
 import { context } from './graphql/context'
 
-export const server = new ApolloServer({ schema, context, plugins: [ApolloServerPluginLandingPageGraphQLPlayground] })
+export const server = new ApolloServer({
+    schema,
+    context,
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } })],
+})

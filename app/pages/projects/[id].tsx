@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useProjects } from '../../frontend/hooks/useProjects'
 import { ProjectForm, ProjectFormState } from '../../frontend/components/projectForm/projectForm'
+import { ProtectedPage } from '../../frontend/components/protectedPage'
 
 const ProjectDetails = (): JSX.Element => {
     const { projects, fetching } = useProjects()
@@ -27,9 +28,11 @@ const ProjectDetails = (): JSX.Element => {
     }
 
     return (
-        <article>
-            <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
-        </article>
+        <ProtectedPage>
+            <article>
+                <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
+            </article>
+        </ProtectedPage>
     )
 }
 

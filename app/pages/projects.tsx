@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ItemTable, SortDirection } from '../frontend/components/itemTable/itemTable'
 import { useRouter } from 'next/router'
 import { IProject, useProjects } from '../frontend/hooks/useProjects'
+import { ProtectedPage } from '../frontend/components/protectedPage'
 
 const Projects = (): JSX.Element => {
     const { projects, error } = useProjects()
@@ -49,35 +50,37 @@ const Projects = (): JSX.Element => {
     }
 
     return (
-        <article>
-            <h2 className="flex justify-between">
-                <span>Your projects</span>
-                <span>
-                    <button className="btn btn-gray1" onClick={handleAddProject}>
-                        Add
-                    </button>
-                </span>
-            </h2>
+        <ProtectedPage>
+            <article>
+                <h2 className="flex justify-between">
+                    <span>Your projects</span>
+                    <span>
+                        <button className="btn btn-gray1" onClick={handleAddProject}>
+                            Add
+                        </button>
+                    </span>
+                </h2>
 
-            {error && <span>{error.message}</span>}
-            {!projects ? (
-                <div>...loading</div>
-            ) : (
-                <ItemTable
-                    columns={tableColumns}
-                    items={projects}
-                    itemClick={handleProjectDetails}
-                    page={{
-                        totalItemCount: 521,
-                        firstItemIndex: firstItemIndex,
-                        itemsPerPage: itemsPerPage,
-                        onNext: () => {
-                            setFirstItemIndex(firstItemIndex + itemsPerPage)
-                        },
-                    }}
-                />
-            )}
-        </article>
+                {error && <span>{error.message}</span>}
+                {!projects ? (
+                    <div>...loading</div>
+                ) : (
+                    <ItemTable
+                        columns={tableColumns}
+                        items={projects}
+                        itemClick={handleProjectDetails}
+                        page={{
+                            totalItemCount: 521,
+                            firstItemIndex: firstItemIndex,
+                            itemsPerPage: itemsPerPage,
+                            onNext: () => {
+                                setFirstItemIndex(firstItemIndex + itemsPerPage)
+                            },
+                        }}
+                    />
+                )}
+            </article>
+        </ProtectedPage>
     )
 }
 

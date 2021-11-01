@@ -1,5 +1,5 @@
 import path from 'path'
-import { makeSchema } from 'nexus'
+import { fieldAuthorizePlugin, makeSchema } from 'nexus'
 import { projectsQueryField } from './project'
 import { createWorkHourMutationField } from './workHour'
 
@@ -27,4 +27,5 @@ export const schema = makeSchema({
             WorkHour: 'prisma.WorkHour',
         },
     },
+    plugins: [fieldAuthorizePlugin()],
 })
