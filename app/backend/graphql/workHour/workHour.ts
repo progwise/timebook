@@ -6,7 +6,7 @@ export const WorkHour = objectType({
     definition: (t) => {
         t.id('id', { description: 'Identifies the work hour' })
         t.nullable.string('comment')
-        t.string('date', { resolve: (workHour) => workHour.date.toISOString() })
+        t.date('date', { resolve: (workHour) => workHour.date })
         t.float('hours')
         t.field('project', {
             type: Project,
