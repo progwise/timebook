@@ -1,6 +1,6 @@
 import { format, parse } from 'date-fns'
 import { useForm, Controller } from 'react-hook-form'
-import { IProject } from '../../hooks/useProjects'
+import { ProjectFragment } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import InputMask from 'react-input-mask'
 
@@ -17,7 +17,7 @@ export interface ProjectFormState {
 interface ProjectFormProps {
     onSubmit: (data: ProjectFormState) => void
     onCancel: () => void
-    project?: IProject
+    project?: ProjectFragment
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {

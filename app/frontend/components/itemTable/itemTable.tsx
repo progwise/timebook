@@ -1,4 +1,4 @@
-import { IProject } from '../../hooks/useProjects'
+import { ProjectFragment } from '../../generated/graphql'
 
 export enum SortDirection {
     ASC,
@@ -8,13 +8,13 @@ export enum SortDirection {
 export interface IItemTableProps {
     columns: Array<{
         title: string
-        value: (item: IProject) => string | JSX.Element
+        value: (item: ProjectFragment) => string | JSX.Element
         orderedBy?: SortDirection
         onClick?: () => void
     }>
 
-    items: Array<IProject>
-    itemClick?: (item: IProject) => void
+    items: Array<ProjectFragment>
+    itemClick?: (item: ProjectFragment) => void
     page: {
         totalItemCount: number
         firstItemIndex: number
@@ -27,7 +27,7 @@ export interface IItemTableProps {
 }
 
 export const ItemTable = (props: IItemTableProps): JSX.Element => {
-    const handleItemClick = (item: IProject) => props?.itemClick?.(item)
+    const handleItemClick = (item: ProjectFragment) => props?.itemClick?.(item)
     return (
         <div>
             <table className="shadow-lg bg-white w-full">
