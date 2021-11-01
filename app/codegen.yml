@@ -11,6 +11,9 @@ generates:
             - typescript
             - typescript-operations
             - typescript-urql
+        config:
+            scalars:
+                Date: string
 
 hooks:
     afterAllFileWrite:

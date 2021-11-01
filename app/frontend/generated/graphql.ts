@@ -15,7 +15,7 @@ export type Scalars = {
     Int: number
     Float: number
     /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-    Date: any
+    Date: string
 }
 
 export type Mutation = {
@@ -65,8 +65,8 @@ export type ProjectsQuery = {
         __typename?: 'Project'
         id: string
         title: string
-        startDate?: any | null | undefined
-        endDate?: any | null | undefined
+        startDate?: string | null | undefined
+        endDate?: string | null | undefined
     }>
 }
 
@@ -74,8 +74,8 @@ export type ProjectFragment = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: any | null | undefined
-    endDate?: any | null | undefined
+    startDate?: string | null | undefined
+    endDate?: string | null | undefined
 }
 
 export const ProjectFragmentDoc = gql`
