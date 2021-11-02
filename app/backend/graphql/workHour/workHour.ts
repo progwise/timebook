@@ -7,11 +7,20 @@ export const WorkHour = objectType({
         t.id('id', { description: 'Identifies the work hour' })
         t.nullable.string('comment')
         t.date('date', { resolve: (workHour) => workHour.date })
-        t.float('hours')
+        t.int('duration', {
+            resolve: (workHour) => workHour.duration,
+            description: 'Duration of the work hour in minutes',
+        })
         t.field('project', {
             type: Project,
-            resolve: (workHour, _arguments, context) =>
-                context.prisma.project.findUnique({ where: { id: workHour.projectId }, rejectOnNotFound: true }),
+            resolve: async (workHour, _arguments, context) =>
+                (
+                    await context.prisma.workHour.findUnique({
+                        where: { id: workHour.id },
+                        select: { task: { select: { project: true } } },
+                        rejectOnNotFound: true,
+                    })
+                ).task.project,
         })
     },
 })

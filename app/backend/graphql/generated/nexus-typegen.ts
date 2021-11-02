@@ -16,6 +16,13 @@ declare global {
             fieldName: FieldName,
             opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
         ): void // "Date";
+        /**
+         * A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+         */
+        time<FieldName extends string>(
+            fieldName: FieldName,
+            opts?: core.CommonInputFieldConfig<TypeName, FieldName>,
+        ): void // "Time";
     }
 }
 declare global {
@@ -24,6 +31,10 @@ declare global {
          * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
          */
         date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Date";
+        /**
+         * A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+         */
+        time<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Time";
     }
 }
 
@@ -42,6 +53,7 @@ export interface NexusGenScalars {
     Boolean: boolean
     ID: string
     Date: any
+    Time: any
 }
 
 export interface NexusGenObjects {
@@ -80,7 +92,7 @@ export interface NexusGenFieldTypes {
         // field return type
         comment: string | null // String
         date: NexusGenScalars['Date'] // Date!
-        hours: number // Float!
+        duration: number // Int!
         id: string // ID!
         project: NexusGenRootTypes['Project'] // Project!
     }
@@ -107,7 +119,7 @@ export interface NexusGenFieldTypeNames {
         // field return type name
         comment: 'String'
         date: 'Date'
-        hours: 'Float'
+        duration: 'Int'
         id: 'ID'
         project: 'Project'
     }
@@ -119,8 +131,8 @@ export interface NexusGenArgTypes {
             // args
             comment?: string | null // String
             date: NexusGenScalars['Date'] // Date!
-            hours: number // Float!
-            projectId: string // ID!
+            duration: number // Int!
+            taskId: string // ID!
         }
     }
 }
