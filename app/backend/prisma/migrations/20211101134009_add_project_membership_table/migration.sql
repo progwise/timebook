@@ -14,7 +14,7 @@ ALTER TABLE "Project" DROP CONSTRAINT "Project_authorId_fkey";
 ALTER TABLE "Project" DROP COLUMN "authorId";
 
 -- CreateTable
-CREATE TABLE "Membership" (
+CREATE TABLE "ProjectMembership" (
     "invitedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "inviteAcceptedAt" TIMESTAMP(3),
     "userId" TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE "Membership" (
 );
 
 -- AddForeignKey
-ALTER TABLE "Membership" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProjectMembership" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Membership" ADD FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProjectMembership" ADD FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

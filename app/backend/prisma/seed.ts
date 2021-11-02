@@ -9,7 +9,7 @@ const userData: Prisma.UserCreateInput[] = [
     {
         name: 'Seeded User 1',
         email: 'seeded.user1@timebook.progfiles.net',
-        memberships: {
+        projectMemberships: {
             create: [
                 { project: { create: { title: 'Seeded Project 1' } } },
                 { project: { create: { title: 'Seeded Project 2' } } },
@@ -19,7 +19,7 @@ const userData: Prisma.UserCreateInput[] = [
     {
         name: 'Seeded User 2',
         email: 'seeded.user2@timebook.progfiles.net',
-        memberships: {
+        projectMemberships: {
             create: [
                 { project: { create: { title: 'Seeded Project 3' } } },
                 { project: { create: { title: 'Seeded Project 4' } } },

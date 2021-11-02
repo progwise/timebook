@@ -2,13 +2,13 @@
   Warnings:
 
   - You are about to drop the column `hours` on the `WorkHour` table. All the data in the column will be lost.
-  - Added the required column `updatedAt` to the `Membership` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `updatedAt` to the `ProjectMembership` table without a default value. This is not possible if the table is not empty.
   - Added the required column `duration` to the `WorkHour` table without a default value. This is not possible if the table is not empty.
   - Added the required column `updatedAt` to the `WorkHour` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
-ALTER TABLE "Membership" ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
+ALTER TABLE "ProjectMembership" ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
 
 -- AlterTable
 ALTER TABLE "Project" ALTER COLUMN "endDate" SET DATA TYPE DATE,
