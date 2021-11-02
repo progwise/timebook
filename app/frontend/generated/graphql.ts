@@ -29,7 +29,7 @@ export type Mutation = {
 export type MutationCreateWorkHourArgs = {
     comment?: Maybe<Scalars['String']>
     date: Scalars['Date']
-    duration: Scalars['Time']
+    duration: Scalars['Int']
     taskId: Scalars['ID']
 }
 
@@ -53,7 +53,8 @@ export type WorkHour = {
     __typename?: 'WorkHour'
     comment?: Maybe<Scalars['String']>
     date: Scalars['Date']
-    hours: Scalars['Time']
+    /** Duration of the work hour in minutes */
+    duration: Scalars['Int']
     /** Identifies the work hour */
     id: Scalars['ID']
     project: Project

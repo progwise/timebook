@@ -92,7 +92,7 @@ export interface NexusGenFieldTypes {
         // field return type
         comment: string | null // String
         date: NexusGenScalars['Date'] // Date!
-        hours: NexusGenScalars['Time'] // Time!
+        duration: number // Int!
         id: string // ID!
         project: NexusGenRootTypes['Project'] // Project!
     }
@@ -119,7 +119,7 @@ export interface NexusGenFieldTypeNames {
         // field return type name
         comment: 'String'
         date: 'Date'
-        hours: 'Time'
+        duration: 'Int'
         id: 'ID'
         project: 'Project'
     }
@@ -131,7 +131,7 @@ export interface NexusGenArgTypes {
             // args
             comment?: string | null // String
             date: NexusGenScalars['Date'] // Date!
-            duration: NexusGenScalars['Time'] // Time!
+            duration: number // Int!
             taskId: string // ID!
         }
     }

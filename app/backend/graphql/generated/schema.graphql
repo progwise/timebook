@@ -10,7 +10,16 @@ type Mutation {
     """
     Create a new WorkHour
     """
-    createWorkHour(comment: String, date: Date!, duration: Time!, taskId: ID!): WorkHour!
+    createWorkHour(
+        comment: String
+        date: Date!
+
+        """
+        Duration of the work hour in minutes
+        """
+        duration: Int!
+        taskId: ID!
+    ): WorkHour!
 }
 
 type Project {
@@ -40,7 +49,11 @@ scalar Time
 type WorkHour {
     comment: String
     date: Date!
-    hours: Time!
+
+    """
+    Duration of the work hour in minutes
+    """
+    duration: Int!
 
     """
     Identifies the work hour

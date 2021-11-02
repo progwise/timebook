@@ -64,7 +64,7 @@ model WorkHour {
   date     DateTime  @db.Date
   start    DateTime? @db.Time
   end      DateTime? @db.Time
-  duration DateTime  @db.Time
+  duration Int
   comment  String?
   taskId   String
   userId   String

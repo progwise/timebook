@@ -7,7 +7,10 @@ export const WorkHour = objectType({
         t.id('id', { description: 'Identifies the work hour' })
         t.nullable.string('comment')
         t.date('date', { resolve: (workHour) => workHour.date })
-        t.time('hours', { resolve: (workHour) => workHour.duration })
+        t.int('duration', {
+            resolve: (workHour) => workHour.duration,
+            description: 'Duration of the work hour in minutes',
+        })
         t.field('project', {
             type: Project,
             resolve: async (workHour, _arguments, context) =>
