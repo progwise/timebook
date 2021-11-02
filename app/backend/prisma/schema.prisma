@@ -14,27 +14,66 @@ generator client {
 
 model Project {
   id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   title     String    @db.VarChar(255)
-  authorId  String
-  startDate DateTime?
-  endDate   DateTime?
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
 
-  author   User       @relation(fields: [authorId], references: [id])
-  WorkHour WorkHour[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectMemberships ProjectMembership[]
+  tasks              Task[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model ProjectMembership {
+  userId    String
+  projectId Int
+  role      Role   @default(MEMBER)
+
+  invitedAt        DateTime? @default(now())
+  inviteAcceptedAt DateTime?
+  updatedAt        DateTime  @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@id([userId, projectId])
+}
+
+model Task {
+  id        String    @id @default(cuid())
+  title     String    @db.VarChar(255)
+  projectId Int
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project   Project    @relation(fields: [projectId], references: [id])
+  workHours WorkHour[]
 }
 
 model WorkHour {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  hours     Float
-  comment   String?
-  projectId Int
-  userId    String
+  id       Int       @id @default(autoincrement())
+  date     DateTime  @db.Date
+  start    DateTime? @db.Time
+  end      DateTime? @db.Time
+  duration Int
+  comment  String?
+  taskId   String
+  userId   String
 
-  project Project @relation(fields: [projectId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Account {
@@ -78,8 +117,8 @@ model User {
   sessions Session[]
 
   // Relations outside of next-auth:
-  workhour WorkHour[]
-  projects Project[]
+  workhours          WorkHour[]
+  projectMemberships ProjectMembership[]
 }
 
 model VerificationToken {

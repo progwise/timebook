@@ -16,6 +16,8 @@ export type Scalars = {
     Float: number
     /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
     Date: string
+    /** A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+    Time: string
 }
 
 export type Mutation = {
@@ -27,8 +29,8 @@ export type Mutation = {
 export type MutationCreateWorkHourArgs = {
     comment?: Maybe<Scalars['String']>
     date: Scalars['Date']
-    hours: Scalars['Float']
-    projectId: Scalars['ID']
+    duration: Scalars['Int']
+    taskId: Scalars['ID']
 }
 
 export type Project = {
@@ -51,7 +53,8 @@ export type WorkHour = {
     __typename?: 'WorkHour'
     comment?: Maybe<Scalars['String']>
     date: Scalars['Date']
-    hours: Scalars['Float']
+    /** Duration of the work hour in minutes */
+    duration: Scalars['Int']
     /** Identifies the work hour */
     id: Scalars['ID']
     project: Project

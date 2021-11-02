@@ -10,7 +10,16 @@ type Mutation {
     """
     Create a new WorkHour
     """
-    createWorkHour(comment: String, date: Date!, hours: Float!, projectId: ID!): WorkHour!
+    createWorkHour(
+        comment: String
+        date: Date!
+
+        """
+        Duration of the work hour in minutes
+        """
+        duration: Int!
+        taskId: ID!
+    ): WorkHour!
 }
 
 type Project {
@@ -32,10 +41,19 @@ type Query {
     projects: [Project!]!
 }
 
+"""
+A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Time
+
 type WorkHour {
     comment: String
     date: Date!
-    hours: Float!
+
+    """
+    Duration of the work hour in minutes
+    """
+    duration: Int!
 
     """
     Identifies the work hour
