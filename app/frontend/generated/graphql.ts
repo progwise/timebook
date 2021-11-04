@@ -24,6 +24,12 @@ export type Mutation = {
     __typename?: 'Mutation'
     /** Create a new WorkHour */
     createWorkHour: WorkHour
+    /** Create a new project */
+    projectCreate: Project
+    /** Delete a project */
+    projectDelete: Project
+    /** Update a project */
+    projectUpdate: Project
 }
 
 export type MutationCreateWorkHourArgs = {
@@ -31,6 +37,19 @@ export type MutationCreateWorkHourArgs = {
     date: Scalars['Date']
     duration: Scalars['Int']
     taskId: Scalars['ID']
+}
+
+export type MutationProjectCreateArgs = {
+    data: ProjectInput
+}
+
+export type MutationProjectDeleteArgs = {
+    id: Scalars['ID']
+}
+
+export type MutationProjectUpdateArgs = {
+    data: ProjectInput
+    id: Scalars['ID']
 }
 
 export type Project = {
@@ -41,6 +60,12 @@ export type Project = {
     startDate?: Maybe<Scalars['Date']>
     title: Scalars['String']
     workHours: Array<WorkHour>
+}
+
+export type ProjectInput = {
+    end?: Maybe<Scalars['Date']>
+    start?: Maybe<Scalars['Date']>
+    title: Scalars['String']
 }
 
 export type Query = {

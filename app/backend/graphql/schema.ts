@@ -4,9 +4,18 @@ import { projectsQueryField } from './project'
 import { createWorkHourMutationField } from './workHour'
 import { DateScalar } from './scalars/date'
 import { TimeScalar } from './scalars/time'
+import { projectCreateMutationField, projectDeleteMutationField, projectUpdateMutationField } from './project/mutations'
 
 export const schema = makeSchema({
-    types: [createWorkHourMutationField, projectsQueryField, DateScalar, TimeScalar],
+    types: [
+        createWorkHourMutationField,
+        projectsQueryField,
+        DateScalar,
+        TimeScalar,
+        projectCreateMutationField,
+        projectDeleteMutationField,
+        projectUpdateMutationField,
+    ],
     outputs: {
         typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
         schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
