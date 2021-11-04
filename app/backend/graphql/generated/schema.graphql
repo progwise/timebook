@@ -20,6 +20,33 @@ type Mutation {
         duration: Int!
         taskId: ID!
     ): WorkHour!
+
+    """
+    Create a new project
+    """
+    projectCreate(data: ProjectInput!): Project!
+
+    """
+    Delete a project
+    """
+    projectDelete(
+        """
+        id of the project
+        """
+        id: ID!
+    ): Project!
+
+    """
+    Update a project
+    """
+    projectUpdate(
+        data: ProjectInput!
+
+        """
+        id of the project
+        """
+        id: ID!
+    ): Project!
 }
 
 type Project {
@@ -32,6 +59,12 @@ type Project {
     startDate: Date
     title: String!
     workHours: [WorkHour!]!
+}
+
+input ProjectInput {
+    end: Date
+    start: Date
+    title: String!
 }
 
 type Query {

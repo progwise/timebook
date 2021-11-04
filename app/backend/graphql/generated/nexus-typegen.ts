@@ -42,7 +42,14 @@ declare global {
     interface NexusGen extends NexusGenTypes {}
 }
 
-export interface NexusGenInputs {}
+export interface NexusGenInputs {
+    ProjectInput: {
+        // input type
+        end?: NexusGenScalars['Date'] | null // Date
+        start?: NexusGenScalars['Date'] | null // Date
+        title: string // String!
+    }
+}
 
 export interface NexusGenEnums {}
 
@@ -75,6 +82,9 @@ export interface NexusGenFieldTypes {
     Mutation: {
         // field return type
         createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
+        projectCreate: NexusGenRootTypes['Project'] // Project!
+        projectDelete: NexusGenRootTypes['Project'] // Project!
+        projectUpdate: NexusGenRootTypes['Project'] // Project!
     }
     Project: {
         // field return type
@@ -102,6 +112,9 @@ export interface NexusGenFieldTypeNames {
     Mutation: {
         // field return type name
         createWorkHour: 'WorkHour'
+        projectCreate: 'Project'
+        projectDelete: 'Project'
+        projectUpdate: 'Project'
     }
     Project: {
         // field return type name
@@ -134,6 +147,19 @@ export interface NexusGenArgTypes {
             duration: number // Int!
             taskId: string // ID!
         }
+        projectCreate: {
+            // args
+            data: NexusGenInputs['ProjectInput'] // ProjectInput!
+        }
+        projectDelete: {
+            // args
+            id: string // ID!
+        }
+        projectUpdate: {
+            // args
+            data: NexusGenInputs['ProjectInput'] // ProjectInput!
+            id: string // ID!
+        }
     }
 }
 
@@ -143,7 +169,7 @@ export interface NexusGenTypeInterfaces {}
 
 export type NexusGenObjectNames = keyof NexusGenObjects
 
-export type NexusGenInputNames = never
+export type NexusGenInputNames = keyof NexusGenInputs
 
 export type NexusGenEnumNames = never
 
