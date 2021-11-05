@@ -45,41 +45,49 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 <input type="text" {...register('name', { required: true })} />
                 {errors.name && <span>Required</span>}
             </label>
-            <label>
-                <span>Start</span>
-                <Controller
-                    control={control}
-                    rules={{ validate: (value) => value === '' || isValidDateString(value) }}
-                    name="start"
-                    render={({ field: { onChange, onBlur, ref, value } }) => (
-                        <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} inputRef={ref} value={value} />
-                    )}
-                />
+            <div className="flex flex-wrap gap-x-5">
+                <label>
+                    <span>Start</span>
+                    <div className="flex items-center gap-x-2">
+                        <Controller
+                            control={control}
+                            rules={{ validate: (value) => value === '' || isValidDateString(value) }}
+                            name="start"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} value={value} />
+                            )}
+                        />
 
-                <CalendarSelector
-                    hideLabel={true}
-                    onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
-                />
-                {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
-            </label>
-            <label>
-                <span>End</span>
-                <Controller
-                    control={control}
-                    rules={{ validate: (value) => value === '' || isValidDateString(value) }}
-                    name="end"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} value={value} />
-                    )}
-                />
+                        <CalendarSelector
+                            className="flex-shrink-0"
+                            hideLabel={true}
+                            onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
+                        />
+                    </div>
+                    {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+                </label>
 
-                <CalendarSelector
-                    hideLabel={true}
-                    onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
-                />
-                {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
-            </label>
-            <div className="flex justify-center">
+                <label>
+                    <span>End</span>
+                    <div className="flex items-center gap-x-2">
+                        <Controller
+                            control={control}
+                            rules={{ validate: (value) => value === '' || isValidDateString(value) }}
+                            name="end"
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <InputMask mask="9999-99-99" onBlur={onBlur} onChange={onChange} value={value} />
+                            )}
+                        />
+                        <CalendarSelector
+                            className="flex-shrink-0"
+                            hideLabel={true}
+                            onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+                        />
+                    </div>
+                    {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
+                </label>
+            </div>
+            <div className="flex justify-center mt-16">
                 <input type="reset" className="btn btn-gray1" onClick={onCancel} title="Reset" />
                 <input type="submit" className="btn btn-gray1" title="Save" />
             </div>

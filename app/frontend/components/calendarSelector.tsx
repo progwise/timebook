@@ -56,6 +56,7 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
 export interface ICalendarSelectorProps {
     onSelectedDateChange?: (newDate: Date) => void
     hideLabel?: boolean
+    className?: string
 }
 
 export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
@@ -138,8 +139,8 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
     const monthTitle = getMonthTitle(selectedDate)
 
     return (
-        <section ref={componentNode}>
-            <CalendarIcon onClick={toggleCalendarExpanded} className="w-5 h-5" src={calendarIcon} childPosition="right">
+        <section className={props.className} ref={componentNode}>
+            <CalendarIcon onClick={toggleCalendarExpanded} className="w-6 h-6" src={calendarIcon} childPosition="right">
                 <>
                     {!props.hideLabel && (
                         <span className="ml-2" title="Display value">
