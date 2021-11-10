@@ -9,20 +9,14 @@ const isValidDateString = (dateString: string): boolean =>
     acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
 interface ProjectFormProps {
-    onSubmit: (data: ProjectInput) => void
+    onSubmit: (data: ProjectInput) => Promise<void>
     onCancel: () => void
     project?: ProjectFragment
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     const { project, onSubmit, onCancel } = props
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setValue,
-        control,
-    } = useForm<ProjectInput>({
+    const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
         defaultValues: {
             title: project?.title,
             start: project?.startDate ? format(new Date(project.startDate), 'MM-dd-yyyy') : '',
@@ -31,7 +25,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     })
 
     const handleSubmitHelper = (data: ProjectInput) => {
-        onSubmit({
+        return onSubmit({
             ...data,
             end: data.end ? data.end : undefined,
             start: data.start ? data.start : undefined,
@@ -44,8 +38,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             {isNewProject ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
             <label className="text-gray-500">
                 <span>Name</span>
-                <input type="text" {...register('title', { required: true })} />
-                {errors.title && <span>Required</span>}
+                <input type="text" disabled={formState.isSubmitting} {...register('title', { required: true })} />
+                {formState.errors.title && <span>Required</span>}
             </label>
             <div className="flex flex-wrap gap-x-5">
                 <label>
@@ -57,6 +51,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                             name="start"
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <InputMask
+                                    disabled={formState.isSubmitting}
                                     mask="9999-99-99"
                                     onBlur={onBlur}
                                     onChange={onChange}
@@ -66,12 +61,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                         />
 
                         <CalendarSelector
+                            disabled={formState.isSubmitting}
                             className="flex-shrink-0"
                             hideLabel={true}
                             onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
                         />
                     </div>
-                    {errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+                    {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
                 </label>
 
                 <label>
@@ -84,6 +80,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <InputMask
                                     mask="9999-99-99"
+                                    disabled={formState.isSubmitting}
                                     onBlur={onBlur}
                                     onChange={onChange}
                                     value={value ?? undefined}
@@ -91,17 +88,24 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                             )}
                         />
                         <CalendarSelector
+                            disabled={formState.isSubmitting}
                             className="flex-shrink-0"
                             hideLabel={true}
                             onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
                         />
                     </div>
-                    {errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
+                    {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
                 </label>
             </div>
             <div className="flex justify-center mt-16">
-                <input type="reset" className="btn btn-gray1" onClick={onCancel} title="Reset" />
-                <input type="submit" className="btn btn-gray1" title="Save" />
+                <input
+                    type="reset"
+                    disabled={formState.isSubmitting}
+                    className="btn btn-gray1"
+                    onClick={onCancel}
+                    title="Reset"
+                />
+                <input type="submit" disabled={formState.isSubmitting} className="btn btn-gray1" title="Save" />
             </div>
         </form>
     )
