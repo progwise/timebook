@@ -82,7 +82,11 @@ scalar Time
 type WorkHour {
     comment: String
     date: Date!
-    hours: Float!
+
+    """
+    Duration of the work hour in minutes
+    """
+    duration: Int!
 
     """
     Identifies the work hour
