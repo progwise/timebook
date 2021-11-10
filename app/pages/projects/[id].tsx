@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
-import { ProjectForm, ProjectFormState } from '../../frontend/components/projectForm/projectForm'
+import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { useProjectsQuery } from '../../frontend/generated/graphql'
+import { ProjectInput, useProjectsQuery } from '../../frontend/generated/graphql'
 
 const ProjectDetails = (): JSX.Element => {
     const [{ data, fetching }] = useProjectsQuery()
@@ -9,7 +9,7 @@ const ProjectDetails = (): JSX.Element => {
     const { id } = router.query
     const selectedProject = data?.projects.find((p) => p.id === id)
 
-    const handleSubmit = async (data: ProjectFormState) => {
+    const handleSubmit = async (data: ProjectInput) => {
         // eslint-disable-next-line no-console
         console.log(data)
         await router.push('/projects')
