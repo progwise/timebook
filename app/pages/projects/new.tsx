@@ -1,12 +1,20 @@
+import { useRouter } from 'next/router'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectInput, useProjectCreateMutation } from '../../frontend/generated/graphql'
 
 const NewProjectPage = (): JSX.Element => {
     const [, projectCreate] = useProjectCreateMutation()
+    const router = useRouter()
 
-    const handleSubmit = (data: ProjectInput) => {
-        projectCreate({ data })
+    const handleSubmit = async (data: ProjectInput) => {
+        try {
+            const result = await projectCreate({ data })
+            if (result.error) {
+                throw new Error('graphql error')
+            }
+            await router.push('/projects')
+        } catch {}
     }
     return (
         <ProtectedPage>

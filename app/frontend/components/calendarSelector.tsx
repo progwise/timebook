@@ -57,6 +57,7 @@ export interface ICalendarSelectorProps {
     onSelectedDateChange?: (newDate: Date) => void
     hideLabel?: boolean
     className?: string
+    disabled?: boolean
 }
 
 export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
@@ -149,7 +150,7 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
                     )}
                 </>
             </CalendarIcon>
-            {calendarExpanded && (
+            {calendarExpanded && !props.disabled && (
                 <section className="text-sm absolute mt-5 border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
                     <header className="flex justify-between p-0 pb-2 font-bold">
                         <CalendarIcon
