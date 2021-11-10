@@ -10,6 +10,7 @@ const NewProjectPage = (): JSX.Element => {
     }
     return (
         <ProtectedPage>
+            {/* eslint-disable-next-line no-console */}
             <ProjectForm onSubmit={handleSubmit} onCancel={console.log} />
         </ProtectedPage>
     )
