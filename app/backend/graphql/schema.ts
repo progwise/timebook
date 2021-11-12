@@ -7,36 +7,36 @@ import { TimeScalar } from './scalars/time'
 import { projectCreateMutationField, projectDeleteMutationField, projectUpdateMutationField } from './project/mutations'
 
 export const schema = makeSchema({
-    types: [
-        createWorkHourMutationField,
-        projectsQueryField,
-        DateScalar,
-        TimeScalar,
-        projectCreateMutationField,
-        projectDeleteMutationField,
-        projectUpdateMutationField,
+  types: [
+    createWorkHourMutationField,
+    projectsQueryField,
+    DateScalar,
+    TimeScalar,
+    projectCreateMutationField,
+    projectDeleteMutationField,
+    projectUpdateMutationField,
+  ],
+  outputs: {
+    typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
+    schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
+  },
+  prettierConfig: path.join(process.env.ROOT ?? '', './.prettierrc.js'),
+  contextType: {
+    module: path.join(process.env.ROOT ?? '', '/backend/graphql', 'context.ts'),
+    export: 'Context',
+  },
+  nonNullDefaults: { input: true, output: true },
+  sourceTypes: {
+    modules: [
+      {
+        module: '@prisma/client',
+        alias: 'prisma',
+      },
     ],
-    outputs: {
-        typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
-        schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
+    mapping: {
+      Project: 'prisma.Project',
+      WorkHour: 'prisma.WorkHour',
     },
-    prettierConfig: path.join(process.env.ROOT ?? '', './.prettierrc.js'),
-    contextType: {
-        module: path.join(process.env.ROOT ?? '', '/backend/graphql', 'context.ts'),
-        export: 'Context',
-    },
-    nonNullDefaults: { input: true, output: true },
-    sourceTypes: {
-        modules: [
-            {
-                module: '@prisma/client',
-                alias: 'prisma',
-            },
-        ],
-        mapping: {
-            Project: 'prisma.Project',
-            WorkHour: 'prisma.WorkHour',
-        },
-    },
-    plugins: [fieldAuthorizePlugin()],
+  },
+  plugins: [fieldAuthorizePlugin()],
 })

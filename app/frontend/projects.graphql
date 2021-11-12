@@ -1,12 +1,12 @@
 query projects {
-    projects {
-        ...Project
-    }
+  projects {
+    ...Project
+  }
 }
 
 fragment Project on Project {
-    id
-    title
-    startDate
-    endDate
+  id
+  title
+  startDate
+  endDate
 }
