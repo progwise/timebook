@@ -3,7 +3,7 @@
 import { NextApiHandler } from 'next'
 
 const helloHandler: NextApiHandler = (request, response) => {
-    response.status(200).json({ name: 'John Doe' })
+  response.status(200).json({ name: 'John Doe' })
 }
 
 export default helloHandler
