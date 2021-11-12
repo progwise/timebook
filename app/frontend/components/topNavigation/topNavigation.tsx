@@ -6,7 +6,7 @@ export const TopNavigation = (): JSX.Element => {
 
   return (
     <nav className="md:container md:mx-auto flex justify-center">
-      <TopNavigationLink href="/home">Home</TopNavigationLink>
+      <TopNavigationLink href="/home">HomePage</TopNavigationLink>
       <TopNavigationLink href="/time">Time</TopNavigationLink>
       <TopNavigationLink href="/projects">Projects</TopNavigationLink>
       <TopNavigationLink href="/reports">Reports</TopNavigationLink>
