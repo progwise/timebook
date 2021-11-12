@@ -16,10 +16,14 @@ const NewProjectPage = (): JSX.Element => {
             await router.push('/projects')
         } catch {}
     }
+
+    const handleCancel = async () => {
+        await router.push('/projects')
+    }
+
     return (
         <ProtectedPage>
-            {/* eslint-disable-next-line no-console */}
-            <ProjectForm onSubmit={handleSubmit} onCancel={console.log} />
+            <ProjectForm onSubmit={handleSubmit} onCancel={handleCancel} />
         </ProtectedPage>
     )
 }

@@ -1,8 +1,5 @@
 mutation projectCreate($data: ProjectInput!) {
     projectCreate(data: $data) {
-        id
-        title
-        startDate
-        endDate
+        ...Project
     }
 }

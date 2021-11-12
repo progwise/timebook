@@ -78,7 +78,8 @@ export type WorkHour = {
     __typename?: 'WorkHour'
     comment?: Maybe<Scalars['String']>
     date: Scalars['Date']
-    hours: Scalars['Float']
+    /** Duration of the work hour in minutes */
+    duration: Scalars['Int']
     /** Identifies the work hour */
     id: Scalars['ID']
     project: Project
@@ -143,12 +144,10 @@ export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVa
 export const ProjectCreateDocument = gql`
     mutation projectCreate($data: ProjectInput!) {
         projectCreate(data: $data) {
-            id
-            title
-            startDate
-            endDate
+            ...Project
         }
     }
+    ${ProjectFragmentDoc}
 `
 
 export function useProjectCreateMutation() {
