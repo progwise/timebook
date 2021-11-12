@@ -98,13 +98,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 </label>
             </div>
             <div className="flex justify-center mt-16">
-                <input
-                    type="reset"
-                    disabled={formState.isSubmitting}
-                    className="btn btn-gray1"
-                    onClick={onCancel}
-                    title="Reset"
-                />
+                <button disabled={formState.isSubmitting} className="btn btn-gray1" onClick={onCancel}>
+                    Cancel
+                </button>
                 <input type="submit" disabled={formState.isSubmitting} className="btn btn-gray1" title="Save" />
             </div>
         </form>
