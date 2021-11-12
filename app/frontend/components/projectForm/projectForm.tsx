@@ -19,10 +19,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
-      start: project?.startDate ? format(new Date(project.startDate), 'MM-dd-yyyy') : '',
-      end: project?.endDate ? format(new Date(project.endDate), 'MM-dd-yyyy') : '',
+      start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
+      end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : '',
     },
   })
+
+  console.log(project)
 
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
