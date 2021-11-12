@@ -106,6 +106,21 @@ export type ProjectFragment = {
     endDate?: string | null | undefined
 }
 
+export type ProjectCreateMutationVariables = Exact<{
+    data: ProjectInput
+}>
+
+export type ProjectCreateMutation = {
+    __typename?: 'Mutation'
+    projectCreate: {
+        __typename?: 'Project'
+        id: string
+        title: string
+        startDate?: string | null | undefined
+        endDate?: string | null | undefined
+    }
+}
+
 export const ProjectFragmentDoc = gql`
     fragment Project on Project {
         id
@@ -125,4 +140,16 @@ export const ProjectsDocument = gql`
 
 export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
     return Urql.useQuery<ProjectsQuery>({ query: ProjectsDocument, ...options })
+}
+export const ProjectCreateDocument = gql`
+    mutation projectCreate($data: ProjectInput!) {
+        projectCreate(data: $data) {
+            ...Project
+        }
+    }
+    ${ProjectFragmentDoc}
+`
+
+export function useProjectCreateMutation() {
+    return Urql.useMutation<ProjectCreateMutation, ProjectCreateMutationVariables>(ProjectCreateDocument)
 }
