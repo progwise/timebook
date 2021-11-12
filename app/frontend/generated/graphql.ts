@@ -121,6 +121,22 @@ export type ProjectCreateMutation = {
   }
 }
 
+export type ProjectUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: ProjectInput
+}>
+
+export type ProjectUpdateMutation = {
+  __typename?: 'Mutation'
+  projectUpdate: {
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null | undefined
+    endDate?: string | null | undefined
+  }
+}
+
 export const ProjectFragmentDoc = gql`
   fragment Project on Project {
     id
@@ -152,4 +168,16 @@ export const ProjectCreateDocument = gql`
 
 export function useProjectCreateMutation() {
   return Urql.useMutation<ProjectCreateMutation, ProjectCreateMutationVariables>(ProjectCreateDocument)
+}
+export const ProjectUpdateDocument = gql`
+  mutation projectUpdate($id: ID!, $data: ProjectInput!) {
+    projectUpdate(id: $id, data: $data) {
+      ...Project
+    }
+  }
+  ${ProjectFragmentDoc}
+`
+
+export function useProjectUpdateMutation() {
+  return Urql.useMutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>(ProjectUpdateDocument)
 }
