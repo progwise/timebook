@@ -7,71 +7,71 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 scalar Date
 
 type Mutation {
-    """
-    Create a new WorkHour
-    """
-    createWorkHour(
-        comment: String
-        date: Date!
-
-        """
-        Duration of the work hour in minutes
-        """
-        duration: Int!
-        taskId: ID!
-    ): WorkHour!
+  """
+  Create a new WorkHour
+  """
+  createWorkHour(
+    comment: String
+    date: Date!
 
     """
-    Create a new project
+    Duration of the work hour in minutes
     """
-    projectCreate(data: ProjectInput!): Project!
+    duration: Int!
+    taskId: ID!
+  ): WorkHour!
+
+  """
+  Create a new project
+  """
+  projectCreate(data: ProjectInput!): Project!
+
+  """
+  Delete a project
+  """
+  projectDelete(
+    """
+    id of the project
+    """
+    id: ID!
+  ): Project!
+
+  """
+  Update a project
+  """
+  projectUpdate(
+    data: ProjectInput!
 
     """
-    Delete a project
+    id of the project
     """
-    projectDelete(
-        """
-        id of the project
-        """
-        id: ID!
-    ): Project!
-
-    """
-    Update a project
-    """
-    projectUpdate(
-        data: ProjectInput!
-
-        """
-        id of the project
-        """
-        id: ID!
-    ): Project!
+    id: ID!
+  ): Project!
 }
 
 type Project {
-    endDate: Date
+  endDate: Date
 
-    """
-    identifies the project
-    """
-    id: ID!
-    startDate: Date
-    title: String!
-    workHours: [WorkHour!]!
+  """
+  identifies the project
+  """
+  id: ID!
+  startDate: Date
+  title: String!
+  workHours: [WorkHour!]!
 }
 
 input ProjectInput {
-    end: Date
-    start: Date
-    title: String!
+  end: Date
+  start: Date
+  title: String!
 }
 
 type Query {
-    """
-    Returns a list of all projects
-    """
-    projects: [Project!]!
+  """
+  Returns a list of all projects
+  """
+  projects: [Project!]!
 }
 
 """
@@ -80,17 +80,17 @@ A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format o
 scalar Time
 
 type WorkHour {
-    comment: String
-    date: Date!
+  comment: String
+  date: Date!
 
-    """
-    Duration of the work hour in minutes
-    """
-    duration: Int!
+  """
+  Duration of the work hour in minutes
+  """
+  duration: Int!
 
-    """
-    Identifies the work hour
-    """
-    id: ID!
-    project: Project!
+  """
+  Identifies the work hour
+  """
+  id: ID!
+  project: Project!
 }
