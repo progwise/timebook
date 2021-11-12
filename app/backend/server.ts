@@ -4,7 +4,7 @@ import { schema } from './graphql/schema'
 import { context } from './graphql/context'
 
 export const server = new ApolloServer({
-    schema,
-    context,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } })],
+  schema,
+  context,
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } })],
 })

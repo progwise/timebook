@@ -4,14 +4,14 @@ import { server } from '../../backend/server'
 const startPromise = server.start()
 
 const graphqlHandler: NextApiHandler = async (request, response) => {
-    await startPromise
+  await startPromise
 
-    return server.createHandler({ path: '/api/graphql' })(request, response)
+  return server.createHandler({ path: '/api/graphql' })(request, response)
 }
 export const config = {
-    api: {
-        bodyParser: false,
-    },
+  api: {
+    bodyParser: false,
+  },
 }
 
 export default graphqlHandler
