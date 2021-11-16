@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, MouseEvent } from 'react'
 import { ItemTable, SortDirection } from '../frontend/components/itemTable/itemTable'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
+import { ProjectFragment, useProjectDeleteMutation, useProjectsQuery } from '../frontend/generated/graphql'
 
 const Projects = (): JSX.Element => {
   const [{ data, error }] = useProjectsQuery()
@@ -10,6 +10,8 @@ const Projects = (): JSX.Element => {
 
   const itemsPerPage = 10
   const [firstItemIndex, setFirstItemIndex] = useState(1)
+
+  const [, projectDelete] = useProjectDeleteMutation()
 
   const tableColumns = [
     {
@@ -26,7 +28,7 @@ const Projects = (): JSX.Element => {
       // eslint-disable-next-line react/display-name
       value: (item: ProjectFragment) => (
         <span className="float-right">
-          <button className="btn btn-gray2 mr-3" onClick={() => handleDeleteProject(item)}>
+          <button className="btn btn-gray2 mr-3" onClick={(event) => handleDeleteProject(event, item)}>
             Delete
           </button>
           <button className="btn btn-gray2" onClick={() => handleProjectDetails(item)}>
@@ -41,9 +43,10 @@ const Projects = (): JSX.Element => {
     await router.push(`/projects/${project.id}`)
   }
 
-  // TODO: fix both errors
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
-  const handleDeleteProject = (project: ProjectFragment) => {}
+  const handleDeleteProject = async (event: MouseEvent, project: ProjectFragment) => {
+    event.stopPropagation()
+    await projectDelete(project)
+  }
 
   const handleAddProject = async () => {
     await router.push('/projects/new')
