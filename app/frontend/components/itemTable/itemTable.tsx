@@ -44,7 +44,7 @@ export const ItemTable = (props: IItemTableProps): JSX.Element => {
           {props.items.map((item, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-100" onClick={() => handleItemClick(item)}>
               {props.columns.map((c, colIndex) => (
-                <td className="py-2 border-b-2 px-2 " key={colIndex} onClick={c.onClick}>
+                <td className="py-2 border-b-2 px-2 mx-10" key={colIndex} onClick={c.onClick}>
                   {c.value(item)}
                 </td>
               ))}

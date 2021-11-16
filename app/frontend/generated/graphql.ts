@@ -121,6 +121,21 @@ export type ProjectCreateMutation = {
   }
 }
 
+export type ProjectDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type ProjectDeleteMutation = {
+  __typename?: 'Mutation'
+  projectDelete: {
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null | undefined
+    endDate?: string | null | undefined
+  }
+}
+
 export type ProjectUpdateMutationVariables = Exact<{
   id: Scalars['ID']
   data: ProjectInput
@@ -168,6 +183,18 @@ export const ProjectCreateDocument = gql`
 
 export function useProjectCreateMutation() {
   return Urql.useMutation<ProjectCreateMutation, ProjectCreateMutationVariables>(ProjectCreateDocument)
+}
+export const ProjectDeleteDocument = gql`
+  mutation projectDelete($id: ID!) {
+    projectDelete(id: $id) {
+      ...Project
+    }
+  }
+  ${ProjectFragmentDoc}
+`
+
+export function useProjectDeleteMutation() {
+  return Urql.useMutation<ProjectDeleteMutation, ProjectDeleteMutationVariables>(ProjectDeleteDocument)
 }
 export const ProjectUpdateDocument = gql`
   mutation projectUpdate($id: ID!, $data: ProjectInput!) {
