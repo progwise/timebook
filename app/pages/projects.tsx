@@ -1,52 +1,12 @@
-import React, { useState, MouseEvent } from 'react'
-import { ItemTable, SortDirection } from '../frontend/components/itemTable/itemTable'
+import React from 'react'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { ProjectFragment, useProjectDeleteMutation, useProjectsQuery } from '../frontend/generated/graphql'
+import { useProjectsQuery } from '../frontend/generated/graphql'
+import { ProjectTable } from '../frontend/components/projectTable'
 
 const Projects = (): JSX.Element => {
   const [{ data, error }] = useProjectsQuery()
   const router = useRouter()
-
-  const itemsPerPage = 10
-  const [firstItemIndex, setFirstItemIndex] = useState(1)
-
-  const [, projectDelete] = useProjectDeleteMutation()
-
-  const tableColumns = [
-    {
-      title: 'Name',
-      value: (item: ProjectFragment) => item.title,
-    },
-    {
-      title: 'Duration',
-      value: (item: ProjectFragment) => `${item.startDate ? item.startDate : ''}-${item.endDate ? item.endDate : ''}`,
-      orderedBy: SortDirection.DESC,
-    },
-    {
-      title: '',
-      // eslint-disable-next-line react/display-name
-      value: (item: ProjectFragment) => (
-        <span className="float-right">
-          <button className="btn btn-gray2 mr-3" onClick={(event) => handleDeleteProject(event, item)}>
-            Delete
-          </button>
-          <button className="btn btn-gray2" onClick={() => handleProjectDetails(item)}>
-            Details
-          </button>
-        </span>
-      ),
-    },
-  ]
-
-  const handleProjectDetails = async (project: ProjectFragment) => {
-    await router.push(`/projects/${project.id}`)
-  }
-
-  const handleDeleteProject = async (event: MouseEvent, project: ProjectFragment) => {
-    event.stopPropagation()
-    await projectDelete(project)
-  }
 
   const handleAddProject = async () => {
     await router.push('/projects/new')
@@ -68,19 +28,9 @@ const Projects = (): JSX.Element => {
         {!data?.projects ? (
           <div>...loading</div>
         ) : (
-          <ItemTable
-            columns={tableColumns}
-            items={data.projects}
-            itemClick={handleProjectDetails}
-            page={{
-              totalItemCount: 521,
-              firstItemIndex: firstItemIndex,
-              itemsPerPage: itemsPerPage,
-              onNext: () => {
-                setFirstItemIndex(firstItemIndex + itemsPerPage)
-              },
-            }}
-          />
+          <>
+            <ProjectTable projects={data.projects} />
+          </>
         )}
       </article>
     </ProtectedPage>
