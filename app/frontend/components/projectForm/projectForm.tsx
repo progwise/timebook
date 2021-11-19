@@ -3,6 +3,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import InputMask from 'react-input-mask'
+import { Button } from '../button/button'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -97,11 +98,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
         </label>
       </div>
-      <div className="flex justify-center mt-16">
-        <button disabled={formState.isSubmitting} className="btn btn-gray1" onClick={onCancel}>
+      <div className="flex justify-center mt-16 gap-2">
+        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel}>
           Cancel
-        </button>
-        <input type="submit" disabled={formState.isSubmitting} className="btn btn-gray1" title="Save" />
+        </Button>
+        <Button type="submit" variant="primary" disabled={formState.isSubmitting}>
+          Save
+        </Button>
       </div>
     </form>
   )
