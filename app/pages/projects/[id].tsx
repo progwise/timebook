@@ -6,7 +6,10 @@ import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../f
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id ?? '-1') ?? -1 } })
+  if (!id || !Number.parseInt(id.toString())) {
+    return <div>Loading...</div>
+  }
+  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id.toString()) } })
   const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 
