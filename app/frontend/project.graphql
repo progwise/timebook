@@ -1,0 +1,9 @@
+query project($projectId: Int!) {
+  project(projectId: $projectId) {
+    ...Project
+    tasks {
+      id
+      title
+    }
+  }
+}

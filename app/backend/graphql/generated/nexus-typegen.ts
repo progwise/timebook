@@ -61,6 +61,7 @@ export interface NexusGenObjects {
   Mutation: {}
   Project: prisma.Project
   Query: {}
+  Task: prisma.Task
   WorkHour: prisma.WorkHour
 }
 
@@ -75,6 +76,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   Mutation: {
     // field return type
+    createTaskMutation: NexusGenRootTypes['Task'] // Task!
     createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
@@ -85,12 +87,21 @@ export interface NexusGenFieldTypes {
     endDate: NexusGenScalars['Date'] | null // Date
     id: string // ID!
     startDate: NexusGenScalars['Date'] | null // Date
+    tasks: NexusGenRootTypes['Task'][] // [Task!]!
     title: string // String!
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Query: {
     // field return type
+    project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+  }
+  Task: {
+    // field return type
+    id: string // ID!
+    project: NexusGenRootTypes['Project'] // Project!
+    title: string // String!
+    workhours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   WorkHour: {
     // field return type
@@ -105,6 +116,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: {
     // field return type name
+    createTaskMutation: 'Task'
     createWorkHour: 'WorkHour'
     projectCreate: 'Project'
     projectDelete: 'Project'
@@ -115,12 +127,21 @@ export interface NexusGenFieldTypeNames {
     endDate: 'Date'
     id: 'ID'
     startDate: 'Date'
+    tasks: 'Task'
     title: 'String'
     workHours: 'WorkHour'
   }
   Query: {
     // field return type name
+    project: 'Project'
     projects: 'Project'
+  }
+  Task: {
+    // field return type name
+    id: 'ID'
+    project: 'Project'
+    title: 'String'
+    workhours: 'WorkHour'
   }
   WorkHour: {
     // field return type name
@@ -134,6 +155,13 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    createTaskMutation: {
+      // args
+      endDate?: NexusGenScalars['Date'] | null // Date
+      projectId: number // Int!
+      startDate?: NexusGenScalars['Date'] | null // Date
+      title: string // String!
+    }
     createWorkHour: {
       // args
       comment?: string | null // String
@@ -153,6 +181,12 @@ export interface NexusGenArgTypes {
       // args
       data: NexusGenInputs['ProjectInput'] // ProjectInput!
       id: string // ID!
+    }
+  }
+  Query: {
+    project: {
+      // args
+      projectId: number // Int!
     }
   }
 }

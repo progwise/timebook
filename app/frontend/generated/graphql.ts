@@ -22,6 +22,8 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Create a new Task */
+  createTaskMutation: Task
   /** Create a new WorkHour */
   createWorkHour: WorkHour
   /** Create a new project */
@@ -30,6 +32,13 @@ export type Mutation = {
   projectDelete: Project
   /** Update a project */
   projectUpdate: Project
+}
+
+export type MutationCreateTaskMutationArgs = {
+  endDate?: Maybe<Scalars['Date']>
+  projectId: Scalars['Int']
+  startDate?: Maybe<Scalars['Date']>
+  title: Scalars['String']
 }
 
 export type MutationCreateWorkHourArgs = {
@@ -58,6 +67,7 @@ export type Project = {
   /** identifies the project */
   id: Scalars['ID']
   startDate?: Maybe<Scalars['Date']>
+  tasks: Array<Task>
   title: Scalars['String']
   workHours: Array<WorkHour>
 }
@@ -70,8 +80,24 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  /** Returns a single project */
+  project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+}
+
+export type QueryProjectArgs = {
+  projectId: Scalars['Int']
+}
+
+export type Task = {
+  __typename?: 'Task'
+  /** Identifies the task */
+  id: Scalars['ID']
+  project: Project
+  /** The user can identify the task in the UI */
+  title: Scalars['String']
+  workhours: Array<WorkHour>
 }
 
 export type WorkHour = {
@@ -83,6 +109,22 @@ export type WorkHour = {
   /** Identifies the work hour */
   id: Scalars['ID']
   project: Project
+}
+
+export type ProjectQueryVariables = Exact<{
+  projectId: Scalars['Int']
+}>
+
+export type ProjectQuery = {
+  __typename?: 'Query'
+  project: {
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null | undefined
+    endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+  }
 }
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never }>
@@ -160,6 +202,22 @@ export const ProjectFragmentDoc = gql`
     endDate
   }
 `
+export const ProjectDocument = gql`
+  query project($projectId: Int!) {
+    project(projectId: $projectId) {
+      ...Project
+      tasks {
+        id
+        title
+      }
+    }
+  }
+  ${ProjectFragmentDoc}
+`
+
+export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options })
+}
 export const ProjectsDocument = gql`
   query projects {
     projects {

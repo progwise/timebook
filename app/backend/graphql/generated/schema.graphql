@@ -8,6 +8,20 @@ scalar Date
 
 type Mutation {
   """
+  Create a new Task
+  """
+  createTaskMutation(
+    endDate: Date
+    projectId: Int!
+    startDate: Date
+
+    """
+    Title for the task
+    """
+    title: String!
+  ): Task!
+
+  """
   Create a new WorkHour
   """
   createWorkHour(
@@ -57,6 +71,7 @@ type Project {
   """
   id: ID!
   startDate: Date
+  tasks: [Task!]!
   title: String!
   workHours: [WorkHour!]!
 }
@@ -69,9 +84,33 @@ input ProjectInput {
 
 type Query {
   """
+  Returns a single project
+  """
+  project(
+    """
+    Identifier for the project
+    """
+    projectId: Int!
+  ): Project!
+
+  """
   Returns a list of all projects
   """
   projects: [Project!]!
+}
+
+type Task {
+  """
+  Identifies the task
+  """
+  id: ID!
+  project: Project!
+
+  """
+  The user can identify the task in the UI
+  """
+  title: String!
+  workhours: [WorkHour!]!
 }
 
 """

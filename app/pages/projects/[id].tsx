@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { ProjectInput, useProjectsQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
+import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
 
 const ProjectDetails = (): JSX.Element => {
-  const [{ data, fetching }] = useProjectsQuery()
   const router = useRouter()
   const { id } = router.query
-  const selectedProject = data?.projects.find((p) => p.id === id)
+  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id ?? '-1') ?? -1 } })
+  const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 
   const handleSubmit = async (data: ProjectInput) => {
@@ -39,6 +39,11 @@ const ProjectDetails = (): JSX.Element => {
     <ProtectedPage>
       <article>
         <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
+      </article>
+      <article>
+        {selectedProject.tasks.map((task) => (
+          <div key={task.id}>{`${task.title}`}</div>
+        ))}
       </article>
     </ProtectedPage>
   )
