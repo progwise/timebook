@@ -25,13 +25,7 @@ const Projects = (): JSX.Element => {
         </h2>
 
         {error && <span>{error.message}</span>}
-        {!data?.projects ? (
-          <div>...loading</div>
-        ) : (
-          <>
-            <ProjectTable projects={data.projects} />
-          </>
-        )}
+        {!data?.projects ? <div>...loading</div> : <ProjectTable projects={data.projects} />}
       </article>
     </ProtectedPage>
   )

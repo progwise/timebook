@@ -32,11 +32,11 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
         {props.projects.map((project) => {
           return (
             <tr key={project.id} className="hover:bg-gray-100">
-              <td className="py-2 border-b-2 px-2">{project.title} </td>
-              <td className="py-2 border-b-2 px-2">
+              <td className="p-2 border-b-2">{project.title}</td>
+              <td className="p-2 border-b-2">
                 {project.startDate} - {project.endDate}
               </td>
-              <td className="flex justify-end flex-wrap gap-x-3 py-2 border-b-2 px-2">
+              <td className="flex justify-end flex-wrap gap-x-3 p-2 border-b-2">
                 <button className="btn btn-gray2" onClick={(event) => handleDeleteProject(event, project)}>
                   Delete
                 </button>
