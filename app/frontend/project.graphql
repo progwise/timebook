@@ -2,8 +2,12 @@ query project($projectId: Int!) {
   project(projectId: $projectId) {
     ...Project
     tasks {
-      id
-      title
+      ...Task
     }
   }
+}
+
+fragment Task on Task {
+  id
+  title
 }

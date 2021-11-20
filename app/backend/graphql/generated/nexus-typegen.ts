@@ -43,6 +43,11 @@ export interface NexusGenInputs {
     start?: NexusGenScalars['Date'] | null // Date
     title: string // String!
   }
+  TaskInput: {
+    // input type
+    projectId: number // Int!
+    title: string // String!
+  }
 }
 
 export interface NexusGenEnums {}
@@ -76,11 +81,11 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   Mutation: {
     // field return type
-    createTaskMutation: NexusGenRootTypes['Task'] // Task!
     createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
+    taskCreate: NexusGenRootTypes['Task'] // Task!
   }
   Project: {
     // field return type
@@ -116,11 +121,11 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: {
     // field return type name
-    createTaskMutation: 'Task'
     createWorkHour: 'WorkHour'
     projectCreate: 'Project'
     projectDelete: 'Project'
     projectUpdate: 'Project'
+    taskCreate: 'Task'
   }
   Project: {
     // field return type name
@@ -155,13 +160,6 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createTaskMutation: {
-      // args
-      endDate?: NexusGenScalars['Date'] | null // Date
-      projectId: number // Int!
-      startDate?: NexusGenScalars['Date'] | null // Date
-      title: string // String!
-    }
     createWorkHour: {
       // args
       comment?: string | null // String
@@ -181,6 +179,10 @@ export interface NexusGenArgTypes {
       // args
       data: NexusGenInputs['ProjectInput'] // ProjectInput!
       id: string // ID!
+    }
+    taskCreate: {
+      // args
+      data: NexusGenInputs['TaskInput'] // TaskInput!
     }
   }
   Query: {

@@ -22,8 +22,6 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation'
-  /** Create a new Task */
-  createTaskMutation: Task
   /** Create a new WorkHour */
   createWorkHour: WorkHour
   /** Create a new project */
@@ -32,13 +30,8 @@ export type Mutation = {
   projectDelete: Project
   /** Update a project */
   projectUpdate: Project
-}
-
-export type MutationCreateTaskMutationArgs = {
-  endDate?: Maybe<Scalars['Date']>
-  projectId: Scalars['Int']
-  startDate?: Maybe<Scalars['Date']>
-  title: Scalars['String']
+  /** Create a new Task */
+  taskCreate: Task
 }
 
 export type MutationCreateWorkHourArgs = {
@@ -59,6 +52,10 @@ export type MutationProjectDeleteArgs = {
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
+}
+
+export type MutationTaskCreateArgs = {
+  data: TaskInput
 }
 
 export type Project = {
@@ -100,6 +97,11 @@ export type Task = {
   workhours: Array<WorkHour>
 }
 
+export type TaskInput = {
+  projectId: Scalars['Int']
+  title: Scalars['String']
+}
+
 export type WorkHour = {
   __typename?: 'WorkHour'
   comment?: Maybe<Scalars['String']>
@@ -126,6 +128,8 @@ export type ProjectQuery = {
     tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
+
+export type TaskFragment = { __typename?: 'Task'; id: string; title: string }
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never }>
 
@@ -194,6 +198,12 @@ export type ProjectUpdateMutation = {
   }
 }
 
+export const TaskFragmentDoc = gql`
+  fragment Task on Task {
+    id
+    title
+  }
+`
 export const ProjectFragmentDoc = gql`
   fragment Project on Project {
     id
@@ -207,12 +217,12 @@ export const ProjectDocument = gql`
     project(projectId: $projectId) {
       ...Project
       tasks {
-        id
-        title
+        ...Task
       }
     }
   }
   ${ProjectFragmentDoc}
+  ${TaskFragmentDoc}
 `
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {

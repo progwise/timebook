@@ -1,2 +1,3 @@
 export * from './task'
-export * from './mutations/createTaskMutationField'
+export * from './taskInput'
+export * from './mutations/taskCreateMutationField'

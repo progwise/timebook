@@ -8,20 +8,6 @@ scalar Date
 
 type Mutation {
   """
-  Create a new Task
-  """
-  createTaskMutation(
-    endDate: Date
-    projectId: Int!
-    startDate: Date
-
-    """
-    Title for the task
-    """
-    title: String!
-  ): Task!
-
-  """
   Create a new WorkHour
   """
   createWorkHour(
@@ -61,6 +47,11 @@ type Mutation {
     """
     id: ID!
   ): Project!
+
+  """
+  Create a new Task
+  """
+  taskCreate(data: TaskInput!): Task!
 }
 
 type Project {
@@ -111,6 +102,11 @@ type Task {
   """
   title: String!
   workhours: [WorkHour!]!
+}
+
+input TaskInput {
+  projectId: Int!
+  title: String!
 }
 
 """
