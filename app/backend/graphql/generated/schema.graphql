@@ -81,7 +81,7 @@ type Query {
     """
     Identifier for the project
     """
-    projectId: Int!
+    projectId: ID!
   ): Project!
 
   """

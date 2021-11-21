@@ -188,7 +188,7 @@ export interface NexusGenArgTypes {
   Query: {
     project: {
       // args
-      projectId: number // Int!
+      projectId: string // ID!
     }
   }
 }

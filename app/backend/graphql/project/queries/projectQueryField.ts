@@ -1,11 +1,11 @@
-import { intArg, queryField } from 'nexus'
+import { idArg, queryField } from 'nexus'
 import { Project } from '..'
 
 export const projectQueryField = queryField('project', {
   type: Project,
   description: 'Returns a single project',
   args: {
-    projectId: intArg({ description: 'Identifier for the project' }),
+    projectId: idArg({ description: 'Identifier for the project' }),
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: (_source, _arguments, context) => {
@@ -14,7 +14,7 @@ export const projectQueryField = queryField('project', {
     }
     return context.prisma.project.findFirst({
       where: {
-        id: _arguments.projectId,
+        id: Number.parseInt(_arguments.projectId),
         projectMemberships: { some: { userId: context.session?.user.id } },
       },
       rejectOnNotFound: true,
