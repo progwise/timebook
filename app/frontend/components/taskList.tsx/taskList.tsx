@@ -1,29 +1,31 @@
 import React, { useRef } from 'react'
-import { TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
+import { TaskFragment, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
+  projectId: string
 }
 export const TaskList = (props: TaskListProps): JSX.Element => {
-  const { tasks } = props
+  const { tasks, projectId } = props
   const taskNameInputReference = useRef<HTMLInputElement>(null)
   const [, taskCreate] = useTaskCreateMutation()
 
   const handleAddTask = async () => {
-    const taskText = taskNameInputReference.current?.value
-    if (!taskText || taskText.length < 3) {
+    const title = taskNameInputReference.current?.value
+    if (!title || title.length < 3) {
       console.error('text not set')
       return
     }
 
-    const taskInput: TaskInput = {
-      projectId: 1,
-      title: taskText,
-    }
     try {
-      const result = await taskCreate({ data: taskInput })
+      const result = await taskCreate({
+        data: {
+          projectId: Number.parseInt(projectId),
+          title,
+        },
+      })
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }

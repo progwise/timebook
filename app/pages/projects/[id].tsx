@@ -42,7 +42,7 @@ const ProjectDetails = (): JSX.Element => {
         <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
       </article>
       <article>
-        <TaskList tasks={selectedProject.tasks} />
+        <TaskList projectId={selectedProject?.id} tasks={selectedProject.tasks} />
       </article>
     </ProtectedPage>
   )
