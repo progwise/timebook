@@ -3,6 +3,8 @@ import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
 import { TaskForm } from '../../frontend/components/taskForm/taskForm'
+import React from 'react'
+import { TaskList } from '../../frontend/components/taskList.tsx/taskList'
 
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
@@ -45,14 +47,7 @@ const ProjectDetails = (): JSX.Element => {
         <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
       </article>
       <article>
-        <h2>Tasks</h2>
-        {selectedProject.tasks.map((task) => (
-          <TaskForm key={task.id} task={task} />
-        ))}
-      </article>
-      <article>
-        <h2>New Task</h2>
-        <TaskForm task={{ id: '', title: 'New task' }} />
+        <TaskList tasks={selectedProject.tasks} />
       </article>
     </ProtectedPage>
   )

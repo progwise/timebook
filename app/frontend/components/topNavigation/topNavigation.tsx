@@ -1,8 +1,12 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { TopNavigationLink } from './topNavigationLink'
 
+const handleUnauthenticated = () => {
+  console.log('unauthenticated')
+}
+
 export const TopNavigation = (): JSX.Element => {
-  const session = useSession()
+  const session = useSession({ required: true, onUnauthenticated: handleUnauthenticated })
 
   return (
     <nav className="md:container md:mx-auto flex justify-center">
