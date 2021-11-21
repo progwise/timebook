@@ -84,7 +84,7 @@ export type Query = {
 }
 
 export type QueryProjectArgs = {
-  projectId: Scalars['Int']
+  projectId: Scalars['ID']
 }
 
 export type Task = {
@@ -114,7 +114,7 @@ export type WorkHour = {
 }
 
 export type ProjectQueryVariables = Exact<{
-  projectId: Scalars['Int']
+  projectId: Scalars['ID']
 }>
 
 export type ProjectQuery = {
@@ -198,6 +198,15 @@ export type ProjectUpdateMutation = {
   }
 }
 
+export type TaskCreateMutationVariables = Exact<{
+  data: TaskInput
+}>
+
+export type TaskCreateMutation = {
+  __typename?: 'Mutation'
+  taskCreate: { __typename?: 'Task'; id: string; title: string }
+}
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -213,7 +222,7 @@ export const ProjectFragmentDoc = gql`
   }
 `
 export const ProjectDocument = gql`
-  query project($projectId: Int!) {
+  query project($projectId: ID!) {
     project(projectId: $projectId) {
       ...Project
       tasks {
@@ -275,4 +284,16 @@ export const ProjectUpdateDocument = gql`
 
 export function useProjectUpdateMutation() {
   return Urql.useMutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>(ProjectUpdateDocument)
+}
+export const TaskCreateDocument = gql`
+  mutation taskCreate($data: TaskInput!) {
+    taskCreate(data: $data) {
+      ...Task
+    }
+  }
+  ${TaskFragmentDoc}
+`
+
+export function useTaskCreateMutation() {
+  return Urql.useMutation<TaskCreateMutation, TaskCreateMutationVariables>(TaskCreateDocument)
 }

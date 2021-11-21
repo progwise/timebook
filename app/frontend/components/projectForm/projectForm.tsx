@@ -99,10 +99,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </label>
       </div>
       <div className="flex justify-center mt-16 gap-2">
-        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel}>
+        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Reset changes">
           Cancel
         </Button>
-        <Button type="submit" variant="primary" disabled={formState.isSubmitting}>
+        <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
           Save
         </Button>
       </div>

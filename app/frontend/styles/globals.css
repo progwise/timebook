@@ -35,8 +35,24 @@ table th {
   @apply text-left font-bold mb-3 text-gray-400 text-lg bg-gray-50;
 }
 
+table td, table th {
+  @apply py-1.5 px-1;
+}
+
+table thead {
+  @apply border-b-4 border-transparent;
+}
+
+table tfoot {
+  @apply border-t-4 border-transparent;
+}
+
 table tbody tr:nth-child(2) {
   @apply bg-gray-100;
+}
+
+table tbody tr {
+  @apply hover:bg-gray-200;
 }
 
 @layer components {

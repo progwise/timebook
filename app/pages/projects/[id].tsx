@@ -2,17 +2,12 @@ import { useRouter } from 'next/router'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
-import { TaskForm } from '../../frontend/components/taskForm/taskForm'
-import React from 'react'
 import { TaskList } from '../../frontend/components/taskList.tsx/taskList'
 
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  if (!id || !Number.parseInt(id.toString())) {
-    return <div>Loading...</div>
-  }
-  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id.toString()) } })
+  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id?.toString() ?? '-1') } })
   const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 
@@ -38,7 +33,7 @@ const ProjectDetails = (): JSX.Element => {
   }
 
   if (!selectedProject) {
-    return <div>Project not found</div>
+    return <div>{`Project ${id} not found`}</div>
   }
 
   return (

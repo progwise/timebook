@@ -1,4 +1,4 @@
-query project($projectId: Int!) {
+query project($projectId: ID!) {
   project(projectId: $projectId) {
     ...Project
     tasks {
