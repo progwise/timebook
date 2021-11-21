@@ -47,7 +47,7 @@ table tfoot {
   @apply border-t-4 border-transparent;
 }
 
-table tbody tr:nth-child(2) {
+table tbody tr:nth-child(2n) {
   @apply bg-gray-100;
 }
 
