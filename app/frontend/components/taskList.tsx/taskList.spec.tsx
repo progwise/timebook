@@ -10,7 +10,7 @@ describe('the tasklist should ...', () => {
 
   it('...have a column header "tasks"', () => {
     const columnHeader = screen.getByRole('columnheader', {
-      name: /tasks/i
+      name: /tasks/i,
     })
     expect(columnHeader).toBeVisible()
   })
@@ -20,7 +20,7 @@ describe('the tasklist should ...', () => {
   })
   it('...has a button to add tasks', () => {
     const button = screen.getByRole('button', {
-      name: /add task/i
+      name: /add task/i,
     })
     expect(button).toBeEnabled()
   })
