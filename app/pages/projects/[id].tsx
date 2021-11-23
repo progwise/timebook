@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { TaskList } from '../../frontend/components/taskList/taskList'
 import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
-import { TaskList } from '../../frontend/components/taskList.tsx/taskList'
 
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
