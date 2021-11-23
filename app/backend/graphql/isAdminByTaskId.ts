@@ -1,6 +1,6 @@
-import { Context } from '../../context'
+import { Context } from './context'
 
-export const isUserAdminMember = async (taskId: string, context: Context): Promise<boolean> => {
+export const isAdminByTaskId = async (taskId: string, context: Context): Promise<boolean> => {
   if (!context.session?.user.id) {
     return false
   }

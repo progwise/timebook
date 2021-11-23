@@ -1,6 +1,6 @@
-import { Context } from '../../context'
+import { Context } from './context'
 
-export const isUserAdminMember = async (projectId: string, context: Context): Promise<boolean> => {
+export const isAdminByProjectId = async (projectId: number, context: Context): Promise<boolean> => {
   if (!context.session?.user.id) {
     return false
   }
@@ -9,7 +9,7 @@ export const isUserAdminMember = async (projectId: string, context: Context): Pr
     select: { role: true },
     where: {
       userId_projectId: {
-        projectId: Number.parseInt(projectId),
+        projectId: projectId,
         userId: context.session.user.id,
       },
     },
