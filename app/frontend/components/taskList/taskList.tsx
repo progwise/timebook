@@ -16,7 +16,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   const handleAddTask = async () => {
     const title = taskNameInputReference.current?.value
     if (!title || title.length < 3) {
-      console.error('text not set')
       return
     }
 

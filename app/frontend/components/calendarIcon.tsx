@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export type CalendarIconChildPosition = 'left' | 'right'
 
 export interface ICalendarIconProps {
@@ -30,7 +32,7 @@ const CalendarIcon = (props: ICalendarIconProps): JSX.Element => {
       className="flex items-center cursor-pointer"
     >
       {props.children && childPosition === 'left' && props.children}
-      <img className={classNames} src={props.src} />
+      <Image className={classNames} src={props.src} />
       {props.children && childPosition === 'right' && props.children}
     </div>
   )
