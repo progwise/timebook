@@ -11,8 +11,8 @@ export const isUserAdminMember = async (taskId: string, context: Context): Promi
       userId: { equals: context.session.user.id },
       project: {
         tasks: {
-          some: { id: taskId }
-        }
+          some: { id: taskId },
+        },
       },
     },
     rejectOnNotFound: true,

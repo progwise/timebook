@@ -35,7 +35,8 @@ table th {
   @apply text-left font-bold mb-3 text-gray-400 text-lg bg-gray-50;
 }
 
-table td, table th {
+table td,
+table th {
   @apply py-1.5 px-1;
 }
 
