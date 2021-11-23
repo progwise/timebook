@@ -6,7 +6,7 @@ const handleOnUnauthenticated = () => {
 }
 
 export const TopNavigation = (): JSX.Element => {
-  const session = useSession({ required: false, onUnauthenticated: handleOnUnauthenticated })
+  const session = useSession()
 
   return (
     <nav className="md:container md:mx-auto flex justify-center">
