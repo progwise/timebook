@@ -1,10 +1,6 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { TopNavigationLink } from './topNavigationLink'
 
-const handleOnUnauthenticated = () => {
-  console.log('handleOnUnauthenticated')
-}
-
 export const TopNavigation = (): JSX.Element => {
   const session = useSession()
 
