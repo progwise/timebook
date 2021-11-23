@@ -7,7 +7,7 @@ import { TaskList } from '../../frontend/components/taskList.tsx/taskList'
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: Number.parseInt(id?.toString() ?? '-1') } })
+  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: id?.toString() ?? '' } })
   const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 

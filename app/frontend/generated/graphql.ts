@@ -32,6 +32,8 @@ export type Mutation = {
   projectUpdate: Project
   /** Create a new Task */
   taskCreate: Task
+  /** Delete a task */
+  taskDelete: Task
 }
 
 export type MutationCreateWorkHourArgs = {
@@ -56,6 +58,10 @@ export type MutationProjectUpdateArgs = {
 
 export type MutationTaskCreateArgs = {
   data: TaskInput
+}
+
+export type MutationTaskDeleteArgs = {
+  id: Scalars['ID']
 }
 
 export type Project = {
@@ -207,6 +213,15 @@ export type TaskCreateMutation = {
   taskCreate: { __typename?: 'Task'; id: string; title: string }
 }
 
+export type TaskDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type TaskDeleteMutation = {
+  __typename?: 'Mutation'
+  taskDelete: { __typename?: 'Task'; id: string; title: string }
+}
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -296,4 +311,16 @@ export const TaskCreateDocument = gql`
 
 export function useTaskCreateMutation() {
   return Urql.useMutation<TaskCreateMutation, TaskCreateMutationVariables>(TaskCreateDocument)
+}
+export const TaskDeleteDocument = gql`
+  mutation taskDelete($id: ID!) {
+    taskDelete(id: $id) {
+      ...Task
+    }
+  }
+  ${TaskFragmentDoc}
+`
+
+export function useTaskDeleteMutation() {
+  return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }

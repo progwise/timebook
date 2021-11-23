@@ -52,6 +52,16 @@ type Mutation {
   Create a new Task
   """
   taskCreate(data: TaskInput!): Task!
+
+  """
+  Delete a task
+  """
+  taskDelete(
+    """
+    id of the task
+    """
+    id: ID!
+  ): Task!
 }
 
 type Project {

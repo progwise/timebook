@@ -86,6 +86,7 @@ export interface NexusGenFieldTypes {
     projectDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
     taskCreate: NexusGenRootTypes['Task'] // Task!
+    taskDelete: NexusGenRootTypes['Task'] // Task!
   }
   Project: {
     // field return type
@@ -126,6 +127,7 @@ export interface NexusGenFieldTypeNames {
     projectDelete: 'Project'
     projectUpdate: 'Project'
     taskCreate: 'Task'
+    taskDelete: 'Task'
   }
   Project: {
     // field return type name
@@ -183,6 +185,10 @@ export interface NexusGenArgTypes {
     taskCreate: {
       // args
       data: NexusGenInputs['TaskInput'] // TaskInput!
+    }
+    taskDelete: {
+      // args
+      id: string // ID!
     }
   }
   Query: {

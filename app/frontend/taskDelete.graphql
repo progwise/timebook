@@ -1,0 +1,5 @@
+mutation taskDelete($id: ID!) {
+  taskDelete(id: $id) {
+    ...Task
+  }
+}
