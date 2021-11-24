@@ -1,0 +1,13 @@
+query project($projectId: ID!) {
+  project(projectId: $projectId) {
+    ...Project
+    tasks {
+      ...Task
+    }
+  }
+}
+
+fragment Task on Task {
+  id
+  title
+}

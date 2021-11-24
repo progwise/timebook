@@ -47,6 +47,21 @@ type Mutation {
     """
     id: ID!
   ): Project!
+
+  """
+  Create a new Task
+  """
+  taskCreate(data: TaskInput!): Task!
+
+  """
+  Delete a task
+  """
+  taskDelete(
+    """
+    id of the task
+    """
+    id: ID!
+  ): Task!
 }
 
 type Project {
@@ -57,6 +72,7 @@ type Project {
   """
   id: ID!
   startDate: Date
+  tasks: [Task!]!
   title: String!
   workHours: [WorkHour!]!
 }
@@ -69,9 +85,38 @@ input ProjectInput {
 
 type Query {
   """
+  Returns a single project
+  """
+  project(
+    """
+    Identifier for the project
+    """
+    projectId: ID!
+  ): Project!
+
+  """
   Returns a list of all projects
   """
   projects: [Project!]!
+}
+
+type Task {
+  """
+  Identifies the task
+  """
+  id: ID!
+  project: Project!
+
+  """
+  The user can identify the task in the UI
+  """
+  title: String!
+  workhours: [WorkHour!]!
+}
+
+input TaskInput {
+  projectId: Int!
+  title: String!
 }
 
 """

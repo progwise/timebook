@@ -1,4 +1,5 @@
 import { objectType } from 'nexus'
+import { Task } from '../task'
 import { WorkHour } from '../workHour'
 
 export const Project = objectType({
@@ -12,6 +13,10 @@ export const Project = objectType({
       type: WorkHour,
       resolve: (project, _arguments, context) =>
         context.prisma.workHour.findMany({ where: { task: { projectId: project.id } } }),
+    })
+    t.list.field('tasks', {
+      type: Task,
+      resolve: (project, _arguments, context) => context.prisma.task.findMany({ where: { projectId: project.id } }),
     })
   },
 })
