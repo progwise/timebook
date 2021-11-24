@@ -4,6 +4,8 @@ import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import InputMask from 'react-input-mask'
 import { Button } from '../button/button'
+import { DeleteProjectModal } from '../deleteProjectModal'
+import { useState } from 'react'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -17,6 +19,7 @@ interface ProjectFormProps {
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { project, onSubmit, onCancel } = props
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
@@ -105,6 +108,18 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         <Button type="submit" variant="primary" disabled={formState.isSubmitting}>
           Save
         </Button>
+        {project ? (
+          <>
+            <DeleteProjectModal
+              open={isDeleteModalOpen}
+              onClose={() => setIsDeleteModalOpen(false)}
+              project={project}
+            />
+            <Button variant="secondary" onClick={() => setIsDeleteModalOpen(true)}>
+              Delete
+            </Button>
+          </>
+        ) : undefined}
       </div>
     </form>
   )
