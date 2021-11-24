@@ -49,8 +49,6 @@ model Task {
   id        String    @id @default(cuid())
   title     String    @db.VarChar(255)
   projectId Int
-  startDate DateTime? @db.Date
-  endDate   DateTime? @db.Date
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

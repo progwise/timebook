@@ -18,7 +18,7 @@ export const TopNavigationLink = (props: TopNavigationLinkProps): JSX.Element =>
 
   if (props.href) {
     return (
-      <Link href={props.href}>
+      <Link href={props.href} passHref>
         <span className={classNames}>{props.children}</span>
       </Link>
     )

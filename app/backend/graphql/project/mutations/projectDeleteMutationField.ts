@@ -1,6 +1,6 @@
 import { idArg, mutationField } from 'nexus'
 import { Project } from '..'
-import { isUserAdminMember } from './isUserAdminMember'
+import { isAdminByProjectId } from '../../isAdminByProjectId'
 
 export const projectDeleteMutationField = mutationField('projectDelete', {
   type: Project,
@@ -8,7 +8,7 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
   args: {
     id: idArg({ description: 'id of the project' }),
   },
-  authorize: async (_source, _arguments, context) => isUserAdminMember(_arguments.id, context),
+  authorize: async (_source, _arguments, context) => isAdminByProjectId(Number.parseInt(_arguments.id), context),
   resolve: (_source, { id }, context) => {
     if (!context.session?.user.id) {
       throw new Error('not authenticated')

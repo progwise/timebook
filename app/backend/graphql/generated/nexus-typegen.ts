@@ -43,6 +43,11 @@ export interface NexusGenInputs {
     start?: NexusGenScalars['Date'] | null // Date
     title: string // String!
   }
+  TaskInput: {
+    // input type
+    projectId: number // Int!
+    title: string // String!
+  }
 }
 
 export interface NexusGenEnums {}
@@ -61,6 +66,7 @@ export interface NexusGenObjects {
   Mutation: {}
   Project: prisma.Project
   Query: {}
+  Task: prisma.Task
   WorkHour: prisma.WorkHour
 }
 
@@ -79,18 +85,29 @@ export interface NexusGenFieldTypes {
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
+    taskCreate: NexusGenRootTypes['Task'] // Task!
+    taskDelete: NexusGenRootTypes['Task'] // Task!
   }
   Project: {
     // field return type
     endDate: NexusGenScalars['Date'] | null // Date
     id: string // ID!
     startDate: NexusGenScalars['Date'] | null // Date
+    tasks: NexusGenRootTypes['Task'][] // [Task!]!
     title: string // String!
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Query: {
     // field return type
+    project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+  }
+  Task: {
+    // field return type
+    id: string // ID!
+    project: NexusGenRootTypes['Project'] // Project!
+    title: string // String!
+    workhours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   WorkHour: {
     // field return type
@@ -109,18 +126,29 @@ export interface NexusGenFieldTypeNames {
     projectCreate: 'Project'
     projectDelete: 'Project'
     projectUpdate: 'Project'
+    taskCreate: 'Task'
+    taskDelete: 'Task'
   }
   Project: {
     // field return type name
     endDate: 'Date'
     id: 'ID'
     startDate: 'Date'
+    tasks: 'Task'
     title: 'String'
     workHours: 'WorkHour'
   }
   Query: {
     // field return type name
+    project: 'Project'
     projects: 'Project'
+  }
+  Task: {
+    // field return type name
+    id: 'ID'
+    project: 'Project'
+    title: 'String'
+    workhours: 'WorkHour'
   }
   WorkHour: {
     // field return type name
@@ -153,6 +181,20 @@ export interface NexusGenArgTypes {
       // args
       data: NexusGenInputs['ProjectInput'] // ProjectInput!
       id: string // ID!
+    }
+    taskCreate: {
+      // args
+      data: NexusGenInputs['TaskInput'] // TaskInput!
+    }
+    taskDelete: {
+      // args
+      id: string // ID!
+    }
+  }
+  Query: {
+    project: {
+      // args
+      projectId: string // ID!
     }
   }
 }
