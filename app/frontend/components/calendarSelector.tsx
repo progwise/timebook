@@ -1,8 +1,9 @@
+import { Popover, Transition } from '@headlessui/react'
 import calendarIcon from '../assets/calendarIcon.svg'
 import backIcon from '../assets/backIcon.svg'
 import forwardIcon from '../assets/forwardIcon.svg'
 import home from '../assets/home.svg'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import CalendarIcon from './calendarIcon'
 
 export const getMonthTitle = (day: Date): string => {
@@ -47,60 +48,30 @@ const DayItem = (props: { day: Date; selectedDate: Date; onClick: (day: Date) =>
   }
 
   return (
-    <div title={title} className={classNames.join(' ')} onClick={() => props.onClick(day)}>
+    <button title={title} className={classNames.join(' ')} onClick={() => props.onClick(day)} type="button">
       {dayString}
-    </div>
+    </button>
   )
 }
 
-export interface ICalendarSelectorProps {
+export interface CalendarSelectorProps {
   onSelectedDateChange?: (newDate: Date) => void
   hideLabel?: boolean
   className?: string
   disabled?: boolean
 }
 
-export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => {
+export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [calendarExpanded, setCalendarExpanded] = useState(false)
 
   const componentNode = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    if (calendarExpanded) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [calendarExpanded])
-
-  const handleClickOutside = (event: MouseEvent) => {
-    // TODO: fix typescript error
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (componentNode.current && event.target && componentNode.current?.contains(event.target)) {
-      // inside click
-      return
-    }
-    // outside click
-    setCalendarExpanded(false)
-  }
-
-  const toggleCalendarExpanded = () => (calendarExpanded ? setCalendarExpanded(false) : setCalendarExpanded(true))
-
   const selectNewDate = (targetDate: Date): void => {
     setSelectedDate(targetDate)
-    if (props.onSelectedDateChange) {
-      props.onSelectedDateChange(targetDate)
-    }
+    props.onSelectedDateChange?.(targetDate)
   }
 
-  const goToToday = () => {
-    selectNewDate(new Date())
-  }
+  const goToToday = () => setSelectedDate(new Date())
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -130,54 +101,76 @@ export const CalendarSelector = (props: ICalendarSelectorProps): JSX.Element => 
   }
 
   const gotoPreviousMonth = () => {
-    selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))
+    setSelectedDate((oldDate) => new Date(oldDate.getFullYear(), oldDate.getMonth() - 1, 1))
   }
 
   const gotoNextMonth = () => {
-    selectNewDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))
+    setSelectedDate((oldDate) => new Date(oldDate.getFullYear(), oldDate.getMonth() + 1, 1))
   }
 
   const monthTitle = getMonthTitle(selectedDate)
 
   return (
     <section className={props.className} ref={componentNode}>
-      <CalendarIcon onClick={toggleCalendarExpanded} className="w-6 h-6" src={calendarIcon} childPosition="right">
-        <>
-          {!props.hideLabel && (
-            <span className="ml-2" title="Display value">
-              {selectedDate.toLocaleDateString()}
-            </span>
-          )}
-        </>
-      </CalendarIcon>
-      {calendarExpanded && !props.disabled && (
-        <section className="text-sm absolute mt-5 border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
-          <header className="flex justify-between p-0 pb-2 font-bold">
-            <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} className="w-5 h-5" />
-            <CalendarIcon title="Goto today" onClick={goToToday} src={home} className="w-5 h-5">
-              <h2 className="ml-2">{monthTitle}</h2>
-            </CalendarIcon>
-            <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} className="w-5 h-5" />
-          </header>
-          <div className="grid grid-cols-7 gap-3">
-            {weekDays.map((weekDay, index) => {
-              const classNames = ['p-1 text-center border-gray-800 border-b']
-              if (index > 4) {
-                classNames.push('text-green-600')
-              }
+      <Popover className="flex justify-center">
+        <Popover.Button>
+          <CalendarIcon src={calendarIcon} childPosition="right">
+            {props.hideLabel ? undefined : (
+              <span className="ml-2" title="Display value">
+                {selectedDate.toLocaleDateString()}
+              </span>
+            )}
+          </CalendarIcon>
+        </Popover.Button>
 
-              return (
-                <div className={classNames.join(' ')} key={index}>
-                  {weekDay}
+        <Transition
+          enter="transition duration-100 ease-out"
+          enterFrom="transform scale-75 opacity-0"
+          enterTo="transform scale-100 opacity-100"
+          leave="transition duration-100 ease-out"
+          leaveFrom="transform scale-100 opacity-100"
+          leaveTo="transform scale-75 opacity-0"
+        >
+          <Popover.Panel className="absolute z-10">
+            {({ close }) => (
+              <section className="text-sm absolute border-2 bg-gray-200 w-80 h-64 rounded-xl p-2 ">
+                <header className="flex justify-between p-0 pb-2 font-bold">
+                  <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
+                  <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>
+                    <h2 className="ml-2">{monthTitle}</h2>
+                  </CalendarIcon>
+                  <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} size={20} />
+                </header>
+                <div className="grid grid-cols-7 gap-3">
+                  {weekDays.map((weekDay, index) => {
+                    const classNames = ['p-1 text-center border-gray-800 border-b']
+                    if (index > 4) {
+                      classNames.push('text-green-600')
+                    }
+
+                    return (
+                      <div className={classNames.join(' ')} key={index}>
+                        {weekDay}
+                      </div>
+                    )
+                  })}
+                  {daysToRender.map((day, index) => (
+                    <DayItem
+                      key={index}
+                      day={day}
+                      selectedDate={selectedDate}
+                      onClick={(date) => {
+                        selectNewDate(date)
+                        close()
+                      }}
+                    />
+                  ))}
                 </div>
-              )
-            })}
-            {daysToRender.map((day, index) => (
-              <DayItem key={index} day={day} selectedDate={selectedDate} onClick={selectNewDate} />
-            ))}
-          </div>
-        </section>
-      )}
+              </section>
+            )}
+          </Popover.Panel>
+        </Transition>
+      </Popover>
     </section>
   )
 }

@@ -2,38 +2,39 @@ import Image from 'next/image'
 
 export type CalendarIconChildPosition = 'left' | 'right'
 
-export interface ICalendarIconProps {
+export interface CalendarIconProps {
   title?: string
   onClick?: () => void
   src: string
   className?: string
   children?: JSX.Element
   childPosition?: CalendarIconChildPosition
+  size?: number
 }
 
-const CalendarIcon = (props: ICalendarIconProps): JSX.Element => {
-  const handleClick = () => {
-    if (props.onClick) {
-      props.onClick()
-    }
-  }
+const CalendarIcon = ({
+  title = 'Calendar icon',
+  onClick,
+  src,
+  className,
+  children,
+  childPosition = 'right',
+  size = 24,
+}: CalendarIconProps): JSX.Element => {
+  let classNames = className
 
-  const childPosition: CalendarIconChildPosition = props.childPosition || 'right'
-  let classNames = props.className
-
-  if (props.onClick) {
+  if (onClick) {
     classNames = classNames + ' opacity-60 hover:opacity-100'
   }
 
   return (
     <div
-      title={props.title && props.title.length > 0 ? props.title : 'Calendar icon'}
-      onClick={handleClick}
-      className="flex items-center cursor-pointer"
+      title={title}
+      onClick={onClick}
+      className={`flex items-center cursor-pointer ${childPosition === 'left' ? 'flex-row' : 'flex-row-reverse'}`}
     >
-      {props.children && childPosition === 'left' && props.children}
-      <Image className={classNames} src={props.src} />
-      {props.children && childPosition === 'right' && props.children}
+      <div>{children}</div>
+      <Image className={classNames} src={src} width={size} height={size} />
     </div>
   )
 }
