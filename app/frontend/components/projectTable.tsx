@@ -1,19 +1,13 @@
 import { useRouter } from 'next/router'
-import { ProjectFragment, useProjectDeleteMutation } from '../generated/graphql'
-import { MouseEvent } from 'react'
+import { ProjectFragment } from '../generated/graphql'
+import { Button } from './button/button'
 
 interface ProjectTableProps {
   projects: Array<ProjectFragment>
 }
 
 export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
-  const [, projectDelete] = useProjectDeleteMutation()
   const router = useRouter()
-
-  const handleDeleteProject = async (event: MouseEvent, project: ProjectFragment) => {
-    event.stopPropagation()
-    await projectDelete({ id: project.id })
-  }
 
   const handleProjectDetails = async (project: ProjectFragment) => {
     await router.push(`/projects/${project.id}`)
@@ -36,13 +30,10 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
               <td className="p-2 border-b-2">
                 {project.startDate} - {project.endDate}
               </td>
-              <td className="flex justify-end flex-wrap gap-x-3 p-2 border-b-2">
-                <button className="btn btn-gray2" onClick={(event) => handleDeleteProject(event, project)}>
-                  Delete
-                </button>
-                <button className="btn btn-gray2" onClick={() => handleProjectDetails(project)}>
+              <td className="flex justify-end flex-wrap p-2 border-b-2">
+                <Button variant="primary" onClick={() => handleProjectDetails(project)}>
                   Details
-                </button>
+                </Button>
               </td>
             </tr>
           )
