@@ -1,5 +1,5 @@
 import { idArg, mutationField } from 'nexus'
-import { Project } from '..'
+import { Project } from '../project'
 import { ProjectInput } from '../projectInput'
 import { isAdminByProjectId } from '../../isAdminByProjectId'
 

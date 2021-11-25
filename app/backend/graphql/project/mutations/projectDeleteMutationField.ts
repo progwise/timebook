@@ -1,5 +1,5 @@
 import { idArg, mutationField } from 'nexus'
-import { Project } from '..'
+import { Project } from '../project'
 import { isAdminByProjectId } from '../../isAdminByProjectId'
 
 export const projectDeleteMutationField = mutationField('projectDelete', {

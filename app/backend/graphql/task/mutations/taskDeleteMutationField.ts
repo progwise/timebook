@@ -1,5 +1,5 @@
 import { idArg, mutationField } from 'nexus'
-import { Task } from '..'
+import { Task } from '../task'
 import { isAdminByTaskId } from '../../isAdminByTaskId'
 
 export const taskDeleteMutationField = mutationField('taskDelete', {
