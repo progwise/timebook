@@ -10,7 +10,7 @@ export const TopNavigation = (): JSX.Element => {
       <TopNavigationLink href="/time">Time</TopNavigationLink>
       <TopNavigationLink href="/projects">Projects</TopNavigationLink>
       <TopNavigationLink href="/reports">Reports</TopNavigationLink>
-      <TopNavigationLink href="/tasks">Tasks</TopNavigationLink>
+      <TopNavigationLink href="/team">Team</TopNavigationLink>
       {session.status === 'authenticated' ? (
         <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
       ) : (
