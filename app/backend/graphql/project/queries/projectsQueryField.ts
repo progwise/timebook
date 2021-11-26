@@ -1,5 +1,5 @@
 import { list, queryField } from 'nexus'
-import { Project } from '..'
+import { Project } from '../project'
 
 export const projectsQueryField = queryField('projects', {
   type: list(Project),

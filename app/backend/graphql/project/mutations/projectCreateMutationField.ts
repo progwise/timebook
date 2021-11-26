@@ -1,5 +1,5 @@
 import { mutationField } from 'nexus'
-import { Project } from '..'
+import { Project } from '../project'
 import { ProjectInput } from '../projectInput'
 
 export const projectCreateMutationField = mutationField('projectCreate', {
