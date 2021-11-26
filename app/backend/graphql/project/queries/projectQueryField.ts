@@ -1,5 +1,5 @@
 import { idArg, queryField } from 'nexus'
-import { Project } from '..'
+import { Project } from '../project'
 
 export const projectQueryField = queryField('project', {
   type: Project,
