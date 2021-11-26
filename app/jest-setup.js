@@ -8,4 +8,3 @@ jest.mock('next/image', () => ({
     return 'Next image stub' // whatever
   },
 }))
-console.log('jest setup done...')
