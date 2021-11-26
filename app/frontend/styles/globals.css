@@ -55,33 +55,3 @@ table tbody tr:nth-child(2n) {
 table tbody tr {
   @apply hover:bg-gray-200;
 }
-
-@layer components {
-  .btn {
-    @apply font-normal py-1 px-4 rounded border border-gray-500 cursor-pointer m-0.5 text-xs;
-  }
-
-  .btn-gray1 {
-    @apply bg-gray-500 text-white;
-  }
-
-  .btn-gray1:hover {
-    @apply bg-gray-700;
-  }
-
-  .btn-gray2 {
-    @apply bg-gray-200 text-gray-800;
-  }
-
-  .btn-gray2:hover {
-    @apply bg-gray-300 text-black;
-  }
-
-  .btn-blue {
-    @apply bg-blue-500 text-white;
-  }
-
-  .btn-blue:hover {
-    @apply bg-blue-700;
-  }
-}
