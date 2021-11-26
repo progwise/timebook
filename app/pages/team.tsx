@@ -12,7 +12,7 @@ const Team = (): JSX.Element => {
             <th>Username</th>
             <th>Email</th>
             <th>Projects</th>
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>
