@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { useProjectsQuery } from '../frontend/generated/graphql'
 import { ProjectTable } from '../frontend/components/projectTable'
+import { Button } from '../frontend/components/button/button'
 
 const Projects = (): JSX.Element => {
   const [{ data, error }] = useProjectsQuery()
@@ -15,14 +16,12 @@ const Projects = (): JSX.Element => {
   return (
     <ProtectedPage>
       <article>
-        <h2 className="flex justify-between">
-          <span>Your projects</span>
-          <span>
-            <button className="btn btn-gray1" onClick={handleAddProject}>
-              Add
-            </button>
-          </span>
-        </h2>
+        <div className="flex justify-between">
+          <h2>Your projects</h2>
+          <Button variant="secondarySlim" onClick={handleAddProject}>
+            Add
+          </Button>
+        </div>
 
         {error && <span>{error.message}</span>}
         {!data?.projects ? <div>...loading</div> : <ProjectTable projects={data.projects} />}
