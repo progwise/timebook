@@ -7,12 +7,7 @@ describe('the hour input control should display ...', () => {
   beforeEach(() => {
     render(
       <>
-        <HourInput
-          workHours={0}
-          onChange={(workHours): void => {
-            console.log(workHours)
-          }}
-        />
+        <HourInput workHours={0} onChange={jest.fn()} />
         <button>Click me!</button>
       </>,
     )

@@ -46,8 +46,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {formState.errors.title && <span>Required</span>}
       </label>
       <div className="flex flex-wrap gap-x-5">
-        <label>
-          <span>Start</span>
+        <div>
+          <label htmlFor="start" className="block pl-0.5 text-gray-500">
+            Start
+          </label>
           <div className="flex items-center gap-x-2">
             <Controller
               control={control}
@@ -60,10 +62,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onBlur={onBlur}
                   onChange={onChange}
                   value={value ?? undefined}
+                  id="start"
                 />
               )}
             />
-
             <CalendarSelector
               disabled={formState.isSubmitting}
               className="flex-shrink-0"
@@ -71,11 +73,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
             />
           </div>
-          {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
-        </label>
+        </div>
+        {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
 
-        <label>
-          <span>End</span>
+        <div>
+          <label htmlFor="end" className="block pl-0.5 text-gray-500">
+            End
+          </label>
           <div className="flex items-center gap-x-2">
             <Controller
               control={control}
@@ -88,6 +92,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onBlur={onBlur}
                   onChange={onChange}
                   value={value ?? undefined}
+                  id="end"
                 />
               )}
             />
@@ -99,7 +104,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             />
           </div>
           {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
-        </label>
+        </div>
       </div>
       <div className="flex justify-center mt-16 gap-2">
         <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
