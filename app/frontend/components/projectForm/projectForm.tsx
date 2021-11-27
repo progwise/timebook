@@ -120,7 +120,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               onClose={() => setIsDeleteModalOpen(false)}
               project={project}
             />
-            <Button variant="redButton" onClick={() => setIsDeleteModalOpen(true)}>
+            <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
               Delete
             </Button>
           </>
