@@ -42,7 +42,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       {isNewProject ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
       <label className="text-gray-500">
         <span>Name</span>
-        <input type="text" disabled={formState.isSubmitting} {...register('title', { required: true })} />
+        <input
+          type="text"
+          disabled={formState.isSubmitting}
+          {...register('title', { required: true })}
+          className="rounded"
+        />
         {formState.errors.title && <span>Required</span>}
       </label>
       <div className="flex flex-wrap gap-x-5">
@@ -63,6 +68,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onChange={onChange}
                   value={value ?? undefined}
                   id="start"
+                  type="text"
+                  className="rounded"
                 />
               )}
             />
@@ -93,6 +100,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onChange={onChange}
                   value={value ?? undefined}
                   id="end"
+                  type="text"
+                  className="rounded"
                 />
               )}
             />
