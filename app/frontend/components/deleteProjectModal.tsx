@@ -24,7 +24,7 @@ export const DeleteProjectModal = ({ onClose, project, open }: DeleteProjectModa
     <Modal
       open={open}
       onClose={onClose}
-      title={`Are you sure you want to delete project ${project?.title}?`}
+      title={`Are you sure you want to delete project ${project.title}?`}
       actions={
         <>
           <Button variant="secondary" onClick={onClose} disabled={projectDeleteState.fetching}>
