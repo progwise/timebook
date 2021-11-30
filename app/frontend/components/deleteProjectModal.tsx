@@ -32,7 +32,7 @@ export const DeleteProjectModal = ({ onClose, project, open }: ModalProps): JSX.
             <Button variant="secondary" onClick={onClose} disabled={projectDeleteState.fetching}>
               Cancel
             </Button>
-            <Button variant="redButton" onClick={handleDeleteProject} disabled={projectDeleteState.fetching}>
+            <Button variant="danger" onClick={handleDeleteProject} disabled={projectDeleteState.fetching}>
               Delete
             </Button>
           </div>
