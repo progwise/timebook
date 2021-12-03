@@ -12,8 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "migrate:dev": "prisma migrate dev",
-    "seed": "prisma db seed --preview-feature",
-    "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
+    "seed": "prisma db seed",
     "graphql:generate": "graphql-codegen"
   },
   "dependencies": {
@@ -75,6 +74,7 @@
     "typescript": "^4.3.5"
   },
   "prisma": {
-    "schema": "backend/prisma/schema.prisma"
+    "schema": "backend/prisma/schema.prisma",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} backend/prisma/seed.ts"
   }
 }
