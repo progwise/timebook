@@ -9,7 +9,7 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
-  previewFeatures = ["referentialActions"]
+  previewFeatures = []
 }
 
 model Project {
@@ -46,8 +46,8 @@ model ProjectMembership {
 }
 
 model Task {
-  id        String    @id @default(cuid())
-  title     String    @db.VarChar(255)
+  id        String @id @default(cuid())
+  title     String @db.VarChar(255)
   projectId Int
 
   createdAt DateTime @default(now())
