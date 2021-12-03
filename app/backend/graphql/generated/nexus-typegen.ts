@@ -67,6 +67,12 @@ export interface NexusGenObjects {
   Project: prisma.Project
   Query: {}
   Task: prisma.Task
+  User: {
+    // root type
+    id?: string | null // ID
+    image?: string | null // String
+    name?: string | null // String
+  }
   WorkHour: prisma.WorkHour
 }
 
@@ -99,8 +105,11 @@ export interface NexusGenFieldTypes {
   }
   Query: {
     // field return type
+    add: string // String!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    user: NexusGenRootTypes['User'] // User!
+    users: NexusGenRootTypes['User'][] // [User!]!
   }
   Task: {
     // field return type
@@ -108,6 +117,12 @@ export interface NexusGenFieldTypes {
     project: NexusGenRootTypes['Project'] // Project!
     title: string // String!
     workhours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  User: {
+    // field return type
+    id: string | null // ID
+    image: string | null // String
+    name: string | null // String
   }
   WorkHour: {
     // field return type
@@ -140,8 +155,11 @@ export interface NexusGenFieldTypeNames {
   }
   Query: {
     // field return type name
+    add: 'String'
     project: 'Project'
     projects: 'Project'
+    user: 'User'
+    users: 'User'
   }
   Task: {
     // field return type name
@@ -149,6 +167,12 @@ export interface NexusGenFieldTypeNames {
     project: 'Project'
     title: 'String'
     workhours: 'WorkHour'
+  }
+  User: {
+    // field return type name
+    id: 'ID'
+    image: 'String'
+    name: 'String'
   }
   WorkHour: {
     // field return type name
@@ -192,6 +216,11 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    add: {
+      // args
+      a: number // Float!
+      b: number // Int!
+    }
     project: {
       // args
       projectId: string // ID!
