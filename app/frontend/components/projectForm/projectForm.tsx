@@ -6,6 +6,7 @@ import InputMask from 'react-input-mask'
 import { Button } from '../button/button'
 import { DeleteProjectModal } from '../deleteProjectModal'
 import { useState } from 'react'
+import { InputField } from '../inputField/inputField'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -42,7 +43,14 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       {isNewProject ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
       <label className="text-gray-500">
         <span>Name</span>
-        <input type="text" disabled={formState.isSubmitting} {...register('title', { required: true })} />
+
+        <InputField
+          variant="primary"
+          disabled={formState.isSubmitting}
+          {...register('title', { required: true })}
+          placeholder="Enter project name"
+        />
+
         {formState.errors.title && <span>Required</span>}
       </label>
       <div className="flex flex-wrap gap-x-5">
