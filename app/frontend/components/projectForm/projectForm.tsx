@@ -71,6 +71,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onChange={onChange}
                   value={value ?? undefined}
                   id="start"
+                  type="text"
+                  className="rounded"
                 />
               )}
             />
@@ -101,6 +103,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onChange={onChange}
                   value={value ?? undefined}
                   id="end"
+                  type="text"
+                  className="rounded"
                 />
               )}
             />
@@ -128,7 +132,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               onClose={() => setIsDeleteModalOpen(false)}
               project={project}
             />
-            <Button variant="redButton" onClick={() => setIsDeleteModalOpen(true)}>
+            <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
               Delete
             </Button>
           </>
