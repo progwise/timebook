@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { TaskFragment, useTaskCreateMutation, useTaskDeleteMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
+import { InputField } from '../inputField/inputField'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
@@ -58,7 +59,8 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       <tfoot>
         <tr>
           <td>
-            <input type="text" ref={taskNameInputReference} />
+            <InputField ref={taskNameInputReference} variant="primary" placeholder="Enter Taskname" />
+
             <Button onClick={handleAddTask} variant="primarySlim">
               Add task
             </Button>
