@@ -105,7 +105,6 @@ export interface NexusGenFieldTypes {
   }
   Query: {
     // field return type
-    add: string // String!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
     user: NexusGenRootTypes['User'] // User!
@@ -155,7 +154,6 @@ export interface NexusGenFieldTypeNames {
   }
   Query: {
     // field return type name
-    add: 'String'
     project: 'Project'
     projects: 'Project'
     user: 'User'
@@ -216,14 +214,13 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    add: {
-      // args
-      a: number // Float!
-      b: number // Int!
-    }
     project: {
       // args
       projectId: string // ID!
+    }
+    user: {
+      // args
+      userId: string // ID!
     }
   }
 }

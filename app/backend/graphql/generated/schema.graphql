@@ -84,8 +84,6 @@ input ProjectInput {
 }
 
 type Query {
-  add(a: Float!, b: Int!): String!
-
   """
   Returns a single project
   """
@@ -100,7 +98,16 @@ type Query {
   Returns a list of all projects
   """
   projects: [Project!]!
-  user: User!
+
+  """
+  Returns a single user
+  """
+  user(
+    """
+    Identifier for the user
+    """
+    userId: ID!
+  ): User!
   users: [User!]!
 }
 

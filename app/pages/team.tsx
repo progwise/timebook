@@ -1,4 +1,3 @@
-import image from 'next/image'
 import { Button } from '../frontend/components/button/button'
 import { useUsersQuery } from '../frontend/generated/graphql'
 
