@@ -23,7 +23,7 @@ const Team = (): JSX.Element => {
           {data?.users.map((user) => (
             <tr key={user.name}>
               <td>
-                <img style={{ width: '20px' }} src={user.image} />
+                <img style={{ width: '20px' }} src={user.image ?? undefined} />
               </td>
               <td>{user.name}</td>
               <td>linus@xyz.de</td>
