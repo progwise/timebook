@@ -132,7 +132,7 @@ model Team {
   id        String   @id @default(cuid())
   title     String
   slug      String   @unique
-  color     Color    @default(BLUE)
+  theme     Theme    @default(BLUE)
   inviteKey String   @unique @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -140,7 +140,7 @@ model Team {
   teamMemberships TeamMembership[]
 }
 
-enum Color {
+enum Theme {
   GRAY
   RED
   YELLOW

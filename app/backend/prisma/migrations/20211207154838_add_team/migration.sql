@@ -1,12 +1,12 @@
 -- CreateEnum
-CREATE TYPE "Color" AS ENUM ('GRAY', 'RED', 'YELLOW', 'GREEN', 'BLUE', 'INDIGO', 'PURPLE', 'PINK');
+CREATE TYPE "Theme" AS ENUM ('GRAY', 'RED', 'YELLOW', 'GREEN', 'BLUE', 'INDIGO', 'PURPLE', 'PINK');
 
 -- CreateTable
 CREATE TABLE "Team" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
-    "color" "Color" NOT NULL DEFAULT E'BLUE',
+    "theme" "Theme" NOT NULL DEFAULT E'BLUE',
     "inviteKey" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
