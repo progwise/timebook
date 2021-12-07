@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
@@ -7,7 +8,8 @@ import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../f
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: id?.toString() ?? '' } })
+  const context = useMemo(() => ({ additionalTypenames: ['Task'] }), [])
+  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: id?.toString() ?? '' }, context })
   const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 
