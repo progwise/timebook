@@ -48,9 +48,17 @@ export interface NexusGenInputs {
     projectId: number // Int!
     title: string // String!
   }
+  TeamInput: {
+    // input type
+    slug: string // String!
+    theme?: NexusGenEnums['Theme'] | null // Theme
+    title: string // String!
+  }
 }
 
-export interface NexusGenEnums {}
+export interface NexusGenEnums {
+  Theme: 'BLUE' | 'GRAY' | 'GREEN' | 'INDIGO' | 'PINK' | 'PURPLE' | 'RED' | 'YELLOW'
+}
 
 export interface NexusGenScalars {
   String: string
@@ -67,6 +75,14 @@ export interface NexusGenObjects {
   Project: prisma.Project
   Query: {}
   Task: prisma.Task
+  Team: {
+    // root type
+    id: string // ID!
+    inviteKey: string // String!
+    slug: string // String!
+    theme: NexusGenEnums['Theme'] // Theme!
+    title: string // String!
+  }
   WorkHour: prisma.WorkHour
 }
 
@@ -76,7 +92,7 @@ export interface NexusGenUnions {}
 
 export type NexusGenRootTypes = NexusGenObjects
 
-export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   Mutation: {
@@ -87,6 +103,10 @@ export interface NexusGenFieldTypes {
     projectUpdate: NexusGenRootTypes['Project'] // Project!
     taskCreate: NexusGenRootTypes['Task'] // Task!
     taskDelete: NexusGenRootTypes['Task'] // Task!
+    teamAcceptInvite: NexusGenRootTypes['Team'] // Team!
+    teamCreate: NexusGenRootTypes['Team'] // Team!
+    teamDelete: NexusGenRootTypes['Team'] // Team!
+    teamUpdate: NexusGenRootTypes['Team'] // Team!
   }
   Project: {
     // field return type
@@ -101,6 +121,9 @@ export interface NexusGenFieldTypes {
     // field return type
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    team: NexusGenRootTypes['Team'] // Team!
+    teamBySlug: NexusGenRootTypes['Team'] // Team!
+    teams: NexusGenRootTypes['Team'][] // [Team!]!
   }
   Task: {
     // field return type
@@ -108,6 +131,14 @@ export interface NexusGenFieldTypes {
     project: NexusGenRootTypes['Project'] // Project!
     title: string // String!
     workhours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  Team: {
+    // field return type
+    id: string // ID!
+    inviteKey: string // String!
+    slug: string // String!
+    theme: NexusGenEnums['Theme'] // Theme!
+    title: string // String!
   }
   WorkHour: {
     // field return type
@@ -128,6 +159,10 @@ export interface NexusGenFieldTypeNames {
     projectUpdate: 'Project'
     taskCreate: 'Task'
     taskDelete: 'Task'
+    teamAcceptInvite: 'Team'
+    teamCreate: 'Team'
+    teamDelete: 'Team'
+    teamUpdate: 'Team'
   }
   Project: {
     // field return type name
@@ -142,6 +177,9 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     project: 'Project'
     projects: 'Project'
+    team: 'Team'
+    teamBySlug: 'Team'
+    teams: 'Team'
   }
   Task: {
     // field return type name
@@ -149,6 +187,14 @@ export interface NexusGenFieldTypeNames {
     project: 'Project'
     title: 'String'
     workhours: 'WorkHour'
+  }
+  Team: {
+    // field return type name
+    id: 'ID'
+    inviteKey: 'String'
+    slug: 'String'
+    theme: 'Theme'
+    title: 'String'
   }
   WorkHour: {
     // field return type name
@@ -190,11 +236,36 @@ export interface NexusGenArgTypes {
       // args
       id: string // ID!
     }
+    teamAcceptInvite: {
+      // args
+      inviteKey: string // String!
+    }
+    teamCreate: {
+      // args
+      data: NexusGenInputs['TeamInput'] // TeamInput!
+    }
+    teamDelete: {
+      // args
+      id: string // ID!
+    }
+    teamUpdate: {
+      // args
+      data: NexusGenInputs['TeamInput'] // TeamInput!
+      id: string // ID!
+    }
   }
   Query: {
     project: {
       // args
       projectId: string // ID!
+    }
+    team: {
+      // args
+      id: string // ID!
+    }
+    teamBySlug: {
+      // args
+      slug: string // String!
     }
   }
 }
@@ -207,7 +278,7 @@ export type NexusGenObjectNames = keyof NexusGenObjects
 
 export type NexusGenInputNames = keyof NexusGenInputs
 
-export type NexusGenEnumNames = never
+export type NexusGenEnumNames = keyof NexusGenEnums
 
 export type NexusGenInterfaceNames = never
 

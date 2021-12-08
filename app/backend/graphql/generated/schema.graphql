@@ -62,6 +62,43 @@ type Mutation {
     """
     id: ID!
   ): Task!
+
+  """
+  Accept an invite to a team
+  """
+  teamAcceptInvite(
+    """
+    Invite key of the team
+    """
+    inviteKey: String!
+  ): Team!
+
+  """
+  Create a new team
+  """
+  teamCreate(data: TeamInput!): Team!
+
+  """
+  Delete a new team
+  """
+  teamDelete(
+    """
+    Id of the team
+    """
+    id: ID!
+  ): Team!
+
+  """
+  Update a new team
+  """
+  teamUpdate(
+    data: TeamInput!
+
+    """
+    Id of the team
+    """
+    id: ID!
+  ): Team!
 }
 
 type Project {
@@ -98,6 +135,31 @@ type Query {
   Returns a list of all projects
   """
   projects: [Project!]!
+
+  """
+  Return a team by an id
+  """
+  team(
+    """
+    Id of the team
+    """
+    id: ID!
+  ): Team!
+
+  """
+  Return a team by a slug
+  """
+  teamBySlug(
+    """
+    slug of the team
+    """
+    slug: String!
+  ): Team!
+
+  """
+  Return all teams
+  """
+  teams: [Team!]!
 }
 
 type Task {
@@ -117,6 +179,57 @@ type Task {
 input TaskInput {
   projectId: Int!
   title: String!
+}
+
+type Team {
+  """
+  Identifier of the team
+  """
+  id: ID!
+  inviteKey: String!
+
+  """
+  Slug that is used in the team URL
+  """
+  slug: String!
+
+  """
+  Color theme of the team
+  """
+  theme: Theme!
+
+  """
+  Title of the team
+  """
+  title: String!
+}
+
+input TeamInput {
+  """
+  Slug that is used in the team URL
+  """
+  slug: String!
+
+  """
+  Color theme of the team
+  """
+  theme: Theme
+
+  """
+  Title of the team
+  """
+  title: String!
+}
+
+enum Theme {
+  BLUE
+  GRAY
+  GREEN
+  INDIGO
+  PINK
+  PURPLE
+  RED
+  YELLOW
 }
 
 """
