@@ -7,6 +7,15 @@ import { TimeScalar } from './scalars/time'
 import { projectCreateMutationField, projectDeleteMutationField, projectUpdateMutationField } from './project/mutations'
 import { taskCreateMutationField, taskDeleteMutationField } from './task'
 import { projectQueryField } from './project/queries/projectQueryField'
+import {
+  teamAcceptInviteMutationField,
+  teamBySlugQueryField,
+  teamCreateMutationField,
+  teamDeleteMutationField,
+  teamQueryField,
+  teamsQueryField,
+  teamUpdateMutationField,
+} from './team'
 
 export const schema = makeSchema({
   types: [
@@ -20,6 +29,14 @@ export const schema = makeSchema({
     projectUpdateMutationField,
     taskCreateMutationField,
     taskDeleteMutationField,
+
+    teamsQueryField,
+    teamQueryField,
+    teamBySlugQueryField,
+    teamAcceptInviteMutationField,
+    teamCreateMutationField,
+    teamUpdateMutationField,
+    teamDeleteMutationField,
   ],
   outputs: {
     typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),

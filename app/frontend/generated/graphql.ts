@@ -34,6 +34,14 @@ export type Mutation = {
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
+  /** Accept an invite to a team */
+  teamAcceptInvite: Team
+  /** Create a new team */
+  teamCreate: Team
+  /** Delete a new team */
+  teamDelete: Team
+  /** Update a new team */
+  teamUpdate: Team
 }
 
 export type MutationCreateWorkHourArgs = {
@@ -64,6 +72,23 @@ export type MutationTaskDeleteArgs = {
   id: Scalars['ID']
 }
 
+export type MutationTeamAcceptInviteArgs = {
+  inviteKey: Scalars['String']
+}
+
+export type MutationTeamCreateArgs = {
+  data: TeamInput
+}
+
+export type MutationTeamDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationTeamUpdateArgs = {
+  data: TeamInput
+  id: Scalars['ID']
+}
+
 export type Project = {
   __typename?: 'Project'
   endDate?: Maybe<Scalars['Date']>
@@ -87,10 +112,24 @@ export type Query = {
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+  /** Return a team by an id */
+  team: Team
+  /** Return a team by a slug */
+  teamBySlug: Team
+  /** Return all teams */
+  teams: Array<Team>
 }
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryTeamArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryTeamBySlugArgs = {
+  slug: Scalars['String']
 }
 
 export type Task = {
@@ -106,6 +145,39 @@ export type Task = {
 export type TaskInput = {
   projectId: Scalars['Int']
   title: Scalars['String']
+}
+
+export type Team = {
+  __typename?: 'Team'
+  /** Identifier of the team */
+  id: Scalars['ID']
+  inviteKey: Scalars['String']
+  /** Slug that is used in the team URL */
+  slug: Scalars['String']
+  /** Color theme of the team */
+  theme: Theme
+  /** Title of the team */
+  title: Scalars['String']
+}
+
+export type TeamInput = {
+  /** Slug that is used in the team URL */
+  slug: Scalars['String']
+  /** Color theme of the team */
+  theme?: Maybe<Theme>
+  /** Title of the team */
+  title: Scalars['String']
+}
+
+export enum Theme {
+  Blue = 'BLUE',
+  Gray = 'GRAY',
+  Green = 'GREEN',
+  Indigo = 'INDIGO',
+  Pink = 'PINK',
+  Purple = 'PURPLE',
+  Red = 'RED',
+  Yellow = 'YELLOW',
 }
 
 export type WorkHour = {
