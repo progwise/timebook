@@ -5,6 +5,7 @@ query users {
 }
 
 fragment User on User {
+  id
   name
   image
 }

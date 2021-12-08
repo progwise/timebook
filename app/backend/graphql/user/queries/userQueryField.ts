@@ -12,7 +12,7 @@ export const userQueryField = queryField('user', {
     if (!context.session?.user.id) {
       throw new Error('User not authenticated')
     }
-    return context.prisma.user.findFirst({
+    return context.prisma.user.findUnique({
       where: {
         id: _arguments.userId,
       },

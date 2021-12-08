@@ -83,22 +83,21 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
-  add: Scalars['String']
   /** Returns a single project */
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+  /** Returns a single user */
   user: User
   users: Array<User>
 }
 
-export type QueryAddArgs = {
-  a: Scalars['Float']
-  b: Scalars['Int']
-}
-
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryUserArgs = {
+  userId: Scalars['ID']
 }
 
 export type Task = {
@@ -241,10 +240,20 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>
 
 export type UsersQuery = {
   __typename?: 'Query'
-  users: Array<{ __typename?: 'User'; name?: string | null | undefined; image?: string | null | undefined }>
+  users: Array<{
+    __typename?: 'User'
+    id?: string | null | undefined
+    name?: string | null | undefined
+    image?: string | null | undefined
+  }>
 }
 
-export type UserFragment = { __typename?: 'User'; name?: string | null | undefined; image?: string | null | undefined }
+export type UserFragment = {
+  __typename?: 'User'
+  id?: string | null | undefined
+  name?: string | null | undefined
+  image?: string | null | undefined
+}
 
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
@@ -262,6 +271,7 @@ export const ProjectFragmentDoc = gql`
 `
 export const UserFragmentDoc = gql`
   fragment User on User {
+    id
     name
     image
   }
