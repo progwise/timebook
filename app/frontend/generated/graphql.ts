@@ -112,6 +112,12 @@ export type Query = {
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+  /** Return a team by an id */
+  team: Team
+  /** Return a team by a slug */
+  teamBySlug: Team
+  /** Return all teams */
+  teams: Array<Team>
   /** Returns a single user */
   user: User
   users: Array<User>
@@ -119,6 +125,14 @@ export type Query = {
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryTeamArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryTeamBySlugArgs = {
+  slug: Scalars['String']
 }
 
 export type QueryUserArgs = {
@@ -175,7 +189,7 @@ export enum Theme {
 
 export type User = {
   __typename?: 'User'
-  id?: Maybe<Scalars['ID']>
+  id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
 }
@@ -298,17 +312,12 @@ export type UsersQueryVariables = Exact<{ [key: string]: never }>
 
 export type UsersQuery = {
   __typename?: 'Query'
-  users: Array<{
-    __typename?: 'User'
-    id?: string | null | undefined
-    name?: string | null | undefined
-    image?: string | null | undefined
-  }>
+  users: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined; image?: string | null | undefined }>
 }
 
 export type UserFragment = {
   __typename?: 'User'
-  id?: string | null | undefined
+  id: string
   name?: string | null | undefined
   image?: string | null | undefined
 }
