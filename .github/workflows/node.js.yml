@@ -6,10 +6,10 @@ name: Node.js CI
 on:
   push:
     branches:
-      - '**'        # matches every branch
-      - '!main'   # excludes master
+      - "**" # matches every branch
+      - "!main" # excludes master
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -18,14 +18,14 @@ jobs:
       run:
         working-directory: ./app
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
 
   eslint:
     runs-on: ubuntu-latest
@@ -33,13 +33,13 @@ jobs:
       run:
         working-directory: ./app
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-    - run: npm ci
-    - run: npm run lint
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run lint
 
   prettier:
     runs-on: ubuntu-latest
@@ -47,10 +47,25 @@ jobs:
       run:
         working-directory: ./app
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '16.x'
-    - run: npm ci
-    - run: npm run format:check
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run format:check
+
+  graphqlCodeGenerator:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: npm ci
+      - run: npm run graphql:generate
+      - run: node .ci/check-graphql-generator
