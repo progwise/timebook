@@ -1,12 +1,16 @@
 import path from 'path'
 import { fieldAuthorizePlugin, makeSchema } from 'nexus'
-import { projectsQueryField } from './project'
+import {
+  projectsQueryField,
+  projectQueryField,
+  projectCreateMutationField,
+  projectDeleteMutationField,
+  projectUpdateMutationField,
+} from './project'
 import { createWorkHourMutationField } from './workHour'
-import { DateScalar } from './scalars/date'
-import { TimeScalar } from './scalars/time'
-import { projectCreateMutationField, projectDeleteMutationField, projectUpdateMutationField } from './project/mutations'
+import { DateScalar, TimeScalar } from './scalars'
 import { taskCreateMutationField, taskDeleteMutationField } from './task'
-import { projectQueryField } from './project/queries/projectQueryField'
+import { usersQeryField, userQueryField } from './user'
 import {
   teamAcceptInviteMutationField,
   teamBySlugQueryField,
@@ -29,7 +33,8 @@ export const schema = makeSchema({
     projectUpdateMutationField,
     taskCreateMutationField,
     taskDeleteMutationField,
-
+    userQueryField,
+    usersQeryField,
     teamsQueryField,
     teamQueryField,
     teamBySlugQueryField,

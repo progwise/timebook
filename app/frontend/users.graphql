@@ -1,0 +1,11 @@
+query users {
+  users {
+    ...User
+  }
+}
+
+fragment User on User {
+  id
+  name
+  image
+}
