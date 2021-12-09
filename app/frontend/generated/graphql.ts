@@ -118,6 +118,9 @@ export type Query = {
   teamBySlug: Team
   /** Return all teams */
   teams: Array<Team>
+  /** Returns a single user */
+  user: User
+  users: Array<User>
 }
 
 export type QueryProjectArgs = {
@@ -130,6 +133,10 @@ export type QueryTeamArgs = {
 
 export type QueryTeamBySlugArgs = {
   slug: Scalars['String']
+}
+
+export type QueryUserArgs = {
+  userId: Scalars['ID']
 }
 
 export type Task = {
@@ -178,6 +185,13 @@ export enum Theme {
   Purple = 'PURPLE',
   Red = 'RED',
   Yellow = 'YELLOW',
+}
+
+export type User = {
+  __typename?: 'User'
+  id: Scalars['ID']
+  image?: Maybe<Scalars['String']>
+  name?: Maybe<Scalars['String']>
 }
 
 export type WorkHour = {
@@ -294,6 +308,20 @@ export type TaskDeleteMutation = {
   taskDelete: { __typename?: 'Task'; id: string; title: string }
 }
 
+export type UsersQueryVariables = Exact<{ [key: string]: never }>
+
+export type UsersQuery = {
+  __typename?: 'Query'
+  users: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined; image?: string | null | undefined }>
+}
+
+export type UserFragment = {
+  __typename?: 'User'
+  id: string
+  name?: string | null | undefined
+  image?: string | null | undefined
+}
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -306,6 +334,13 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
+  }
+`
+export const UserFragmentDoc = gql`
+  fragment User on User {
+    id
+    name
+    image
   }
 `
 export const ProjectDocument = gql`
@@ -395,4 +430,16 @@ export const TaskDeleteDocument = gql`
 
 export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
+}
+export const UsersDocument = gql`
+  query users {
+    users {
+      ...User
+    }
+  }
+  ${UserFragmentDoc}
+`
+
+export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options })
 }

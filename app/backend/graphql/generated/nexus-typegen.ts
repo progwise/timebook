@@ -83,6 +83,12 @@ export interface NexusGenObjects {
     theme: NexusGenEnums['Theme'] // Theme!
     title: string // String!
   }
+  User: {
+    // root type
+    id: string // ID!
+    image?: string | null // String
+    name?: string | null // String
+  }
   WorkHour: prisma.WorkHour
 }
 
@@ -124,6 +130,8 @@ export interface NexusGenFieldTypes {
     team: NexusGenRootTypes['Team'] // Team!
     teamBySlug: NexusGenRootTypes['Team'] // Team!
     teams: NexusGenRootTypes['Team'][] // [Team!]!
+    user: NexusGenRootTypes['User'] // User!
+    users: NexusGenRootTypes['User'][] // [User!]!
   }
   Task: {
     // field return type
@@ -139,6 +147,12 @@ export interface NexusGenFieldTypes {
     slug: string // String!
     theme: NexusGenEnums['Theme'] // Theme!
     title: string // String!
+  }
+  User: {
+    // field return type
+    id: string // ID!
+    image: string | null // String
+    name: string | null // String
   }
   WorkHour: {
     // field return type
@@ -180,6 +194,8 @@ export interface NexusGenFieldTypeNames {
     team: 'Team'
     teamBySlug: 'Team'
     teams: 'Team'
+    user: 'User'
+    users: 'User'
   }
   Task: {
     // field return type name
@@ -195,6 +211,12 @@ export interface NexusGenFieldTypeNames {
     slug: 'String'
     theme: 'Theme'
     title: 'String'
+  }
+  User: {
+    // field return type name
+    id: 'ID'
+    image: 'String'
+    name: 'String'
   }
   WorkHour: {
     // field return type name
@@ -266,6 +288,10 @@ export interface NexusGenArgTypes {
     teamBySlug: {
       // args
       slug: string // String!
+    }
+    user: {
+      // args
+      userId: string // ID!
     }
   }
 }
