@@ -9,7 +9,12 @@ const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['Task'] }), [])
-  const [{ data, fetching }] = useProjectQuery({ variables: { projectId: id?.toString() ?? '' }, context })
+  const [{ data, fetching }] = useProjectQuery({
+    variables: { projectId: id?.toString() ?? '' },
+    context,
+    pause: !router.isReady,
+  })
+
   const selectedProject = data?.project
   const [, projectUpdate] = useProjectUpdateMutation()
 
@@ -30,7 +35,7 @@ const ProjectDetails = (): JSX.Element => {
     await router.push('/projects')
   }
 
-  if (fetching) {
+  if (!router.isReady || fetching) {
     return <div>Loading...</div>
   }
 
