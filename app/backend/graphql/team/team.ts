@@ -1,4 +1,5 @@
 import { objectType } from 'nexus'
+import { User } from '../user'
 import { Theme } from './theme'
 
 export const Team = objectType({
@@ -12,5 +13,13 @@ export const Team = objectType({
       description: 'Color theme of the team',
     })
     t.string('inviteKey')
+    t.list.field('members', {
+      type: User,
+      description: 'All members of the team',
+      resolve: (team, _arguments, context) =>
+        context.prisma.user.findMany({
+          where: { teamMemberships: { some: { teamId: team.id } } },
+        }),
+    })
   },
 })
