@@ -17,8 +17,7 @@ export const InputField = React.forwardRef(
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
-      primary:
-        'font-small px-2 py-1 border-gray-200 hover:border-black focus:border-black disabled:bg-gray-300 disabled:border-black',
+      primary: 'font-small px-2 py-1 border-gray-200 disabled:bg-gray-300 disabled:border-black',
     }[variant]
 
     return (
