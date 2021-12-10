@@ -120,6 +120,7 @@ export type Query = {
   teams: Array<Team>
   /** Returns a single user */
   user: User
+  /** @deprecated Use members field on team type instead */
   users: Array<User>
 }
 
@@ -159,6 +160,8 @@ export type Team = {
   /** Identifier of the team */
   id: Scalars['ID']
   inviteKey: Scalars['String']
+  /** All members of the team */
+  members: Array<User>
   /** Slug that is used in the team URL */
   slug: Scalars['String']
   /** Color theme of the team */

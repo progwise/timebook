@@ -144,6 +144,7 @@ export interface NexusGenFieldTypes {
     // field return type
     id: string // ID!
     inviteKey: string // String!
+    members: NexusGenRootTypes['User'][] // [User!]!
     slug: string // String!
     theme: NexusGenEnums['Theme'] // Theme!
     title: string // String!
@@ -208,6 +209,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     id: 'ID'
     inviteKey: 'String'
+    members: 'User'
     slug: 'String'
     theme: 'Theme'
     title: 'String'

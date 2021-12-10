@@ -170,7 +170,7 @@ type Query {
     """
     userId: ID!
   ): User!
-  users: [User!]!
+  users: [User!]! @deprecated(reason: "Use members field on team type instead")
 }
 
 type Task {
@@ -198,6 +198,11 @@ type Team {
   """
   id: ID!
   inviteKey: String!
+
+  """
+  All members of the team
+  """
+  members: [User!]!
 
   """
   Slug that is used in the team URL
