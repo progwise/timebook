@@ -65,7 +65,7 @@
     "eslint-plugin-unicorn": "^35.0.0",
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
-    "postcss": "^8.4.1",
+    "postcss": "^8.4.4",
     "prettier": "^2.3.2",
     "prisma": "^3.6.0",
     "simple-git": "^2.48.0",
