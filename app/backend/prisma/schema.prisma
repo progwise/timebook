@@ -138,6 +138,7 @@ model Team {
   updatedAt DateTime @updatedAt
 
   teamMemberships TeamMembership[]
+  customers       Customer[]
 }
 
 enum Theme {
@@ -161,4 +162,14 @@ model TeamMembership {
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, teamId])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teamId    String
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }

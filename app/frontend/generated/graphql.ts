@@ -20,10 +20,29 @@ export type Scalars = {
   Time: string
 }
 
+export type Customer = {
+  __typename?: 'Customer'
+  /** Identifier of the customer */
+  id: Scalars['ID']
+  /** Title of the customer */
+  title: Scalars['String']
+}
+
+export type CustomerInput = {
+  /** Title of the customer */
+  title: Scalars['String']
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   /** Create a new WorkHour */
   createWorkHour: WorkHour
+  /** Create a new customer for a team */
+  customerCreate: Customer
+  /** Delete a customer */
+  customerDelete: Customer
+  /** Update a customer */
+  customerUpdate: Customer
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
@@ -49,6 +68,20 @@ export type MutationCreateWorkHourArgs = {
   date: Scalars['Date']
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type MutationCustomerCreateArgs = {
+  data: CustomerInput
+  teamId: Scalars['ID']
+}
+
+export type MutationCustomerDeleteArgs = {
+  customerId: Scalars['ID']
+}
+
+export type MutationCustomerUpdateArgs = {
+  customerId: Scalars['ID']
+  data: CustomerInput
 }
 
 export type MutationProjectCreateArgs = {
@@ -108,6 +141,8 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  /** Returns a single customer */
+  customer: Customer
   /** Returns a single project */
   project: Project
   /** Returns a list of all projects */
@@ -122,6 +157,10 @@ export type Query = {
   user: User
   /** @deprecated Use members field on team type instead */
   users: Array<User>
+}
+
+export type QueryCustomerArgs = {
+  customerId: Scalars['ID']
 }
 
 export type QueryProjectArgs = {
@@ -157,6 +196,8 @@ export type TaskInput = {
 
 export type Team = {
   __typename?: 'Team'
+  /** List of all customers of the team */
+  customers: Array<Customer>
   /** Identifier of the team */
   id: Scalars['ID']
   inviteKey: Scalars['String']
