@@ -1,4 +1,5 @@
 import { objectType } from 'nexus'
+import { Customer } from '../customer'
 import { User } from '../user'
 import { Theme } from './theme'
 
@@ -20,6 +21,11 @@ export const Team = objectType({
         context.prisma.user.findMany({
           where: { teamMemberships: { some: { teamId: team.id } } },
         }),
+    })
+    t.list.field('customers', {
+      type: Customer,
+      description: 'List of all customers of the team',
+      resolve: (team, _arguments, context) => context.prisma.customer.findMany({ where: { teamId: team.id } }),
     })
   },
 })
