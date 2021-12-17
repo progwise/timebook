@@ -208,6 +208,31 @@ export type WorkHour = {
   project: Project
 }
 
+export type CreateWorkHourMutationVariables = Exact<{
+  duration: Scalars['Int']
+  taskId: Scalars['ID']
+  date: Scalars['Date']
+  comment?: InputMaybe<Scalars['String']>
+}>
+
+export type CreateWorkHourMutation = {
+  __typename?: 'Mutation'
+  createWorkHour: {
+    __typename?: 'WorkHour'
+    id: string
+    comment?: string | null | undefined
+    date: string
+    duration: number
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null | undefined
+      endDate?: string | null | undefined
+    }
+  }
+}
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -236,6 +261,7 @@ export type ProjectsQuery = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }>
 }
 
@@ -245,6 +271,7 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null | undefined
   endDate?: string | null | undefined
+  tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
 }
 
 export type ProjectCreateMutationVariables = Exact<{
@@ -259,6 +286,7 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -274,6 +302,7 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -290,6 +319,7 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -337,7 +367,11 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
+    tasks {
+      ...Task
+    }
   }
+  ${TaskFragmentDoc}
 `
 export const UserFragmentDoc = gql`
   fragment User on User {
@@ -346,6 +380,26 @@ export const UserFragmentDoc = gql`
     image
   }
 `
+export const CreateWorkHourDocument = gql`
+  mutation createWorkHour($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
+    createWorkHour(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
+      id
+      comment
+      date
+      duration
+      project {
+        id
+        title
+        startDate
+        endDate
+      }
+    }
+  }
+`
+
+export function useCreateWorkHourMutation() {
+  return Urql.useMutation<CreateWorkHourMutation, CreateWorkHourMutationVariables>(CreateWorkHourDocument)
+}
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {

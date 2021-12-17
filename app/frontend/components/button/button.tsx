@@ -5,6 +5,7 @@ interface ButtonProps {
   onClick?: () => void
   children: React.ReactNode
   tooltip?: string
+  form?: string
 }
 
 export const Button = ({
@@ -13,6 +14,7 @@ export const Button = ({
   type = 'button',
   tooltip,
   variant,
+  form,
   onClick,
 }: ButtonProps): JSX.Element => {
   const variantClassName: string = {
@@ -31,6 +33,7 @@ export const Button = ({
       type={type}
       onClick={onClick}
       title={tooltip}
+      form={form}
     >
       {children}
     </button>

@@ -9,4 +9,7 @@ fragment Project on Project {
   title
   startDate
   endDate
+  tasks {
+    ...Task
+  }
 }
