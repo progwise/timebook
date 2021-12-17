@@ -3,6 +3,9 @@ import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInp
 import { CalendarSelector } from '../frontend/components/calendarSelector'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
+import { BookWorkHourModal } from '../frontend/components/bookWorkHourModal'
+import { Button } from '../frontend/components/button/button'
+import { BiPlus } from 'react-icons/bi'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
@@ -22,6 +25,8 @@ const Time = (): JSX.Element => {
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
   const [{ data }] = useProjectsQuery()
+
+  const [isBookWorkHourModalOpen, setIsBookWorkHourModalOpen] = useState(false)
 
   const getNewDayEntry = (weekday: number) => ({
     date: getDateForWeekday(selectedDate, weekday),
@@ -90,67 +95,75 @@ const Time = (): JSX.Element => {
   }
 
   return (
-    <ProtectedPage>
-      <article>
-        <h2>Your timetable</h2>
-        <div>
-          <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
-        </div>
+    <div>
+      <BookWorkHourModal open={isBookWorkHourModalOpen} onClose={() => setIsBookWorkHourModalOpen(false)} />
+      <div className="flex flex-col items-end">
+        <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+          <BiPlus className="flex items-end text-3xl" />
+        </Button>
+      </div>
+      <ProtectedPage>
+        <article>
+          <h2>Your timetable</h2>
+          <div>
+            <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
+          </div>
 
-        <table id="timeTable" className="w-full table-auto">
-          <thead>
-            <tr>
-              <th>&nbsp;</th>
-              <th colSpan={3} className="text-left">
-                {getDateForWeekday(selectedDate, 1).toLocaleDateString()}
-              </th>
-              <th />
-              <th colSpan={3} className="text-right">
-                {getDateForWeekday(selectedDate, 7).toLocaleDateString()}
-              </th>
-            </tr>
-            <tr>
-              <ColumnHeader>&nbsp;</ColumnHeader>
-              {datesOfTheWeek.map((day, index) =>
-                day.toLocaleDateString() === new Date().toLocaleDateString() ? (
-                  <ColumnHeader key={index} className="text-green-600">
-                    {getTitleForWeekday(day)}
-                  </ColumnHeader>
-                ) : (
-                  <ColumnHeader key={index}>{getTitleForWeekday(day)}</ColumnHeader>
-                ),
-              )}
-            </tr>
-          </thead>
+          <table id="timeTable" className="w-full table-auto">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th colSpan={3} className="text-left">
+                  {getDateForWeekday(selectedDate, 1).toLocaleDateString()}
+                </th>
+                <th />
+                <th colSpan={3} className="text-right">
+                  {getDateForWeekday(selectedDate, 7).toLocaleDateString()}
+                </th>
+              </tr>
+              <tr>
+                <ColumnHeader>&nbsp;</ColumnHeader>
+                {datesOfTheWeek.map((day, index) =>
+                  day.toLocaleDateString() === new Date().toLocaleDateString() ? (
+                    <ColumnHeader key={index} className="text-green-600">
+                      {getTitleForWeekday(day)}
+                    </ColumnHeader>
+                  ) : (
+                    <ColumnHeader key={index}>{getTitleForWeekday(day)}</ColumnHeader>
+                  ),
+                )}
+              </tr>
+            </thead>
 
-          <tbody>
-            {timeData.map((timeEntry) => (
-              <tr key={timeEntry.project.id}>
-                <td>{timeEntry.project.title}</td>
-                {timeEntry.times.map(({ date, workHours }, index) => (
-                  <td className="pl-2 pr-2 min-w-min" key={index}>
-                    <HourInput
-                      onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
-                      workHours={workHours}
-                    />
+            <tbody>
+              {timeData.map((timeEntry) => (
+                <tr key={timeEntry.project.id}>
+                  <td>{timeEntry.project.title}</td>
+                  {timeEntry.times.map(({ date, workHours }, index) => (
+                    <td className="pl-2 pr-2 min-w-min" key={index}>
+                      <HourInput
+                        onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
+                        workHours={workHours}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td />
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <td className="text-center" key={index}>
+                    {getFormattedWorkHours(getWeekdayDurationSum((index + 1) % 7))}
                   </td>
                 ))}
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td />
-              {Array.from({ length: 7 }).map((_, index) => (
-                <td className="text-center" key={index}>
-                  {getFormattedWorkHours(getWeekdayDurationSum((index + 1) % 7))}
-                </td>
-              ))}
-            </tr>
-          </tfoot>
-        </table>
-      </article>
-    </ProtectedPage>
+            </tfoot>
+          </table>
+        </article>
+      </ProtectedPage>
+    </div>
   )
 }
 
