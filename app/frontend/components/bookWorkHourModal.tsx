@@ -13,7 +13,7 @@ interface WorkHourForm {
   projectId: string
   taskId?: string
   duration: number
-  comment: string
+  comment?: string
 }
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
