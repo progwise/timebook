@@ -1,5 +1,4 @@
 import { Button } from '../frontend/components/button/button'
-import { InputField } from '../frontend/components/inputField/inputField'
 import { TeamForm } from '../frontend/components/teamForm/teamForm'
 import { useUsersQuery } from '../frontend/generated/graphql'
 
@@ -9,7 +8,7 @@ const Team = (): JSX.Element => {
     <>
       <article>
         <h2>Team Details</h2>
-        <TeamForm></TeamForm>
+        <TeamForm />
       </article>
       <article>
         <h2 className="flexj justify-between">
