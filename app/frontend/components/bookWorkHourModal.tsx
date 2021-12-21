@@ -1,12 +1,15 @@
+import { format } from 'date-fns'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphql'
 import { Button } from './button/button'
 import { Modal } from './modal'
+//import { format } from 'date-fns'
 
 interface BookWorkHourModalProps {
   open: boolean
   onClose: () => void
+  selectedDate: Date
 }
 
 interface WorkHourForm {
@@ -17,7 +20,7 @@ interface WorkHourForm {
 }
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
-  const { open, onClose } = props
+  const { open, onClose, selectedDate } = props
   const [{ data }] = useProjectsQuery()
   const {
     register,
@@ -32,7 +35,13 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     if (data.taskId === undefined) {
       throw new Error('Task not selected')
     }
-    const bookResult = await bookWorkHour({ duration: data.duration, taskId: data.taskId, date: '2021-12-17' })
+    const bookResult = await bookWorkHour({
+      duration: data.duration,
+      taskId: data.taskId,
+      // eslint-disable-next-line unicorn/consistent-destructuring
+      date: format(selectedDate, 'yyyy-MM-dd'),
+      comment: data.comment,
+    })
 
     if (!bookResult.error) {
       onClose()
