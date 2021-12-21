@@ -3,6 +3,7 @@
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
@@ -45,7 +46,7 @@ export type Mutation = {
 }
 
 export type MutationCreateWorkHourArgs = {
-  comment?: Maybe<Scalars['String']>
+  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   duration: Scalars['Int']
   taskId: Scalars['ID']
@@ -101,8 +102,8 @@ export type Project = {
 }
 
 export type ProjectInput = {
-  end?: Maybe<Scalars['Date']>
-  start?: Maybe<Scalars['Date']>
+  end?: InputMaybe<Scalars['Date']>
+  start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
 }
 
@@ -174,7 +175,7 @@ export type TeamInput = {
   /** Slug that is used in the team URL */
   slug: Scalars['String']
   /** Color theme of the team */
-  theme?: Maybe<Theme>
+  theme?: InputMaybe<Theme>
   /** Title of the team */
   title: Scalars['String']
 }

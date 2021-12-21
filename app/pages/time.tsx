@@ -96,7 +96,11 @@ const Time = (): JSX.Element => {
 
   return (
     <div>
-      <BookWorkHourModal open={isBookWorkHourModalOpen} onClose={() => setIsBookWorkHourModalOpen(false)} />
+      <BookWorkHourModal
+        selectedDate={selectedDate}
+        open={isBookWorkHourModalOpen}
+        onClose={() => setIsBookWorkHourModalOpen(false)}
+      />
       <div className="flex flex-col items-end">
         <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
           <BiPlus className="flex items-end text-3xl" />
