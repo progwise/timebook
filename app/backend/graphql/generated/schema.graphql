@@ -340,4 +340,9 @@ type WorkHour {
   """
   id: ID!
   project: Project!
+
+  """
+  Task for which the working hour was booked
+  """
+  task: Task!
 }
