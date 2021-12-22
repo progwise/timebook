@@ -147,7 +147,7 @@ export type Query = {
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
-  /** Return a team by an id */
+  /** Return team by slug provided in the api route (/api/[teamSlug]/graphql) */
   team: Team
   /** Return a team by a slug */
   teamBySlug: Team
@@ -165,10 +165,6 @@ export type QueryCustomerArgs = {
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
-}
-
-export type QueryTeamArgs = {
-  id: Scalars['ID']
 }
 
 export type QueryTeamBySlugArgs = {

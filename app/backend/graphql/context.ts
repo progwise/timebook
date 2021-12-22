@@ -6,6 +6,7 @@ import { getSession } from 'next-auth/react'
 export interface Context {
   prisma: PrismaClient
   session: Session | null
+  teamSlug?: string
 }
 
 // from https://www.prisma.io/docs/support/help-articles/nextjs-prisma-client-dev-practices
@@ -22,5 +23,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const context = async ({ req: request }: { req: NextApiRequest }): Promise<Context> => {
   const session = await getSession({ req: request })
-  return { prisma, session }
+  const teamSlug: string | undefined = request.query.teamSlug?.toString()
+
+  return { prisma, session, teamSlug }
 }
