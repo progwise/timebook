@@ -96,23 +96,17 @@ const Time = (): JSX.Element => {
 
   return (
     <div>
-      <BookWorkHourModal
-        selectedDate={selectedDate}
-        open={isBookWorkHourModalOpen}
-        onClose={() => setIsBookWorkHourModalOpen(false)}
-      />
-      <div className="flex flex-col items-end">
-        <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
-          <BiPlus className="flex items-end text-3xl" />
-        </Button>
-      </div>
       <ProtectedPage>
+        <div className="flex flex-col items-end">
+          <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+            <BiPlus className="flex items-end text-3xl" />
+          </Button>
+        </div>
         <article>
           <h2>Your timetable</h2>
           <div>
             <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
           </div>
-
           <table id="timeTable" className="w-full table-auto">
             <thead>
               <tr>
@@ -138,7 +132,6 @@ const Time = (): JSX.Element => {
                 )}
               </tr>
             </thead>
-
             <tbody>
               {timeData.map((timeEntry) => (
                 <tr key={timeEntry.project.id}>
@@ -167,6 +160,11 @@ const Time = (): JSX.Element => {
           </table>
         </article>
       </ProtectedPage>
+      <BookWorkHourModal
+        selectedDate={selectedDate}
+        open={isBookWorkHourModalOpen}
+        onClose={() => setIsBookWorkHourModalOpen(false)}
+      />
     </div>
   )
 }

@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphql'
 import { Button } from './button/button'
+import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
-//import { format } from 'date-fns'
 
 interface BookWorkHourModalProps {
   open: boolean
@@ -38,7 +38,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     const bookResult = await bookWorkHour({
       duration: data.duration,
       taskId: data.taskId,
-      // eslint-disable-next-line unicorn/consistent-destructuring
       date: format(selectedDate, 'yyyy-MM-dd'),
       comment: data.comment,
     })
@@ -61,7 +60,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     <Modal
       open={open}
       onClose={onClose}
-      title={'New Entry'}
+      title="New Entry"
       actions={
         <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
           Submit
@@ -83,7 +82,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </select>
         </label>
         <label>
-          <select className="w-72 rounded-md" {...register('taskId')}>
+          <select className="w-72 rounded-md" {...(register('taskId'), { required: true })}>
             {selectedProject?.tasks.map((task) => {
               return (
                 <option value={task.id} key={task.id}>
@@ -94,10 +93,14 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </select>
         </label>
         <label>
-          <input className="w-72 rounded-md" type="text" {...register('duration', { valueAsNumber: true })} />
+          <InputField
+            variant="primary"
+            placeholder="Enter Work Duration"
+            {...register('duration', { valueAsNumber: true, required: true })}
+          />
         </label>
         <label>
-          <input className="w-72 rounded-md" placeholder="Note" type="text" {...register('comment')} />
+          <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
         </label>
       </form>
     </Modal>
