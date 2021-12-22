@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphql'
 import { Button } from './button/button'
 import { Modal } from './modal'
-//import { format } from 'date-fns'
 
 interface BookWorkHourModalProps {
   open: boolean
