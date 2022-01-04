@@ -366,6 +366,23 @@ export type UserFragment = {
   image?: string | null | undefined
 }
 
+export type TeamAcceptInviteMutationVariables = Exact<{
+  inviteKey: Scalars['String']
+}>
+
+export type TeamAcceptInviteMutation = {
+  __typename?: 'Mutation'
+  teamAcceptInvite: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined }>
+  }
+}
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -486,4 +503,23 @@ export const UsersDocument = gql`
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options })
+}
+export const TeamAcceptInviteDocument = gql`
+  mutation teamAcceptInvite($inviteKey: String!) {
+    teamAcceptInvite(inviteKey: $inviteKey) {
+      id
+      title
+      slug
+      theme
+      inviteKey
+      members {
+        id
+        name
+      }
+    }
+  }
+`
+
+export function useTeamAcceptInviteMutation() {
+  return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
