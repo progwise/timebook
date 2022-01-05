@@ -70,7 +70,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
         <label>
           Project
-          <select className="w-72 rounded-md" {...register('projectId')}>
+          <select className="w-72 rounded-md" {...register('projectId', { required: true })}>
             <option value="">Please Select</option>
             {data?.projects.map((project) => {
               return (
@@ -82,7 +82,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </select>
         </label>
         <label>
-          <select className="w-72 rounded-md" {...(register('taskId'), { required: true })}>
+          <select className="w-72 rounded-md" {...register('taskId', { required: true })}>
             {selectedProject?.tasks.map((task) => {
               return (
                 <option value={task.id} key={task.id}>
