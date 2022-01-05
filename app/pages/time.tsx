@@ -3,6 +3,9 @@ import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInp
 import { CalendarSelector } from '../frontend/components/calendarSelector'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
+import { BookWorkHourModal } from '../frontend/components/bookWorkHourModal'
+import { Button } from '../frontend/components/button/button'
+import { BiPlus } from 'react-icons/bi'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
@@ -22,6 +25,8 @@ const Time = (): JSX.Element => {
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
   const [{ data }] = useProjectsQuery()
+
+  const [isBookWorkHourModalOpen, setIsBookWorkHourModalOpen] = useState(false)
 
   const getNewDayEntry = (weekday: number) => ({
     date: getDateForWeekday(selectedDate, weekday),
@@ -91,12 +96,16 @@ const Time = (): JSX.Element => {
 
   return (
     <ProtectedPage>
+      <div className="flex flex-col items-end">
+        <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+          <BiPlus className="flex items-end text-3xl" />
+        </Button>
+      </div>
       <article>
         <h2>Your timetable</h2>
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
         </div>
-
         <table id="timeTable" className="w-full table-auto">
           <thead>
             <tr>
@@ -122,7 +131,6 @@ const Time = (): JSX.Element => {
               )}
             </tr>
           </thead>
-
           <tbody>
             {timeData.map((timeEntry) => (
               <tr key={timeEntry.project.id}>
@@ -150,6 +158,11 @@ const Time = (): JSX.Element => {
           </tfoot>
         </table>
       </article>
+      <BookWorkHourModal
+        selectedDate={selectedDate}
+        open={isBookWorkHourModalOpen}
+        onClose={() => setIsBookWorkHourModalOpen(false)}
+      />
     </ProtectedPage>
   )
 }
