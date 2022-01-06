@@ -3,6 +3,7 @@
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
@@ -64,7 +65,7 @@ export type Mutation = {
 }
 
 export type MutationCreateWorkHourArgs = {
-  comment?: Maybe<Scalars['String']>
+  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   duration: Scalars['Int']
   taskId: Scalars['ID']
@@ -134,8 +135,8 @@ export type Project = {
 }
 
 export type ProjectInput = {
-  end?: Maybe<Scalars['Date']>
-  start?: Maybe<Scalars['Date']>
+  end?: InputMaybe<Scalars['Date']>
+  start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
 }
 
@@ -215,7 +216,7 @@ export type TeamInput = {
   /** Slug that is used in the team URL */
   slug: Scalars['String']
   /** Color theme of the team */
-  theme?: Maybe<Theme>
+  theme?: InputMaybe<Theme>
   /** Title of the team */
   title: Scalars['String']
 }
@@ -249,6 +250,31 @@ export type WorkHour = {
   project: Project
 }
 
+export type CreateWorkHourMutationVariables = Exact<{
+  duration: Scalars['Int']
+  taskId: Scalars['ID']
+  date: Scalars['Date']
+  comment?: InputMaybe<Scalars['String']>
+}>
+
+export type CreateWorkHourMutation = {
+  __typename?: 'Mutation'
+  createWorkHour: {
+    __typename?: 'WorkHour'
+    id: string
+    comment?: string | null | undefined
+    date: string
+    duration: number
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null | undefined
+      endDate?: string | null | undefined
+    }
+  }
+}
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -277,6 +303,7 @@ export type ProjectsQuery = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }>
 }
 
@@ -286,6 +313,7 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null | undefined
   endDate?: string | null | undefined
+  tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
 }
 
 export type ProjectCreateMutationVariables = Exact<{
@@ -300,6 +328,7 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -315,6 +344,7 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -331,6 +361,7 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
+    tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
   }
 }
 
@@ -366,6 +397,23 @@ export type UserFragment = {
   image?: string | null | undefined
 }
 
+export type TeamAcceptInviteMutationVariables = Exact<{
+  inviteKey: Scalars['String']
+}>
+
+export type TeamAcceptInviteMutation = {
+  __typename?: 'Mutation'
+  teamAcceptInvite: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined }>
+  }
+}
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -378,7 +426,11 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
+    tasks {
+      ...Task
+    }
   }
+  ${TaskFragmentDoc}
 `
 export const UserFragmentDoc = gql`
   fragment User on User {
@@ -387,6 +439,26 @@ export const UserFragmentDoc = gql`
     image
   }
 `
+export const CreateWorkHourDocument = gql`
+  mutation createWorkHour($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
+    createWorkHour(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
+      id
+      comment
+      date
+      duration
+      project {
+        id
+        title
+        startDate
+        endDate
+      }
+    }
+  }
+`
+
+export function useCreateWorkHourMutation() {
+  return Urql.useMutation<CreateWorkHourMutation, CreateWorkHourMutationVariables>(CreateWorkHourDocument)
+}
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
@@ -486,4 +558,23 @@ export const UsersDocument = gql`
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options })
+}
+export const TeamAcceptInviteDocument = gql`
+  mutation teamAcceptInvite($inviteKey: String!) {
+    teamAcceptInvite(inviteKey: $inviteKey) {
+      id
+      title
+      slug
+      theme
+      inviteKey
+      members {
+        id
+        name
+      }
+    }
+  }
+`
+
+export function useTeamAcceptInviteMutation() {
+  return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
