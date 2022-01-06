@@ -78,7 +78,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             />
             <CalendarSelector
               disabled={formState.isSubmitting}
-              className="flex-shrink-0"
+              className="shrink-0"
               hideLabel={true}
               onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
             />
@@ -110,7 +110,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             />
             <CalendarSelector
               disabled={formState.isSubmitting}
-              className="flex-shrink-0"
+              className="shrink-0"
               hideLabel={true}
               onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
             />
