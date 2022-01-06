@@ -43,6 +43,7 @@ export interface NexusGenInputs {
   }
   ProjectInput: {
     // input type
+    customerId: string // ID!
     end?: NexusGenScalars['Date'] | null // Date
     start?: NexusGenScalars['Date'] | null // Date
     title: string // String!
@@ -113,6 +114,7 @@ export interface NexusGenFieldTypes {
   Customer: {
     // field return type
     id: string // ID!
+    projects: NexusGenRootTypes['Project'][] // [Project!]!
     title: string // String!
   }
   Mutation: {
@@ -133,8 +135,10 @@ export interface NexusGenFieldTypes {
   }
   Project: {
     // field return type
+    customer: NexusGenRootTypes['Customer'] // Customer!
     endDate: NexusGenScalars['Date'] | null // Date
     id: string // ID!
+    members: NexusGenRootTypes['User'][] // [User!]!
     startDate: NexusGenScalars['Date'] | null // Date
     tasks: NexusGenRootTypes['Task'][] // [Task!]!
     title: string // String!
@@ -188,6 +192,7 @@ export interface NexusGenFieldTypeNames {
   Customer: {
     // field return type name
     id: 'ID'
+    projects: 'Project'
     title: 'String'
   }
   Mutation: {
@@ -208,8 +213,10 @@ export interface NexusGenFieldTypeNames {
   }
   Project: {
     // field return type name
+    customer: 'Customer'
     endDate: 'Date'
     id: 'ID'
+    members: 'User'
     startDate: 'Date'
     tasks: 'Task'
     title: 'String'

@@ -8,7 +8,7 @@ export const isAdminByTaskId = async (taskId: string, context: Context): Promise
   const membership = await context.prisma.projectMembership.findFirst({
     select: { role: true },
     where: {
-      userId: { equals: context.session.user.id },
+      teamMembership: { userId: context.session.user.id },
       project: {
         tasks: {
           some: { id: taskId },

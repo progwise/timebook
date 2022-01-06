@@ -5,11 +5,10 @@ export const isAdminByProjectId = async (projectId: number, context: Context): P
     return false
   }
 
-  const membership = await context.prisma.projectMembership.findUnique({
-    select: { role: true },
+  const membership = await context.prisma.projectMembership.findFirst({
     where: {
-      userId_projectId: {
-        projectId: projectId,
+      projectId,
+      teamMembership: {
         userId: context.session.user.id,
       },
     },
