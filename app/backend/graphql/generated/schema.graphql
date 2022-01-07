@@ -199,14 +199,9 @@ type Query {
   projects: [Project!]!
 
   """
-  Return a team by an id
+  Return team by slug provided in the api route (/api/[teamSlug]/graphql)
   """
-  team(
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
+  team: Team!
 
   """
   Return a team by a slug

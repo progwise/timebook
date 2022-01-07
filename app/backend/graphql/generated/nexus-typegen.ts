@@ -332,10 +332,6 @@ export interface NexusGenArgTypes {
       // args
       projectId: string // ID!
     }
-    team: {
-      // args
-      id: string // ID!
-    }
     teamBySlug: {
       // args
       slug: string // String!
