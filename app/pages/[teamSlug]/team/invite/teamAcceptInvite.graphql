@@ -1,0 +1,13 @@
+mutation teamAcceptInvite($inviteKey: String!) {
+  teamAcceptInvite(inviteKey: $inviteKey) {
+    id
+    title
+    slug
+    theme
+    inviteKey
+    members {
+      id
+      name
+    }
+  }
+}

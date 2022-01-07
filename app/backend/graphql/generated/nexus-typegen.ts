@@ -182,6 +182,7 @@ export interface NexusGenFieldTypes {
     duration: number // Int!
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
+    task: NexusGenRootTypes['Task'] // Task!
   }
 }
 
@@ -258,6 +259,7 @@ export interface NexusGenFieldTypeNames {
     duration: 'Int'
     id: 'ID'
     project: 'Project'
+    task: 'Task'
   }
 }
 
