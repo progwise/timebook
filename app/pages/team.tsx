@@ -1,14 +1,15 @@
 import { Button } from '../frontend/components/button/button'
 import { TeamForm } from '../frontend/components/teamForm/teamForm'
-import { useUsersQuery } from '../frontend/generated/graphql'
+import { useTeamQuery, useUsersQuery } from '../frontend/generated/graphql'
 
 const Team = (): JSX.Element => {
-  const [{ data, error }] = useUsersQuery()
+  const [{ data: usersData, error: usersError }] = useUsersQuery()
+  const [{ data: teamData, error: teamError }] = useTeamQuery()
   return (
     <>
       <article>
         <h2>Team Details</h2>
-        <TeamForm />
+        {teamData?.teamBySlug && <TeamForm team={teamData?.teamBySlug} />}
       </article>
       <article>
         <h2 className="flexj justify-between">
@@ -25,7 +26,7 @@ const Team = (): JSX.Element => {
             </tr>
           </thead>
           <tbody>
-            {data?.users.map((user) => (
+            {usersData?.users.map((user) => (
               <tr key={user.id}>
                 <td>
                   <img className="w-3" src={user.image ?? undefined} />

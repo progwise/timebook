@@ -1,0 +1,13 @@
+query team {
+  teamBySlug(slug: "progwise") {
+    ...Team
+  }
+}
+
+fragment Team on Team {
+  id
+  title
+  slug
+  theme
+  inviteKey
+}
