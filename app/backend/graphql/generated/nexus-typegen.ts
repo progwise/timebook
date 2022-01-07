@@ -37,6 +37,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CustomerInput: {
+    // input type
+    title: string // String!
+  }
   ProjectInput: {
     // input type
     end?: NexusGenScalars['Date'] | null // Date
@@ -71,6 +75,11 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Customer: {
+    // root type
+    id: string // ID!
+    title: string // String!
+  }
   Mutation: {}
   Project: prisma.Project
   Query: {}
@@ -101,9 +110,17 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  Customer: {
+    // field return type
+    id: string // ID!
+    title: string // String!
+  }
   Mutation: {
     // field return type
     createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
+    customerCreate: NexusGenRootTypes['Customer'] // Customer!
+    customerDelete: NexusGenRootTypes['Customer'] // Customer!
+    customerUpdate: NexusGenRootTypes['Customer'] // Customer!
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
@@ -125,6 +142,7 @@ export interface NexusGenFieldTypes {
   }
   Query: {
     // field return type
+    customer: NexusGenRootTypes['Customer'] // Customer!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
     team: NexusGenRootTypes['Team'] // Team!
@@ -142,6 +160,7 @@ export interface NexusGenFieldTypes {
   }
   Team: {
     // field return type
+    customers: NexusGenRootTypes['Customer'][] // [Customer!]!
     id: string // ID!
     inviteKey: string // String!
     members: NexusGenRootTypes['User'][] // [User!]!
@@ -162,13 +181,22 @@ export interface NexusGenFieldTypes {
     duration: number // Int!
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
+    task: NexusGenRootTypes['Task'] // Task!
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  Customer: {
+    // field return type name
+    id: 'ID'
+    title: 'String'
+  }
   Mutation: {
     // field return type name
     createWorkHour: 'WorkHour'
+    customerCreate: 'Customer'
+    customerDelete: 'Customer'
+    customerUpdate: 'Customer'
     projectCreate: 'Project'
     projectDelete: 'Project'
     projectUpdate: 'Project'
@@ -190,6 +218,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: {
     // field return type name
+    customer: 'Customer'
     project: 'Project'
     projects: 'Project'
     team: 'Team'
@@ -207,6 +236,7 @@ export interface NexusGenFieldTypeNames {
   }
   Team: {
     // field return type name
+    customers: 'Customer'
     id: 'ID'
     inviteKey: 'String'
     members: 'User'
@@ -227,6 +257,7 @@ export interface NexusGenFieldTypeNames {
     duration: 'Int'
     id: 'ID'
     project: 'Project'
+    task: 'Task'
   }
 }
 
@@ -238,6 +269,20 @@ export interface NexusGenArgTypes {
       date: NexusGenScalars['Date'] // Date!
       duration: number // Int!
       taskId: string // ID!
+    }
+    customerCreate: {
+      // args
+      data: NexusGenInputs['CustomerInput'] // CustomerInput!
+      teamId: string // ID!
+    }
+    customerDelete: {
+      // args
+      customerId: string // ID!
+    }
+    customerUpdate: {
+      // args
+      customerId: string // ID!
+      data: NexusGenInputs['CustomerInput'] // CustomerInput!
     }
     projectCreate: {
       // args
@@ -279,13 +324,13 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    customer: {
+      // args
+      customerId: string // ID!
+    }
     project: {
       // args
       projectId: string // ID!
-    }
-    team: {
-      // args
-      id: string // ID!
     }
     teamBySlug: {
       // args
