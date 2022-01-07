@@ -248,6 +248,8 @@ export type WorkHour = {
   /** Identifies the work hour */
   id: Scalars['ID']
   project: Project
+  /** Task for which the working hour was booked */
+  task: Task
 }
 
 export type CreateWorkHourMutationVariables = Exact<{
