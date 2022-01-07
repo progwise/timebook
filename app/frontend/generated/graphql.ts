@@ -180,8 +180,8 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
-  to?: Maybe<Scalars['Date']>
-  userIds?: Maybe<Array<Scalars['ID']>>
+  to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Task = {
