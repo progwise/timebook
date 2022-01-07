@@ -395,6 +395,20 @@ export type UserFragment = {
   image?: string | null | undefined
 }
 
+export type CustomersQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
+
+export type CustomersQuery = {
+  __typename?: 'Query'
+  teamBySlug: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    customers: Array<{ __typename?: 'Customer'; id: string; title: string }>
+  }
+}
+
 export type TeamAcceptInviteMutationVariables = Exact<{
   inviteKey: Scalars['String']
 }>
@@ -556,6 +570,22 @@ export const UsersDocument = gql`
 
 export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options })
+}
+export const CustomersDocument = gql`
+  query customers($slug: String!) {
+    teamBySlug(slug: $slug) {
+      id
+      title
+      customers {
+        id
+        title
+      }
+    }
+  }
+`
+
+export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
 }
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {

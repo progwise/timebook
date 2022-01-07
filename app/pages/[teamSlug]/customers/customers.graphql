@@ -1,0 +1,10 @@
+query customers($slug: String!) {
+  teamBySlug(slug: $slug) {
+    id
+    title
+    customers {
+      id
+      title
+    }
+  }
+}
