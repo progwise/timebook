@@ -5,6 +5,7 @@ import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphq
 import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
+import { ErrorMessage } from '@hookform/error-message'
 
 interface BookWorkHourModalProps {
   open: boolean
@@ -27,7 +28,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     handleSubmit,
     watch,
     setValue,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<WorkHourForm>({ shouldUnregister: true })
   const [, bookWorkHour] = useCreateWorkHourMutation()
 
@@ -68,9 +69,15 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       }
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
-        <label>
-          Project
-          <select className="w-72 rounded-md" {...register('projectId', { required: true })}>
+        <div className="flex flex-col mb-4">
+          <label htmlFor="projectId" className="mb-2">
+            Project
+          </label>
+          <select
+            className="w-72 rounded-md"
+            id="projectId"
+            {...register('projectId', { required: 'Project is required' })}
+          >
             <option value="">Please Select</option>
             {data?.projects.map((project) => {
               return (
@@ -80,28 +87,31 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
               )
             })}
           </select>
-        </label>
-        <label>
-          <select className="w-72 rounded-md" {...register('taskId', { required: true })}>
-            {selectedProject?.tasks.map((task) => {
-              return (
-                <option value={task.id} key={task.id}>
-                  {task.title}
-                </option>
-              )
-            })}
-          </select>
-        </label>
-        <label>
+          <ErrorMessage errors={errors} name="projectId" as={<span className="text-red-700" />} />
+        </div>
+        <div className="flex flex-col mb-4">
+          <label>
+            <select className="w-72 rounded-md" {...register('taskId', { required: 'Task is required' })}>
+              {selectedProject?.tasks.map((task) => {
+                return (
+                  <option value={task.id} key={task.id}>
+                    {task.title}
+                  </option>
+                )
+              })}
+            </select>
+          </label>
+          <ErrorMessage errors={errors} name="taskId" as={<span className="text-red-700" />} />
+        </div>
+        <div className="flex flex-col gap-y-4">
           <InputField
             variant="primary"
             placeholder="Enter Work Duration"
-            {...register('duration', { valueAsNumber: true, required: true })}
+            {...register('duration', { valueAsNumber: true, required: 'Duration is required' })}
           />
-        </label>
-        <label>
+          <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
           <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
-        </label>
+        </div>
       </form>
     </Modal>
   )
