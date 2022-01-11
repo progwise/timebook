@@ -158,6 +158,8 @@ export type Query = {
   user: User
   /** @deprecated Use members field on team type instead */
   users: Array<User>
+  /** Returns a list of work hours for a given time period and a list of users */
+  workHours: Array<WorkHour>
 }
 
 export type QueryCustomerArgs = {
@@ -174,6 +176,12 @@ export type QueryTeamBySlugArgs = {
 
 export type QueryUserArgs = {
   userId: Scalars['ID']
+}
+
+export type QueryWorkHoursArgs = {
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Task = {
