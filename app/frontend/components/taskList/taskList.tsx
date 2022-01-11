@@ -1,15 +1,17 @@
-import { TaskFragment, useTaskCreateMutation, useTaskDeleteMutation } from '../../generated/graphql'
+import { TaskFragment, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
 import { InputField } from '../inputField/inputField'
 import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
+import { DeleteTaskModal } from '../deleteTaskModal'
+import { useState } from 'react'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
   projectId: string
 }
-export interface TaskForm {
+interface TaskForm {
   title: string
 }
 
@@ -22,7 +24,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     formState: { isSubmitting, errors },
   } = useForm<TaskForm>()
   const [, taskCreate] = useTaskCreateMutation()
-  const [, taskDelete] = useTaskDeleteMutation()
+  const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskForm) => {
     try {
@@ -51,7 +53,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         {tasks.map((task) => (
           <tr key={task.id}>
             <td>
-              <Button variant="secondarySlim" tooltip="Delete task" onClick={() => taskDelete({ id: task.id })}>
+              <Button variant="secondarySlim" tooltip="Delete Task" onClick={() => setTaskToBeDeleted(task)}>
                 <BiTrash />
               </Button>
               <span className="ml-2">{task.title}</span>
@@ -61,6 +63,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             </td>
           </tr>
         ))}
+        {taskToBeDeleted ? (
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
+        ) : undefined}
       </tbody>
       <tfoot>
         <tr>
