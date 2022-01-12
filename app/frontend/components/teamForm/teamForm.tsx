@@ -1,33 +1,30 @@
-import { useRouter } from 'next/router'
-import { ChangeEvent, useState } from 'react'
 import { Button } from '../button/button'
 import { InputField } from '../inputField/inputField'
-import { TeamFragment, TeamInput, useTeamUpdateMutation } from '../../generated/graphql'
+import { TeamFragment, TeamInput, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
 import { useForm } from 'react-hook-form'
-import { Team } from '../../../backend/graphql/team'
 import { ErrorMessage } from '@hookform/error-message'
+import { useRouter } from 'next/router'
 
 interface TeamFormProps {
   team?: TeamFragment
 }
 
-export const TeamForm = (props: TeamFormProps) => {
+export const TeamForm = (props: TeamFormProps): JSX.Element => {
   const { team } = props
-  const { register, handleSubmit, formState, setValue, control } = useForm<TeamInput>({
+  const { register, handleSubmit, formState } = useForm<TeamInput>({
     defaultValues: {
       title: team?.title,
       slug: team?.slug,
       theme: team?.theme,
     },
   })
-
+  const router = useRouter()
   const [, updateTeam] = useTeamUpdateMutation()
+  const [, createTeam] = useTeamCreateMutation()
 
-  const handleTeamSave = (data: TeamInput) => {
-    console.log(data)
-    if (team) {
-      updateTeam({ data, id: team.id })
-    }
+  const handleTeamSave = async (data: TeamInput) => {
+    await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+    router.push(`/${data.slug}/team`)
   }
   return (
     <form onSubmit={handleSubmit(handleTeamSave)}>
@@ -52,9 +49,10 @@ export const TeamForm = (props: TeamFormProps) => {
       <label>
         Invitation link
         <InputField
+          readonly={true}
           variant="primary"
           name="tbInvitationLink"
-          value={`https://tb.com${team?.slug}/team/invite/${team?.inviteKey}`}
+          value={`http://localhost:3000/${team?.slug}/team/invite/${team?.inviteKey}`}
         />
       </label>
       <Button variant="primary" type="submit">

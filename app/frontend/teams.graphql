@@ -1,5 +1,5 @@
-query team {
-  teamBySlug(slug: "progwise") {
+query team($teamSlug: String!) {
+  teamBySlug(slug: $teamSlug) {
     ...Team
   }
 }

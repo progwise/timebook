@@ -381,6 +381,15 @@ export type TaskDeleteMutation = {
   taskDelete: { __typename?: 'Task'; id: string; title: string }
 }
 
+export type TeamCreateMutationVariables = Exact<{
+  data: TeamInput
+}>
+
+export type TeamCreateMutation = {
+  __typename?: 'Mutation'
+  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+}
+
 export type TeamUpdateMutationVariables = Exact<{
   id: Scalars['ID']
   data: TeamInput
@@ -391,7 +400,9 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
-export type TeamQueryVariables = Exact<{ [key: string]: never }>
+export type TeamQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
 export type TeamQuery = {
   __typename?: 'Query'
@@ -580,6 +591,18 @@ export const TaskDeleteDocument = gql`
 export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }
+export const TeamCreateDocument = gql`
+  mutation teamCreate($data: TeamInput!) {
+    teamCreate(data: $data) {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamCreateMutation() {
+  return Urql.useMutation<TeamCreateMutation, TeamCreateMutationVariables>(TeamCreateDocument)
+}
 export const TeamUpdateDocument = gql`
   mutation teamUpdate($id: ID!, $data: TeamInput!) {
     teamUpdate(id: $id, data: $data) {
@@ -593,8 +616,8 @@ export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
 export const TeamDocument = gql`
-  query team {
-    teamBySlug(slug: "progwise") {
+  query team($teamSlug: String!) {
+    teamBySlug(slug: $teamSlug) {
       ...Team
     }
   }
