@@ -1,5 +1,8 @@
-mutation taskDelete($id: ID!) {
-  taskDelete(id: $id) {
+mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {
+  taskDelete(id: $id) @skip(if: $hasWorkHours) {
+    ...Task
+  }
+  taskArchive(taskId: $id) @include(if: $hasWorkHours) {
     ...Task
   }
 }

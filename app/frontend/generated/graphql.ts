@@ -391,15 +391,6 @@ export type ProjectUpdateMutation = {
   }
 }
 
-export type TaskArchiveMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type TaskArchiveMutation = {
-  __typename?: 'Mutation'
-  taskArchive: { __typename?: 'Task'; id: string; title: string; archived: boolean }
-}
-
 export type TaskCreateMutationVariables = Exact<{
   data: TaskInput
 }>
@@ -411,11 +402,13 @@ export type TaskCreateMutation = {
 
 export type TaskDeleteMutationVariables = Exact<{
   id: Scalars['ID']
+  hasWorkHours: Scalars['Boolean']
 }>
 
 export type TaskDeleteMutation = {
   __typename?: 'Mutation'
-  taskDelete: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
+  taskDelete?: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
+  taskArchive?: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
 }
 
 export type TeamQueryVariables = Exact<{ [key: string]: never }>
@@ -609,19 +602,6 @@ export const ProjectUpdateDocument = gql`
 export function useProjectUpdateMutation() {
   return Urql.useMutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>(ProjectUpdateDocument)
 }
-export const TaskArchiveDocument = gql`
-  mutation taskArchive($taskId: ID!) {
-    taskArchive(taskId: $taskId) {
-      id
-      title
-      archived
-    }
-  }
-`
-
-export function useTaskArchiveMutation() {
-  return Urql.useMutation<TaskArchiveMutation, TaskArchiveMutationVariables>(TaskArchiveDocument)
-}
 export const TaskCreateDocument = gql`
   mutation taskCreate($data: TaskInput!) {
     taskCreate(data: $data) {
@@ -635,8 +615,11 @@ export function useTaskCreateMutation() {
   return Urql.useMutation<TaskCreateMutation, TaskCreateMutationVariables>(TaskCreateDocument)
 }
 export const TaskDeleteDocument = gql`
-  mutation taskDelete($id: ID!) {
-    taskDelete(id: $id) {
+  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {
+    taskDelete(id: $id) @skip(if: $hasWorkHours) {
+      ...Task
+    }
+    taskArchive(taskId: $id) @include(if: $hasWorkHours) {
       ...Task
     }
   }
