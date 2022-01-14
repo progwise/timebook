@@ -389,18 +389,54 @@ export type TaskDeleteMutation = {
   taskDelete: { __typename?: 'Task'; id: string; title: string }
 }
 
-export type UsersQueryVariables = Exact<{ [key: string]: never }>
+export type TeamQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
-export type UsersQuery = {
+export type TeamQuery = {
   __typename?: 'Query'
-  users: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined; image?: string | null | undefined }>
+  teamBySlug: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      name?: string | null | undefined
+      image?: string | null | undefined
+    }>
+  }
 }
 
-export type UserFragment = {
-  __typename?: 'User'
+export type TeamFragment = {
+  __typename?: 'Team'
   id: string
-  name?: string | null | undefined
-  image?: string | null | undefined
+  title: string
+  slug: string
+  theme: Theme
+  inviteKey: string
+}
+
+export type TeamCreateMutationVariables = Exact<{
+  data: TeamInput
+}>
+
+export type TeamCreateMutation = {
+  __typename?: 'Mutation'
+  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+}
+
+export type TeamUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TeamInput
+}>
+
+export type TeamUpdateMutation = {
+  __typename?: 'Mutation'
+  teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
 export type CustomersQueryVariables = Exact<{
@@ -452,11 +488,13 @@ export const ProjectFragmentDoc = gql`
   }
   ${TaskFragmentDoc}
 `
-export const UserFragmentDoc = gql`
-  fragment User on User {
+export const TeamFragmentDoc = gql`
+  fragment Team on Team {
     id
-    name
-    image
+    title
+    slug
+    theme
+    inviteKey
   }
 `
 export const CreateWorkHourDocument = gql`
@@ -567,17 +605,46 @@ export const TaskDeleteDocument = gql`
 export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }
-export const UsersDocument = gql`
-  query users {
-    users {
-      ...User
+export const TeamDocument = gql`
+  query team($teamSlug: String!) {
+    teamBySlug(slug: $teamSlug) {
+      ...Team
+      members {
+        id
+        name
+        image
+      }
     }
   }
-  ${UserFragmentDoc}
+  ${TeamFragmentDoc}
 `
 
-export function useUsersQuery(options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<UsersQuery>({ query: UsersDocument, ...options })
+export function useTeamQuery(options: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TeamQuery>({ query: TeamDocument, ...options })
+}
+export const TeamCreateDocument = gql`
+  mutation teamCreate($data: TeamInput!) {
+    teamCreate(data: $data) {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamCreateMutation() {
+  return Urql.useMutation<TeamCreateMutation, TeamCreateMutationVariables>(TeamCreateDocument)
+}
+export const TeamUpdateDocument = gql`
+  mutation teamUpdate($id: ID!, $data: TeamInput!) {
+    teamUpdate(id: $id, data: $data) {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamUpdateMutation() {
+  return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
 export const CustomersDocument = gql`
   query customers($slug: String!) {
