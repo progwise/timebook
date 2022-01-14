@@ -1,5 +1,5 @@
-query team($teamSlug: String!) {
-  teamBySlug(slug: $teamSlug) {
+query team {
+  team {
     ...Team
     members {
       id

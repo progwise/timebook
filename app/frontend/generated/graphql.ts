@@ -389,13 +389,11 @@ export type TaskDeleteMutation = {
   taskDelete: { __typename?: 'Task'; id: string; title: string }
 }
 
-export type TeamQueryVariables = Exact<{
-  teamSlug: Scalars['String']
-}>
+export type TeamQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamQuery = {
   __typename?: 'Query'
-  teamBySlug: {
+  team: {
     __typename?: 'Team'
     id: string
     title: string
@@ -606,8 +604,8 @@ export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }
 export const TeamDocument = gql`
-  query team($teamSlug: String!) {
-    teamBySlug(slug: $teamSlug) {
+  query team {
+    team {
       ...Team
       members {
         id
