@@ -217,14 +217,9 @@ type Query {
   projects: [Project!]!
 
   """
-  Return a team by an id
+  Return team by slug provided in the api route (/api/[teamSlug]/graphql)
   """
-  team(
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
+  team: Team!
 
   """
   Return a team by a slug
@@ -251,6 +246,26 @@ type Query {
     userId: ID!
   ): User!
   users: [User!]! @deprecated(reason: "Use members field on team type instead")
+
+  """
+  Returns a list of work hours for a given time period and a list of users
+  """
+  workHours(
+    """
+    Start of the time period
+    """
+    from: Date!
+
+    """
+    End of the time period. If not provided the from arg is used as the end.
+    """
+    to: Date
+
+    """
+    List of user ids. If not provided only the work hours of the current users are returned.
+    """
+    userIds: [ID!]
+  ): [WorkHour!]!
 }
 
 type Task {
@@ -358,4 +373,9 @@ type WorkHour {
   """
   id: ID!
   project: Project!
+
+  """
+  Task for which the working hour was booked
+  """
+  task: Task!
 }

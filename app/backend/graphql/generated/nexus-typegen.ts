@@ -154,6 +154,7 @@ export interface NexusGenFieldTypes {
     teams: NexusGenRootTypes['Team'][] // [Team!]!
     user: NexusGenRootTypes['User'] // User!
     users: NexusGenRootTypes['User'][] // [User!]!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Task: {
     // field return type
@@ -185,6 +186,7 @@ export interface NexusGenFieldTypes {
     duration: number // Int!
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
+    task: NexusGenRootTypes['Task'] // Task!
   }
 }
 
@@ -232,6 +234,7 @@ export interface NexusGenFieldTypeNames {
     teams: 'Team'
     user: 'User'
     users: 'User'
+    workHours: 'WorkHour'
   }
   Task: {
     // field return type name
@@ -263,6 +266,7 @@ export interface NexusGenFieldTypeNames {
     duration: 'Int'
     id: 'ID'
     project: 'Project'
+    task: 'Task'
   }
 }
 
@@ -337,10 +341,6 @@ export interface NexusGenArgTypes {
       // args
       projectId: string // ID!
     }
-    team: {
-      // args
-      id: string // ID!
-    }
     teamBySlug: {
       // args
       slug: string // String!
@@ -348,6 +348,12 @@ export interface NexusGenArgTypes {
     user: {
       // args
       userId: string // ID!
+    }
+    workHours: {
+      // args
+      from: NexusGenScalars['Date'] // Date!
+      to?: NexusGenScalars['Date'] | null // Date
+      userIds?: string[] | null // [ID!]
     }
   }
 }

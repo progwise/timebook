@@ -6,7 +6,7 @@ const startPromise = server.start()
 const graphqlHandler: NextApiHandler = async (request, response) => {
   await startPromise
 
-  return server.createHandler({ path: '/api/graphql' })(request, response)
+  return server.createHandler({ path: request.url })(request, response)
 }
 export const config = {
   api: {

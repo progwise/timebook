@@ -1,35 +1,43 @@
-import React, { useRef } from 'react'
-import { TaskFragment, useTaskCreateMutation, useTaskDeleteMutation } from '../../generated/graphql'
+import { TaskFragment, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
 import { InputField } from '../inputField/inputField'
+import { useForm } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
+import { DeleteTaskModal } from '../deleteTaskModal'
+import { useState } from 'react'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
   projectId: string
 }
+interface TaskForm {
+  title: string
+}
+
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, projectId } = props
-  const taskNameInputReference = useRef<HTMLInputElement>(null)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, errors },
+  } = useForm<TaskForm>()
   const [, taskCreate] = useTaskCreateMutation()
-  const [, taskDelete] = useTaskDeleteMutation()
+  const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
 
-  const handleAddTask = async () => {
-    const title = taskNameInputReference.current?.value
-    if (!title || title.length < 3) {
-      return
-    }
-
+  const handleAddTask = async (taskData: TaskForm) => {
     try {
       const result = await taskCreate({
         data: {
           projectId: Number.parseInt(projectId),
-          title,
+          title: taskData.title,
         },
       })
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }
+      reset()
     } catch {}
   }
 
@@ -45,7 +53,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         {tasks.map((task) => (
           <tr key={task.id}>
             <td>
-              <Button variant="secondarySlim" tooltip="Delete task" onClick={() => taskDelete({ id: task.id })}>
+              <Button variant="secondarySlim" tooltip="Delete Task" onClick={() => setTaskToBeDeleted(task)}>
                 <BiTrash />
               </Button>
               <span className="ml-2">{task.title}</span>
@@ -55,15 +63,30 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             </td>
           </tr>
         ))}
+        {taskToBeDeleted ? (
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
+        ) : undefined}
       </tbody>
       <tfoot>
         <tr>
           <td>
-            <InputField ref={taskNameInputReference} variant="primary" placeholder="Enter Taskname" />
+            <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
+              <div className="flex flex-col">
+                <label>
+                  <InputField
+                    variant="primary"
+                    placeholder="Enter Taskname"
+                    {...register('title', { required: 'Four characters needed', minLength: 4 })}
+                  />
+                </label>
+                <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
+              </div>
 
-            <Button onClick={handleAddTask} variant="primarySlim">
-              Add task
-            </Button>
+              <Button variant="primarySlim" type="submit" disabled={isSubmitting}>
+                Add task
+              </Button>
+            </form>
           </td>
         </tr>
       </tfoot>

@@ -1,5 +1,6 @@
 import { objectType } from 'nexus'
 import { Project } from '../project'
+import { Task } from '../task'
 
 export const WorkHour = objectType({
   name: 'WorkHour',
@@ -21,6 +22,15 @@ export const WorkHour = objectType({
             rejectOnNotFound: true,
           })
         ).task.project,
+    })
+    t.field('task', {
+      type: Task,
+      description: 'Task for which the working hour was booked',
+      resolve: (workHour, _arguments, context) =>
+        context.prisma.task.findUnique({
+          where: { id: workHour.taskId },
+          rejectOnNotFound: true,
+        }),
     })
   },
 })

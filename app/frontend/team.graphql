@@ -1,0 +1,18 @@
+query team {
+  team {
+    ...Team
+    members {
+      id
+      name
+      image
+    }
+  }
+}
+
+fragment Team on Team {
+  id
+  title
+  slug
+  theme
+  inviteKey
+}
