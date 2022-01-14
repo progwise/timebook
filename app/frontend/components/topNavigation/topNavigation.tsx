@@ -10,7 +10,7 @@ export const TopNavigation = (): JSX.Element => {
     <nav className="md:container md:mx-auto flex justify-center">
       <TopNavigationLink href="/home">Home</TopNavigationLink>
       <TopNavigationLink href="/time">Time</TopNavigationLink>
-      {router.query.teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
+      {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
       <TopNavigationLink href="/reports">Reports</TopNavigationLink>
       <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
       {session.status === 'authenticated' ? (
