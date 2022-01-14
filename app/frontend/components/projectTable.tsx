@@ -10,7 +10,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   const router = useRouter()
 
   const handleProjectDetails = async (project: ProjectFragment) => {
-    await router.push(`/projects/${project.id}`)
+    await router.push(`/${router.query.teamSlug}/projects/${project.id}`)
   }
 
   return (
