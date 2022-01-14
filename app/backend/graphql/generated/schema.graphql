@@ -8,6 +8,11 @@ type Customer {
   id: ID!
 
   """
+  List of all customer projects
+  """
+  projects: [Project!]!
+
+  """
   Title of the customer
   """
   title: String!
@@ -154,12 +159,21 @@ type Mutation {
 }
 
 type Project {
+  """
+  Customer of the project
+  """
+  customer: Customer
   endDate: Date
 
   """
   identifies the project
   """
   id: ID!
+
+  """
+  List of users that are member of the project
+  """
+  members: [User!]!
   startDate: Date
   tasks: [Task!]!
   title: String!
@@ -167,6 +181,10 @@ type Project {
 }
 
 input ProjectInput {
+  """
+  Id of the customer to which the project belongs.
+  """
+  customerId: ID
   end: Date
   start: Date
   title: String!

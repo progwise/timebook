@@ -25,6 +25,8 @@ export type Customer = {
   __typename?: 'Customer'
   /** Identifier of the customer */
   id: Scalars['ID']
+  /** List of all customer projects */
+  projects: Array<Project>
   /** Title of the customer */
   title: Scalars['String']
 }
@@ -125,9 +127,13 @@ export type MutationTeamUpdateArgs = {
 
 export type Project = {
   __typename?: 'Project'
+  /** Customer of the project */
+  customer?: Maybe<Customer>
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
+  /** List of users that are member of the project */
+  members: Array<User>
   startDate?: Maybe<Scalars['Date']>
   tasks: Array<Task>
   title: Scalars['String']
@@ -135,6 +141,8 @@ export type Project = {
 }
 
 export type ProjectInput = {
+  /** Id of the customer to which the project belongs. */
+  customerId?: InputMaybe<Scalars['ID']>
   end?: InputMaybe<Scalars['Date']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']

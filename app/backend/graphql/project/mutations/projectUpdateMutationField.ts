@@ -11,10 +11,39 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     data: ProjectInput,
   },
   authorize: async (_source, _arguments, context) => isAdminByProjectId(Number.parseInt(_arguments.id), context),
-  resolve: (_source, { id, data: { title, start, end } }, context) => {
-    if (!context.session?.user.id) {
+  resolve: async (_source, { id, data: { title, start, end, customerId } }, context) => {
+    if (!context.session?.user.id || !context.teamSlug) {
       throw new Error('not authenticated')
     }
+
+    const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
+
+    const project = await context.prisma.project.findUnique({
+      where: { id: Number.parseInt(id) },
+      rejectOnNotFound: true,
+    })
+
+    if (project.teamId !== team.id) {
+      // Project is from different team
+      throw new Error('not authenticated')
+    }
+
+    const newCustomer = customerId
+      ? await context.prisma.customer.findFirst({
+          where: {
+            id: customerId,
+            team: {
+              id: team.id,
+              teamMemberships: {
+                some: {
+                  userId: context.session.user.id,
+                },
+              },
+            },
+          },
+          rejectOnNotFound: true,
+        })
+      : undefined
 
     return context.prisma.project.update({
       where: { id: Number.parseInt(id) },
@@ -22,6 +51,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
         title,
         startDate: start,
         endDate: end,
+        customerId: newCustomer?.id,
       },
     })
   },
