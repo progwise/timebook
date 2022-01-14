@@ -13,7 +13,7 @@ const NewProjectPage = (): JSX.Element => {
       if (result.error) {
         throw new Error('graphql error')
       }
-      await router.push('/projects')
+      await router.push(`/${router.query.teamSlug}/projects`)
     } catch {}
   }
 

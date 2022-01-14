@@ -16,7 +16,7 @@ export const DeleteProjectModal = ({ onClose, project, open }: DeleteProjectModa
   const handleDeleteProject = async () => {
     try {
       await projectDelete({ id: project.id })
-      await router.push('/projects')
+      await router.push(`/${router.query.teamSlug}/projects`)
     } catch {}
   }
 
