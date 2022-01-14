@@ -7,6 +7,15 @@ export const projectsQueryField = queryField('projects', {
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: (_source, _arguments, context) =>
     context.prisma.project.findMany({
-      where: { projectMemberships: { some: { userId: context.session?.user.id } } },
+      where: {
+        team: { slug: context.teamSlug },
+        projectMemberships: {
+          some: {
+            teamMembership: {
+              userId: context.session?.user.id,
+            },
+          },
+        },
+      },
     }),
 })
