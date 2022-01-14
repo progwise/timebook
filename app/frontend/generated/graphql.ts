@@ -128,7 +128,7 @@ export type MutationTeamUpdateArgs = {
 export type Project = {
   __typename?: 'Project'
   /** Customer of the project */
-  customer: Customer
+  customer?: Maybe<Customer>
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
@@ -142,7 +142,7 @@ export type Project = {
 
 export type ProjectInput = {
   /** Id of the customer to which the project belongs. */
-  customerId: Scalars['ID']
+  customerId?: InputMaybe<Scalars['ID']>
   end?: InputMaybe<Scalars['Date']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']

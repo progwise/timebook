@@ -162,7 +162,7 @@ type Project {
   """
   Customer of the project
   """
-  customer: Customer!
+  customer: Customer
   endDate: Date
 
   """
@@ -184,7 +184,7 @@ input ProjectInput {
   """
   Id of the customer to which the project belongs.
   """
-  customerId: ID!
+  customerId: ID
   end: Date
   start: Date
   title: String!

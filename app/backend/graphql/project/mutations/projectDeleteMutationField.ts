@@ -9,8 +9,19 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
     id: idArg({ description: 'id of the project' }),
   },
   authorize: async (_source, _arguments, context) => isAdminByProjectId(Number.parseInt(_arguments.id), context),
-  resolve: (_source, { id }, context) => {
+  resolve: async (_source, { id }, context) => {
     if (!context.session?.user.id) {
+      throw new Error('not authenticated')
+    }
+
+    const project = await context.prisma.project.findUnique({
+      where: { id: Number.parseInt(id) },
+      rejectOnNotFound: true,
+      include: { team: true },
+    })
+
+    if (project.team.slug !== context.teamSlug) {
+      // We can not delete a project from a different team
       throw new Error('not authenticated')
     }
 

@@ -43,7 +43,7 @@ export interface NexusGenInputs {
   }
   ProjectInput: {
     // input type
-    customerId: string // ID!
+    customerId?: string | null // ID
     end?: NexusGenScalars['Date'] | null // Date
     start?: NexusGenScalars['Date'] | null // Date
     title: string // String!
@@ -135,7 +135,7 @@ export interface NexusGenFieldTypes {
   }
   Project: {
     // field return type
-    customer: NexusGenRootTypes['Customer'] // Customer!
+    customer: NexusGenRootTypes['Customer'] | null // Customer
     endDate: NexusGenScalars['Date'] | null // Date
     id: string // ID!
     members: NexusGenRootTypes['User'][] // [User!]!

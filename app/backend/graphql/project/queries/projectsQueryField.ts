@@ -8,6 +8,7 @@ export const projectsQueryField = queryField('projects', {
   resolve: (_source, _arguments, context) =>
     context.prisma.project.findMany({
       where: {
+        team: { slug: context.teamSlug },
         projectMemberships: {
           some: {
             teamMembership: {

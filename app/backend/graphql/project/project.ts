@@ -20,14 +20,16 @@ export const Project = objectType({
       type: Task,
       resolve: (project, _arguments, context) => context.prisma.task.findMany({ where: { projectId: project.id } }),
     })
-    t.field('customer', {
+    t.nullable.field('customer', {
       type: Customer,
       description: 'Customer of the project',
       resolve: (project, _arguments, context) =>
-        context.prisma.customer.findUnique({
-          where: { id: project.customerId },
-          rejectOnNotFound: true,
-        }),
+        project.customerId
+          ? context.prisma.customer.findUnique({
+              where: { id: project.customerId },
+            })
+          : // eslint-disable-next-line unicorn/no-null
+            null,
     })
     t.list.field('members', {
       type: User,

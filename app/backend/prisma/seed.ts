@@ -26,6 +26,7 @@ async function main() {
               create: {
                 project: {
                   create: {
+                    team: { connect: { slug: 'progwise' } },
                     title: 'Project 1',
                     customer: {
                       create: {
@@ -55,6 +56,7 @@ async function main() {
               create: {
                 project: {
                   create: {
+                    team: { connect: { slug: 'progwise' } },
                     title: 'Project 1',
                     customer: {
                       create: {

@@ -10,32 +10,38 @@ export const projectCreateMutationField = mutationField('projectCreate', {
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: async (_source, { data: { title, start, end, customerId } }, context) => {
-    if (!context.session?.user.id) {
+    if (!context.session?.user.id || !context.teamSlug) {
       throw new Error('not authenticated')
     }
 
     const now = new Date()
 
-    const customer = await context.prisma.customer.findFirst({
-      where: {
-        id: customerId,
-        team: {
-          teamMemberships: {
-            some: {
-              userId: context.session.user.id,
+    const customer = customerId
+      ? await context.prisma.customer.findFirst({
+          where: {
+            id: customerId,
+            team: {
+              slug: context.teamSlug,
+              teamMemberships: {
+                some: {
+                  userId: context.session.user.id,
+                },
+              },
             },
           },
-        },
-      },
-      rejectOnNotFound: true,
-    })
+          rejectOnNotFound: true,
+        })
+      : undefined
+
+    const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
 
     return context.prisma.project.create({
       data: {
         title,
         startDate: start,
         endDate: end,
-        customerId,
+        customerId: customer?.id,
+        teamId: team.id,
         projectMemberships: {
           create: {
             role: 'ADMIN',
@@ -44,7 +50,7 @@ export const projectCreateMutationField = mutationField('projectCreate', {
             teamMembership: {
               connect: {
                 userId_teamId: {
-                  teamId: customer.teamId,
+                  teamId: team.id,
                   userId: context.session.user.id,
                 },
               },

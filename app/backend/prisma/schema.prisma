@@ -17,12 +17,14 @@ model Project {
   title      String    @db.VarChar(255)
   startDate  DateTime? @db.Date
   endDate    DateTime? @db.Date
-  customerId String
+  customerId String?
+  teamId     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer           Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer           Customer?           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  team               Team                @relation(fields: [teamId], references: [id])
   projectMemberships ProjectMembership[]
   tasks              Task[]
 }
@@ -140,6 +142,7 @@ model Team {
 
   teamMemberships TeamMembership[]
   customers       Customer[]
+  projects        Project[]
 }
 
 enum Theme {
