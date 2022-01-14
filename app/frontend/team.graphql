@@ -1,6 +1,11 @@
 query team($teamSlug: String!) {
   teamBySlug(slug: $teamSlug) {
     ...Team
+    members {
+      id
+      name
+      image
+    }
   }
 }
 

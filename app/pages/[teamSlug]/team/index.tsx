@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { useTeamQuery, useUsersQuery } from '../../../frontend/generated/graphql'
+import { useTeamQuery } from '../../../frontend/generated/graphql'
 
 const Team = (): JSX.Element => {
   const router = useRouter()
-  const [{ data: usersData, error: usersError }] = useUsersQuery()
   const [{ data: teamData, error: teamError }] = useTeamQuery({
     variables: { teamSlug: router.query.teamSlug?.toString() ?? '' },
     pause: !router.isReady,
@@ -35,7 +34,7 @@ const Team = (): JSX.Element => {
             </tr>
           </thead>
           <tbody>
-            {usersData?.users.map((user) => (
+            {teamData?.teamBySlug.members.map((user) => (
               <tr key={user.id}>
                 <td>
                   <img className="w-3" src={user.image ?? undefined} />

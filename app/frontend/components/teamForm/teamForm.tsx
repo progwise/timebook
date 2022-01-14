@@ -46,15 +46,17 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           {...register('slug', { required: 'slug is required' })}
         />
       </label>
-      <label>
-        Invitation link
-        <InputField
-          readonly={true}
-          variant="primary"
-          name="tbInvitationLink"
-          value={`http://localhost:3000/${team?.slug}/team/invite/${team?.inviteKey}`}
-        />
-      </label>
+      {team && (
+        <label>
+          Invitation link
+          <InputField
+            readonly={true}
+            variant="primary"
+            name="tbInvitationLink"
+            value={`http://localhost:3000/${team.slug}/team/invite/${team.inviteKey}`}
+          />
+        </label>
+      )}
       <Button variant="primary" type="submit">
         Save
       </Button>
