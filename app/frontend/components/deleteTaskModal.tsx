@@ -1,4 +1,4 @@
-import { TaskFragment, useTaskDeleteMutation, useTaskArchiveMutation } from '../generated/graphql'
+import { TaskFragment, useTaskDeleteMutation } from '../generated/graphql'
 import { Button } from './button/button'
 import { Modal } from './modal'
 
@@ -9,13 +9,11 @@ export interface DeleteTaskModalProps {
 }
 
 export const DeleteTaskModal = ({ open, onClose, task }: DeleteTaskModalProps): JSX.Element => {
-  const [taskDeleteState, taskDelete] = useTaskDeleteMutation()
-  const [taskArchiveState, taskArchive] = useTaskArchiveMutation()
-  const fetching = taskDeleteState.fetching || taskArchiveState.fetching
+  const [{ fetching }, taskDelete] = useTaskDeleteMutation()
 
   const handleDeleteTask = async () => {
     try {
-      await (task.hasWorkHours ? taskArchive({ taskId: task.id }) : taskDelete({ id: task.id }))
+      await taskDelete({ id: task.id, hasWorkHours: task.hasWorkHours })
     } catch {}
     onClose()
   }
