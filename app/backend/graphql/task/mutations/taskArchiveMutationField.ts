@@ -10,7 +10,6 @@ export const taskArchiveMutationField = mutationField('taskArchive', {
   },
   authorize: async (_source, { taskId }, context) => isAdminByTaskId(taskId, context),
   resolve: (_source, { taskId }, context) => {
-    // update Task
     return context.prisma.task.update({
       where: { id: taskId },
       data: {
