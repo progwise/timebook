@@ -21,7 +21,7 @@ const AcceptInvitationPage = (): JSX.Element => {
 
     const slug = inviteResult.data.teamAcceptInvite.slug
 
-    await router.push(`/${slug}`)
+    await router.push(`/${slug}/team`)
   }
 
   return (
