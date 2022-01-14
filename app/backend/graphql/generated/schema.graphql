@@ -106,6 +106,16 @@ type Mutation {
   ): Project!
 
   """
+  Archive a task
+  """
+  taskArchive(
+    """
+    id of the task
+    """
+    taskId: ID!
+  ): Task!
+
+  """
   Create a new Task
   """
   taskCreate(data: TaskInput!): Task!
@@ -175,7 +185,7 @@ type Project {
   """
   members: [User!]!
   startDate: Date
-  tasks: [Task!]!
+  tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
   workHours: [WorkHour!]!
 }
@@ -269,6 +279,9 @@ type Query {
 }
 
 type Task {
+  archived: Boolean!
+  hasWorkHours: Boolean!
+
   """
   Identifies the task
   """

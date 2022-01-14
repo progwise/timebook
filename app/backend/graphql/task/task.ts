@@ -7,6 +7,13 @@ export const Task = objectType({
   definition: (t) => {
     t.id('id', { description: 'Identifies the task' })
     t.string('title', { description: 'The user can identify the task in the UI' })
+    t.boolean('archived', { resolve: (task) => !!task.archivedAt })
+    t.boolean('hasWorkHours', {
+      resolve: async (task, _arguments, context) => {
+        const count = await context.prisma.workHour.count({ where: { taskId: task.id } })
+        return count > 0
+      },
+    })
     t.field('project', {
       type: Project,
       resolve: async (task, _arguments, context) =>

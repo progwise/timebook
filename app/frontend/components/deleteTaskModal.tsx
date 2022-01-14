@@ -9,11 +9,11 @@ export interface DeleteTaskModalProps {
 }
 
 export const DeleteTaskModal = ({ open, onClose, task }: DeleteTaskModalProps): JSX.Element => {
-  const [taskDeleteState, taskDelete] = useTaskDeleteMutation()
+  const [{ fetching }, taskDelete] = useTaskDeleteMutation()
 
   const handleDeleteTask = async () => {
     try {
-      await taskDelete({ id: task.id })
+      await taskDelete({ id: task.id, hasWorkHours: task.hasWorkHours })
     } catch {}
     onClose()
   }
@@ -25,10 +25,10 @@ export const DeleteTaskModal = ({ open, onClose, task }: DeleteTaskModalProps): 
       title={`Are you sure you want to delete ${task.title}?`}
       actions={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={taskDeleteState.fetching}>
+          <Button variant="secondary" onClick={onClose} disabled={fetching}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDeleteTask} disabled={taskDeleteState.fetching}>
+          <Button variant="danger" onClick={handleDeleteTask} disabled={fetching}>
             Delete
           </Button>
         </>
