@@ -1,4 +1,4 @@
-import { objectType } from 'nexus'
+import { booleanArg, objectType } from 'nexus'
 import { Customer } from '../customer'
 import { Task } from '../task'
 import { User } from '../user'
@@ -18,7 +18,17 @@ export const Project = objectType({
     })
     t.list.field('tasks', {
       type: Task,
-      resolve: (project, _arguments, context) => context.prisma.task.findMany({ where: { projectId: project.id } }),
+      args: {
+        showArchived: booleanArg({ default: false }),
+      },
+      resolve: (project, { showArchived }, context) =>
+        context.prisma.task.findMany({
+          where: {
+            projectId: project.id,
+            // eslint-disable-next-line unicorn/no-null
+            archivedAt: showArchived ? undefined : null,
+          },
+        }),
     })
     t.nullable.field('customer', {
       type: Customer,

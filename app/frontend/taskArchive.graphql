@@ -1,0 +1,7 @@
+mutation taskArchive($taskId: ID!) {
+  taskArchive(taskId: $taskId) {
+    id
+    title
+    archived
+  }
+}

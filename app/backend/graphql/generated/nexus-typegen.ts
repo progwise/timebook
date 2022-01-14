@@ -126,6 +126,7 @@ export interface NexusGenFieldTypes {
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
+    taskArchive: NexusGenRootTypes['Task'] // Task!
     taskCreate: NexusGenRootTypes['Task'] // Task!
     taskDelete: NexusGenRootTypes['Task'] // Task!
     teamAcceptInvite: NexusGenRootTypes['Team'] // Team!
@@ -158,6 +159,8 @@ export interface NexusGenFieldTypes {
   }
   Task: {
     // field return type
+    archived: boolean // Boolean!
+    hasWorkHours: boolean // Boolean!
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
     title: string // String!
@@ -206,6 +209,7 @@ export interface NexusGenFieldTypeNames {
     projectCreate: 'Project'
     projectDelete: 'Project'
     projectUpdate: 'Project'
+    taskArchive: 'Task'
     taskCreate: 'Task'
     taskDelete: 'Task'
     teamAcceptInvite: 'Team'
@@ -238,6 +242,8 @@ export interface NexusGenFieldTypeNames {
   }
   Task: {
     // field return type name
+    archived: 'Boolean'
+    hasWorkHours: 'Boolean'
     id: 'ID'
     project: 'Project'
     title: 'String'
@@ -306,6 +312,10 @@ export interface NexusGenArgTypes {
       data: NexusGenInputs['ProjectInput'] // ProjectInput!
       id: string // ID!
     }
+    taskArchive: {
+      // args
+      taskId: string // ID!
+    }
     taskCreate: {
       // args
       data: NexusGenInputs['TaskInput'] // TaskInput!
@@ -330,6 +340,12 @@ export interface NexusGenArgTypes {
       // args
       data: NexusGenInputs['TeamInput'] // TeamInput!
       id: string // ID!
+    }
+  }
+  Project: {
+    tasks: {
+      // args
+      showArchived: boolean // Boolean!
     }
   }
   Query: {

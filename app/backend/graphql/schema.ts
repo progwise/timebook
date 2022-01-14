@@ -9,7 +9,7 @@ import {
 } from './project'
 import { createWorkHourMutationField, workHoursQueryField } from './workHour'
 import { DateScalar, TimeScalar } from './scalars'
-import { taskCreateMutationField, taskDeleteMutationField } from './task'
+import { taskArchiveMutationField, taskCreateMutationField, taskDeleteMutationField } from './task'
 import { usersQueryField, userQueryField } from './user'
 import {
   teamAcceptInviteMutationField,
@@ -38,6 +38,7 @@ export const schema = makeSchema({
     projectCreateMutationField,
     projectDeleteMutationField,
     projectUpdateMutationField,
+    taskArchiveMutationField,
     taskCreateMutationField,
     taskDeleteMutationField,
     userQueryField,
