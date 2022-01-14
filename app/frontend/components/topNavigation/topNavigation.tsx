@@ -1,16 +1,18 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { TopNavigationLink } from './topNavigationLink'
 
 export const TopNavigation = (): JSX.Element => {
   const session = useSession()
-
+  const router = useRouter()
+  const teamSlug = router.query.teamSlug
   return (
     <nav className="md:container md:mx-auto flex justify-center">
       <TopNavigationLink href="/home">Home</TopNavigationLink>
       <TopNavigationLink href="/time">Time</TopNavigationLink>
-      <TopNavigationLink href="/projects">Projects</TopNavigationLink>
+      {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
       <TopNavigationLink href="/reports">Reports</TopNavigationLink>
-      <TopNavigationLink href="/team">Team</TopNavigationLink>
+      <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
       {session.status === 'authenticated' ? (
         <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
       ) : (
