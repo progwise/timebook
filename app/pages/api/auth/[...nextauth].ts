@@ -20,7 +20,7 @@ export default NextAuth({
         session.user.id = user.id
       }
 
-      return Promise.resolve(session)
+      return session
     },
   },
   secret: process.env.SECRET,

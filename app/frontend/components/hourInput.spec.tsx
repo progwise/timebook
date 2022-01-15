@@ -5,6 +5,7 @@ import { HourInput } from './hourInput'
 
 describe('the hour input control should display ...', () => {
   beforeEach(() => {
+    // eslint-disable-next-line testing-library/no-render-in-setup
     render(
       <>
         <HourInput workHours={0} onChange={jest.fn()} />

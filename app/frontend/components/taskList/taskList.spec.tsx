@@ -5,6 +5,7 @@ import { TaskList } from './taskList'
 describe('the tasklist should ...', () => {
   const testTasks: TaskFragment[] = []
   beforeEach(() => {
+    // eslint-disable-next-line testing-library/no-render-in-setup
     render(<TaskList projectId="1" tasks={testTasks} />)
   })
 

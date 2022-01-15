@@ -1,4 +1,1 @@
-import graphqlRouteHandler from '../graphql'
-
-export * from '../graphql'
-export default graphqlRouteHandler
+export { default, config } from '../graphql'
