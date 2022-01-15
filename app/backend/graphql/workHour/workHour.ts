@@ -14,14 +14,14 @@ export const WorkHour = objectType({
     })
     t.field('project', {
       type: Project,
-      resolve: async (workHour, _arguments, context) =>
-        (
-          await context.prisma.workHour.findUnique({
-            where: { id: workHour.id },
-            select: { task: { select: { project: true } } },
-            rejectOnNotFound: true,
-          })
-        ).task.project,
+      resolve: async (workHour, _arguments, context) => {
+        const { task } = await context.prisma.workHour.findUnique({
+          where: { id: workHour.id },
+          select: { task: { select: { project: true } } },
+          rejectOnNotFound: true,
+        })
+        return task.project
+      },
     })
     t.field('task', {
       type: Task,
