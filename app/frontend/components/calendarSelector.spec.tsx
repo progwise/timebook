@@ -5,6 +5,7 @@ import { CalendarSelector } from './calendarSelector'
 
 describe('the custom calendar should ...', () => {
   beforeEach(() => {
+    // eslint-disable-next-line testing-library/no-render-in-setup
     render(<CalendarSelector />)
   })
 
