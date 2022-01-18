@@ -58,6 +58,8 @@ export type Mutation = {
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
+  /** Update a task */
+  taskUpdate: Task
   /** Accept an invite to a team */
   teamAcceptInvite: Team
   /** Create a new team */
@@ -111,6 +113,11 @@ export type MutationTaskCreateArgs = {
 }
 
 export type MutationTaskDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationTaskUpdateArgs = {
+  data: TaskInput
   id: Scalars['ID']
 }
 

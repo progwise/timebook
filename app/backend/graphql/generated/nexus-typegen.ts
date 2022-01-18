@@ -129,6 +129,7 @@ export interface NexusGenFieldTypes {
     taskArchive: NexusGenRootTypes['Task'] // Task!
     taskCreate: NexusGenRootTypes['Task'] // Task!
     taskDelete: NexusGenRootTypes['Task'] // Task!
+    taskUpdate: NexusGenRootTypes['Task'] // Task!
     teamAcceptInvite: NexusGenRootTypes['Team'] // Team!
     teamCreate: NexusGenRootTypes['Team'] // Team!
     teamDelete: NexusGenRootTypes['Team'] // Team!
@@ -212,6 +213,7 @@ export interface NexusGenFieldTypeNames {
     taskArchive: 'Task'
     taskCreate: 'Task'
     taskDelete: 'Task'
+    taskUpdate: 'Task'
     teamAcceptInvite: 'Team'
     teamCreate: 'Team'
     teamDelete: 'Team'
@@ -322,6 +324,11 @@ export interface NexusGenArgTypes {
     }
     taskDelete: {
       // args
+      id: string // ID!
+    }
+    taskUpdate: {
+      // args
+      data: NexusGenInputs['TaskInput'] // TaskInput!
       id: string // ID!
     }
     teamAcceptInvite: {
