@@ -131,6 +131,18 @@ type Mutation {
   ): Task!
 
   """
+  Update a task
+  """
+  taskUpdate(
+    data: TaskInput!
+
+    """
+    id of the task
+    """
+    id: ID!
+  ): Task!
+
+  """
   Accept an invite to a team
   """
   teamAcceptInvite(
