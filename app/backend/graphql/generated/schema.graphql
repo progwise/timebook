@@ -239,6 +239,16 @@ type Query {
   projects: [Project!]!
 
   """
+  Returns a single task
+  """
+  task(
+    """
+    Identifier for the task
+    """
+    taskId: ID!
+  ): Task!
+
+  """
   Return team by slug provided in the api route (/api/[teamSlug]/graphql)
   """
   team: Team!
