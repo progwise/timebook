@@ -151,6 +151,7 @@ export interface NexusGenFieldTypes {
     customer: NexusGenRootTypes['Customer'] // Customer!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    task: NexusGenRootTypes['Task'] // Task!
     team: NexusGenRootTypes['Team'] // Team!
     teamBySlug: NexusGenRootTypes['Team'] // Team!
     teams: NexusGenRootTypes['Team'][] // [Team!]!
@@ -235,6 +236,7 @@ export interface NexusGenFieldTypeNames {
     customer: 'Customer'
     project: 'Project'
     projects: 'Project'
+    task: 'Task'
     team: 'Team'
     teamBySlug: 'Team'
     teams: 'Team'
@@ -363,6 +365,10 @@ export interface NexusGenArgTypes {
     project: {
       // args
       projectId: string // ID!
+    }
+    task: {
+      // args
+      taskId: string // ID!
     }
     teamBySlug: {
       // args
