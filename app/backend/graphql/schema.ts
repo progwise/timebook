@@ -13,6 +13,7 @@ import {
   taskArchiveMutationField,
   taskCreateMutationField,
   taskDeleteMutationField,
+  taskQueryField,
   taskUpdateMutationField,
 } from './task'
 import { usersQueryField, userQueryField } from './user'
@@ -43,6 +44,7 @@ export const schema = makeSchema({
     projectCreateMutationField,
     projectDeleteMutationField,
     projectUpdateMutationField,
+    taskQueryField,
     taskArchiveMutationField,
     taskCreateMutationField,
     taskDeleteMutationField,
