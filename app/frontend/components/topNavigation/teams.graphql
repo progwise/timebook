@@ -1,0 +1,7 @@
+query teams {
+  teams {
+    id
+    title
+    slug
+  }
+}

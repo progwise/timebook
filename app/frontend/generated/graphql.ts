@@ -289,6 +289,13 @@ export type WorkHour = {
   task: Task
 }
 
+export type TeamsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamsQuery = {
+  __typename?: 'Query'
+  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string }>
+}
+
 export type CreateWorkHourMutationVariables = Exact<{
   duration: Scalars['Int']
   taskId: Scalars['ID']
@@ -531,6 +538,19 @@ export const TeamFragmentDoc = gql`
     inviteKey
   }
 `
+export const TeamsDocument = gql`
+  query teams {
+    teams {
+      id
+      title
+      slug
+    }
+  }
+`
+
+export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
+}
 export const CreateWorkHourDocument = gql`
   mutation createWorkHour($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
     createWorkHour(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
