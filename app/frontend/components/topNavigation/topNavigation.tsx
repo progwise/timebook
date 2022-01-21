@@ -1,6 +1,5 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { Team } from '../../../backend/graphql/team'
 import { useTeamsQuery } from '../../generated/graphql'
 import { TopNavigationLink } from './topNavigationLink'
 
