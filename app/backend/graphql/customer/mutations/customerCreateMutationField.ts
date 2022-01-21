@@ -1,4 +1,4 @@
-import { arg, idArg, mutationField } from 'nexus'
+import { arg, mutationField } from 'nexus'
 import { isTeamMember } from '../../team/utils'
 import { Customer } from '../customer'
 import { CustomerInput } from '../customerInput'
