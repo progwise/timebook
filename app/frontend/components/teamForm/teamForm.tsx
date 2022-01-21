@@ -41,7 +41,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         Slug
         <InputField
           variant="primary"
-          placeholder="This team is accsessible on https://tb.com/[slug]"
+          placeholder="This team is accessible on https://tb.com/[slug]"
           disabled={formState.isSubmitting}
           {...register('slug', { required: 'slug is required' })}
         />
