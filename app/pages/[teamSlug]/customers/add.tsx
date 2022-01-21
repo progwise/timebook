@@ -1,10 +1,10 @@
-/* eslint-disable unicorn/consistent-function-scoping */
 import { InputField } from '../../../frontend/components/inputField/inputField'
 import { Button } from '../../../frontend/components/button/button'
 import { useForm } from 'react-hook-form'
 import { CustomerInput, useCustomerCreateMutation } from '../../../frontend/generated/graphql'
-import router from 'next/router'
+import { useRouter } from 'next/router'
 import { ErrorMessage } from '@hookform/error-message'
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
 
 const ReportsPage = (): JSX.Element => {
   const {
@@ -13,9 +13,7 @@ const ReportsPage = (): JSX.Element => {
     formState: { errors },
   } = useForm<CustomerInput>({ defaultValues: { title: '' } })
   const [, addCustomer] = useCustomerCreateMutation()
-  const handleCancel = async () => {
-    await router.push(`/${router.query.teamSlug}/customers`)
-  }
+  const router = useRouter()
   const onSubmit = async (data: CustomerInput) => {
     try {
       const result = await addCustomer({ data })
@@ -26,9 +24,11 @@ const ReportsPage = (): JSX.Element => {
       await router.push(`/${router.query.teamSlug}/customers`)
     } catch {}
   }
-
+  const handleCancel = async () => {
+    await router.push(`/${router.query.teamSlug}/customers`)
+  }
   return (
-    <>
+    <ProtectedPage>
       <div>
         <h1>Add a customer</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +50,7 @@ const ReportsPage = (): JSX.Element => {
           </div>
         </form>
       </div>
-    </>
+    </ProtectedPage>
   )
 }
 
