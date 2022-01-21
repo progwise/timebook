@@ -7,10 +7,9 @@ export const customerCreateMutationField = mutationField('customerCreate', {
   type: Customer,
   description: 'Create a new customer for a team',
   args: {
-    teamId: idArg({ description: 'Id of the team' }),
     data: arg({ type: CustomerInput }),
   },
-  authorize: (_source, { teamId }, context) => isTeamMember({ id: teamId }, context),
-  resolve: (_source, { teamId, data: { title } }, context) =>
-    context.prisma.customer.create({ data: { teamId, title } }),
+  authorize: (_source, {}, context) => !!context.teamSlug && isTeamMember({ slug: context.teamSlug }, context),
+  resolve: (_source, { data: { title } }, context) =>
+    context.prisma.customer.create({ data: { title, team: { connect: { slug: context.teamSlug } } } }),
 })

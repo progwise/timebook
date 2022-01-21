@@ -79,7 +79,6 @@ export type MutationCreateWorkHourArgs = {
 
 export type MutationCustomerCreateArgs = {
   data: CustomerInput
-  teamId: Scalars['ID']
 }
 
 export type MutationCustomerDeleteArgs = {
@@ -472,6 +471,15 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
+export type CustomerCreateMutationVariables = Exact<{
+  data: CustomerInput
+}>
+
+export type CustomerCreateMutation = {
+  __typename?: 'Mutation'
+  customerCreate: { __typename?: 'Customer'; id: string; title: string }
+}
+
 export type CustomersQueryVariables = Exact<{
   slug: Scalars['String']
 }>
@@ -682,6 +690,18 @@ export const TeamUpdateDocument = gql`
 
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
+}
+export const CustomerCreateDocument = gql`
+  mutation customerCreate($data: CustomerInput!) {
+    customerCreate(data: $data) {
+      id
+      title
+    }
+  }
+`
+
+export function useCustomerCreateMutation() {
+  return Urql.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument)
 }
 export const CustomersDocument = gql`
   query customers($slug: String!) {
