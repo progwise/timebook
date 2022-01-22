@@ -292,7 +292,6 @@ export interface NexusGenArgTypes {
     customerCreate: {
       // args
       data: NexusGenInputs['CustomerInput'] // CustomerInput!
-      teamId: string // ID!
     }
     customerDelete: {
       // args
