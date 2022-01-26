@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
@@ -17,6 +18,7 @@ interface TaskForm {
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, projectId } = props
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -25,6 +27,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   } = useForm<TaskForm>()
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
+
+  const handleTaskDetails = async (task: TaskFragment) => {
+    await router.push(`/${router.query.teamSlug}/tasks/${task.id}`)
+  }
 
   const handleAddTask = async (taskData: TaskForm) => {
     try {
@@ -47,6 +53,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         <tr>
           <th>Tasks</th>
           <th className="text-center">Billable / Hourly rate</th>
+          <th>Details page</th>
         </tr>
       </thead>
       <tbody>
@@ -60,6 +67,11 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             </td>
             <td className="text-center">
               <input type="checkbox" />
+            </td>
+            <td>
+              <Button variant="primarySlim" onClick={() => handleTaskDetails(task)}>
+                Details
+              </Button>
             </td>
           </tr>
         ))}
