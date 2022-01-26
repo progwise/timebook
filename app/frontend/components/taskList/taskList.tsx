@@ -28,8 +28,8 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
 
-  const handleTaskDetails = async (tasks: TaskFragment) => {
-    await router.push(`/${router.query.teamSlug}/tasks/${tasks.id}`)
+  const handleTaskDetails = async (task: TaskFragment) => {
+    await router.push(`/${router.query.teamSlug}/tasks/${task.id}`)
   }
 
   const handleAddTask = async (taskData: TaskForm) => {
