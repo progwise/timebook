@@ -1,5 +1,5 @@
 import { mutationField } from 'nexus'
-import { isAdminByProjectId } from '../../isAdminByProjectId'
+import { isTeamAdmin } from '../../isTeamAdmin'
 import { Task } from '../task'
 import { TaskInput } from '../taskInput'
 
@@ -9,7 +9,7 @@ export const taskCreateMutationField = mutationField('taskCreate', {
   args: {
     data: TaskInput,
   },
-  authorize: async (_source, _arguments, context) => isAdminByProjectId(_arguments.data.projectId, context),
+  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
   resolve: (_source, { data: { title, projectId } }, context) => {
     if (!context.session?.user.id) {
       throw new Error('unauthenticated')
