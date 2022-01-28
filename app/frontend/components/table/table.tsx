@@ -15,8 +15,8 @@ export const TableHeadRow: React.FC<DefaultTableComponentProps> = ({ children, c
   return <tr className={className}>{children}</tr>
 }
 
-export const TableFootRow: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <tr className={className}>{children}</tr>
+export const TableHeadCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
+  return <th className={`bg-gray-100 border-b text-left px-2 pb-2 pt-2 text-gray-600 ${className}`}>{children}</th>
 }
 
 // Body:
@@ -37,14 +37,6 @@ export const TableFoot: React.FC<DefaultTableComponentProps> = ({ children, clas
   return <tfoot className={className}>{children}</tfoot>
 }
 
-
-
-
-export const TableCellRow: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
+export const TableFootRow: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
   return <tr className={className}>{children}</tr>
 }
-
-export const TableHeadCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <th className={`bg-gray-100 border-b text-left px-2 pb-2 pt-2 text-gray-600 ${className}`}>{children}</th>
-}
-
