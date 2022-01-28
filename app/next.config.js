@@ -7,4 +7,5 @@ module.exports = {
   env: {
     ROOT: __dirname,
   },
+  pageExtensions: ['page.tsx', 'page.ts'],
 }
