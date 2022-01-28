@@ -136,7 +136,7 @@ const Time = (): JSX.Element => {
               <tr key={timeEntry.project.id}>
                 <td>{timeEntry.project.title}</td>
                 {timeEntry.times.map(({ date, workHours }, index) => (
-                  <td className="pl-2 pr-2 min-w-min" key={index}>
+                  <td className="min-w-min pl-2 pr-2" key={index}>
                     <HourInput
                       onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
                       workHours={workHours}

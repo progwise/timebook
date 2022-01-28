@@ -111,7 +111,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         >
           <Popover.Panel className="absolute z-10">
             {({ close }) => (
-              <section className="text-sm absolute border-2 bg-gray-200 w-80 rounded-xl p-2 ">
+              <section className="absolute w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm ">
                 <header className="flex justify-between p-0 pb-2 font-bold">
                   <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
                   <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>
@@ -119,14 +119,14 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   </CalendarIcon>
                   <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} size={20} />
                 </header>
-                <div className="grid grid-cols-7 grid-flow-row gap-3 auto-cols-min">
-                  <div className="p-1 text-center border-gray-800 border-b">Mon</div>
-                  <div className="p-1 text-center border-gray-800 border-b">Tue</div>
-                  <div className="p-1 text-center border-gray-800 border-b">Wed</div>
-                  <div className="p-1 text-center border-gray-800 border-b">Thu</div>
-                  <div className="p-1 text-center border-gray-800 border-b">Fri</div>
-                  <div className="p-1 text-center border-gray-800 border-b text-green-600">Sat</div>
-                  <div className="p-1 text-center border-gray-800 border-b text-green-600">Sun</div>
+                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-3">
+                  <div className="border-b border-gray-800 p-1 text-center">Mon</div>
+                  <div className="border-b border-gray-800 p-1 text-center">Tue</div>
+                  <div className="border-b border-gray-800 p-1 text-center">Wed</div>
+                  <div className="border-b border-gray-800 p-1 text-center">Thu</div>
+                  <div className="border-b border-gray-800 p-1 text-center">Fri</div>
+                  <div className="border-b border-gray-800 p-1 text-center text-green-600">Sat</div>
+                  <div className="border-b border-gray-800 p-1 text-center text-green-600">Sun</div>
                   {daysToRender.map((day) => (
                     <DayItem
                       key={day.toString()}

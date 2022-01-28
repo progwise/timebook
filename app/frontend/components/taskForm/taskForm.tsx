@@ -35,7 +35,7 @@ export const TaskForm = (props: TaskFromProps): JSX.Element => {
         <span className="whitespace-nowrap">Project ID</span>
         <InputField variant="primary" {...register('projectId', { required: true })} />
       </label>
-      <div className="flex justify-center mt-16 gap-2">
+      <div className="mt-16 flex justify-center gap-2">
         <Button variant="secondarySlim" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
