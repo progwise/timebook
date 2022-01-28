@@ -41,6 +41,7 @@ async function main() {
                 },
               },
             },
+            role: 'ADMIN',
           },
           {
             user: {
@@ -71,6 +72,7 @@ async function main() {
                 },
               },
             },
+            role: 'ADMIN',
           },
         ],
       },
