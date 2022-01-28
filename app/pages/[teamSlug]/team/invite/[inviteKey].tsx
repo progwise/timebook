@@ -26,11 +26,11 @@ const AcceptInvitationPage = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <div className="flex justify-center mt-16 gap-2">
+      <div className="mt-16 flex justify-center gap-2">
         <h1>Do you want to join this team?</h1>
       </div>
 
-      <div className="flex justify-center mt-16 gap-2">
+      <div className="mt-16 flex justify-center gap-2">
         <Button variant="primary" onClick={handleClick}>
           Accept
         </Button>

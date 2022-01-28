@@ -118,7 +118,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
         </div>
       </div>
-      <div className="flex justify-center mt-16 gap-2">
+      <div className="mt-16 flex justify-center gap-2">
         <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
