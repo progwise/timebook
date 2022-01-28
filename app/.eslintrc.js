@@ -29,6 +29,7 @@ module.exports = {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
     'unicorn/prevent-abbreviations': ['error', { allowList: { props: true, Props: true } }],
     'unicorn/filename-case': ['error', { case: 'camelCase' }],
     'no-console': 'warn',
