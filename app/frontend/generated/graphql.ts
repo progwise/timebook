@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
+import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -877,3 +879,216 @@ export const TeamAcceptInviteDocument = gql`
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCreateWorkHourMutation((req, res, ctx) => {
+ *   const { duration, taskId, date, comment } = req.variables;
+ *   return res(
+ *     ctx.data({ createWorkHour })
+ *   )
+ * })
+ */
+export const mockCreateWorkHourMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CreateWorkHourMutationVariables>,
+    GraphQLContext<CreateWorkHourMutation>,
+    any
+  >,
+) => graphql.mutation<CreateWorkHourMutation, CreateWorkHourMutationVariables>('createWorkHour', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectQuery((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ project })
+ *   )
+ * })
+ */
+export const mockProjectQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectQueryVariables>, GraphQLContext<ProjectQuery>, any>,
+) => graphql.query<ProjectQuery, ProjectQueryVariables>('project', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
+) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('projects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ projectCreate })
+ *   )
+ * })
+ */
+export const mockProjectCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectCreateMutationVariables>,
+    GraphQLContext<ProjectCreateMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectCreateMutation, ProjectCreateMutationVariables>('projectCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectDeleteMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ projectDelete })
+ *   )
+ * })
+ */
+export const mockProjectDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectDeleteMutationVariables>,
+    GraphQLContext<ProjectDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectDeleteMutation, ProjectDeleteMutationVariables>('projectDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ projectUpdate })
+ *   )
+ * })
+ */
+export const mockProjectUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectUpdateMutationVariables>,
+    GraphQLContext<ProjectUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>('projectUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskCreate })
+ *   )
+ * })
+ */
+export const mockTaskCreateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskCreateMutationVariables>, GraphQLContext<TaskCreateMutation>, any>,
+) => graphql.mutation<TaskCreateMutation, TaskCreateMutationVariables>('taskCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskDeleteMutation((req, res, ctx) => {
+ *   const { id, hasWorkHours } = req.variables;
+ *   return res(
+ *     ctx.data({ taskDelete, taskArchive })
+ *   )
+ * })
+ */
+export const mockTaskDeleteMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
+) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ team })
+ *   )
+ * })
+ */
+export const mockTeamQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamQueryVariables>, GraphQLContext<TeamQuery>, any>,
+) => graphql.query<TeamQuery, TeamQueryVariables>('team', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ teamCreate })
+ *   )
+ * })
+ */
+export const mockTeamCreateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TeamCreateMutationVariables>, GraphQLContext<TeamCreateMutation>, any>,
+) => graphql.mutation<TeamCreateMutation, TeamCreateMutationVariables>('teamCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ teamUpdate })
+ *   )
+ * })
+ */
+export const mockTeamUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
+) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomersQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
+ *   return res(
+ *     ctx.data({ teamBySlug })
+ *   )
+ * })
+ */
+export const mockCustomersQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CustomersQueryVariables>, GraphQLContext<CustomersQuery>, any>,
+) => graphql.query<CustomersQuery, CustomersQueryVariables>('customers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamAcceptInviteMutation((req, res, ctx) => {
+ *   const { inviteKey } = req.variables;
+ *   return res(
+ *     ctx.data({ teamAcceptInvite })
+ *   )
+ * })
+ */
+export const mockTeamAcceptInviteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TeamAcceptInviteMutationVariables>,
+    GraphQLContext<TeamAcceptInviteMutation>,
+    any
+  >,
+) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)
