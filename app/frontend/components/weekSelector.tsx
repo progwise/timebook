@@ -37,7 +37,7 @@ export const WeekSelector = (props: { onChange: (year: number, week: number) => 
   }
 
   return (
-    <label className="flex flex-row mt-6 space-x-4">
+    <label className="mt-6 flex flex-row space-x-4">
       <span className="space-x-10">
         {selectedWeek}/{selectedYear}
       </span>

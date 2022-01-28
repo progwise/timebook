@@ -129,6 +129,7 @@ export interface NexusGenFieldTypes {
     taskArchive: NexusGenRootTypes['Task'] // Task!
     taskCreate: NexusGenRootTypes['Task'] // Task!
     taskDelete: NexusGenRootTypes['Task'] // Task!
+    taskUpdate: NexusGenRootTypes['Task'] // Task!
     teamAcceptInvite: NexusGenRootTypes['Team'] // Team!
     teamCreate: NexusGenRootTypes['Team'] // Team!
     teamDelete: NexusGenRootTypes['Team'] // Team!
@@ -150,6 +151,7 @@ export interface NexusGenFieldTypes {
     customer: NexusGenRootTypes['Customer'] // Customer!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    task: NexusGenRootTypes['Task'] // Task!
     team: NexusGenRootTypes['Team'] // Team!
     teamBySlug: NexusGenRootTypes['Team'] // Team!
     teams: NexusGenRootTypes['Team'][] // [Team!]!
@@ -212,6 +214,7 @@ export interface NexusGenFieldTypeNames {
     taskArchive: 'Task'
     taskCreate: 'Task'
     taskDelete: 'Task'
+    taskUpdate: 'Task'
     teamAcceptInvite: 'Team'
     teamCreate: 'Team'
     teamDelete: 'Team'
@@ -233,6 +236,7 @@ export interface NexusGenFieldTypeNames {
     customer: 'Customer'
     project: 'Project'
     projects: 'Project'
+    task: 'Task'
     team: 'Team'
     teamBySlug: 'Team'
     teams: 'Team'
@@ -288,7 +292,6 @@ export interface NexusGenArgTypes {
     customerCreate: {
       // args
       data: NexusGenInputs['CustomerInput'] // CustomerInput!
-      teamId: string // ID!
     }
     customerDelete: {
       // args
@@ -324,6 +327,11 @@ export interface NexusGenArgTypes {
       // args
       id: string // ID!
     }
+    taskUpdate: {
+      // args
+      data: NexusGenInputs['TaskInput'] // TaskInput!
+      id: string // ID!
+    }
     teamAcceptInvite: {
       // args
       inviteKey: string // String!
@@ -356,6 +364,10 @@ export interface NexusGenArgTypes {
     project: {
       // args
       projectId: string // ID!
+    }
+    task: {
+      // args
+      taskId: string // ID!
     }
     teamBySlug: {
       // args

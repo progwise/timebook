@@ -4,11 +4,11 @@
 @tailwind utilities;
 
 main > article {
-  @apply p-6 m-4 bg-white rounded-xl shadow-md space-y-3 border;
+  @apply m-4 space-y-3 rounded-xl border bg-white p-6 shadow-md;
 }
 
 main > article > h2 {
-  @apply font-bold mb-3 text-gray-400 text-xl;
+  @apply mb-3 text-xl font-bold text-gray-400;
 }
 
 form {
@@ -16,34 +16,9 @@ form {
 }
 
 form > label {
-  @apply flex flex-col mb-4;
+  @apply mb-4 flex flex-col;
 }
 
 label span {
-  @apply m-0.5 text-gray-500 w-3.5;
-}
-
-table th {
-  @apply text-left font-bold mb-3 text-gray-400 text-lg bg-gray-50;
-}
-
-table td,
-table th {
-  @apply py-1.5 px-1;
-}
-
-table thead {
-  @apply border-b-4 border-transparent;
-}
-
-table tfoot {
-  @apply border-t-4 border-transparent;
-}
-
-table tbody tr:nth-child(2n) {
-  @apply bg-gray-100;
-}
-
-table tbody tr {
-  @apply hover:bg-gray-200;
+  @apply m-0.5 w-3.5 text-gray-500;
 }

@@ -6,6 +6,18 @@ import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFoot,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+  TableFootRow,
+} from '../table/table'
 
 export interface TaskListProps {
   tasks: TaskFragment[]
@@ -17,6 +29,7 @@ interface TaskForm {
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, projectId } = props
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -25,6 +38,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   } = useForm<TaskForm>()
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
+
+  const handleTaskDetails = async (task: TaskFragment) => {
+    await router.push(`/${router.query.teamSlug}/tasks/${task.id}`)
+  }
 
   const handleAddTask = async (taskData: TaskForm) => {
     try {
@@ -42,35 +59,41 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   }
 
   return (
-    <table className="min-w-full">
-      <thead>
-        <tr>
-          <th>Tasks</th>
-          <th className="text-center">Billable / Hourly rate</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table className="min-w-full">
+      <TableHead>
+        <TableHeadRow>
+          <TableHeadCell>Tasks</TableHeadCell>
+          <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
+          <TableHeadCell>Details page</TableHeadCell>
+        </TableHeadRow>
+      </TableHead>
+      <TableBody>
         {tasks.map((task) => (
-          <tr key={task.id}>
-            <td>
+          <TableRow key={task.id}>
+            <TableCell>
               <Button variant="secondarySlim" tooltip="Delete Task" onClick={() => setTaskToBeDeleted(task)}>
                 <BiTrash />
               </Button>
               <span className="ml-2">{task.title}</span>
-            </td>
-            <td className="text-center">
+            </TableCell>
+            <TableCell className="text-center">
               <input type="checkbox" />
-            </td>
-          </tr>
+            </TableCell>
+            <TableCell>
+              <Button variant="primarySlim" onClick={() => handleTaskDetails(task)}>
+                Details
+              </Button>
+            </TableCell>
+          </TableRow>
         ))}
         {taskToBeDeleted ? (
           // eslint-disable-next-line unicorn/no-useless-undefined
           <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
         ) : undefined}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td>
+      </TableBody>
+      <TableFoot>
+        <TableFootRow>
+          <TableCell>
             <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
               <div className="flex flex-col">
                 <label>
@@ -87,9 +110,9 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 Add task
               </Button>
             </form>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+          </TableCell>
+        </TableFootRow>
+      </TableFoot>
+    </Table>
   )
 }

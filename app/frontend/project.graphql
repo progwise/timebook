@@ -11,4 +11,8 @@ fragment Task on Task {
   id
   title
   hasWorkHours
+  project {
+    id
+    title
+  }
 }

@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
+import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -58,6 +60,8 @@ export type Mutation = {
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
+  /** Update a task */
+  taskUpdate: Task
   /** Accept an invite to a team */
   teamAcceptInvite: Team
   /** Create a new team */
@@ -77,7 +81,6 @@ export type MutationCreateWorkHourArgs = {
 
 export type MutationCustomerCreateArgs = {
   data: CustomerInput
-  teamId: Scalars['ID']
 }
 
 export type MutationCustomerDeleteArgs = {
@@ -111,6 +114,11 @@ export type MutationTaskCreateArgs = {
 }
 
 export type MutationTaskDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationTaskUpdateArgs = {
+  data: TaskInput
   id: Scalars['ID']
 }
 
@@ -166,6 +174,8 @@ export type Query = {
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+  /** Returns a single task */
+  task: Task
   /** Return team by slug provided in the api route (/api/[teamSlug]/graphql) */
   team: Team
   /** Return a team by a slug */
@@ -186,6 +196,10 @@ export type QueryCustomerArgs = {
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryTaskArgs = {
+  taskId: Scalars['ID']
 }
 
 export type QueryTeamBySlugArgs = {
@@ -276,6 +290,13 @@ export type WorkHour = {
   task: Task
 }
 
+export type TeamsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamsQuery = {
+  __typename?: 'Query'
+  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string }>
+}
+
 export type CreateWorkHourMutationVariables = Exact<{
   duration: Scalars['Int']
   taskId: Scalars['ID']
@@ -313,11 +334,23 @@ export type ProjectQuery = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
   }
 }
 
-export type TaskFragment = { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
+export type TaskFragment = {
+  __typename?: 'Task'
+  id: string
+  title: string
+  hasWorkHours: boolean
+  project: { __typename?: 'Project'; id: string; title: string }
+}
 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never }>
 
@@ -329,7 +362,13 @@ export type ProjectsQuery = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
   }>
 }
 
@@ -339,7 +378,13 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null | undefined
   endDate?: string | null | undefined
-  tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+  tasks: Array<{
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }>
 }
 
 export type ProjectCreateMutationVariables = Exact<{
@@ -354,7 +399,13 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
   }
 }
 
@@ -370,7 +421,13 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
   }
 }
 
@@ -387,7 +444,13 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null | undefined
     endDate?: string | null | undefined
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
   }
 }
 
@@ -397,7 +460,13 @@ export type TaskCreateMutationVariables = Exact<{
 
 export type TaskCreateMutation = {
   __typename?: 'Mutation'
-  taskCreate: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
+  taskCreate: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
 }
 
 export type TaskDeleteMutationVariables = Exact<{
@@ -407,8 +476,36 @@ export type TaskDeleteMutationVariables = Exact<{
 
 export type TaskDeleteMutation = {
   __typename?: 'Mutation'
-  taskDelete?: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
-  taskArchive?: { __typename?: 'Task'; id: string; title: string; hasWorkHours: boolean }
+  taskDelete?: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
+  taskArchive?: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
+}
+
+export type TaskUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TaskInput
+}>
+
+export type TaskUpdateMutation = {
+  __typename?: 'Mutation'
+  taskUpdate: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
 }
 
 export type TeamQueryVariables = Exact<{ [key: string]: never }>
@@ -459,6 +556,15 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
+export type CustomerCreateMutationVariables = Exact<{
+  data: CustomerInput
+}>
+
+export type CustomerCreateMutation = {
+  __typename?: 'Mutation'
+  customerCreate: { __typename?: 'Customer'; id: string; title: string }
+}
+
 export type CustomersQueryVariables = Exact<{
   slug: Scalars['String']
 }>
@@ -470,6 +576,21 @@ export type CustomersQuery = {
     id: string
     title: string
     customers: Array<{ __typename?: 'Customer'; id: string; title: string }>
+  }
+}
+
+export type TaskQueryVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type TaskQuery = {
+  __typename?: 'Query'
+  task: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
   }
 }
 
@@ -495,6 +616,10 @@ export const TaskFragmentDoc = gql`
     id
     title
     hasWorkHours
+    project {
+      id
+      title
+    }
   }
 `
 export const ProjectFragmentDoc = gql`
@@ -518,6 +643,19 @@ export const TeamFragmentDoc = gql`
     inviteKey
   }
 `
+export const TeamsDocument = gql`
+  query teams {
+    teams {
+      id
+      title
+      slug
+    }
+  }
+`
+
+export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
+}
 export const CreateWorkHourDocument = gql`
   mutation createWorkHour($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
     createWorkHour(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
@@ -629,6 +767,18 @@ export const TaskDeleteDocument = gql`
 export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }
+export const TaskUpdateDocument = gql`
+  mutation taskUpdate($id: ID!, $data: TaskInput!) {
+    taskUpdate(id: $id, data: $data) {
+      ...Task
+    }
+  }
+  ${TaskFragmentDoc}
+`
+
+export function useTaskUpdateMutation() {
+  return Urql.useMutation<TaskUpdateMutation, TaskUpdateMutationVariables>(TaskUpdateDocument)
+}
 export const TeamDocument = gql`
   query team {
     team {
@@ -670,6 +820,18 @@ export const TeamUpdateDocument = gql`
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
+export const CustomerCreateDocument = gql`
+  mutation customerCreate($data: CustomerInput!) {
+    customerCreate(data: $data) {
+      id
+      title
+    }
+  }
+`
+
+export function useCustomerCreateMutation() {
+  return Urql.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument)
+}
 export const CustomersDocument = gql`
   query customers($slug: String!) {
     teamBySlug(slug: $slug) {
@@ -685,6 +847,18 @@ export const CustomersDocument = gql`
 
 export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
+}
+export const TaskDocument = gql`
+  query task($taskId: ID!) {
+    task(taskId: $taskId) {
+      ...Task
+    }
+  }
+  ${TaskFragmentDoc}
+`
+
+export function useTaskQuery(options: Omit<Urql.UseQueryArgs<TaskQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TaskQuery>({ query: TaskDocument, ...options })
 }
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {
@@ -705,3 +879,279 @@ export const TeamAcceptInviteDocument = gql`
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ teams })
+ *   )
+ * })
+ */
+export const mockTeamsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamsQueryVariables>, GraphQLContext<TeamsQuery>, any>,
+) => graphql.query<TeamsQuery, TeamsQueryVariables>('teams', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCreateWorkHourMutation((req, res, ctx) => {
+ *   const { duration, taskId, date, comment } = req.variables;
+ *   return res(
+ *     ctx.data({ createWorkHour })
+ *   )
+ * })
+ */
+export const mockCreateWorkHourMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CreateWorkHourMutationVariables>,
+    GraphQLContext<CreateWorkHourMutation>,
+    any
+  >,
+) => graphql.mutation<CreateWorkHourMutation, CreateWorkHourMutationVariables>('createWorkHour', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectQuery((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ project })
+ *   )
+ * })
+ */
+export const mockProjectQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectQueryVariables>, GraphQLContext<ProjectQuery>, any>,
+) => graphql.query<ProjectQuery, ProjectQueryVariables>('project', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
+) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('projects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ projectCreate })
+ *   )
+ * })
+ */
+export const mockProjectCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectCreateMutationVariables>,
+    GraphQLContext<ProjectCreateMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectCreateMutation, ProjectCreateMutationVariables>('projectCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectDeleteMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ projectDelete })
+ *   )
+ * })
+ */
+export const mockProjectDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectDeleteMutationVariables>,
+    GraphQLContext<ProjectDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectDeleteMutation, ProjectDeleteMutationVariables>('projectDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ projectUpdate })
+ *   )
+ * })
+ */
+export const mockProjectUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectUpdateMutationVariables>,
+    GraphQLContext<ProjectUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>('projectUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskCreate })
+ *   )
+ * })
+ */
+export const mockTaskCreateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskCreateMutationVariables>, GraphQLContext<TaskCreateMutation>, any>,
+) => graphql.mutation<TaskCreateMutation, TaskCreateMutationVariables>('taskCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskDeleteMutation((req, res, ctx) => {
+ *   const { id, hasWorkHours } = req.variables;
+ *   return res(
+ *     ctx.data({ taskDelete, taskArchive })
+ *   )
+ * })
+ */
+export const mockTaskDeleteMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
+) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUpdate })
+ *   )
+ * })
+ */
+export const mockTaskUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
+) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ team })
+ *   )
+ * })
+ */
+export const mockTeamQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamQueryVariables>, GraphQLContext<TeamQuery>, any>,
+) => graphql.query<TeamQuery, TeamQueryVariables>('team', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ teamCreate })
+ *   )
+ * })
+ */
+export const mockTeamCreateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TeamCreateMutationVariables>, GraphQLContext<TeamCreateMutation>, any>,
+) => graphql.mutation<TeamCreateMutation, TeamCreateMutationVariables>('teamCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ teamUpdate })
+ *   )
+ * })
+ */
+export const mockTeamUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
+) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ customerCreate })
+ *   )
+ * })
+ */
+export const mockCustomerCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CustomerCreateMutationVariables>,
+    GraphQLContext<CustomerCreateMutation>,
+    any
+  >,
+) => graphql.mutation<CustomerCreateMutation, CustomerCreateMutationVariables>('customerCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomersQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
+ *   return res(
+ *     ctx.data({ teamBySlug })
+ *   )
+ * })
+ */
+export const mockCustomersQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CustomersQueryVariables>, GraphQLContext<CustomersQuery>, any>,
+) => graphql.query<CustomersQuery, CustomersQueryVariables>('customers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskQuery((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ task })
+ *   )
+ * })
+ */
+export const mockTaskQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TaskQueryVariables>, GraphQLContext<TaskQuery>, any>,
+) => graphql.query<TaskQuery, TaskQueryVariables>('task', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamAcceptInviteMutation((req, res, ctx) => {
+ *   const { inviteKey } = req.variables;
+ *   return res(
+ *     ctx.data({ teamAcceptInvite })
+ *   )
+ * })
+ */
+export const mockTeamAcceptInviteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TeamAcceptInviteMutationVariables>,
+    GraphQLContext<TeamAcceptInviteMutation>,
+    any
+  >,
+) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)

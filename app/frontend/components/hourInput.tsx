@@ -98,9 +98,9 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   }, [workHours])
 
   return (
-    <div className="border w-full">
+    <div className="w-full border">
       <input
-        className="w-full text-center p-1"
+        className="w-full p-1 text-center"
         type="text"
         name="hours"
         placeholder="0:00"

@@ -48,14 +48,7 @@ type Mutation {
   """
   Create a new customer for a team
   """
-  customerCreate(
-    data: CustomerInput!
-
-    """
-    Id of the team
-    """
-    teamId: ID!
-  ): Customer!
+  customerCreate(data: CustomerInput!): Customer!
 
   """
   Delete a customer
@@ -124,6 +117,18 @@ type Mutation {
   Delete a task
   """
   taskDelete(
+    """
+    id of the task
+    """
+    id: ID!
+  ): Task!
+
+  """
+  Update a task
+  """
+  taskUpdate(
+    data: TaskInput!
+
     """
     id of the task
     """
@@ -225,6 +230,16 @@ type Query {
   Returns a list of all projects
   """
   projects: [Project!]!
+
+  """
+  Returns a single task
+  """
+  task(
+    """
+    Identifier for the task
+    """
+    taskId: ID!
+  ): Task!
 
   """
   Return team by slug provided in the api route (/api/[teamSlug]/graphql)
