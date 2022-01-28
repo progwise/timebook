@@ -22,6 +22,7 @@ export const teamCreateMutationField = mutationField('teamCreate', {
         teamMemberships: {
           create: {
             userId: context.session.user.id,
+            role: 'ADMIN',
           },
         },
       },

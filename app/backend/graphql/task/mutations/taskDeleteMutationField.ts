@@ -1,6 +1,6 @@
 import { idArg, mutationField } from 'nexus'
 import { Task } from '../task'
-import { isAdminByTaskId } from '../../isAdminByTaskId'
+import { isTeamAdmin } from '../../isTeamAdmin'
 
 export const taskDeleteMutationField = mutationField('taskDelete', {
   type: Task,
@@ -8,7 +8,7 @@ export const taskDeleteMutationField = mutationField('taskDelete', {
   args: {
     id: idArg({ description: 'id of the task' }),
   },
-  authorize: async (_source, _arguments, context) => isAdminByTaskId(_arguments.id, context),
+  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
   resolve: (_source, { id }, context) => {
     if (!context.session?.user.id) {
       throw new Error('not authenticated')

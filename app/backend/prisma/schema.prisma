@@ -37,7 +37,6 @@ enum Role {
 model ProjectMembership {
   teamMembershipId String
   projectId        Int
-  role             Role   @default(MEMBER)
 
   invitedAt        DateTime? @default(now())
   inviteAcceptedAt DateTime?
@@ -54,8 +53,8 @@ model Task {
   title     String @db.VarChar(255)
   projectId Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
 
   project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -162,6 +161,7 @@ model TeamMembership {
   memberSince DateTime @default(now())
   userId      String
   teamId      String
+  role        Role     @default(MEMBER)
 
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   team               Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
