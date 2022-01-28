@@ -14,23 +14,23 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   }
 
   return (
-    <table className="shadow-lg bg-white w-full">
+    <table className="w-full bg-white shadow-lg">
       <thead>
         <tr>
-          <th className="bg-gray-100 border-b text-left px-2 pb-2 pt-2 text-gray-600">Name</th>
-          <th className="bg-gray-100 border-b text-left px-2 pb-2 pt-2 text-gray-600">Duration</th>
-          <th className="bg-gray-100 border-b text-left px-2 pb-2 pt-2 text-gray-600" />
+          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600">Name</th>
+          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600">Duration</th>
+          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600" />
         </tr>
       </thead>
       <tbody>
         {props.projects.map((project) => {
           return (
-            <tr key={project.id} className="hover:bg-gray-100 border-b-2">
+            <tr key={project.id} className="border-b-2 hover:bg-gray-100">
               <td className="p-2">{project.title}</td>
               <td className="p-2">
                 {project.startDate} - {project.endDate}
               </td>
-              <td className="flex justify-end flex-wrap p-2">
+              <td className="flex flex-wrap justify-end p-2">
                 <Button variant="primary" onClick={() => handleProjectDetails(project)}>
                   Details
                 </Button>

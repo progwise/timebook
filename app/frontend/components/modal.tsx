@@ -12,12 +12,12 @@ interface ModalProps {
 export const Modal = ({ open, onClose, title, actions, children }: ModalProps): JSX.Element => {
   return (
     <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-        <div className="relative bg-white rounded-3xl p-7 shadow-lg">
+        <div className="relative rounded-3xl bg-white p-7 shadow-lg">
           <Dialog.Title className="text-center text-lg">{title}</Dialog.Title>
           {children}
-          <div className="flex gap-4 pt-5 flex-wrap flex-col sm:flex-row sm:justify-end">{actions}</div>
+          <div className="flex flex-col flex-wrap gap-4 pt-5 sm:flex-row sm:justify-end">{actions}</div>
         </div>
       </div>
     </Dialog>

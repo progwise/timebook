@@ -69,7 +69,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       }
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
-        <div className="flex flex-col mb-4">
+        <div className="mb-4 flex flex-col">
           <label htmlFor="projectId" className="mb-2">
             Project
           </label>
@@ -89,7 +89,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </select>
           <ErrorMessage errors={errors} name="projectId" as={<span className="text-red-700" />} />
         </div>
-        <div className="flex flex-col mb-4">
+        <div className="mb-4 flex flex-col">
           <label>
             <select className="w-72 rounded-md" {...register('taskId', { required: 'Task is required' })}>
               {selectedProject?.tasks.map((task) => {
