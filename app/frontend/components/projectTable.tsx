@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { ProjectFragment } from '../generated/graphql'
 import { Button } from './button/button'
+import { Table, TableHead, TableRow, TableHeadCell, TableBody, TableCell, TableHeadRow } from './table/table'
 
 interface ProjectTableProps {
   projects: Array<ProjectFragment>
@@ -14,31 +15,31 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   }
 
   return (
-    <table className="w-full bg-white shadow-lg">
-      <thead>
-        <tr>
-          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600">Name</th>
-          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600">Duration</th>
-          <th className="border-b bg-gray-100 px-2 pb-2 pt-2 text-left text-gray-600" />
-        </tr>
-      </thead>
-      <tbody>
+    <Table className="w-full bg-white shadow-lg">
+      <TableHead>
+        <TableHeadRow>
+          <TableHeadCell>Name</TableHeadCell>
+          <TableHeadCell>Duration</TableHeadCell>
+          <TableHeadCell />
+        </TableHeadRow>
+      </TableHead>
+      <TableBody>
         {props.projects.map((project) => {
           return (
-            <tr key={project.id} className="border-b-2 hover:bg-gray-100">
-              <td className="p-2">{project.title}</td>
-              <td className="p-2">
+            <TableRow key={project.id}>
+              <TableCell>{project.title}</TableCell>
+              <TableCell>
                 {project.startDate} - {project.endDate}
-              </td>
-              <td className="flex flex-wrap justify-end p-2">
+              </TableCell>
+              <TableCell>
                 <Button variant="primary" onClick={() => handleProjectDetails(project)}>
                   Details
                 </Button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           )
         })}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   )
 }
