@@ -15,7 +15,7 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
     }
 
     const project = await context.prisma.project.findUnique({
-      where: { id: Number.parseInt(id) },
+      where: { id },
       rejectOnNotFound: true,
       include: { team: true },
     })
@@ -25,6 +25,6 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
       throw new Error('not authenticated')
     }
 
-    return context.prisma.project.delete({ where: { id: Number.parseInt(id) } })
+    return context.prisma.project.delete({ where: { id } })
   },
 })

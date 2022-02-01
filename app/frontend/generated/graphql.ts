@@ -229,7 +229,7 @@ export type Task = {
 }
 
 export type TaskInput = {
-  projectId: Scalars['Int']
+  projectId: Scalars['ID']
   title: Scalars['String']
 }
 

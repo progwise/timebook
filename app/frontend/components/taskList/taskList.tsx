@@ -47,7 +47,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     try {
       const result = await taskCreate({
         data: {
-          projectId: Number.parseInt(projectId),
+          projectId,
           title: taskData.title,
         },
       })

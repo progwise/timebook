@@ -311,7 +311,7 @@ type Task {
 }
 
 input TaskInput {
-  projectId: Int!
+  projectId: ID!
   title: String!
 }
 

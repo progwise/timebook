@@ -50,7 +50,7 @@ export interface NexusGenInputs {
   }
   TaskInput: {
     // input type
-    projectId: number // Int!
+    projectId: string // ID!
     title: string // String!
   }
   TeamInput: {

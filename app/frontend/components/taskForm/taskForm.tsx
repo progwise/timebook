@@ -14,7 +14,7 @@ export const TaskForm = (props: TaskFromProps): JSX.Element => {
   const { register, handleSubmit } = useForm<TaskInput>({
     defaultValues: {
       title: task.title,
-      projectId: Number.parseInt(task.project.id ?? ''),
+      projectId: task.project.id ?? '',
     },
   })
 
