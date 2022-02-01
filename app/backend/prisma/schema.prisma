@@ -13,7 +13,7 @@ generator client {
 }
 
 model Project {
-  id         Int       @id @default(autoincrement())
+  id         String    @id @default(cuid())
   title      String    @db.VarChar(255)
   startDate  DateTime? @db.Date
   endDate    DateTime? @db.Date
@@ -36,7 +36,7 @@ enum Role {
 
 model ProjectMembership {
   teamMembershipId String
-  projectId        Int
+  projectId        String
 
   invitedAt        DateTime? @default(now())
   inviteAcceptedAt DateTime?
@@ -51,7 +51,7 @@ model ProjectMembership {
 model Task {
   id        String @id @default(cuid())
   title     String @db.VarChar(255)
-  projectId Int
+  projectId String
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
