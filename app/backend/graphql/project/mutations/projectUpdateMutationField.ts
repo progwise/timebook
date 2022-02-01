@@ -19,7 +19,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
 
     const project = await context.prisma.project.findUnique({
-      where: { id: Number.parseInt(id) },
+      where: { id },
       rejectOnNotFound: true,
     })
 
@@ -46,7 +46,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
       : undefined
 
     return context.prisma.project.update({
-      where: { id: Number.parseInt(id) },
+      where: { id },
       data: {
         title,
         startDate: start,

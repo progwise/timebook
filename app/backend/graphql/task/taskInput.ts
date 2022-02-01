@@ -4,6 +4,6 @@ export const TaskInput = inputObjectType({
   name: 'TaskInput',
   definition: (t) => {
     t.string('title')
-    t.int('projectId')
+    t.id('projectId')
   },
 })
