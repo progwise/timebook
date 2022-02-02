@@ -16,7 +16,7 @@ const Team = (): JSX.Element => {
       <ProtectedPage>
         <article>
           <h2>Team Details</h2>
-          {teamData?.team && <TeamForm team={teamData.team} />}
+          {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
         </article>
         <article>
           <h2 className="flex justify-between">
