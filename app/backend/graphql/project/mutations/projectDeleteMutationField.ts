@@ -1,6 +1,6 @@
 import { idArg, mutationField } from 'nexus'
 import { Project } from '../project'
-import { isAdminByProjectId } from '../../isAdminByProjectId'
+import { isTeamAdmin } from '../../isTeamAdmin'
 
 export const projectDeleteMutationField = mutationField('projectDelete', {
   type: Project,
@@ -8,14 +8,14 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
   args: {
     id: idArg({ description: 'id of the project' }),
   },
-  authorize: async (_source, _arguments, context) => isAdminByProjectId(Number.parseInt(_arguments.id), context),
+  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
   resolve: async (_source, { id }, context) => {
     if (!context.session?.user.id) {
       throw new Error('not authenticated')
     }
 
     const project = await context.prisma.project.findUnique({
-      where: { id: Number.parseInt(id) },
+      where: { id },
       rejectOnNotFound: true,
       include: { team: true },
     })
@@ -25,6 +25,6 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
       throw new Error('not authenticated')
     }
 
-    return context.prisma.project.delete({ where: { id: Number.parseInt(id) } })
+    return context.prisma.project.delete({ where: { id } })
   },
 })

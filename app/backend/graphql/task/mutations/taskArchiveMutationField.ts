@@ -1,5 +1,5 @@
 import { idArg, mutationField } from 'nexus'
-import { isAdminByTaskId } from '../../isAdminByTaskId'
+import { isTeamAdmin } from '../../isTeamAdmin'
 import { Task } from '../task'
 
 export const taskArchiveMutationField = mutationField('taskArchive', {
@@ -8,7 +8,7 @@ export const taskArchiveMutationField = mutationField('taskArchive', {
   args: {
     taskId: idArg({ description: 'id of the task' }),
   },
-  authorize: (_source, { taskId }, context) => isAdminByTaskId(taskId, context),
+  authorize: (_source, _arguments, context) => isTeamAdmin(context),
   resolve: (_source, { taskId }, context) => {
     return context.prisma.task.update({
       where: { id: taskId },

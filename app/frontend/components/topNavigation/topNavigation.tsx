@@ -8,7 +8,7 @@ export const TopNavigation = (): JSX.Element => {
   const router = useRouter()
   const teamSlug = router.query.teamSlug
   return (
-    <nav className="md:container md:mx-auto flex justify-center">
+    <nav className="flex justify-center md:container md:mx-auto">
       <TopNavigationLink href="/home">Home</TopNavigationLink>
       <TopNavigationLink href="/time">Time</TopNavigationLink>
       {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}

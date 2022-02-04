@@ -35,9 +35,9 @@ export const parseWorkHours = (timeString: string): number => {
       let minutes = parseIntNoNaN(parts[1])
 
       if (minutes > 59) {
-        const remainer = minutes % 60
-        hours = hours + (minutes - remainer) / 60
-        minutes = remainer
+        const remainder = minutes % 60
+        hours = hours + (minutes - remainder) / 60
+        minutes = remainder
       }
 
       validateDuration({
@@ -98,9 +98,9 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   }, [workHours])
 
   return (
-    <div className="border w-full">
+    <div className="w-full border">
       <input
-        className="w-full text-center p-1"
+        className="w-full p-1 text-center"
         type="text"
         name="hours"
         placeholder="0:00"

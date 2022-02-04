@@ -44,7 +44,6 @@ export const projectCreateMutationField = mutationField('projectCreate', {
         teamId: team.id,
         projectMemberships: {
           create: {
-            role: 'ADMIN',
             inviteAcceptedAt: now,
             invitedAt: now,
             teamMembership: {
