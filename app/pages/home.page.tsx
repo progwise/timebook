@@ -9,7 +9,7 @@ export default function Home(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <article>
+      <article className="timebook">
         <h2>Welcome</h2>
         This is the new app to maintain your hours and report them
       </article>

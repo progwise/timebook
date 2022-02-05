@@ -101,7 +101,7 @@ const Time = (): JSX.Element => {
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </div>
-      <article>
+      <article className="timebook">
         <h2>Your timetable</h2>
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />

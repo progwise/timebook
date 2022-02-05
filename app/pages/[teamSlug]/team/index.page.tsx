@@ -14,11 +14,11 @@ const Team = (): JSX.Element => {
   return (
     <>
       <ProtectedPage>
-        <article>
+        <article className="timebook">
           <h2>Team Details</h2>
           {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
         </article>
-        <article>
+        <article className="timebook">
           <h2 className="flex justify-between">
             <span>Members</span>
           </h2>
