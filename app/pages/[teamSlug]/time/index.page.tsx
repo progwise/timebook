@@ -17,7 +17,7 @@ const TimeDetails = () => {
 
   return (
     <ProtectedPage>
-      <nav className="flex justify-between mt-5">
+      <nav className="mt-5 flex justify-between">
         <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
           <BiPlus className="flex items-end text-3xl" />
         </Button>
@@ -29,16 +29,16 @@ const TimeDetails = () => {
         <CalendarSelector onSelectedDateChange={setSelectedDate} />
       </nav>
       {data?.workHours.map((item) => (
-        <article key={item.id} className="flex justify-between items-center">
+        <article key={item.id} className="flex items-center justify-between">
           <header className="w-1/2">
             <h1 className="font-bold">{item.project.title}</h1>
             <h2 className="font-semibold">{item.task.title}</h2>
             {item.comment && <p>{item.comment}</p>}
           </header>
-          <div className="w-1/4 text-2xl text-right">
+          <div className="w-1/4 text-right text-2xl">
             <p>{formatDuration(item.duration)}</p>
           </div>
-          <div className="w-1/4 flex justify-end gap-2">
+          <div className="flex w-1/4 justify-end gap-2">
             <Button variant="primary">
               <BiTimer />
               Start
@@ -50,11 +50,11 @@ const TimeDetails = () => {
           </div>
         </article>
       ))}
-      <article className="flex justify-between items-center">
+      <article className="flex items-center justify-between">
         <header className="w-1/2">
           <h1 className="text-xl">Total for {selectedDateString}</h1>
         </header>
-        <div className="w-1/4 text-2xl text-right">
+        <div className="w-1/4 text-right text-2xl">
           {formatDuration(data?.workHours.map((item) => item.duration).reduce((duration, sum) => duration + sum))}
         </div>
         <div className="w-1/4">{''}</div>
