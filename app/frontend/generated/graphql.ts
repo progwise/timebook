@@ -556,6 +556,71 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
+export type WorkHoursQueryVariables = Exact<{
+  from: Scalars['Date']
+}>
+
+export type WorkHoursQuery = {
+  __typename?: 'Query'
+  workHours: Array<{
+    __typename?: 'WorkHour'
+    id: string
+    date: string
+    comment?: string | null | undefined
+    duration: number
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null | undefined
+      endDate?: string | null | undefined
+      tasks: Array<{
+        __typename?: 'Task'
+        id: string
+        title: string
+        hasWorkHours: boolean
+        project: { __typename?: 'Project'; id: string; title: string }
+      }>
+    }
+    task: {
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }
+  }>
+}
+
+export type WorkHourFragment = {
+  __typename?: 'WorkHour'
+  id: string
+  date: string
+  comment?: string | null | undefined
+  duration: number
+  project: {
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null | undefined
+    endDate?: string | null | undefined
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }>
+  }
+  task: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
+}
+
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
 }>
@@ -611,6 +676,15 @@ export type TeamAcceptInviteMutation = {
   }
 }
 
+export const TeamFragmentDoc = gql`
+  fragment Team on Team {
+    id
+    title
+    slug
+    theme
+    inviteKey
+  }
+`
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -634,14 +708,21 @@ export const ProjectFragmentDoc = gql`
   }
   ${TaskFragmentDoc}
 `
-export const TeamFragmentDoc = gql`
-  fragment Team on Team {
+export const WorkHourFragmentDoc = gql`
+  fragment WorkHour on WorkHour {
     id
-    title
-    slug
-    theme
-    inviteKey
+    date
+    comment
+    duration
+    project {
+      ...Project
+    }
+    task {
+      ...Task
+    }
   }
+  ${ProjectFragmentDoc}
+  ${TaskFragmentDoc}
 `
 export const TeamsDocument = gql`
   query teams {
@@ -819,6 +900,18 @@ export const TeamUpdateDocument = gql`
 
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
+}
+export const WorkHoursDocument = gql`
+  query workHours($from: Date!) {
+    workHours(from: $from) {
+      ...WorkHour
+    }
+  }
+  ${WorkHourFragmentDoc}
+`
+
+export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<WorkHoursQuery>({ query: WorkHoursDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
@@ -1087,6 +1180,21 @@ export const mockTeamCreateMutation = (
 export const mockTeamUpdateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
 ) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWorkHoursQuery((req, res, ctx) => {
+ *   const { from } = req.variables;
+ *   return res(
+ *     ctx.data({ workHours })
+ *   )
+ * })
+ */
+export const mockWorkHoursQuery = (
+  resolver: ResponseResolver<GraphQLRequest<WorkHoursQueryVariables>, GraphQLContext<WorkHoursQuery>, any>,
+) => graphql.query<WorkHoursQuery, WorkHoursQueryVariables>('workHours', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
