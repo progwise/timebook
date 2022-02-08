@@ -385,6 +385,11 @@ type User {
   id: ID!
   image: String
   name: String
+
+  """
+  Returns the list of projects where the user is a member
+  """
+  projects: [Project!]!
 }
 
 type WorkHour {
