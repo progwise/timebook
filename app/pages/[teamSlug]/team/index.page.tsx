@@ -22,13 +22,12 @@ const Team = (): JSX.Element => {
           <h2 className="flex justify-between">
             <span>Members</span>
           </h2>
-          <table className="w-full">
+          <table className="w-full table-auto">
             <thead>
               <tr>
                 <th />
-                <th>Username</th>
-                <th>Email</th>
-                <th>Projects</th>
+                <th className="text-left">Username</th>
+                <th className="text-left">Projects</th>
                 <th />
               </tr>
             </thead>
@@ -39,9 +38,8 @@ const Team = (): JSX.Element => {
                     <img className="w-3" src={user.image ?? undefined} />
                   </td>
                   <td>{user.name}</td>
-                  <td>linus@xyz.de</td>
-                  <td>Projekt 1, Projekt 2</td>
-                  <td>
+                  <td>{user.projects.map((project) => project.title).join(', ')}</td>
+                  <td className="text-right">
                     <Button variant="primarySlim">Details</Button>
                   </td>
                 </tr>
