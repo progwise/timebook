@@ -36,10 +36,10 @@ export const TaskForm = (props: TaskFromProps): JSX.Element => {
         <InputField variant="primary" {...register('projectId', { required: true })} />
       </label>
       <div className="mt-16 flex justify-center gap-2">
-        <Button ariaLabel="Cancel" variant="secondarySlim" onClick={onCancel} tooltip="Cancel the changes">
+        <Button variant="secondarySlim" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
-        <Button ariaLabel="Submit" type="submit" variant="primarySlim" tooltip="Save the changes">
+        <Button type="submit" variant="primarySlim" tooltip="Save the changes">
           Save
         </Button>
       </div>

@@ -7,7 +7,7 @@ interface ButtonProps {
   className?: string
   tooltip?: string
   form?: string
-  ariaLabel: string
+  ariaLabel?: string
 }
 
 export const Button = ({

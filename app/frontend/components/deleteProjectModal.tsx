@@ -27,15 +27,10 @@ export const DeleteProjectModal = ({ onClose, project, open }: DeleteProjectModa
       title={`Are you sure you want to delete project ${project.title}?`}
       actions={
         <>
-          <Button ariaLabel="Cancel" variant="secondary" onClick={onClose} disabled={projectDeleteState.fetching}>
+          <Button variant="secondary" onClick={onClose} disabled={projectDeleteState.fetching}>
             Cancel
           </Button>
-          <Button
-            ariaLabel="Delete"
-            variant="danger"
-            onClick={handleDeleteProject}
-            disabled={projectDeleteState.fetching}
-          >
+          <Button variant="danger" onClick={handleDeleteProject} disabled={projectDeleteState.fetching}>
             Delete
           </Button>
         </>

@@ -40,7 +40,7 @@ const Team = (): JSX.Element => {
                   <td>{user.name}</td>
                   <td>{user.projects.map((project) => project.title).join(', ')}</td>
                   <td className="text-right">
-                    <Button ariaLabel="Details" variant="primarySlim">Details</Button>
+                    <Button variant="primarySlim">Details</Button>
                   </td>
                 </tr>
               ))}

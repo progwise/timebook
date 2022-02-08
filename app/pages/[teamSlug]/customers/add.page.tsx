@@ -41,16 +41,10 @@ const ReportsPage = (): JSX.Element => {
             <ErrorMessage name="title" errors={errors} />
           </label>
           <div className="mt-16 flex justify-center gap-2">
-            <Button
-              ariaLabel="Cancel"
-              type="button"
-              variant="secondary"
-              tooltip="Cancel the changes"
-              onClick={handleCancel}
-            >
+            <Button type="button" variant="secondary" tooltip="Cancel the changes" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button ariaLabel="Save" type="submit" variant="primary" tooltip="Save changes">
+            <Button type="submit" variant="primary" tooltip="Save changes">
               Save
             </Button>
           </div>

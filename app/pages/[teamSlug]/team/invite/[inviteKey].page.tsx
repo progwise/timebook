@@ -31,10 +31,10 @@ const AcceptInvitationPage = (): JSX.Element => {
       </div>
 
       <div className="mt-16 flex justify-center gap-2">
-        <Button ariaLabel="Accept" variant="primary" onClick={handleClick}>
+        <Button variant="primary" onClick={handleClick}>
           Accept
         </Button>
-        <Button ariaLabel="Decline" variant="danger" onClick={() => router.push('/home')}>
+        <Button variant="danger" onClick={() => router.push('/home')}>
           Decline
         </Button>
       </div>

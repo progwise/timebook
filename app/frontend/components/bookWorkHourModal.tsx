@@ -63,7 +63,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       onClose={onClose}
       title="New Entry"
       actions={
-        <Button ariaLabel="Sumit" variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
+        <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
           Submit
         </Button>
       }

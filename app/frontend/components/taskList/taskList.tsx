@@ -85,7 +85,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               <input type="checkbox" />
             </TableCell>
             <TableCell>
-              <Button ariaLabel="Details" variant="primarySlim" onClick={() => handleTaskDetails(task)}>
+              <Button variant="primarySlim" onClick={() => handleTaskDetails(task)}>
                 Details
               </Button>
             </TableCell>
@@ -111,7 +111,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
               </div>
 
-              <Button ariaLabel="Add task" variant="primarySlim" type="submit" disabled={isSubmitting}>
+              <Button variant="primarySlim" type="submit" disabled={isSubmitting}>
                 Add task
               </Button>
             </form>
