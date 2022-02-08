@@ -183,6 +183,7 @@ export interface NexusGenFieldTypes {
     id: string // ID!
     image: string | null // String
     name: string | null // String
+    projects: NexusGenRootTypes['Project'][] // [Project!]!
   }
   WorkHour: {
     // field return type
@@ -268,6 +269,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     image: 'String'
     name: 'String'
+    projects: 'Project'
   }
   WorkHour: {
     // field return type name

@@ -275,6 +275,8 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
+  /** Returns the list of projects where the user is a member */
+  projects: Array<Project>
 }
 
 export type WorkHour = {
@@ -524,6 +526,7 @@ export type TeamQuery = {
       id: string
       name?: string | null | undefined
       image?: string | null | undefined
+      projects: Array<{ __typename?: 'Project'; id: string; title: string }>
     }>
   }
 }
@@ -868,6 +871,10 @@ export const TeamDocument = gql`
         id
         name
         image
+        projects {
+          id
+          title
+        }
       }
     }
   }

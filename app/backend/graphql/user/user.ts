@@ -1,4 +1,5 @@
 import { objectType } from 'nexus'
+import { Project } from '../project'
 
 export const User = objectType({
   name: 'User',
@@ -6,5 +7,29 @@ export const User = objectType({
     t.id('id')
     t.nullable.string('name')
     t.nullable.string('image')
+    t.list.field('projects', {
+      type: Project,
+      description: 'Returns the list of projects where the user is a member',
+      resolve: (user, _arguments, context) => {
+        if (!context.teamSlug) {
+          return []
+        }
+        return context.prisma.project.findMany({
+          where: {
+            team: {
+              slug: context.teamSlug,
+            },
+            projectMemberships: {
+              some: {
+                teamMembership: {
+                  team: { slug: context.teamSlug },
+                  userId: user.id,
+                },
+              },
+            },
+          },
+        })
+      },
+    })
   },
 })

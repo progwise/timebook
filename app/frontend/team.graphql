@@ -5,6 +5,10 @@ query team {
       id
       name
       image
+      projects {
+        id
+        title
+      }
     }
   }
 }
