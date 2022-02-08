@@ -37,7 +37,7 @@ const MaintainWorkHoursPage = () => {
               {item.comment && <p>{item.comment}</p>}
             </header>
             <div className="w-1/4 text-right text-2xl">
-              <FormattedDuration minutes={item.duration} />
+              <FormattedDuration title="Task work for the selected day" minutes={item.duration} />
             </div>
             <div className="flex w-1/4 justify-end gap-2">
               <Button variant="primary" ariaLabel="Timer">
@@ -58,6 +58,7 @@ const MaintainWorkHoursPage = () => {
         </header>
         <div className="w-1/4 text-right text-2xl">
           <FormattedDuration
+            title="Total work for the selected day"
             minutes={data?.workHours.map((item) => item.duration).reduce((duration, sum) => duration + sum, 0)}
           />
         </div>
