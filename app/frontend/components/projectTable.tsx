@@ -32,7 +32,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                 {project.startDate} - {project.endDate}
               </TableCell>
               <TableCell>
-                <Button variant="primary" onClick={() => handleProjectDetails(project)}>
+                <Button ariaLabel="Details" variant="primary" onClick={() => handleProjectDetails(project)}>
                   Details
                 </Button>
               </TableCell>

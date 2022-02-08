@@ -42,13 +42,17 @@ const Team = (): JSX.Element => {
                   <td>linus@xyz.de</td>
                   <td>Projekt 1, Projekt 2</td>
                   <td>
-                    <Button variant="primarySlim">Details</Button>
+                    <Button ariaLabel="Details" variant="primarySlim">
+                      Details
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <Button variant="primary">Add Team Member</Button>
+          <Button ariaLabel="Add team member" variant="primary">
+            Add Team Member
+          </Button>
         </article>
       </ProtectedPage>
     </>

@@ -97,7 +97,7 @@ const Time = (): JSX.Element => {
   return (
     <ProtectedPage>
       <div className="flex flex-col items-end">
-        <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+        <Button ariaLabel="Add" variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </div>

@@ -57,7 +57,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           />
         </label>
       )}
-      <Button variant="primary" type="submit">
+      <Button ariaLabel="Save" variant="primary" type="submit">
         Save
       </Button>
     </form>

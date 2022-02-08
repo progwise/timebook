@@ -119,10 +119,22 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </div>
       </div>
       <div className="mt-16 flex justify-center gap-2">
-        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
+        <Button
+          ariaLabel="Cancel"
+          disabled={formState.isSubmitting}
+          variant="secondary"
+          onClick={onCancel}
+          tooltip="Cancel the changes"
+        >
           Cancel
         </Button>
-        <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
+        <Button
+          ariaLabel="Submit"
+          type="submit"
+          variant="primary"
+          disabled={formState.isSubmitting}
+          tooltip="Save changes"
+        >
           Save
         </Button>
         {project ? (
@@ -132,7 +144,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               onClose={() => setIsDeleteModalOpen(false)}
               project={project}
             />
-            <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
+            <Button ariaLabel="Delete" variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
               Delete
             </Button>
           </>

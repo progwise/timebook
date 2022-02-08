@@ -7,6 +7,7 @@ interface ButtonProps {
   className?: string
   tooltip?: string
   form?: string
+  ariaLabel: string
 }
 
 export const Button = ({
@@ -18,6 +19,7 @@ export const Button = ({
   variant,
   form,
   onClick,
+  ariaLabel,
 }: ButtonProps): JSX.Element => {
   const variantClassName: string = {
     primary: 'font-medium bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',
@@ -30,6 +32,7 @@ export const Button = ({
 
   return (
     <button
+      aria-label={ariaLabel}
       className={`flex items-center justify-center gap-1 rounded-md p-2 text-white disabled:opacity-50 ${variantClassName} ${className}`}
       disabled={disabled}
       type={type}
