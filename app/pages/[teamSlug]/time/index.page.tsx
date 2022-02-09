@@ -51,7 +51,7 @@ const MaintainWorkHoursPage = () => {
       <nav className="mt-5 mb-5 flex items-center justify-between">
         <CalendarSelector onSelectedDateChange={setSelectedDate} />
         <Button ariaLabel="add work item" variant="primary" onClick={handleAddWorkItem}>
-          <BiPlus className="flex items-end text-3xl" />
+          <BiPlus className="text-3xl" />
         </Button>
       </nav>
       <section className="mt-5 flex-row gap-2">
