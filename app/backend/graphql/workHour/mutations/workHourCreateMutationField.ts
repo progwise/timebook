@@ -16,7 +16,6 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
     if (!context.session?.user.id) {
       throw new Error('unauthenticated')
     }
-
     return context.prisma.workHour.create({
       data: {
         date: arguments_.date,

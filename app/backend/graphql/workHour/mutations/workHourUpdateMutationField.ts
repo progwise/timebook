@@ -11,9 +11,9 @@ export const workHourUpdateMutationField = mutationField('workHourUpdate', {
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: (_source, { id, data }, context) => {
-    const taskId = Number.parseInt(id, 10)
+    const workHourId = Number.parseInt(id, 10)
     return context.prisma.workHour.update({
-      where: { id: taskId },
+      where: { id: workHourId },
       data: {
         comment: data.comment,
         duration: data.duration,

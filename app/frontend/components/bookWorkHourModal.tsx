@@ -32,6 +32,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   const {
     register,
     handleSubmit,
+    getValues,
     watch,
     setValue,
     formState: { isSubmitting, errors },
@@ -39,6 +40,10 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   const [, createWorkHour] = useWorkHourCreateMutation()
   const [, updateWorkHour] = useWorkHourUpdateMutation()
   const [, deleteWorkHour] = useWorkHourDeleteMutation()
+
+  if (!data?.projects) {
+    return <div>Loading...</div>
+  }
 
   const handleSubmitHelper = async (data: WorkHourItem) => {
     if (!data.taskId) {
@@ -67,14 +72,13 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     }
   }
 
-  const watchedProjectId = watch('projectId')
-
-  useEffect(() => {
+  watch('projectId', workHourItem.projectId)
+  const currentValues = getValues()
+  const selectedProject = data?.projects.find((project) => project.id === currentValues.projectId)
+  if (!selectedProject?.tasks.some((task) => task.id === currentValues.taskId)) {
     // eslint-disable-next-line unicorn/no-useless-undefined
     setValue('taskId', undefined)
-  }, [watchedProjectId])
-
-  const selectedProject = data?.projects.find((project) => project.id === watchedProjectId)
+  }
 
   const handleDelete = async () => {
     if (!workHourItem.workHourId?.toString) {
@@ -83,6 +87,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     await deleteWorkHour({ id: workHourItem.workHourId.toString() })
     onClose()
   }
+
   return (
     <Modal
       autoShowHide={false}
@@ -105,6 +110,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
         <input type="hidden" {...register('date')} />
+        <input type="hidden" {...register('workHourId')} />
         <div className="mb-4 flex flex-col">
           <label htmlFor="projectId" className="mb-2">
             Project

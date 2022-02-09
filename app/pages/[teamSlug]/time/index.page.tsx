@@ -53,7 +53,7 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
-      <section className="mt-5 flex-row gap-2">
+      <section className="mt-5">
         {data?.workHours.map((item) => (
           <article key={item.id} className="flex items-center justify-between gap-1 border-t-2  pt-4 pb-4">
             <header className="w-1/2">
@@ -90,7 +90,7 @@ const MaintainWorkHoursPage = () => {
           </article>
         ))}
       </section>
-      <article className="mt-2 flex items-center justify-between border-t-2">
+      <article className="flex items-center justify-between border-t-2 pt-4">
         <header className="w-1/2">
           <h1 className="text-xl">Total</h1>
         </header>
