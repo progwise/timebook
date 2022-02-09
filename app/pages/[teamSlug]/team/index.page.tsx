@@ -46,9 +46,7 @@ const Team = (): JSX.Element => {
               ))}
             </tbody>
           </table>
-          <Button ariaLabel="Add team member" variant="primary">
-            Add Team Member
-          </Button>
+          <Button variant="primary">Add Team Member</Button>
         </article>
       </ProtectedPage>
     </>
