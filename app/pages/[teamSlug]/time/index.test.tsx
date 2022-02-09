@@ -26,6 +26,14 @@ describe('The workhours time page', () => {
     expect(button).toBeEnabled()
   })
 
+  it('should render the edit item button', async () => {
+    render(<MaintainWorkHoursPage />, { wrapper })
+    const button = await screen.findByRole('button', {
+      name: /edit/i,
+    })
+    expect(button).toBeEnabled()
+  })
+
   it('should render the work hour entry', async () => {
     render(<MaintainWorkHoursPage />, { wrapper })
     const heading = await screen.findByRole('heading', {
