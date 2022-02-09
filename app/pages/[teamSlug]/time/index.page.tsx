@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
 import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
 import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
@@ -98,7 +97,7 @@ const MaintainWorkHoursPage = () => {
         <div className="w-1/4 text-right text-2xl">
           <FormattedDuration
             title="Total work for the selected day"
-            minutes={data?.workHours.map((item) => item.duration).reduce((duration, sum) => duration + sum, 0)}
+            minutes={data?.workHours.map((item) => item.duration).reduce((sum, duration) => duration + sum, 0)}
           />
         </div>
         <div className="w-1/4">{''}</div>
