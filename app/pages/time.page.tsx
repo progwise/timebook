@@ -158,11 +158,15 @@ const Time = (): JSX.Element => {
           </tfoot>
         </table>
       </article>
-      <BookWorkHourModal
-        selectedDate={selectedDate}
-        open={isBookWorkHourModalOpen}
-        onClose={() => setIsBookWorkHourModalOpen(false)}
-      />
+      {isBookWorkHourModalOpen && (
+        <BookWorkHourModal
+          workHourItem={{
+            date: selectedDate,
+            duration: 0,
+          }}
+          onClose={() => setIsBookWorkHourModalOpen(false)}
+        />
+      )}
     </ProtectedPage>
   )
 }

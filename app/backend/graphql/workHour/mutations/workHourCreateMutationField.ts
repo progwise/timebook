@@ -2,7 +2,7 @@ import { arg, idArg, intArg, mutationField, nullable, stringArg } from 'nexus'
 import { WorkHour } from '../workHour'
 import { DateScalar } from '../../scalars/date'
 
-export const createWorkHourMutationField = mutationField('createWorkHour', {
+export const workHourCreateMutationField = mutationField('workHourCreate', {
   type: WorkHour,
   description: 'Create a new WorkHour',
   args: {

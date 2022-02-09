@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useMemo, useState } from 'react'
 import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
-import { BookWorkHourModal } from '../../../frontend/components/bookWorkHourModal'
+import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
 import { Button } from '../../../frontend/components/button/button'
 import { CalendarSelector } from '../../../frontend/components/calendarSelector'
 import { FormattedDuration } from '../../../frontend/components/duration/formattedDuration'
@@ -11,20 +11,46 @@ import { useWorkHoursQuery } from '../../../frontend/generated/graphql'
 
 const MaintainWorkHoursPage = () => {
   const [isBookWorkHourModalOpen, setIsBookWorkHourModalOpen] = useState(false)
+  const [selectedWorkHourItem, setSelectedWorkHourItem] = useState<WorkHourItem | undefined>()
   const [selectedDate, setSelectedDate] = useState(new Date())
   const selectedDateString = format(selectedDate, 'yyyy-MM-dd')
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  const [{ data }] = useWorkHoursQuery({ variables: { from: selectedDateString }, context })
+  const [{ data }, executeWorkhoursQuery] = useWorkHoursQuery({ variables: { from: selectedDateString }, context })
+  const handleEditWorkItem = (workHourItem: WorkHourItem) => {
+    setSelectedWorkHourItem(workHourItem)
+    setIsBookWorkHourModalOpen(true)
+  }
+  const handleAddWorkItem = () => {
+    setSelectedWorkHourItem({
+      date: selectedDate,
+      duration: 0,
+    })
+    setIsBookWorkHourModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsBookWorkHourModalOpen(false)
+    executeWorkhoursQuery({ requestPolicy: 'network-only' })
+  }
   return (
     <ProtectedPage>
-      <BookWorkHourModal
-        selectedDate={selectedDate}
-        open={isBookWorkHourModalOpen}
-        onClose={() => setIsBookWorkHourModalOpen(false)}
-      />
+      {isBookWorkHourModalOpen && (
+        <BookWorkHourModal
+          onClose={handleModalClose}
+          workHourItem={{
+            date: selectedDate,
+            taskId: selectedWorkHourItem?.taskId,
+            duration: selectedWorkHourItem?.duration ?? 0,
+            comment: selectedWorkHourItem?.comment,
+            workHourId: selectedWorkHourItem?.workHourId,
+            projectId: selectedWorkHourItem?.projectId,
+          }}
+        />
+      )}
+
       <nav className="mt-5 mb-5 flex items-center justify-between">
         <CalendarSelector onSelectedDateChange={setSelectedDate} />
-        <Button ariaLabel="add work item" variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+        <Button ariaLabel="add work item" variant="primary" onClick={handleAddWorkItem}>
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </nav>
@@ -44,7 +70,20 @@ const MaintainWorkHoursPage = () => {
                 <BiTimer />
                 Start
               </Button>
-              <Button variant="secondary" ariaLabel="Edit">
+              <Button
+                variant="secondary"
+                ariaLabel="Edit"
+                onClick={() =>
+                  handleEditWorkItem({
+                    workHourId: Number.parseInt(item.id, 10),
+                    date: selectedDate,
+                    duration: item.duration,
+                    comment: item.comment ?? undefined,
+                    projectId: item.project.id,
+                    taskId: item.task.id,
+                  })
+                }
+              >
                 <BiEdit />
                 Edit
               </Button>

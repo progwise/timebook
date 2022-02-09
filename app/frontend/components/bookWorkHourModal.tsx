@@ -1,27 +1,33 @@
 import { format } from 'date-fns'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphql'
+import {
+  useWorkHourCreateMutation,
+  useWorkHourUpdateMutation,
+  useProjectsQuery,
+  useWorkHourDeleteMutation,
+} from '../generated/graphql'
 import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 
 interface BookWorkHourModalProps {
-  open: boolean
+  workHourItem: WorkHourItem
   onClose: () => void
-  selectedDate: Date
 }
 
-interface WorkHourForm {
-  projectId: string
-  taskId?: string
+export interface WorkHourItem {
+  workHourId?: number
+  date: Date
   duration: number
+  projectId?: string
+  taskId?: string
   comment?: string
 }
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
-  const { open, onClose, selectedDate } = props
+  const { onClose, workHourItem } = props
   const [{ data }] = useProjectsQuery()
   const {
     register,
@@ -29,21 +35,34 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     watch,
     setValue,
     formState: { isSubmitting, errors },
-  } = useForm<WorkHourForm>({ shouldUnregister: true })
-  const [, bookWorkHour] = useCreateWorkHourMutation()
+  } = useForm<WorkHourItem>({ defaultValues: workHourItem, shouldUnregister: true })
+  const [, createWorkHour] = useWorkHourCreateMutation()
+  const [, updateWorkHour] = useWorkHourUpdateMutation()
+  const [, deleteWorkHour] = useWorkHourDeleteMutation()
 
-  const handleSubmitHelper = async (data: WorkHourForm) => {
-    if (data.taskId === undefined) {
-      throw new Error('Task not selected')
+  const handleSubmitHelper = async (data: WorkHourItem) => {
+    if (!data.taskId) {
+      throw new Error('no Task selected')
     }
-    const bookResult = await bookWorkHour({
-      duration: data.duration,
-      taskId: data.taskId,
-      date: format(selectedDate, 'yyyy-MM-dd'),
-      comment: data.comment,
-    })
 
-    if (!bookResult.error) {
+    const result = !data.workHourId
+      ? await createWorkHour({
+          duration: data.duration,
+          taskId: data.taskId,
+          date: format(data.date, 'yyyy-MM-dd'),
+          comment: data.comment,
+        })
+      : await updateWorkHour({
+          id: data.workHourId.toString(),
+          data: {
+            duration: data.duration,
+            taskId: data.taskId,
+            date: format(data.date, 'yyyy-MM-dd'),
+            comment: data.comment,
+          },
+        })
+
+    if (!result.error) {
       onClose()
     }
   }
@@ -57,18 +76,35 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
 
   const selectedProject = data?.projects.find((project) => project.id === watchedProjectId)
 
+  const handleDelete = async () => {
+    if (!workHourItem.workHourId?.toString) {
+      throw new Error('No workHour item id')
+    }
+    await deleteWorkHour({ id: workHourItem.workHourId.toString() })
+    onClose()
+  }
   return (
     <Modal
-      open={open}
-      onClose={onClose}
-      title="New Entry"
+      autoShowHide={false}
+      title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'New entry'}
       actions={
-        <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
-          Submit
-        </Button>
+        <>
+          <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
+            Submit
+          </Button>
+          <Button variant="secondarySlim" disabled={isSubmitting} onClick={onClose}>
+            Cancel
+          </Button>
+          {workHourItem.workHourId && (
+            <Button variant="danger" disabled={isSubmitting} onClick={handleDelete}>
+              Delete
+            </Button>
+          )}
+        </>
       }
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
+        <input type="hidden" {...register('date')} />
         <div className="mb-4 flex flex-col">
           <label htmlFor="projectId" className="mb-2">
             Project
