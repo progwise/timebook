@@ -377,7 +377,7 @@ export interface NexusGenArgTypes {
     }
     user: {
       // args
-      userId: string // ID!
+      userId?: string | null // ID
     }
     workHours: {
       // args

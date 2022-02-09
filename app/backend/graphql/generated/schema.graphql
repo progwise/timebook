@@ -266,9 +266,9 @@ type Query {
   """
   user(
     """
-    Identifier for the user
+    Identifier for the user. If not provided, the logged in user is returned
     """
-    userId: ID!
+    userId: ID
   ): User!
   users: [User!]! @deprecated(reason: "Use members field on team type instead")
 
