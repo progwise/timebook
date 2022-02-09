@@ -1,13 +1,14 @@
 import { mockProjectsQuery } from '../generated/graphql'
-import { testProject } from './testData'
+import { testProject1, testProject2 } from './testData'
 
 export const projectHandlers = [
-  mockProjectsQuery((request, response, context) =>
-    response(
+  mockProjectsQuery((request, response, context) => {
+    const result = response(
       context.data({
         __typename: 'Query',
-        projects: [testProject],
+        projects: [testProject1, testProject2],
       }),
-    ),
-  ),
+    )
+    return result
+  }),
 ]

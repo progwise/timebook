@@ -128,6 +128,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         <div className="mb-4 flex flex-col">
           <label>
             <select className="w-72 rounded-md" {...register('taskId', { required: 'Task is required' })}>
+              <option value="">Please Select</option>
               {selectedProject?.tasks.map((task) => {
                 return (
                   <option value={task.id} key={task.id}>

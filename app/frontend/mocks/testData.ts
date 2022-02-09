@@ -1,10 +1,17 @@
 import { format } from 'date-fns'
 import { ProjectFragment, TaskFragment, WorkHourFragment } from '../generated/graphql'
 
-export const testProject: ProjectFragment = {
+export const testProject1: ProjectFragment = {
   __typename: 'Project',
   id: 'project1',
   title: 'Project 1',
+  tasks: [],
+}
+
+export const testProject2: ProjectFragment = {
+  __typename: 'Project',
+  id: 'project2',
+  title: 'Project 2',
   tasks: [],
 }
 
@@ -15,12 +22,12 @@ export const testTask: TaskFragment = {
   title: 'Task 1',
   project: {
     __typename: 'Project',
-    id: testProject.id,
-    title: testProject.title,
+    id: testProject1.id,
+    title: testProject1.title,
   },
 }
 
-testProject.tasks = [testTask]
+testProject1.tasks = [testTask]
 
 export const testWorkHour: WorkHourFragment = {
   __typename: 'WorkHour',
@@ -28,7 +35,7 @@ export const testWorkHour: WorkHourFragment = {
   date: format(new Date(), 'yyyy-MM-dd'),
   duration: 123,
   comment: 'Test WorkHour',
-  project: testProject,
+  project: testProject1,
   task: {
     __typename: 'Task',
     title: testTask.title,
@@ -36,8 +43,8 @@ export const testWorkHour: WorkHourFragment = {
     hasWorkHours: true,
     project: {
       __typename: 'Project',
-      id: testProject.id,
-      title: testProject.title,
+      id: testProject1.id,
+      title: testProject1.title,
     },
   },
 } as WorkHourFragment
