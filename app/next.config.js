@@ -8,4 +8,7 @@ module.exports = {
     ROOT: __dirname,
   },
   pageExtensions: ['page.tsx', 'page.ts'],
+  images: {
+    domains: ['avatars.githubusercontent.com'],
+  },
 }

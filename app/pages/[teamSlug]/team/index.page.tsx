@@ -3,6 +3,7 @@ import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
 import { useTeamQuery } from '../../../frontend/generated/graphql'
+import Image from 'next/image'
 
 const Team = (): JSX.Element => {
   const router = useRouter()
@@ -35,7 +36,7 @@ const Team = (): JSX.Element => {
               {teamData?.team.members.map((user) => (
                 <tr key={user.id}>
                   <td>
-                    <img className="w-3" src={user.image ?? undefined} />
+                    {user.image ? <Image width={12} height={12} src={user.image} alt="Profile Picture" /> : undefined}
                   </td>
                   <td>{user.name}</td>
                   <td>{user.projects.map((project) => project.title).join(', ')}</td>
