@@ -97,10 +97,14 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
               <div className="flex flex-col">
                 <label>
+                  Taskname
                   <InputField
                     variant="primary"
                     placeholder="Enter Taskname"
-                    {...register('title', { required: 'Four characters needed', minLength: 4 })}
+                    {...register('title', {
+                      required: 'Four characters needed',
+                      minLength: { value: 4, message: 'Four characters needed' },
+                    })}
                   />
                 </label>
                 <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
