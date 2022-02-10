@@ -20,7 +20,7 @@ export const Modal = ({
   autoShowHide,
 }: ModalProps): JSX.Element => {
   return (
-    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto" static={autoShowHide ?? true}>
+    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto" static={autoShowHide ?? false}>
       <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
         <div className="relative rounded-3xl bg-white p-7 shadow-lg">
