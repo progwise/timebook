@@ -2,16 +2,25 @@ import { Dialog } from '@headlessui/react'
 import { ReactNode } from 'react'
 
 interface ModalProps {
-  open: boolean
-  onClose: () => void
+  open?: boolean
+  onClose?: () => void
   title: string
   actions: JSX.Element
   children?: ReactNode
+  autoShowHide?: boolean
 }
 
-export const Modal = ({ open, onClose, title, actions, children }: ModalProps): JSX.Element => {
+export const Modal = ({
+  open = true,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onClose = () => {},
+  title,
+  actions,
+  children,
+  autoShowHide,
+}: ModalProps): JSX.Element => {
   return (
-    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto">
+    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto" static={autoShowHide ?? false}>
       <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
         <div className="relative rounded-3xl bg-white p-7 shadow-lg">
