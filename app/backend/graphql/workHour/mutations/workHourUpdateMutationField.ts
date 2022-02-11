@@ -1,4 +1,4 @@
-import { arg, idArg, mutationField } from 'nexus'
+import { idArg, mutationField } from 'nexus'
 import { WorkHour } from '../workHour'
 import { WorkHourInput } from '../workHourInput'
 
@@ -7,7 +7,7 @@ export const workHourUpdateMutationField = mutationField('workHourUpdate', {
   description: 'Updates a work hour entry',
   args: {
     id: idArg({ description: 'id of the work hour item' }),
-    data: arg({ type: WorkHourInput }),
+    data: WorkHourInput,
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: (_source, { id, data }, context) => {
