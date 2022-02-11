@@ -11,8 +11,14 @@ const MyProfilePage = (): JSX.Element => {
   return (
     <div>
       <div className="mt-3 flex flex-row items-center gap-3">
-        {userData?.user.image && userData?.user.name ? (
-          <Image className="rounded-full" width={90} height={90} src={userData?.user.image} alt={userData?.user.name} />
+        {userData?.user.image ? (
+          <Image
+            className="rounded-full"
+            width={90}
+            height={90}
+            src={userData?.user.image}
+            alt={userData?.user.name ?? 'Profile picture'}
+          />
         ) : undefined}
         <h1 className="text-xl">{userData?.user.name}</h1>
       </div>
