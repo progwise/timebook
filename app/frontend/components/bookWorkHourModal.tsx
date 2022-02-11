@@ -1,74 +1,111 @@
 import { format } from 'date-fns'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useCreateWorkHourMutation, useProjectsQuery } from '../generated/graphql'
+import {
+  useWorkHourCreateMutation,
+  useWorkHourUpdateMutation,
+  useProjectsQuery,
+  useWorkHourDeleteMutation,
+} from '../generated/graphql'
 import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 
 interface BookWorkHourModalProps {
-  open: boolean
+  workHourItem: WorkHourItem
   onClose: () => void
-  selectedDate: Date
 }
 
-interface WorkHourForm {
-  projectId: string
-  taskId?: string
+export interface WorkHourItem {
+  workHourId?: number
+  date: Date
   duration: number
+  projectId?: string
+  taskId?: string
   comment?: string
 }
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
-  const { open, onClose, selectedDate } = props
+  const { onClose, workHourItem } = props
   const [{ data }] = useProjectsQuery()
   const {
     register,
     handleSubmit,
+    getValues,
     watch,
     setValue,
     formState: { isSubmitting, errors },
-  } = useForm<WorkHourForm>({ shouldUnregister: true })
-  const [, bookWorkHour] = useCreateWorkHourMutation()
+  } = useForm<WorkHourItem>({ defaultValues: workHourItem, shouldUnregister: true })
+  const [, createWorkHour] = useWorkHourCreateMutation()
+  const [, updateWorkHour] = useWorkHourUpdateMutation()
+  const [, deleteWorkHour] = useWorkHourDeleteMutation()
 
-  const handleSubmitHelper = async (data: WorkHourForm) => {
-    if (data.taskId === undefined) {
-      throw new Error('Task not selected')
+  if (!data?.projects) {
+    return <div>Loading...</div>
+  }
+
+  const handleSubmitHelper = async (data: WorkHourItem) => {
+    if (!data.taskId) {
+      throw new Error('no Task selected')
     }
-    const bookResult = await bookWorkHour({
+
+    const workHourInput = {
       duration: data.duration,
       taskId: data.taskId,
-      date: format(selectedDate, 'yyyy-MM-dd'),
+      date: format(data.date, 'yyyy-MM-dd'),
       comment: data.comment,
-    })
+    }
+    const result = await (!data.workHourId
+      ? createWorkHour(workHourInput)
+      : updateWorkHour({
+          id: data.workHourId.toString(),
+          data: workHourInput,
+        }))
 
-    if (!bookResult.error) {
+    if (!result.error) {
       onClose()
     }
   }
 
-  const watchedProjectId = watch('projectId')
-
-  useEffect(() => {
+  watch('projectId', workHourItem.projectId)
+  const currentValues = getValues()
+  const selectedProject = data?.projects.find((project) => project.id === currentValues.projectId)
+  if (!selectedProject?.tasks.some((task) => task.id === currentValues.taskId)) {
     // eslint-disable-next-line unicorn/no-useless-undefined
     setValue('taskId', undefined)
-  }, [watchedProjectId])
+  }
 
-  const selectedProject = data?.projects.find((project) => project.id === watchedProjectId)
+  const handleDelete = async () => {
+    if (!workHourItem.workHourId?.toString) {
+      throw new Error('No workHour item id')
+    }
+    await deleteWorkHour({ id: workHourItem.workHourId.toString() })
+    onClose()
+  }
 
   return (
     <Modal
-      open={open}
-      onClose={onClose}
-      title="New Entry"
+      autoShowHide={false}
+      title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'New entry'}
       actions={
-        <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
-          Submit
-        </Button>
+        <>
+          <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
+            Submit
+          </Button>
+          <Button variant="secondarySlim" disabled={isSubmitting} onClick={onClose}>
+            Cancel
+          </Button>
+          {workHourItem.workHourId && (
+            <Button variant="danger" disabled={isSubmitting} onClick={handleDelete}>
+              Delete
+            </Button>
+          )}
+        </>
       }
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
+        <input type="hidden" {...register('date')} />
+        <input type="hidden" {...register('workHourId')} />
         <div className="mb-4 flex flex-col">
           <label htmlFor="projectId" className="mb-2">
             Project
@@ -92,6 +129,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         <div className="mb-4 flex flex-col">
           <label>
             <select className="w-72 rounded-md" {...register('taskId', { required: 'Task is required' })}>
+              <option value="">Please Select</option>
               {selectedProject?.tasks.map((task) => {
                 return (
                   <option value={task.id} key={task.id}>

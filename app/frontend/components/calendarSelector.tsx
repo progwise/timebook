@@ -91,7 +91,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   return (
     <section className={props.className}>
       <Popover className="flex justify-center">
-        <Popover.Button>
+        <Popover.Button aria-label="select date">
           <CalendarIcon src={calendarIcon} childPosition="right">
             {props.hideLabel ? undefined : (
               <span className="ml-2" title="Display value">
