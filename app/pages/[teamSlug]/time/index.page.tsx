@@ -14,7 +14,7 @@ const MaintainWorkHoursPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const selectedDateString = format(selectedDate, 'yyyy-MM-dd')
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  const [{ data }, executeWorkhoursQuery] = useWorkHoursQuery({ variables: { from: selectedDateString }, context })
+  const [{ data }] = useWorkHoursQuery({ variables: { from: selectedDateString }, context })
   const handleEditWorkItem = (workHourItem: WorkHourItem) => {
     setSelectedWorkHourItem(workHourItem)
     setIsBookWorkHourModalOpen(true)
@@ -29,7 +29,6 @@ const MaintainWorkHoursPage = () => {
 
   const handleModalClose = () => {
     setIsBookWorkHourModalOpen(false)
-    executeWorkhoursQuery({ requestPolicy: 'network-only' })
   }
   return (
     <ProtectedPage>
