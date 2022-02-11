@@ -65,13 +65,12 @@ const MaintainWorkHoursPage = () => {
               <FormattedDuration title="Task work for the selected day" minutes={item.duration} />
             </div>
             <div className="flex w-1/4 justify-end gap-2">
-              <Button variant="primary" ariaLabel="Timer">
+              <Button variant="primary">
                 <BiTimer />
                 Start
               </Button>
               <Button
                 variant="secondary"
-                ariaLabel="Edit"
                 onClick={() =>
                   handleEditWorkItem({
                     workHourId: Number.parseInt(item.id, 10),

@@ -1,7 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import { Client, Provider } from 'urql'
 import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
-import 'intersection-observer' // Hack to make it run in jest
 import '../mocks/mockServer'
 import userEvent from '@testing-library/user-event'
 
