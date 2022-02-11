@@ -50,22 +50,18 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       throw new Error('no Task selected')
     }
 
-    const result = !data.workHourId
-      ? await createWorkHour({
-          duration: data.duration,
-          taskId: data.taskId,
-          date: format(data.date, 'yyyy-MM-dd'),
-          comment: data.comment,
-        })
-      : await updateWorkHour({
+    const workHourInput = {
+      duration: data.duration,
+      taskId: data.taskId,
+      date: format(data.date, 'yyyy-MM-dd'),
+      comment: data.comment,
+    }
+    const result = await (!data.workHourId
+      ? createWorkHour(workHourInput)
+      : updateWorkHour({
           id: data.workHourId.toString(),
-          data: {
-            duration: data.duration,
-            taskId: data.taskId,
-            date: format(data.date, 'yyyy-MM-dd'),
-            comment: data.comment,
-          },
-        })
+          data: workHourInput,
+        }))
 
     if (!result.error) {
       onClose()
