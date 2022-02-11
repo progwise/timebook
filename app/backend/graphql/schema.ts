@@ -7,7 +7,12 @@ import {
   projectDeleteMutationField,
   projectUpdateMutationField,
 } from './project'
-import { createWorkHourMutationField, workHoursQueryField } from './workHour'
+import {
+  workHourCreateMutationField,
+  workHourUpdateMutationField,
+  workHoursQueryField,
+  workHourDeleteMutationField,
+} from './workHour'
 import { DateScalar, TimeScalar } from './scalars'
 import {
   taskArchiveMutationField,
@@ -36,7 +41,9 @@ import {
 export const schema = makeSchema({
   types: [
     workHoursQueryField,
-    createWorkHourMutationField,
+    workHourCreateMutationField,
+    workHourUpdateMutationField,
+    workHourDeleteMutationField,
     projectsQueryField,
     projectQueryField,
     DateScalar,

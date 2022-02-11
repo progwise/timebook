@@ -71,7 +71,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         {tasks.map((task) => (
           <TableRow key={task.id}>
             <TableCell>
-              <Button variant="secondarySlim" tooltip="Delete Task" onClick={() => setTaskToBeDeleted(task)}>
+              <Button
+                ariaLabel="Delete"
+                variant="secondarySlim"
+                tooltip="Delete Task"
+                onClick={() => setTaskToBeDeleted(task)}
+              >
                 <BiTrash />
               </Button>
               <span className="ml-2">{task.title}</span>

@@ -1,0 +1,18 @@
+query workHours($from: Date!) {
+  workHours(from: $from) {
+    ...WorkHour
+  }
+}
+
+fragment WorkHour on WorkHour {
+  id
+  date
+  comment
+  duration
+  project {
+    ...Project
+  }
+  task {
+    ...Task
+  }
+}
