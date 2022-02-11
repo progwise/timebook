@@ -220,7 +220,7 @@ export type QueryTeamBySlugArgs = {
 }
 
 export type QueryUserArgs = {
-  userId: Scalars['ID']
+  userId?: InputMaybe<Scalars['ID']>
 }
 
 export type QueryWorkHoursArgs = {
@@ -741,6 +741,19 @@ export type CustomersQuery = {
   }
 }
 
+export type MeQueryVariables = Exact<{ [key: string]: never }>
+
+export type MeQuery = {
+  __typename?: 'Query'
+  user: {
+    __typename?: 'User'
+    id: string
+    image?: string | null | undefined
+    name?: string | null | undefined
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+  }
+}
+
 export type TaskQueryVariables = Exact<{
   taskId: Scalars['ID']
 }>
@@ -1065,6 +1078,23 @@ export const CustomersDocument = gql`
 
 export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
+}
+export const MeDocument = gql`
+  query me {
+    user {
+      id
+      image
+      name
+      projects {
+        id
+        title
+      }
+    }
+  }
+`
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
 }
 export const TaskDocument = gql`
   query task($taskId: ID!) {
@@ -1392,6 +1422,20 @@ export const mockCustomerCreateMutation = (
 export const mockCustomersQuery = (
   resolver: ResponseResolver<GraphQLRequest<CustomersQueryVariables>, GraphQLContext<CustomersQuery>, any>,
 ) => graphql.query<CustomersQuery, CustomersQueryVariables>('customers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMeQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ user })
+ *   )
+ * })
+ */
+export const mockMeQuery = (
+  resolver: ResponseResolver<GraphQLRequest<MeQueryVariables>, GraphQLContext<MeQuery>, any>,
+) => graphql.query<MeQuery, MeQueryVariables>('me', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
