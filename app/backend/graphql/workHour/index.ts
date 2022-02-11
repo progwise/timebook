@@ -1,5 +1,3 @@
 export * from './workHour'
 export * from './queries'
-export * from './mutations/workHourCreateMutationField'
-export * from './mutations/workHourUpdateMutationField'
-export * from './mutations/workHourDeleteMutationField'
+export * from './mutations'
