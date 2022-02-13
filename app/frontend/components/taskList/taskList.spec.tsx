@@ -1,8 +1,21 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 import { TaskFragment } from '../../generated/graphql'
 import { TaskList } from './taskList'
+
+import '../../mocks/mockServer'
+
+const push = jest.fn().mockResolvedValue(true)
+
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push,
+    query: {
+      teamSlug: 'progwise',
+    },
+  }),
+}))
 
 const client = new Client({ url: '/api/graphql' })
 
@@ -33,13 +46,22 @@ describe('TaskList', () => {
     render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
     const detailsButton = screen.getByRole('button', { name: 'Details' })
 
-    // TODO: enabling this causes an error
-    // userEvent.click(detailsButton)
-
-    // TODO: check redirect
+    userEvent.click(detailsButton)
+    expect(push).toHaveBeenCalledWith('/progwise/tasks/1')
   })
 
-  it.todo('should be possible to delete a task')
+  it('should be possible to delete a task', async () => {
+    render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+    const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
+    expect(deleteButton).toBeInTheDocument()
+    userEvent.click(deleteButton)
+
+    const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
+    userEvent.click(confirmDeleteButton)
+
+    await waitForElementToBeRemoved(confirmDeleteButton)
+  })
 
   describe('Task form', () => {
     it('should display an error message when submitting a new task with less then 4 characters', async () => {
