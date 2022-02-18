@@ -32,18 +32,8 @@ const MaintainWorkHoursPage = () => {
   }
   return (
     <ProtectedPage>
-      {isBookWorkHourModalOpen && (
-        <BookWorkHourModal
-          onClose={handleModalClose}
-          workHourItem={{
-            date: selectedDate,
-            taskId: selectedWorkHourItem?.taskId,
-            duration: selectedWorkHourItem?.duration ?? 0,
-            comment: selectedWorkHourItem?.comment,
-            workHourId: selectedWorkHourItem?.workHourId,
-            projectId: selectedWorkHourItem?.projectId,
-          }}
-        />
+      {isBookWorkHourModalOpen && selectedWorkHourItem && (
+        <BookWorkHourModal onClose={handleModalClose} workHourItem={selectedWorkHourItem} />
       )}
 
       <nav className="mt-5 mb-5 flex items-center justify-between">
