@@ -9,11 +9,12 @@ interface InputProps {
   disabled?: boolean
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   readonly?: boolean
+  className?: string
 }
 
 export const InputField = React.forwardRef(
   (
-    { placeholder, variant, disabled, onChange, onBlur, value, name, readonly }: InputProps,
+    { placeholder, variant, disabled, onChange, onBlur, value, name, readonly, className }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -23,7 +24,7 @@ export const InputField = React.forwardRef(
 
     return (
       <input
-        className={`rounded-md text-black disabled:opacity-50 ${variantClassName}`}
+        className={`rounded-md text-black disabled:opacity-50 ${variantClassName} ${className}`}
         type="text"
         placeholder={placeholder}
         disabled={disabled}

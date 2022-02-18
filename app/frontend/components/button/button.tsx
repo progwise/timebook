@@ -33,7 +33,7 @@ export const Button = ({
   return (
     <button
       aria-label={ariaLabel}
-      className={`flex items-center justify-center gap-1 rounded-md p-2 text-white disabled:opacity-50 ${variantClassName} ${className}`}
+      className={`flex items-center justify-center gap-1 rounded-md p-1 text-white disabled:opacity-50 ${variantClassName} ${className}`}
       disabled={disabled}
       type={type}
       onClick={onClick}

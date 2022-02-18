@@ -28,8 +28,8 @@ export const TableRow: React.FC<DefaultTableComponentProps> = ({ children, class
   return <tr className={`border-b-2 even:bg-gray-100 hover:bg-gray-200 ${className}`}>{children}</tr>
 }
 
-export const TableCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <td className={`p-2 ${className}`}>{children}</td>
+export const TableCell: React.FC<DefaultTableComponentProps & {colSpan?: number}> = ({ children, className = '', colSpan = 1 }) => {
+  return <td className={`p-2 ${className}`} colSpan={colSpan}>{children}</td>
 }
 
 // Footer:
