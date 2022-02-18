@@ -452,6 +452,21 @@ export type ProjectUpdateMutation = {
   }
 }
 
+export type TaskQueryVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type TaskQuery = {
+  __typename?: 'Query'
+  task: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
+}
+
 export type TaskCreateMutationVariables = Exact<{
   data: TaskInput
 }>
@@ -754,21 +769,6 @@ export type MeQuery = {
   }
 }
 
-export type TaskQueryVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type TaskQuery = {
-  __typename?: 'Query'
-  task: {
-    __typename?: 'Task'
-    id: string
-    title: string
-    hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
-  }
-}
-
 export type TeamAcceptInviteMutationVariables = Exact<{
   inviteKey: Scalars['String']
 }>
@@ -910,6 +910,18 @@ export const ProjectUpdateDocument = gql`
 
 export function useProjectUpdateMutation() {
   return Urql.useMutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>(ProjectUpdateDocument)
+}
+export const TaskDocument = gql`
+  query task($taskId: ID!) {
+    task(taskId: $taskId) {
+      ...Task
+    }
+  }
+  ${TaskFragmentDoc}
+`
+
+export function useTaskQuery(options: Omit<Urql.UseQueryArgs<TaskQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TaskQuery>({ query: TaskDocument, ...options })
 }
 export const TaskCreateDocument = gql`
   mutation taskCreate($data: TaskInput!) {
@@ -1096,18 +1108,6 @@ export const MeDocument = gql`
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
 }
-export const TaskDocument = gql`
-  query task($taskId: ID!) {
-    task(taskId: $taskId) {
-      ...Task
-    }
-  }
-  ${TaskFragmentDoc}
-`
-
-export function useTaskQuery(options: Omit<Urql.UseQueryArgs<TaskQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TaskQuery>({ query: TaskDocument, ...options })
-}
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {
     teamAcceptInvite(inviteKey: $inviteKey) {
@@ -1227,6 +1227,21 @@ export const mockProjectUpdateMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUpdateMutation, ProjectUpdateMutationVariables>('projectUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskQuery((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ task })
+ *   )
+ * })
+ */
+export const mockTaskQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TaskQueryVariables>, GraphQLContext<TaskQuery>, any>,
+) => graphql.query<TaskQuery, TaskQueryVariables>('task', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1436,21 +1451,6 @@ export const mockCustomersQuery = (
 export const mockMeQuery = (
   resolver: ResponseResolver<GraphQLRequest<MeQueryVariables>, GraphQLContext<MeQuery>, any>,
 ) => graphql.query<MeQuery, MeQueryVariables>('me', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockTaskQuery((req, res, ctx) => {
- *   const { taskId } = req.variables;
- *   return res(
- *     ctx.data({ task })
- *   )
- * })
- */
-export const mockTaskQuery = (
-  resolver: ResponseResolver<GraphQLRequest<TaskQueryVariables>, GraphQLContext<TaskQuery>, any>,
-) => graphql.query<TaskQuery, TaskQueryVariables>('task', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
