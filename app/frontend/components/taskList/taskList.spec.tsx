@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 import { TaskFragment } from '../../generated/graphql'
@@ -57,6 +57,16 @@ describe('TaskList', () => {
       expect(errorMessage).toBeInTheDocument()
     })
 
-    it.todo('should submit a new task to the backend and clean the form')
+    it('should submit a new task to the backend and clean the form', async () => {
+      render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+      const submitButton = screen.getByRole('button', { name: 'Add task' })
+      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+
+      userEvent.type(titleInput, 'New Task')
+      userEvent.click(submitButton)
+
+      await waitFor(() => expect(titleInput).toHaveValue(''))
+    })
   })
 })
