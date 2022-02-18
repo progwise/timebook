@@ -18,11 +18,11 @@ module.exports = {
       transform: {
         '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
       },
-      displayName: 'frontend',
+      displayName: { name: 'frontend', color: 'cyanBright' },
       roots: ['<rootDir>/frontend/', '<rootDir>/pages/'],
     },
     {
-      displayName: 'backend',
+      displayName: { name: 'backend', color: 'magentaBright' },
       preset: 'ts-jest',
       testEnvironment: path.join(__dirname, './backend/prisma/prismaJestEnvironment.js'),
       roots: ['<rootDir>/backend/'],
