@@ -1,21 +1,32 @@
-// jest.config.ts
-
 /* eslint-disable unicorn/prefer-module */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path')
 
 // Or async function
-module.exports = async () => {
-  return {
-    globals: {
-      'ts-jest': {
-        tsconfig: 'tsconfig.jest.json',
+module.exports = {
+  projects: [
+    {
+      globals: {
+        'ts-jest': {
+          tsconfig: 'tsconfig.jest.json',
+        },
       },
+      verbose: true,
+      preset: 'ts-jest',
+      testEnvironment: 'jsdom',
+      setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
+      transform: {
+        '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+      },
+      displayName: 'frontend',
+      roots: ['<rootDir>/frontend/', '<rootDir>/pages/'],
     },
-    verbose: true,
-    preset: 'ts-jest',
-    testEnvironment: 'jsdom',
-    setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
-    transform: {
-      '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+    {
+      displayName: 'backend',
+      preset: 'ts-jest',
+      testEnvironment: path.join(__dirname, './backend/prisma/prismaJestEnvironment.js'),
+      roots: ['<rootDir>/backend/'],
+      verbose: true,
     },
-  }
+  ],
 }
