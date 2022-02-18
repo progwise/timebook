@@ -62,7 +62,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         <article key={task.id} className="grid gap-0 border-2 border-r-8 p-2 grid-flow-col">
           <h2 className="text-xl">{task.title}</h2>
           <p>{`${index + 1}. task of project ${task.project.title}`}</p>
-          <div className="flex row-span-2 gap-4 justify-end">
+          <div className="flex row-span-2 gap-4 justify-end items-center">
             <Button
               variant="primarySlim"
               onClick={() => {
@@ -73,7 +73,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               Edit
             </Button>
             <Button
-              variant="danger"
+              variant="dangerSlim"
               tooltip="Delete Task"
               onClick={() => setTaskToBeDeleted(task)}
             >
@@ -84,12 +84,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
 
         </article>
       ))}
-          
-        
-          {taskToBeDeleted ? (
-            // eslint-disable-next-line unicorn/no-useless-undefined
-            <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
-          ) : undefined}
+        {taskToBeDeleted ? (
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
+        ) : undefined}
        <article className="border-2 border-r-8 p-2 mt-4">
          <form className="grid grid-flow-col" onSubmit={handleSubmit(handleAddTask)}>
            <h2 className="text-xl col-start-1">
@@ -102,7 +100,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
            </h2>
            <ErrorMessage errors={errors} name="title" as={<span className="text-red-700 col-start-1" />} />
            <p className="col-start-1">Create new task</p>
-           <div className="col-start-2 row-span-3 flex justify-end">
+           <div className="col-start-2 row-span-3 flex justify-end items-center">
             <Button variant="primarySlim" type="submit" disabled={isSubmitting}>  
               <BiMessageAdd />
               Add

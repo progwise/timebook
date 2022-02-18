@@ -25,9 +25,9 @@ export const Button = ({
     primary: 'font-medium bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',
     secondary: 'font-medium bg-gray-400 hover:bg-gray-500 disabled:bg-gray-400',
     danger: 'font-medium bg-red-700 hover:bg-red-800 disabled:bg-red-700',
-    primarySlim: 'font-small bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',
-    secondarySlim: 'font-small bg-gray-400 hover:bg-gray-500 disabled:bg-gray-400',
-    dangerSlim: 'font-small bg-red-700 hover:bg-red-800 disabled:bg-red-700',
+    primarySlim: 'font-small h-6 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',
+    secondarySlim: 'font-small h-6  bg-gray-400 hover:bg-gray-500 disabled:bg-gray-400',
+    dangerSlim: 'font-small h-6 bg-red-700 hover:bg-red-800 disabled:bg-red-700',
   }[variant]
 
   return (
