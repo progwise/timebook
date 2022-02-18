@@ -94,4 +94,5 @@ export const schema = makeSchema({
     },
   },
   plugins: [fieldAuthorizePlugin()],
+  shouldGenerateArtifacts: process.env.NODE_ENV === 'development',
 })
