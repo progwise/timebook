@@ -70,7 +70,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
                 <Button
-                  ariaLabel="Delete"
+                  ariaLabel="Delete Task"
                   variant="secondarySlim"
                   tooltip="Delete Task"
                   onClick={() => setTaskToBeDeleted(task)}
@@ -108,7 +108,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     <InputField
                       variant="primary"
                       placeholder="Enter Taskname"
-                      {...register('title', { required: 'Four characters needed', minLength: 4 })}
+                      {...register('title', {
+                        required: 'Four characters needed',
+                        minLength: { value: 4, message: 'Four characters needed' },
+                      })}
                     />
                   </label>
                   <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
