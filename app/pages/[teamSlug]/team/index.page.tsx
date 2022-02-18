@@ -15,11 +15,11 @@ const Team = (): JSX.Element => {
   return (
     <>
       <ProtectedPage>
-        <article>
+        <article className="timebook">
           <h2>Team Details</h2>
           {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
         </article>
-        <article>
+        <article className="timebook">
           <h2 className="flex justify-between">
             <span>Members</span>
           </h2>
@@ -36,7 +36,9 @@ const Team = (): JSX.Element => {
               {teamData?.team.members.map((user) => (
                 <tr key={user.id}>
                   <td>
-                    {user.image ? <Image width={12} height={12} src={user.image} alt="Profile Picture" /> : undefined}
+                    {user.image ? (
+                      <Image width={12} height={12} src={user.image} alt={user.name ?? 'Profile picture'} />
+                    ) : undefined}
                   </td>
                   <td>{user.name}</td>
                   <td>{user.projects.map((project) => project.title).join(', ')}</td>

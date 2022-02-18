@@ -32,20 +32,6 @@ scalar Date
 
 type Mutation {
   """
-  Create a new WorkHour
-  """
-  createWorkHour(
-    comment: String
-    date: Date!
-
-    """
-    Duration of the work hour in minutes
-    """
-    duration: Int!
-    taskId: ID!
-  ): WorkHour!
-
-  """
   Create a new customer for a team
   """
   customerCreate(data: CustomerInput!): Customer!
@@ -171,6 +157,42 @@ type Mutation {
     """
     id: ID!
   ): Team!
+
+  """
+  Create a new WorkHour
+  """
+  workHourCreate(
+    comment: String
+    date: Date!
+
+    """
+    Duration of the work hour in minutes
+    """
+    duration: Int!
+    taskId: ID!
+  ): WorkHour!
+
+  """
+  Delete a work hour entry
+  """
+  workHourDelete(
+    """
+    id of the workHour item
+    """
+    id: ID!
+  ): WorkHour!
+
+  """
+  Updates a work hour entry
+  """
+  workHourUpdate(
+    data: WorkHourInput!
+
+    """
+    id of the work hour item
+    """
+    id: ID!
+  ): WorkHour!
 }
 
 type Project {
@@ -266,9 +288,9 @@ type Query {
   """
   user(
     """
-    Identifier for the user
+    Identifier for the user. If not provided, the logged in user is returned
     """
-    userId: ID!
+    userId: ID
   ): User!
   users: [User!]! @deprecated(reason: "Use members field on team type instead")
 
@@ -411,4 +433,15 @@ type WorkHour {
   Task for which the working hour was booked
   """
   task: Task!
+}
+
+input WorkHourInput {
+  comment: String
+  date: Date!
+
+  """
+  Duration of the work hour in minutes
+  """
+  duration: Int!
+  taskId: ID!
 }

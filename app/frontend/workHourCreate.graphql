@@ -1,0 +1,14 @@
+mutation workHourCreate($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
+  workHourCreate(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
+    id
+    comment
+    date
+    duration
+    project {
+      id
+      title
+      startDate
+      endDate
+    }
+  }
+}

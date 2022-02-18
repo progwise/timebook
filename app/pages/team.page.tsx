@@ -4,7 +4,7 @@ import { ProtectedPage } from '../frontend/components/protectedPage'
 const Team = (): JSX.Element => {
   return (
     <ProtectedPage>
-      <article>
+      <article className="timebook">
         <h2>Create new team</h2>
         <TeamForm />
       </article>

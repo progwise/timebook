@@ -6,17 +6,6 @@ import { TaskList } from './taskList'
 
 import '../../mocks/mockServer'
 
-const push = jest.fn().mockResolvedValue(true)
-
-jest.mock('next/router', () => ({
-  useRouter: () => ({
-    push,
-    query: {
-      teamSlug: 'progwise',
-    },
-  }),
-}))
-
 const client = new Client({ url: '/api/graphql' })
 
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
@@ -41,15 +30,6 @@ describe('TaskList', () => {
     expect(taskTitle).toBeInTheDocument()
   })
 
-  // eslint-disable-next-line jest/expect-expect
-  it('should redirect to details page when clicking details', () => {
-    render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
-    const detailsButton = screen.getByRole('button', { name: 'Details' })
-
-    userEvent.click(detailsButton)
-    expect(push).toHaveBeenCalledWith('/progwise/tasks/1')
-  })
-
   it('should be possible to delete a task', async () => {
     render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
 
@@ -68,7 +48,7 @@ describe('TaskList', () => {
       render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
-      const titleInput = screen.getByRole('textbox', { name: 'Taskname' })
+      const titleInput = screen.getByPlaceholderText('Enter Taskname')
 
       userEvent.type(titleInput, 'abc')
       userEvent.click(submitButton)
