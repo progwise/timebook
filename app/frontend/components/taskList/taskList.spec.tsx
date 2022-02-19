@@ -1,28 +1,72 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Client, Provider } from 'urql'
 import { TaskFragment } from '../../generated/graphql'
 import { TaskList } from './taskList'
 
-describe('the tasklist should ...', () => {
-  const testTasks: TaskFragment[] = []
-  beforeEach(() => {
-    // eslint-disable-next-line testing-library/no-render-in-setup
-    render(<TaskList projectId="1" tasks={testTasks} />)
+import '../../mocks/mockServer'
+
+const client = new Client({ url: '/api/graphql' })
+
+const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+
+const tasks: TaskFragment[] = [
+  {
+    id: '1',
+    hasWorkHours: false,
+    title: 'Task 1',
+    project: {
+      id: '1',
+      title: 'Project 1',
+    },
+  },
+]
+
+describe('TaskList', () => {
+  it('should display tasks', () => {
+    render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+    const taskTitle = screen.getByText('Task 1')
+    expect(taskTitle).toBeInTheDocument()
   })
 
-  it('...have a column header "tasks"', () => {
-    const columnHeader = screen.getByRole('columnheader', {
-      name: /tasks/i,
-    })
-    expect(columnHeader).toBeVisible()
+  it('should be possible to delete a task', async () => {
+    render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+    const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
+    expect(deleteButton).toBeInTheDocument()
+    userEvent.click(deleteButton)
+
+    const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
+    userEvent.click(confirmDeleteButton)
+
+    await waitForElementToBeRemoved(confirmDeleteButton)
   })
-  it('...has an input box for new task titles', () => {
-    const textbox = screen.getByRole('textbox')
-    expect(textbox).toBeEnabled()
-  })
-  it('...has a button to add tasks', () => {
-    const button = screen.getByRole('button', {
-      name: /add task/i,
+
+  describe('Task form', () => {
+    it('should display an error message when submitting a new task with less then 4 characters', async () => {
+      render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+      const submitButton = screen.getByRole('button', { name: 'Add task' })
+      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+
+      userEvent.type(titleInput, 'abc')
+      userEvent.click(submitButton)
+
+      const errorMessage = await screen.findByText('Four characters needed')
+      expect(errorMessage).toBeInTheDocument()
     })
-    expect(button).toBeEnabled()
+
+    it('should submit a new task to the backend and clean the form', async () => {
+      render(<TaskList tasks={tasks} projectId="1" />, { wrapper })
+
+      const submitButton = screen.getByRole('button', { name: 'Add task' })
+      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+
+      userEvent.type(titleInput, 'New Task')
+      userEvent.click(submitButton)
+
+      await waitFor(() => expect(titleInput).toHaveValue(''))
+    })
   })
 })
