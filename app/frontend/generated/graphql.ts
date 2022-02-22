@@ -601,34 +601,7 @@ export type WorkHourDeleteMutationVariables = Exact<{
 
 export type WorkHourDeleteMutation = {
   __typename?: 'Mutation'
-  workHourDelete: {
-    __typename?: 'WorkHour'
-    id: string
-    date: string
-    comment?: string | null | undefined
-    duration: number
-    project: {
-      __typename?: 'Project'
-      id: string
-      title: string
-      startDate?: string | null | undefined
-      endDate?: string | null | undefined
-      tasks: Array<{
-        __typename?: 'Task'
-        id: string
-        title: string
-        hasWorkHours: boolean
-        project: { __typename?: 'Project'; id: string; title: string }
-      }>
-    }
-    task: {
-      __typename?: 'Task'
-      id: string
-      title: string
-      hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
-    }
-  }
+  workHourDelete: { __typename?: 'WorkHour'; id: string }
 }
 
 export type WorkHourUpdateMutationVariables = Exact<{
@@ -1030,10 +1003,9 @@ export function useWorkHourCreateMutation() {
 export const WorkHourDeleteDocument = gql`
   mutation workHourDelete($id: ID!) {
     workHourDelete(id: $id) {
-      ...WorkHour
+      id
     }
   }
-  ${WorkHourFragmentDoc}
 `
 
 export function useWorkHourDeleteMutation() {
