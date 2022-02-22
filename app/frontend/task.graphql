@@ -1,5 +1,0 @@
-query task($taskId: ID!) {
-  task(taskId: $taskId) {
-    ...Task
-  }
-}
