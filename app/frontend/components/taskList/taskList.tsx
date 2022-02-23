@@ -34,7 +34,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   } = useForm<TaskInput>()
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
-  const [currentTask, setCurrentTask] = useState<TaskFragment | undefined>()
+  const [taskToBeUpdated, setTaskToBeUpdated] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskInput) => {
     try {
@@ -53,10 +53,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
 
   return (
     <>
-      {currentTask ? (
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        <TaskDetailsModal open task={currentTask} onClose={() => setCurrentTask(undefined)} />
-      ) : undefined}
       <Table className="min-w-full">
         <TableHead>
           <TableHeadRow>
@@ -86,7 +82,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <Button
                   variant="primarySlim"
                   onClick={() => {
-                    setCurrentTask(task)
+                    setTaskToBeUpdated(task)
                   }}
                 >
                   Details
@@ -94,6 +90,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               </TableCell>
             </TableRow>
           ))}
+          {taskToBeUpdated ? (
+            // eslint-disable-next-line unicorn/no-useless-undefined
+            <TaskDetailsModal task={taskToBeUpdated} onClose={() => setTaskToBeUpdated(undefined)} />
+          ) : undefined}
           {taskToBeDeleted ? (
             // eslint-disable-next-line unicorn/no-useless-undefined
             <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />

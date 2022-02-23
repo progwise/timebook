@@ -5,13 +5,12 @@ import { Button } from './button/button'
 import { Modal } from './modal'
 
 interface TaskDetailsModalProps {
-  open: boolean
   onClose: () => void
   task: TaskFragment
 }
 
 export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
-  const { open, onClose, task } = props
+  const { onClose, task } = props
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const { register, handleSubmit, reset } = useForm<TaskInput>({
     defaultValues: {
@@ -33,13 +32,15 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
         throw new Error(`GraphQL Error ${result.error}`)
       }
       reset()
-    } catch {}
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
     onClose()
   }
 
   return (
     <Modal
-      open={open}
       title="Task Details"
       actions={
         <>
@@ -66,7 +67,7 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
           </label>
           <label>
             <span className="mr-1 whitespace-nowrap">Project ID</span>
-            <InputField variant="primary" {...register('projectId', { required: true })} readonly={true} />
+            <InputField variant="primary" {...register('projectId', { required: true })} readonly />
           </label>
         </div>
       </form>
