@@ -559,6 +559,12 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
+export type CustomerQueryVariables = Exact<{
+  customerId: Scalars['ID']
+}>
+
+export type CustomerQuery = { __typename?: 'Query'; customer: { __typename?: 'Customer'; id: string; title: string } }
+
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
 }>
@@ -566,6 +572,25 @@ export type CustomerCreateMutationVariables = Exact<{
 export type CustomerCreateMutation = {
   __typename?: 'Mutation'
   customerCreate: { __typename?: 'Customer'; id: string; title: string }
+}
+
+export type CustomerDeleteMutationVariables = Exact<{
+  customerId: Scalars['ID']
+}>
+
+export type CustomerDeleteMutation = {
+  __typename?: 'Mutation'
+  customerDelete: { __typename?: 'Customer'; id: string }
+}
+
+export type CustomerUpdateMutationVariables = Exact<{
+  customerId: Scalars['ID']
+  data: CustomerInput
+}>
+
+export type CustomerUpdateMutation = {
+  __typename?: 'Mutation'
+  customerUpdate: { __typename?: 'Customer'; id: string; title: string }
 }
 
 export type CustomersQueryVariables = Exact<{
@@ -827,6 +852,18 @@ export const TeamUpdateDocument = gql`
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
+export const CustomerDocument = gql`
+  query customer($customerId: ID!) {
+    customer(customerId: $customerId) {
+      id
+      title
+    }
+  }
+`
+
+export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CustomerQuery>({ query: CustomerDocument, ...options })
+}
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
     customerCreate(data: $data) {
@@ -838,6 +875,29 @@ export const CustomerCreateDocument = gql`
 
 export function useCustomerCreateMutation() {
   return Urql.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument)
+}
+export const CustomerDeleteDocument = gql`
+  mutation customerDelete($customerId: ID!) {
+    customerDelete(customerId: $customerId) {
+      id
+    }
+  }
+`
+
+export function useCustomerDeleteMutation() {
+  return Urql.useMutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>(CustomerDeleteDocument)
+}
+export const CustomerUpdateDocument = gql`
+  mutation customerUpdate($customerId: ID!, $data: CustomerInput!) {
+    customerUpdate(customerId: $customerId, data: $data) {
+      id
+      title
+    }
+  }
+`
+
+export function useCustomerUpdateMutation() {
+  return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
   query customers($slug: String!) {
@@ -1099,6 +1159,21 @@ export const mockTeamUpdateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCustomerQuery((req, res, ctx) => {
+ *   const { customerId } = req.variables;
+ *   return res(
+ *     ctx.data({ customer })
+ *   )
+ * })
+ */
+export const mockCustomerQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CustomerQueryVariables>, GraphQLContext<CustomerQuery>, any>,
+) => graphql.query<CustomerQuery, CustomerQueryVariables>('customer', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCustomerCreateMutation((req, res, ctx) => {
  *   const { data } = req.variables;
  *   return res(
@@ -1113,6 +1188,44 @@ export const mockCustomerCreateMutation = (
     any
   >,
 ) => graphql.mutation<CustomerCreateMutation, CustomerCreateMutationVariables>('customerCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerDeleteMutation((req, res, ctx) => {
+ *   const { customerId } = req.variables;
+ *   return res(
+ *     ctx.data({ customerDelete })
+ *   )
+ * })
+ */
+export const mockCustomerDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CustomerDeleteMutationVariables>,
+    GraphQLContext<CustomerDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>('customerDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerUpdateMutation((req, res, ctx) => {
+ *   const { customerId, data } = req.variables;
+ *   return res(
+ *     ctx.data({ customerUpdate })
+ *   )
+ * })
+ */
+export const mockCustomerUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CustomerUpdateMutationVariables>,
+    GraphQLContext<CustomerUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>('customerUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

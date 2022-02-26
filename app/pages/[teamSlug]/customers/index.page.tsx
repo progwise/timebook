@@ -1,7 +1,17 @@
 import { useRouter } from 'next/router'
+import { consumers } from 'stream'
+import { Customer } from '../../../backend/graphql/customer'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { useCustomersQuery } from '../../../frontend/generated/graphql'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+} from '../../../frontend/components/table/table'
+import { CustomerInput, useCustomersQuery } from '../../../frontend/generated/graphql'
 
 const CustomersPage = (): JSX.Element => {
   const router = useRouter()
@@ -11,6 +21,9 @@ const CustomersPage = (): JSX.Element => {
 
   const handleAddCustomer = async () => {
     await router.push(`/${slug}/customers/add`)
+  }
+  const handleCustomerDetails = async (customerId: string) => {
+    await router.push(`/${slug}/customers/${customerId}`)
   }
   return (
     <ProtectedPage>
@@ -22,18 +35,25 @@ const CustomersPage = (): JSX.Element => {
           </Button>
         </div>
 
-        <table className="w-full">
-          <tr>
-            <th>Name</th>
-            <th>Customer-ID</th>
-          </tr>
+        <Table className="w-full">
+          <TableHeadRow>
+            <TableHeadCell>Name</TableHeadCell>
+            <TableHeadCell>Customer-ID</TableHeadCell>
+          </TableHeadRow>
           {data?.teamBySlug.customers.map((customer) => (
-            <tr key={customer.id}>
-              <td>{customer.title}</td>
-              <td>{customer.id}</td>
-            </tr>
+            <TableBody key={customer.id}>
+              <TableCell>{customer.title}</TableCell>
+              <TableCell>{customer.id}</TableCell>
+
+              <TableCell>
+                {/* <Button variant="primarySlim" onClick={handleCustomerDetails}> */}
+                <Button variant="primarySlim" onClick={() => handleCustomerDetails(customer.id)}>
+                  Details
+                </Button>
+              </TableCell>
+            </TableBody>
           ))}
-        </table>
+        </Table>
       </article>
     </ProtectedPage>
   )
