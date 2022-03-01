@@ -9,6 +9,7 @@ const teamQuery = `
     team {
       id
       title
+      canModify
       members {
         id
         name
@@ -32,6 +33,7 @@ describe('teamQueryField', () => {
                 title: 'Progwise',
               },
             },
+            role: 'ADMIN',
           },
         },
       },
@@ -73,6 +75,7 @@ describe('teamQueryField', () => {
       team: {
         id: '1',
         title: 'Progwise',
+        canModify: true,
         members: [{ id: '1', name: 'Test User' }],
       },
     })
