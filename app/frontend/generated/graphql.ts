@@ -332,8 +332,8 @@ export type ProjectQuery = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -360,8 +360,8 @@ export type ProjectsQuery = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -376,8 +376,8 @@ export type ProjectFragment = {
   __typename?: 'Project'
   id: string
   title: string
-  startDate?: string | null | undefined
-  endDate?: string | null | undefined
+  startDate?: string | null
+  endDate?: string | null
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -397,8 +397,8 @@ export type ProjectCreateMutation = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -419,8 +419,8 @@ export type ProjectDeleteMutation = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -442,8 +442,8 @@ export type ProjectUpdateMutation = {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -522,8 +522,8 @@ export type TeamQuery = {
     members: Array<{
       __typename?: 'User'
       id: string
-      name?: string | null | undefined
-      image?: string | null | undefined
+      name?: string | null
+      image?: string | null
       projects: Array<{ __typename?: 'Project'; id: string; title: string }>
     }>
   }
@@ -569,16 +569,10 @@ export type WorkHourCreateMutation = {
   workHourCreate: {
     __typename?: 'WorkHour'
     id: string
-    comment?: string | null | undefined
+    comment?: string | null
     date: string
     duration: number
-    project: {
-      __typename?: 'Project'
-      id: string
-      title: string
-      startDate?: string | null | undefined
-      endDate?: string | null | undefined
-    }
+    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
   }
 }
 
@@ -602,15 +596,15 @@ export type WorkHourUpdateMutation = {
     __typename?: 'WorkHour'
     id: string
     date: string
-    comment?: string | null | undefined
+    comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null | undefined }
+    user: { __typename?: 'User'; id: string; name?: string | null }
     project: {
       __typename?: 'Project'
       id: string
       title: string
-      startDate?: string | null | undefined
-      endDate?: string | null | undefined
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{
         __typename?: 'Task'
         id: string
@@ -640,15 +634,15 @@ export type WorkHoursQuery = {
     __typename?: 'WorkHour'
     id: string
     date: string
-    comment?: string | null | undefined
+    comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null | undefined }
+    user: { __typename?: 'User'; id: string; name?: string | null }
     project: {
       __typename?: 'Project'
       id: string
       title: string
-      startDate?: string | null | undefined
-      endDate?: string | null | undefined
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{
         __typename?: 'Task'
         id: string
@@ -671,15 +665,15 @@ export type WorkHourFragment = {
   __typename?: 'WorkHour'
   id: string
   date: string
-  comment?: string | null | undefined
+  comment?: string | null
   duration: number
-  user: { __typename?: 'User'; id: string; name?: string | null | undefined }
+  user: { __typename?: 'User'; id: string; name?: string | null }
   project: {
     __typename?: 'Project'
     id: string
     title: string
-    startDate?: string | null | undefined
-    endDate?: string | null | undefined
+    startDate?: string | null
+    endDate?: string | null
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -727,8 +721,8 @@ export type MeQuery = {
   user: {
     __typename?: 'User'
     id: string
-    image?: string | null | undefined
-    name?: string | null | undefined
+    image?: string | null
+    name?: string | null
     projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
@@ -746,7 +740,7 @@ export type TeamAcceptInviteMutation = {
     slug: string
     theme: Theme
     inviteKey: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null | undefined }>
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null }>
   }
 }
 
