@@ -1,5 +1,5 @@
-mutation customerUpdate ($customerId: ID!,  $data: CustomerInput!) {
-  customerUpdate (customerId : $customerId , data: $data) {
+mutation customerUpdate($customerId: ID!, $data: CustomerInput!) {
+  customerUpdate(customerId: $customerId, data: $data) {
     id
     title
   }
