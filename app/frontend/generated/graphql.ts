@@ -303,6 +303,8 @@ export type WorkHour = {
   project: Project
   /** Task for which the working hour was booked */
   task: Task
+  /** User who booked the work hours */
+  user: User
 }
 
 export type WorkHourInput = {
@@ -596,6 +598,7 @@ export type WorkHourUpdateMutation = {
     date: string
     comment?: string | null
     duration: number
+    user: { __typename?: 'User'; id: string; name?: string | null | undefined }
     project: {
       __typename?: 'Project'
       id: string
@@ -622,6 +625,7 @@ export type WorkHourUpdateMutation = {
 
 export type WorkHoursQueryVariables = Exact<{
   from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }>
 
 export type WorkHoursQuery = {
@@ -632,6 +636,7 @@ export type WorkHoursQuery = {
     date: string
     comment?: string | null
     duration: number
+    user: { __typename?: 'User'; id: string; name?: string | null | undefined }
     project: {
       __typename?: 'Project'
       id: string
@@ -662,6 +667,7 @@ export type WorkHourFragment = {
   date: string
   comment?: string | null
   duration: number
+  user: { __typename?: 'User'; id: string; name?: string | null | undefined }
   project: {
     __typename?: 'Project'
     id: string
@@ -776,6 +782,10 @@ export const WorkHourFragmentDoc = gql`
     date
     comment
     duration
+    user {
+      id
+      name
+    }
     project {
       ...Project
     }
@@ -991,8 +1001,8 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($from: Date!) {
-    workHours(from: $from) {
+  query workHours($from: Date!, $to: Date) {
+    workHours(from: $from, to: $to) {
       ...WorkHour
     }
   }
@@ -1318,7 +1328,7 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHoursQuery((req, res, ctx) => {
- *   const { from } = req.variables;
+ *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ workHours })
  *   )

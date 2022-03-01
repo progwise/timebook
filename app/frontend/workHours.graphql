@@ -1,5 +1,5 @@
-query workHours($from: Date!) {
-  workHours(from: $from) {
+query workHours($from: Date!, $to: Date) {
+  workHours(from: $from, to: $to) {
     ...WorkHour
   }
 }
@@ -9,6 +9,10 @@ fragment WorkHour on WorkHour {
   date
   comment
   duration
+  user {
+    id
+    name
+  }
   project {
     ...Project
   }
