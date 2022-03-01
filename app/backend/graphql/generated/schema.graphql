@@ -433,6 +433,11 @@ type WorkHour {
   Task for which the working hour was booked
   """
   task: Task!
+
+  """
+  User who booked the work hours
+  """
+  user: User!
 }
 
 input WorkHourInput {
