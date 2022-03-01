@@ -229,6 +229,12 @@ export type QueryWorkHoursArgs = {
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
+/** Roles a user can have in a team */
+export enum Role {
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+}
+
 export type Task = {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -290,6 +296,8 @@ export type User = {
   name?: Maybe<Scalars['String']>
   /** Returns the list of projects where the user is a member */
   projects: Array<Project>
+  /** Role of the user in the current team */
+  role: Role
 }
 
 export type WorkHour = {

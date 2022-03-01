@@ -315,6 +315,14 @@ type Query {
   ): [WorkHour!]!
 }
 
+"""
+Roles a user can have in a team
+"""
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 type Task {
   archived: Boolean!
   hasWorkHours: Boolean!
@@ -412,6 +420,11 @@ type User {
   Returns the list of projects where the user is a member
   """
   projects: [Project!]!
+
+  """
+  Role of the user in the current team
+  """
+  role: Role!
 }
 
 type WorkHour {
