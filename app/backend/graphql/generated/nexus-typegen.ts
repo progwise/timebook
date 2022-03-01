@@ -59,6 +59,13 @@ export interface NexusGenInputs {
     theme?: NexusGenEnums['Theme'] | null // Theme
     title: string // String!
   }
+  WorkHourInput: {
+    // input type
+    comment?: string | null // String
+    date: NexusGenScalars['Date'] // Date!
+    duration: number // Int!
+    taskId: string // ID!
+  }
 }
 
 export interface NexusGenEnums {
@@ -119,7 +126,6 @@ export interface NexusGenFieldTypes {
   }
   Mutation: {
     // field return type
-    createWorkHour: NexusGenRootTypes['WorkHour'] // WorkHour!
     customerCreate: NexusGenRootTypes['Customer'] // Customer!
     customerDelete: NexusGenRootTypes['Customer'] // Customer!
     customerUpdate: NexusGenRootTypes['Customer'] // Customer!
@@ -134,6 +140,9 @@ export interface NexusGenFieldTypes {
     teamCreate: NexusGenRootTypes['Team'] // Team!
     teamDelete: NexusGenRootTypes['Team'] // Team!
     teamUpdate: NexusGenRootTypes['Team'] // Team!
+    workHourCreate: NexusGenRootTypes['WorkHour'] // WorkHour!
+    workHourDelete: NexusGenRootTypes['WorkHour'] // WorkHour!
+    workHourUpdate: NexusGenRootTypes['WorkHour'] // WorkHour!
   }
   Project: {
     // field return type
@@ -205,7 +214,6 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: {
     // field return type name
-    createWorkHour: 'WorkHour'
     customerCreate: 'Customer'
     customerDelete: 'Customer'
     customerUpdate: 'Customer'
@@ -220,6 +228,9 @@ export interface NexusGenFieldTypeNames {
     teamCreate: 'Team'
     teamDelete: 'Team'
     teamUpdate: 'Team'
+    workHourCreate: 'WorkHour'
+    workHourDelete: 'WorkHour'
+    workHourUpdate: 'WorkHour'
   }
   Project: {
     // field return type name
@@ -284,13 +295,6 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createWorkHour: {
-      // args
-      comment?: string | null // String
-      date: NexusGenScalars['Date'] // Date!
-      duration: number // Int!
-      taskId: string // ID!
-    }
     customerCreate: {
       // args
       data: NexusGenInputs['CustomerInput'] // CustomerInput!
@@ -351,6 +355,22 @@ export interface NexusGenArgTypes {
       data: NexusGenInputs['TeamInput'] // TeamInput!
       id: string // ID!
     }
+    workHourCreate: {
+      // args
+      comment?: string | null // String
+      date: NexusGenScalars['Date'] // Date!
+      duration: number // Int!
+      taskId: string // ID!
+    }
+    workHourDelete: {
+      // args
+      id: string // ID!
+    }
+    workHourUpdate: {
+      // args
+      data: NexusGenInputs['WorkHourInput'] // WorkHourInput!
+      id: string // ID!
+    }
   }
   Project: {
     tasks: {
@@ -377,7 +397,7 @@ export interface NexusGenArgTypes {
     }
     user: {
       // args
-      userId: string // ID!
+      userId?: string | null // ID
     }
     workHours: {
       // args

@@ -30,7 +30,7 @@ const CustomersPage = (): JSX.Element => {
       <article>
         <div className="flex justify-between">
           <h2>Customers</h2>
-          <Button variant="secondarySlim" onClick={handleAddCustomer}>
+          <Button ariaLabel="Add" variant="secondarySlim" onClick={handleAddCustomer}>
             Add
           </Button>
         </div>

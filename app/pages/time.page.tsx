@@ -97,11 +97,11 @@ const Time = (): JSX.Element => {
   return (
     <ProtectedPage>
       <div className="flex flex-col items-end">
-        <Button variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
+        <Button ariaLabel="Add" variant="primary" onClick={() => setIsBookWorkHourModalOpen(true)}>
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </div>
-      <article>
+      <article className="timebook">
         <h2>Your timetable</h2>
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
@@ -158,11 +158,15 @@ const Time = (): JSX.Element => {
           </tfoot>
         </table>
       </article>
-      <BookWorkHourModal
-        selectedDate={selectedDate}
-        open={isBookWorkHourModalOpen}
-        onClose={() => setIsBookWorkHourModalOpen(false)}
-      />
+      {isBookWorkHourModalOpen && (
+        <BookWorkHourModal
+          workHourItem={{
+            date: selectedDate,
+            duration: 0,
+          }}
+          onClose={() => setIsBookWorkHourModalOpen(false)}
+        />
+      )}
     </ProtectedPage>
   )
 }
