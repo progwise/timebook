@@ -1,6 +1,5 @@
 mutation customerCreate($data: CustomerInput!) {
   customerCreate(data: $data) {
-    id
-    title
+   ...Customer
   }
 }

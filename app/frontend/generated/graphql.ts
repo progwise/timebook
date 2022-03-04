@@ -733,6 +733,8 @@ export type CustomersQuery = {
   }
 }
 
+export type CustomerFragment = { __typename?: 'Customer'; id: string; title: string }
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
 export type MeQuery = {
@@ -810,6 +812,12 @@ export const WorkHourFragmentDoc = gql`
   }
   ${ProjectFragmentDoc}
   ${TaskFragmentDoc}
+`
+export const CustomerFragmentDoc = gql`
+  fragment Customer on Customer {
+    id
+    title
+  }
 `
 export const TeamsDocument = gql`
   query teams {
@@ -1030,10 +1038,10 @@ export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQuery
 export const CustomerDocument = gql`
   query customer($customerId: ID!) {
     customer(customerId: $customerId) {
-      id
-      title
+      ...Customer
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'> = {}) {
@@ -1042,10 +1050,10 @@ export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVa
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
     customerCreate(data: $data) {
-      id
-      title
+      ...Customer
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomerCreateMutation() {
@@ -1065,10 +1073,10 @@ export function useCustomerDeleteMutation() {
 export const CustomerUpdateDocument = gql`
   mutation customerUpdate($customerId: ID!, $data: CustomerInput!) {
     customerUpdate(customerId: $customerId, data: $data) {
-      id
-      title
+      ...Customer
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomerUpdateMutation() {
@@ -1080,11 +1088,11 @@ export const CustomersDocument = gql`
       id
       title
       customers {
-        id
-        title
+        ...Customer
       }
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {

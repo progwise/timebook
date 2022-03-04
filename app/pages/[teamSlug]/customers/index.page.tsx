@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
-import { consumers } from 'stream'
-import { Customer } from '../../../backend/graphql/customer'
+import { useMemo } from 'react'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import {
@@ -11,13 +10,14 @@ import {
   TableHeadRow,
   TableRow,
 } from '../../../frontend/components/table/table'
-import { CustomerInput, useCustomersQuery } from '../../../frontend/generated/graphql'
+import { useCustomersQuery } from '../../../frontend/generated/graphql'
 
 const CustomersPage = (): JSX.Element => {
   const router = useRouter()
 
   const slug = router.query.teamSlug?.toString() ?? ''
-  const [{ data }] = useCustomersQuery({ variables: { slug }, pause: !router.isReady })
+  const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
+  const [{ data }] = useCustomersQuery({ variables: { slug }, pause: !router.isReady, context })
 
   const handleAddCustomer = async () => {
     await router.push(`/${slug}/customers/add`)
@@ -39,20 +39,22 @@ const CustomersPage = (): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Name</TableHeadCell>
             <TableHeadCell>Customer-ID</TableHeadCell>
+            <TableHeadCell>Details</TableHeadCell>
           </TableHeadRow>
-          {data?.teamBySlug.customers.map((customer) => (
-            <TableBody key={customer.id}>
-              <TableCell>{customer.title}</TableCell>
-              <TableCell>{customer.id}</TableCell>
+          <TableBody>
+            {data?.teamBySlug.customers.map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell>{customer.title}</TableCell>
+                <TableCell>{customer.id}</TableCell>
 
-              <TableCell>
-                {/* <Button variant="primarySlim" onClick={handleCustomerDetails}> */}
-                <Button variant="primarySlim" onClick={() => handleCustomerDetails(customer.id)}>
-                  Details
-                </Button>
-              </TableCell>
-            </TableBody>
-          ))}
+                <TableCell>
+                  <Button variant="primarySlim" onClick={() => handleCustomerDetails(customer.id)}>
+                    Details
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </article>
     </ProtectedPage>
