@@ -1,6 +1,6 @@
 import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { ProjectFragment, useProjectsQuery, useWorkHoursQuery } from '../../generated/graphql'
 import { HiCheck, HiSelector } from 'react-icons/hi'
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
@@ -10,8 +10,13 @@ const ReportForm = () => {
   const router = useRouter()
   const [{ data: projectsData }] = useProjectsQuery({ pause: !router.isReady })
   const [selectedProject, setSelectedProject] = useState<ProjectFragment | undefined>()
-  const [, setProjectQuery] = useState('')
+  const [projectQuery, setProjectQuery] = useState('')
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))
+
+  const filteredProjects =
+    projectsData?.projects?.filter((project) => {
+      return project.title.toLowerCase().includes(projectQuery.toLowerCase())
+    }) ?? []
 
   const parsedDate = parse(date, 'yyyy-MM', new Date())
 
@@ -39,7 +44,7 @@ const ReportForm = () => {
         <div className="flex justify-between">
           <div>
             <Combobox value={selectedProject} onChange={setSelectedProject}>
-              <div>
+              <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                   <Combobox.Input<'input', ProjectFragment>
                     className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
@@ -49,45 +54,50 @@ const ReportForm = () => {
                   <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                     <HiSelector className="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </Combobox.Button>
-                  <Transition leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-                    <Combobox.Options>
-                      {projectsData?.projects.map((project) => (
-                        <Combobox.Option
-                          key={project.id}
-                          value={project}
-                          className={({ active }) =>
-                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                              active ? 'bg-teal-600 text-white' : 'text-gray-900'
-                            }`
-                          }
-                        >
-                          {({ selected, active }) => (
-                            <>
-                              <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                                {project.title}
-                              </span>
-                              {selected ? (
-                                <span
-                                  className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                    active ? 'text-white' : 'text-teal-600'
-                                  }`}
-                                >
-                                  <HiCheck className="h-5 w-5" aria-hidden="true" />
-                                </span>
-                              ) : undefined}
-                            </>
-                          )}
-                        </Combobox.Option>
-                      ))}
-                    </Combobox.Options>
-                  </Transition>
                 </div>
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {filteredProjects.map((project) => (
+                      <Combobox.Option
+                        key={project.id}
+                        value={project}
+                        className={({ active }) =>
+                          `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                            active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                          }`
+                        }
+                      >
+                        {({ selected, active }) => (
+                          <>
+                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                              {project.title}
+                            </span>
+                            {selected ? (
+                              <span
+                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                  active ? 'text-white' : 'text-indigo-600'
+                                }`}
+                              >
+                                <HiCheck className="h-5 w-5" aria-hidden="true" />
+                              </span>
+                            ) : undefined}
+                          </>
+                        )}
+                      </Combobox.Option>
+                    ))}
+                  </Combobox.Options>
+                </Transition>
               </div>
             </Combobox>
           </div>
           <div>
             <input
-              className="relative rounded-lg border-none py-2 pl-3 pr-10 text-sm leading-5 shadow-md"
+              className="rounded-lg border-none py-2 pl-3 pr-10 text-sm leading-5 shadow-md"
               type="month"
               value={date}
               onChange={(event) => {
