@@ -120,7 +120,7 @@ const ReportForm = () => {
               <h1>{workHour.task.title}</h1>
               <span>{workHour.comment}</span>
               <span>{workHour.user?.name}</span>
-              <span>{workHour.duration}</span>
+              <FormattedDuration title="Work duration" minutes={workHour.duration} />
             </article>
           ))}
           <article className="contents">
