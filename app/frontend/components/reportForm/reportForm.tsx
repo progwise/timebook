@@ -34,7 +34,7 @@ const ReportForm = () => {
     <>
       <div>
         {
-          <h1 className="mb-4 font-bold">
+          <h1 className="mb-4 mt-4 font-bold">
             Detailed time report: {startOfMonthString} - {endOfMonthString}
           </h1>
         }
@@ -47,7 +47,7 @@ const ReportForm = () => {
               <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                   <Combobox.Input<'input', ProjectFragment>
-                    className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                    className="w-full border-none py-2 pl-3 text-sm leading-5 text-gray-900 focus:ring-0"
                     displayValue={(project) => project.title}
                     onChange={(event) => setProjectQuery(event.target.value)}
                   />
@@ -97,7 +97,7 @@ const ReportForm = () => {
           </div>
           <div>
             <input
-              className="rounded-lg border-none py-2 pl-3 pr-10 text-sm leading-5 shadow-md"
+              className="rounded-lg border-none py-2 pl-3 text-sm leading-5 shadow-md"
               type="month"
               value={date}
               onChange={(event) => {
@@ -127,7 +127,7 @@ const ReportForm = () => {
             <span className="col-span-2" />
             <strong>Total</strong>
             <FormattedDuration
-              title="Total work for the selected day"
+              title="Total work for the selected project"
               minutes={filteredWorkHour?.map((item) => item.duration).reduce((sum, duration) => duration + sum, 0)}
             />
           </article>
