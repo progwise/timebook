@@ -3,8 +3,11 @@ query customers($slug: String!) {
     id
     title
     customers {
-      id
-      title
+      ...Customer
     }
   }
+}
+fragment Customer on Customer {
+  id
+  title
 }
