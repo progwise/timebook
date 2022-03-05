@@ -202,6 +202,7 @@ export interface NexusGenFieldTypes {
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
     task: NexusGenRootTypes['Task'] // Task!
+    user: NexusGenRootTypes['User'] // User!
   }
 }
 
@@ -290,6 +291,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     project: 'Project'
     task: 'Task'
+    user: 'User'
   }
 }
 

@@ -15,7 +15,7 @@ export const TopNavigation = (): JSX.Element => {
       <TopNavigationLink href="/time">Time</TopNavigationLink>
       {teamSlug && <TopNavigationLink href={`/${teamSlug}/time`}>Time</TopNavigationLink>}
       {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
-      <TopNavigationLink href="/reports">Reports</TopNavigationLink>
+      {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
       <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
       <TeamSelect />
       {session.status === 'authenticated' ? (
