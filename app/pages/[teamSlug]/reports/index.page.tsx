@@ -1,7 +1,9 @@
+import ReportForm from '../../../frontend/components/reportForm/reportForm'
+
 const ReportsPage = (): JSX.Element => {
   return (
     <div>
-      <h1>Reports</h1>
+      <ReportForm />
     </div>
   )
 }
