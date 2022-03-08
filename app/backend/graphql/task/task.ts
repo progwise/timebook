@@ -1,10 +1,12 @@
 import { list, objectType } from 'nexus'
 import { Project } from '../project'
 import { WorkHour } from '../workHour'
+import { ModifyInterface } from '../interfaces/modifyInterface'
 
 export const Task = objectType({
   name: 'Task',
   definition: (t) => {
+    t.implements(ModifyInterface)
     t.id('id', { description: 'Identifies the task' })
     t.string('title', { description: 'The user can identify the task in the UI' })
     t.boolean('archived', { resolve: (task) => !!task.archivedAt })

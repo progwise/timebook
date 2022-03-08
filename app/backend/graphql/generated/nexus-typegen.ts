@@ -109,17 +109,24 @@ export interface NexusGenObjects {
   WorkHour: prisma.WorkHour
 }
 
-export interface NexusGenInterfaces {}
+export interface NexusGenInterfaces {
+  ModifyInterface:
+    | NexusGenRootTypes['Customer']
+    | NexusGenRootTypes['Project']
+    | NexusGenRootTypes['Task']
+    | NexusGenRootTypes['Team']
+}
 
 export interface NexusGenUnions {}
 
-export type NexusGenRootTypes = NexusGenObjects
+export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   Customer: {
     // field return type
+    canModify: boolean // Boolean!
     id: string // ID!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
     title: string // String!
@@ -146,6 +153,7 @@ export interface NexusGenFieldTypes {
   }
   Project: {
     // field return type
+    canModify: boolean // Boolean!
     customer: NexusGenRootTypes['Customer'] | null // Customer
     endDate: NexusGenScalars['Date'] | null // Date
     id: string // ID!
@@ -171,6 +179,7 @@ export interface NexusGenFieldTypes {
   Task: {
     // field return type
     archived: boolean // Boolean!
+    canModify: boolean // Boolean!
     hasWorkHours: boolean // Boolean!
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
@@ -179,6 +188,7 @@ export interface NexusGenFieldTypes {
   }
   Team: {
     // field return type
+    canModify: boolean // Boolean!
     customers: NexusGenRootTypes['Customer'][] // [Customer!]!
     id: string // ID!
     inviteKey: string // String!
@@ -204,11 +214,16 @@ export interface NexusGenFieldTypes {
     task: NexusGenRootTypes['Task'] // Task!
     user: NexusGenRootTypes['User'] // User!
   }
+  ModifyInterface: {
+    // field return type
+    canModify: boolean // Boolean!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
   Customer: {
     // field return type name
+    canModify: 'Boolean'
     id: 'ID'
     projects: 'Project'
     title: 'String'
@@ -235,6 +250,7 @@ export interface NexusGenFieldTypeNames {
   }
   Project: {
     // field return type name
+    canModify: 'Boolean'
     customer: 'Customer'
     endDate: 'Date'
     id: 'ID'
@@ -260,6 +276,7 @@ export interface NexusGenFieldTypeNames {
   Task: {
     // field return type name
     archived: 'Boolean'
+    canModify: 'Boolean'
     hasWorkHours: 'Boolean'
     id: 'ID'
     project: 'Project'
@@ -268,6 +285,7 @@ export interface NexusGenFieldTypeNames {
   }
   Team: {
     // field return type name
+    canModify: 'Boolean'
     customers: 'Customer'
     id: 'ID'
     inviteKey: 'String'
@@ -292,6 +310,10 @@ export interface NexusGenFieldTypeNames {
     project: 'Project'
     task: 'Task'
     user: 'User'
+  }
+  ModifyInterface: {
+    // field return type name
+    canModify: 'Boolean'
   }
 }
 
@@ -410,9 +432,16 @@ export interface NexusGenArgTypes {
   }
 }
 
-export interface NexusGenAbstractTypeMembers {}
+export interface NexusGenAbstractTypeMembers {
+  ModifyInterface: 'Customer' | 'Project' | 'Task' | 'Team'
+}
 
-export interface NexusGenTypeInterfaces {}
+export interface NexusGenTypeInterfaces {
+  Customer: 'ModifyInterface'
+  Project: 'ModifyInterface'
+  Task: 'ModifyInterface'
+  Team: 'ModifyInterface'
+}
 
 export type NexusGenObjectNames = keyof NexusGenObjects
 
@@ -420,7 +449,7 @@ export type NexusGenInputNames = keyof NexusGenInputs
 
 export type NexusGenEnumNames = keyof NexusGenEnums
 
-export type NexusGenInterfaceNames = never
+export type NexusGenInterfaceNames = keyof NexusGenInterfaces
 
 export type NexusGenScalarNames = keyof NexusGenScalars
 
@@ -428,7 +457,7 @@ export type NexusGenUnionNames = never
 
 export type NexusGenObjectsUsingAbstractStrategyIsTypeOf = never
 
-export type NexusGenAbstractsUsingStrategyResolveType = never
+export type NexusGenAbstractsUsingStrategyResolveType = 'ModifyInterface'
 
 export type NexusGenFeaturesConfig = {
   abstractTypeStrategies: {

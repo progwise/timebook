@@ -23,8 +23,10 @@ export type Scalars = {
   Time: string
 }
 
-export type Customer = {
+export type Customer = ModifyInterface & {
   __typename?: 'Customer'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** Identifier of the customer */
   id: Scalars['ID']
   /** List of all customer projects */
@@ -36,6 +38,12 @@ export type Customer = {
 export type CustomerInput = {
   /** Title of the customer */
   title: Scalars['String']
+}
+
+/** Adds the information whether the user can edit the entity */
+export type ModifyInterface = {
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
 }
 
 export type Mutation = {
@@ -152,8 +160,10 @@ export type MutationWorkHourUpdateArgs = {
   id: Scalars['ID']
 }
 
-export type Project = {
+export type Project = ModifyInterface & {
   __typename?: 'Project'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** Customer of the project */
   customer?: Maybe<Customer>
   endDate?: Maybe<Scalars['Date']>
@@ -229,9 +239,11 @@ export type QueryWorkHoursArgs = {
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
-export type Task = {
+export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
   /** Identifies the task */
   id: Scalars['ID']
@@ -246,8 +258,10 @@ export type TaskInput = {
   title: Scalars['String']
 }
 
-export type Team = {
+export type Team = ModifyInterface & {
   __typename?: 'Team'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** List of all customers of the team */
   customers: Array<Customer>
   /** Identifier of the team */
