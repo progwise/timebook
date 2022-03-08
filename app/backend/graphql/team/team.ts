@@ -1,11 +1,13 @@
 import { objectType } from 'nexus'
 import { Customer } from '../customer'
+import { ModifyInterface } from '../interfaces/modifyInterface'
 import { User } from '../user'
 import { Theme } from './theme'
 
 export const Team = objectType({
   name: 'Team',
   definition: (t) => {
+    t.implements(ModifyInterface)
     t.id('id', { description: 'Identifier of the team' })
     t.string('title', { description: 'Title of the team' })
     t.string('slug', { description: 'Slug that is used in the team URL' })
