@@ -69,6 +69,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  Role: 'ADMIN' | 'MEMBER'
   Theme: 'BLUE' | 'GRAY' | 'GREEN' | 'INDIGO' | 'PINK' | 'PURPLE' | 'RED' | 'YELLOW'
 }
 
@@ -203,6 +204,7 @@ export interface NexusGenFieldTypes {
     image: string | null // String
     name: string | null // String
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    role: NexusGenEnums['Role'] // Role!
   }
   WorkHour: {
     // field return type
@@ -300,6 +302,7 @@ export interface NexusGenFieldTypeNames {
     image: 'String'
     name: 'String'
     projects: 'Project'
+    role: 'Role'
   }
   WorkHour: {
     // field return type name
