@@ -18,7 +18,7 @@ export const DeleteCustomerModal = ({ onClose }: DeleteCustomerModalProps) => {
     try {
       await customerDelete({ customerId: customerId as string })
 
-      await router.push(`/${teamSlug}/customers`)
+      await router.push(`/${teamSlug}/team`)
     } catch {}
   }
   return (
@@ -40,7 +40,7 @@ export const DeleteCustomerModal = ({ onClose }: DeleteCustomerModalProps) => {
   )
 }
 
-const ReportsPage = (): JSX.Element => {
+const CustomerDetailsPage = (): JSX.Element => {
   const router = useRouter()
   const { customerId } = router.query
   const [{ data, fetching, error }] = useCustomerQuery({ variables: { customerId: customerId?.toString() ?? '' } })
@@ -61,4 +61,4 @@ const ReportsPage = (): JSX.Element => {
     </ProtectedPage>
   )
 }
-export default ReportsPage
+export default CustomerDetailsPage
