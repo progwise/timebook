@@ -161,16 +161,7 @@ type Mutation {
   """
   Create a new WorkHour
   """
-  workHourCreate(
-    comment: String
-    date: Date!
-
-    """
-    Duration of the work hour in minutes
-    """
-    duration: Int!
-    taskId: ID!
-  ): WorkHour!
+  workHourCreate(data: WorkHourInput!): WorkHour!
 
   """
   Delete a work hour entry

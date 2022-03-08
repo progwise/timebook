@@ -359,10 +359,7 @@ export interface NexusGenArgTypes {
     }
     workHourCreate: {
       // args
-      comment?: string | null // String
-      date: NexusGenScalars['Date'] // Date!
-      duration: number // Int!
-      taskId: string // ID!
+      data: NexusGenInputs['WorkHourInput'] // WorkHourInput!
     }
     workHourDelete: {
       // args

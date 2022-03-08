@@ -137,10 +137,7 @@ export type MutationTeamUpdateArgs = {
 }
 
 export type MutationWorkHourCreateArgs = {
-  comment?: InputMaybe<Scalars['String']>
-  date: Scalars['Date']
-  duration: Scalars['Int']
-  taskId: Scalars['ID']
+  data: WorkHourInput
 }
 
 export type MutationWorkHourDeleteArgs = {
@@ -557,25 +554,6 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
-export type WorkHourCreateMutationVariables = Exact<{
-  duration: Scalars['Int']
-  taskId: Scalars['ID']
-  date: Scalars['Date']
-  comment?: InputMaybe<Scalars['String']>
-}>
-
-export type WorkHourCreateMutation = {
-  __typename?: 'Mutation'
-  workHourCreate: {
-    __typename?: 'WorkHour'
-    id: string
-    comment?: string | null
-    date: string
-    duration: number
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
-  }
-}
-
 export type WorkHourDeleteMutationVariables = Exact<{
   id: Scalars['ID']
 }>
@@ -990,26 +968,6 @@ export const TeamUpdateDocument = gql`
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
-export const WorkHourCreateDocument = gql`
-  mutation workHourCreate($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
-    workHourCreate(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
-      id
-      comment
-      date
-      duration
-      project {
-        id
-        title
-        startDate
-        endDate
-      }
-    }
-  }
-`
-
-export function useWorkHourCreateMutation() {
-  return Urql.useMutation<WorkHourCreateMutation, WorkHourCreateMutationVariables>(WorkHourCreateDocument)
-}
 export const WorkHourDeleteDocument = gql`
   mutation workHourDelete($id: ID!) {
     workHourDelete(id: $id) {
@@ -1333,25 +1291,6 @@ export const mockTeamCreateMutation = (
 export const mockTeamUpdateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
 ) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockWorkHourCreateMutation((req, res, ctx) => {
- *   const { duration, taskId, date, comment } = req.variables;
- *   return res(
- *     ctx.data({ workHourCreate })
- *   )
- * })
- */
-export const mockWorkHourCreateMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<WorkHourCreateMutationVariables>,
-    GraphQLContext<WorkHourCreateMutation>,
-    any
-  >,
-) => graphql.mutation<WorkHourCreateMutation, WorkHourCreateMutationVariables>('workHourCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
