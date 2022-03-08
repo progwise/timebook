@@ -23,8 +23,10 @@ export type Scalars = {
   Time: string
 }
 
-export type Customer = {
+export type Customer = ModifyInterface & {
   __typename?: 'Customer'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** Identifier of the customer */
   id: Scalars['ID']
   /** List of all customer projects */
@@ -36,6 +38,12 @@ export type Customer = {
 export type CustomerInput = {
   /** Title of the customer */
   title: Scalars['String']
+}
+
+/** Adds the information whether the user can edit the entity */
+export type ModifyInterface = {
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
 }
 
 export type Mutation = {
@@ -152,8 +160,10 @@ export type MutationWorkHourUpdateArgs = {
   id: Scalars['ID']
 }
 
-export type Project = {
+export type Project = ModifyInterface & {
   __typename?: 'Project'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** Customer of the project */
   customer?: Maybe<Customer>
   endDate?: Maybe<Scalars['Date']>
@@ -235,9 +245,11 @@ export enum Role {
   Member = 'MEMBER',
 }
 
-export type Task = {
+export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
   /** Identifies the task */
   id: Scalars['ID']
@@ -252,8 +264,10 @@ export type TaskInput = {
   title: Scalars['String']
 }
 
-export type Team = {
+export type Team = ModifyInterface & {
   __typename?: 'Team'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
   /** List of all customers of the team */
   customers: Array<Customer>
   /** Identifier of the team */
@@ -311,6 +325,8 @@ export type WorkHour = {
   project: Project
   /** Task for which the working hour was booked */
   task: Task
+  /** User who booked the work hours */
+  user: User
 }
 
 export type WorkHourInput = {
@@ -604,6 +620,7 @@ export type WorkHourUpdateMutation = {
     date: string
     comment?: string | null
     duration: number
+    user: { __typename?: 'User'; id: string; name?: string | null }
     project: {
       __typename?: 'Project'
       id: string
@@ -630,6 +647,7 @@ export type WorkHourUpdateMutation = {
 
 export type WorkHoursQueryVariables = Exact<{
   from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }>
 
 export type WorkHoursQuery = {
@@ -640,6 +658,7 @@ export type WorkHoursQuery = {
     date: string
     comment?: string | null
     duration: number
+    user: { __typename?: 'User'; id: string; name?: string | null }
     project: {
       __typename?: 'Project'
       id: string
@@ -670,6 +689,7 @@ export type WorkHourFragment = {
   date: string
   comment?: string | null
   duration: number
+  user: { __typename?: 'User'; id: string; name?: string | null }
   project: {
     __typename?: 'Project'
     id: string
@@ -693,6 +713,12 @@ export type WorkHourFragment = {
   }
 }
 
+export type CustomerQueryVariables = Exact<{
+  customerId: Scalars['ID']
+}>
+
+export type CustomerQuery = { __typename?: 'Query'; customer: { __typename?: 'Customer'; id: string; title: string } }
+
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
 }>
@@ -700,6 +726,25 @@ export type CustomerCreateMutationVariables = Exact<{
 export type CustomerCreateMutation = {
   __typename?: 'Mutation'
   customerCreate: { __typename?: 'Customer'; id: string; title: string }
+}
+
+export type CustomerDeleteMutationVariables = Exact<{
+  customerId: Scalars['ID']
+}>
+
+export type CustomerDeleteMutation = {
+  __typename?: 'Mutation'
+  customerDelete: { __typename?: 'Customer'; id: string }
+}
+
+export type CustomerUpdateMutationVariables = Exact<{
+  customerId: Scalars['ID']
+  data: CustomerInput
+}>
+
+export type CustomerUpdateMutation = {
+  __typename?: 'Mutation'
+  customerUpdate: { __typename?: 'Customer'; id: string; title: string }
 }
 
 export type CustomersQueryVariables = Exact<{
@@ -715,6 +760,8 @@ export type CustomersQuery = {
     customers: Array<{ __typename?: 'Customer'; id: string; title: string }>
   }
 }
+
+export type CustomerFragment = { __typename?: 'Customer'; id: string; title: string }
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
@@ -784,6 +831,10 @@ export const WorkHourFragmentDoc = gql`
     date
     comment
     duration
+    user {
+      id
+      name
+    }
     project {
       ...Project
     }
@@ -793,6 +844,12 @@ export const WorkHourFragmentDoc = gql`
   }
   ${ProjectFragmentDoc}
   ${TaskFragmentDoc}
+`
+export const CustomerFragmentDoc = gql`
+  fragment Customer on Customer {
+    id
+    title
+  }
 `
 export const TeamsDocument = gql`
   query teams {
@@ -999,8 +1056,8 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($from: Date!) {
-    workHours(from: $from) {
+  query workHours($from: Date!, $to: Date) {
+    workHours(from: $from, to: $to) {
       ...WorkHour
     }
   }
@@ -1010,17 +1067,52 @@ export const WorkHoursDocument = gql`
 export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<WorkHoursQuery>({ query: WorkHoursDocument, ...options })
 }
+export const CustomerDocument = gql`
+  query customer($customerId: ID!) {
+    customer(customerId: $customerId) {
+      ...Customer
+    }
+  }
+  ${CustomerFragmentDoc}
+`
+
+export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CustomerQuery>({ query: CustomerDocument, ...options })
+}
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
     customerCreate(data: $data) {
-      id
-      title
+      ...Customer
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomerCreateMutation() {
   return Urql.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument)
+}
+export const CustomerDeleteDocument = gql`
+  mutation customerDelete($customerId: ID!) {
+    customerDelete(customerId: $customerId) {
+      id
+    }
+  }
+`
+
+export function useCustomerDeleteMutation() {
+  return Urql.useMutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>(CustomerDeleteDocument)
+}
+export const CustomerUpdateDocument = gql`
+  mutation customerUpdate($customerId: ID!, $data: CustomerInput!) {
+    customerUpdate(customerId: $customerId, data: $data) {
+      ...Customer
+    }
+  }
+  ${CustomerFragmentDoc}
+`
+
+export function useCustomerUpdateMutation() {
+  return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
   query customers($slug: String!) {
@@ -1028,11 +1120,11 @@ export const CustomersDocument = gql`
       id
       title
       customers {
-        id
-        title
+        ...Customer
       }
     }
   }
+  ${CustomerFragmentDoc}
 `
 
 export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {
@@ -1326,7 +1418,7 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHoursQuery((req, res, ctx) => {
- *   const { from } = req.variables;
+ *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ workHours })
  *   )
@@ -1335,6 +1427,21 @@ export const mockWorkHourUpdateMutation = (
 export const mockWorkHoursQuery = (
   resolver: ResponseResolver<GraphQLRequest<WorkHoursQueryVariables>, GraphQLContext<WorkHoursQuery>, any>,
 ) => graphql.query<WorkHoursQuery, WorkHoursQueryVariables>('workHours', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerQuery((req, res, ctx) => {
+ *   const { customerId } = req.variables;
+ *   return res(
+ *     ctx.data({ customer })
+ *   )
+ * })
+ */
+export const mockCustomerQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CustomerQueryVariables>, GraphQLContext<CustomerQuery>, any>,
+) => graphql.query<CustomerQuery, CustomerQueryVariables>('customer', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1354,6 +1461,44 @@ export const mockCustomerCreateMutation = (
     any
   >,
 ) => graphql.mutation<CustomerCreateMutation, CustomerCreateMutationVariables>('customerCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerDeleteMutation((req, res, ctx) => {
+ *   const { customerId } = req.variables;
+ *   return res(
+ *     ctx.data({ customerDelete })
+ *   )
+ * })
+ */
+export const mockCustomerDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CustomerDeleteMutationVariables>,
+    GraphQLContext<CustomerDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>('customerDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCustomerUpdateMutation((req, res, ctx) => {
+ *   const { customerId, data } = req.variables;
+ *   return res(
+ *     ctx.data({ customerUpdate })
+ *   )
+ * })
+ */
+export const mockCustomerUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CustomerUpdateMutationVariables>,
+    GraphQLContext<CustomerUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>('customerUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
