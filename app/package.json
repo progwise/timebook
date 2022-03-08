@@ -62,7 +62,7 @@
     "eslint-plugin-jest-dom": "^4.0.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-testing-library": "^5.0.5",
-    "eslint-plugin-unicorn": "^40.0.0",
+    "eslint-plugin-unicorn": "^41.0.0",
     "intersection-observer": "^0.12.0",
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
