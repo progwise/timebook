@@ -24,13 +24,13 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
   const handleCancelClick = async () => {
-    router.push(`/${teamSlug}/customers`)
+    router.push(`/${teamSlug}/team`)
   }
 
   const handleSave = async (data: CustomerInput) => {
     await (customer ? updateCustomer({ customerId: customer.id, data }) : createCustomer({ data }))
 
-    await router.push(`/${teamSlug}/customers`)
+    await router.push(`/${teamSlug}/team`)
   }
 
   return (
