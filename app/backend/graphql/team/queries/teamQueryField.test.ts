@@ -13,6 +13,7 @@ const teamQuery = `
       members {
         id
         name
+        role
       }
     }
   }
@@ -76,7 +77,7 @@ describe('teamQueryField', () => {
         id: '1',
         title: 'Progwise',
         canModify: true,
-        members: [{ id: '1', name: 'Test User' }],
+        members: [{ id: '1', name: 'Test User', role: 'ADMIN' }],
       },
     })
     expect(response.errors).toBeUndefined()
