@@ -22,7 +22,7 @@ export const Button = ({
   ariaLabel,
 }: ButtonProps): JSX.Element => {
   const variantClassName: string = {
-    primary: 'font-medium bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',
+    primary: 'font-medium bg-blue-500 hover:scale-105 hover:border-blue-300 duration-300 ',
     secondary: 'font-medium bg-gray-400 hover:bg-gray-500 disabled:bg-gray-400',
     danger: 'font-medium bg-red-700 hover:bg-red-800 disabled:bg-red-700',
     primarySlim: 'font-small bg-blue-500 hover:bg-blue-700 disabled:bg-blue-500',

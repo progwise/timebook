@@ -8,7 +8,9 @@ function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode
   const { href, children } = props
   return (
     <Link href={href}>
-      <span className="my-1 mx-1 py-1 px-1 text-blue-500 hover:text-indigo-900 ">{children}</span>
+      <span className="hover: delay-25 my-1 mx-1 py-1 px-1 text-indigo-800 transition ease-in-out hover:translate-x-1 hover:scale-100 hover:text-indigo-500  ">
+        {children}
+      </span>
     </Link>
   )
 }
@@ -16,12 +18,12 @@ export const TeamSelect = () => {
   const [{ data: teamsData }] = useTeamsQuery()
   const [{ data: teamData }] = useTeamQuery()
   const router = useRouter()
-  let classNames =
-    'relative mx-3 my-3 bg-transparent text-indigo-500 font-semibold py-1 px-4 border border-indigo-300 rounded'
+  let classNames = 'relative mx-3 my-3 py-1 px-5 font-semibold text-base'
   classNames =
     router.pathname === '/[teamSlug]/team'
-      ? classNames + ' cursor-default text-indigo-900 border-indigo-900'
-      : classNames + ' cursor-pointer hover:text-indigo-900 hover:border-indigo-900'
+      ? classNames + '  cursor-default  border-b-4 rounded border-indigo-500 text-indigo-500'
+      : classNames +
+        ' text-indigo-800  cursor-pointer hover:text-indigo-500 hover:border-indigo-500 hover:scale-110 duration-300'
 
   return (
     <Menu as="div" className={classNames}>
