@@ -1,12 +1,23 @@
+/* eslint-disable unicorn/no-useless-undefined */
 import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
 import { useTeamQuery } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+} from '../../../frontend/components/table/table'
+import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 
 const Team = (): JSX.Element => {
   const router = useRouter()
+
   const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
   if (!router.isReady) {
     return <div>Loading...</div>
@@ -23,33 +34,34 @@ const Team = (): JSX.Element => {
           <h2 className="flex justify-between">
             <span>Members</span>
           </h2>
-          <table className="w-full table-auto">
-            <thead>
-              <tr>
-                <th />
-                <th className="text-left">Username</th>
-                <th className="text-left">Projects</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+          <Table className="w-full table-auto">
+            <TableHeadRow>
+              <TableHeadCell className="text-left">Username</TableHeadCell>
+              <TableHeadCell className="text-left">Projects</TableHeadCell>
+              <TableHeadCell className="text-left">Details</TableHeadCell>
+            </TableHeadRow>
+            <TableBody>
               {teamData?.team.members.map((user) => (
-                <tr key={user.id}>
-                  <td>
+                <TableRow key={user.id}>
+                  <TableCell>
                     {user.image ? (
                       <Image width={12} height={12} src={user.image} alt={user.name ?? 'Profile picture'} />
                     ) : undefined}
-                  </td>
-                  <td>{user.name}</td>
-                  <td>{user.projects.map((project) => project.title).join(', ')}</td>
-                  <td className="text-right">
+                    {user.name}
+                  </TableCell>
+                  <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
+                  <TableCell className="text-right">
                     <Button variant="primarySlim">Details</Button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-          <Button variant="primary">Add Team Member</Button>
+            </TableBody>
+          </Table>
+          <Button variant="primary">Invite Member</Button>
+        </article>
+        <article className="timebook">
+          <h2>Customers</h2>
+          <CustomerTable />
         </article>
       </ProtectedPage>
     </>

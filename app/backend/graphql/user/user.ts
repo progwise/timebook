@@ -1,5 +1,7 @@
+import { GraphQLError } from 'graphql'
 import { objectType } from 'nexus'
 import { Project } from '../project'
+import { Role } from './role'
 
 export const User = objectType({
   name: 'User',
@@ -29,6 +31,27 @@ export const User = objectType({
             },
           },
         })
+      },
+    })
+    t.field('role', {
+      type: Role,
+      description: 'Role of the user in the current team',
+      resolve: async (user, _arguments, context) => {
+        const slug = context.teamSlug
+
+        if (!slug) {
+          throw new GraphQLError('Team slug is missing.')
+        }
+
+        const membership = await context.prisma.teamMembership.findFirst({
+          where: {
+            userId: user.id,
+            team: { slug },
+          },
+          rejectOnNotFound: true,
+        })
+
+        return membership.role
       },
     })
   },
