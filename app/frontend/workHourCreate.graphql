@@ -1,6 +1,5 @@
-mutation workHourCreate($data: WorkHourInput!){
-   workHourCreate(data:$data) {
-     ...WorkHour
-   }
+mutation workHourCreate($data: WorkHourInput!) {
+  workHourCreate(data: $data) {
+    ...WorkHour
+  }
 }
-
