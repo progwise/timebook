@@ -1,10 +1,15 @@
 import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
-import { ProjectFragment, useProjectsQuery, useWorkHoursQuery } from '../../generated/graphql'
+import { ProjectFragment, useProjectsQuery, useWorkHoursQuery, WorkHourFragment } from '../../generated/graphql'
 import { HiCheck, HiSelector } from 'react-icons/hi'
-import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
+import { compareAsc, endOfMonth, format, formatISO, parse, parseISO, startOfMonth } from 'date-fns'
 import { FormattedDuration } from '../duration/formattedDuration'
+
+interface WorkHourGroup {
+  date: string
+  workHours: WorkHourFragment[]
+}
 
 const ReportForm = () => {
   const router = useRouter()
@@ -28,7 +33,24 @@ const ReportForm = () => {
     pause: !router.isReady,
   })
 
-  const filteredWorkHour = workHoursData?.workHours.filter((workHour) => workHour.project.id === selectedProject?.id)
+  const filteredWorkHours =
+    workHoursData?.workHours.filter((workHour) => workHour.project.id === selectedProject?.id) ?? []
+
+  const groupedWorkHours: WorkHourGroup[] = []
+  for (const workHour of filteredWorkHours) {
+    const groupIndex = groupedWorkHours.findIndex((group) => group.date === workHour.date)
+    if (groupIndex === -1) {
+      groupedWorkHours.push({ date: workHour.date, workHours: [workHour] })
+    } else {
+      groupedWorkHours[groupIndex].workHours.push(workHour)
+    }
+  }
+
+  const sortedGroupedWorkHours = groupedWorkHours.sort((leftGroup, rightGroup) => {
+    const leftDate = parseISO(leftGroup.date)
+    const rightDate = parseISO(rightGroup.date)
+    return compareAsc(leftDate, rightDate)
+  })
 
   return (
     <>
@@ -108,6 +130,7 @@ const ReportForm = () => {
             />
           </div>
         </div>
+
         <section className="mt-10 grid w-full grid-cols-4 gap-2 border-y-4 text-left">
           <article className="contents border-y text-lg">
             <strong>Tasks</strong>
@@ -115,20 +138,34 @@ const ReportForm = () => {
             <strong>Person</strong>
             <strong>Hours</strong>
           </article>
-          {filteredWorkHour?.map((workHour) => (
-            <article key={workHour.id} className="contents">
-              <h1>{workHour.task.title}</h1>
-              <span>{workHour.comment}</span>
-              <span>{workHour.user?.name}</span>
-              <FormattedDuration title="Work duration" minutes={workHour.duration} />
-            </article>
+          {sortedGroupedWorkHours?.map((group) => (
+            <Fragment key={group.date}>
+              <article className="contents">
+                <strong className="col-span-3">{group.date}</strong>
+                <FormattedDuration
+                  title="Total work hours of the day"
+                  minutes={group.workHours
+                    .map((WorkHourDuration) => WorkHourDuration.duration)
+                    .reduce((sum, duration) => duration + sum, 0)}
+                />
+              </article>
+              {group.workHours.map((workHour) => (
+                <article key={workHour.id} className="contents">
+                  <h1>{workHour.task.title}</h1>
+                  <span>{workHour.comment}</span>
+                  <span>{workHour.user?.name}</span>
+                  <FormattedDuration title="Work duration" minutes={workHour.duration} />
+                </article>
+              ))}
+            </Fragment>
           ))}
           <article className="contents">
-            <span className="col-span-2" />
-            <strong>Total</strong>
+            <strong className="col-span-3">Total</strong>
             <FormattedDuration
-              title="Total work for the selected project"
-              minutes={filteredWorkHour?.map((item) => item.duration).reduce((sum, duration) => duration + sum, 0)}
+              title="Total work hours of the selected project"
+              minutes={filteredWorkHours
+                ?.map((WorkHourDuration) => WorkHourDuration.duration)
+                .reduce((sum, duration) => duration + sum, 0)}
             />
           </article>
         </section>
