@@ -145,10 +145,7 @@ export type MutationTeamUpdateArgs = {
 }
 
 export type MutationWorkHourCreateArgs = {
-  comment?: InputMaybe<Scalars['String']>
-  date: Scalars['Date']
-  duration: Scalars['Int']
-  taskId: Scalars['ID']
+  data: WorkHourInput
 }
 
 export type MutationWorkHourDeleteArgs = {
@@ -580,10 +577,7 @@ export type TeamUpdateMutation = {
 }
 
 export type WorkHourCreateMutationVariables = Exact<{
-  duration: Scalars['Int']
-  taskId: Scalars['ID']
-  date: Scalars['Date']
-  comment?: InputMaybe<Scalars['String']>
+  data: WorkHourInput
 }>
 
 export type WorkHourCreateMutation = {
@@ -591,10 +585,31 @@ export type WorkHourCreateMutation = {
   workHourCreate: {
     __typename?: 'WorkHour'
     id: string
-    comment?: string | null
     date: string
+    comment?: string | null
     duration: number
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    user: { __typename?: 'User'; id: string; name?: string | null }
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      tasks: Array<{
+        __typename?: 'Task'
+        id: string
+        title: string
+        hasWorkHours: boolean
+        project: { __typename?: 'Project'; id: string; title: string }
+      }>
+    }
+    task: {
+      __typename?: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      project: { __typename?: 'Project'; id: string; title: string }
+    }
   }
 }
 
@@ -1013,20 +1028,12 @@ export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
 export const WorkHourCreateDocument = gql`
-  mutation workHourCreate($duration: Int!, $taskId: ID!, $date: Date!, $comment: String) {
-    workHourCreate(duration: $duration, taskId: $taskId, date: $date, comment: $comment) {
-      id
-      comment
-      date
-      duration
-      project {
-        id
-        title
-        startDate
-        endDate
-      }
+  mutation workHourCreate($data: WorkHourInput!) {
+    workHourCreate(data: $data) {
+      ...WorkHour
     }
   }
+  ${WorkHourFragmentDoc}
 `
 
 export function useWorkHourCreateMutation() {
@@ -1361,7 +1368,7 @@ export const mockTeamUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourCreateMutation((req, res, ctx) => {
- *   const { duration, taskId, date, comment } = req.variables;
+ *   const { data } = req.variables;
  *   return res(
  *     ctx.data({ workHourCreate })
  *   )
