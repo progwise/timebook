@@ -265,6 +265,19 @@ type Query {
   projects: [Project!]!
 
   """
+  Returns a monthly project report
+  """
+  report(
+    from: Date!
+
+    """
+    Project identifier
+    """
+    projectId: ID!
+    to: Date!
+  ): Report!
+
+  """
   Returns a single task
   """
   task(
@@ -324,6 +337,19 @@ type Query {
     """
     userIds: [ID!]
   ): [WorkHour!]!
+}
+
+type Report {
+  groupedByTask: [ReportGroupedByTask!]!
+}
+
+type ReportGroupedByTask {
+  """
+  Sum of the total duration of all the work hours for the task
+  """
+  duration: Int!
+  task: Task!
+  workHours: [WorkHour!]!
 }
 
 """

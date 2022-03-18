@@ -37,6 +37,7 @@ import {
   customerQueryField,
   customerUpdateMutationField,
 } from './customer'
+import { reportQueryField } from './report'
 
 export const schema = makeSchema({
   types: [
@@ -69,6 +70,7 @@ export const schema = makeSchema({
     customerCreateMutationField,
     customerDeleteMutationField,
     customerUpdateMutationField,
+    reportQueryField,
   ],
   outputs: {
     typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),

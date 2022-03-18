@@ -147,59 +147,60 @@ const ReportForm = () => {
             />
           </div>
         </div>
-
-        <section className="mt-10 grid w-full grid-cols-4 gap-2 text-left">
-          <article className="contents border-y text-lg">
-            <hr className="col-span-4 -mb-2 h-0.5 bg-gray-600" />
-            <strong>Tasks</strong>
-            <strong>Comment</strong>
-            <strong>Person</strong>
-            <strong>Hours</strong>
-          </article>
-          {sortedGroupedWorkHours?.map((group) => (
-            <Fragment key={group.date}>
-              <article className="contents">
-                <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
-                <strong className="col-span-3">{group.date}</strong>
-                <FormattedDuration
-                  title="Total work hours of the day"
-                  minutes={group.workHours
-                    .map((WorkHourDuration) => WorkHourDuration.duration)
-                    .reduce((sum, duration) => duration + sum, 0)}
-                />
-              </article>
-              {group.workHours.map((workHour) => (
-                <article key={workHour.id} className="contents">
-                  <h1>{workHour.task.title}</h1>
-                  <span>{workHour.comment}</span>
-                  <span>{workHour.user?.name}</span>
-                  <FormattedDuration title="Work duration" minutes={workHour.duration} />
+        {selectedProject && (
+          <section className="mt-10 grid w-full grid-cols-4 gap-2 text-left">
+            <article className="contents border-y text-lg">
+              <hr className="col-span-4 -mb-2 h-0.5 bg-gray-600" />
+              <strong>Tasks</strong>
+              <strong>Comment</strong>
+              <strong>Person</strong>
+              <strong>Hours</strong>
+            </article>
+            {sortedGroupedWorkHours?.map((group) => (
+              <Fragment key={group.date}>
+                <article className="contents">
+                  <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
+                  <strong className="col-span-3">{group.date}</strong>
+                  <FormattedDuration
+                    title="Total work hours of the day"
+                    minutes={group.workHours
+                      .map((WorkHourDuration) => WorkHourDuration.duration)
+                      .reduce((sum, duration) => duration + sum, 0)}
+                  />
                 </article>
-              ))}
-            </Fragment>
-          ))}
-          <article className="contents">
-            <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
-            <strong className="col-span-3">Total</strong>
-            <FormattedDuration
-              title="Total work hours of the selected project"
-              minutes={filteredWorkHours
-                ?.map((WorkHourDuration) => WorkHourDuration.duration)
-                .reduce((sum, duration) => duration + sum, 0)}
-            />
-          </article>
-          <article className="contents">
-            <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
-            <strong className="col-span-4">Total by Task</strong>
-            {Object.values(groupedTaskEntries).map((entry) => (
-              <div key={entry.task.id} className="grid grid-flow-row">
-                <span>{entry.task.title}</span>
-                <FormattedDuration title="Total by task" minutes={entry.duration} />
-              </div>
+                {group.workHours.map((workHour) => (
+                  <article key={workHour.id} className="contents">
+                    <h1>{workHour.task.title}</h1>
+                    <span>{workHour.comment}</span>
+                    <span>{workHour.user?.name}</span>
+                    <FormattedDuration title="Work duration" minutes={workHour.duration} />
+                  </article>
+                ))}
+              </Fragment>
             ))}
-            <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
-          </article>
-        </section>
+            <article className="contents">
+              <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
+              <strong className="col-span-3">Total</strong>
+              <FormattedDuration
+                title="Total work hours of the selected project"
+                minutes={filteredWorkHours
+                  ?.map((WorkHourDuration) => WorkHourDuration.duration)
+                  .reduce((sum, duration) => duration + sum, 0)}
+              />
+            </article>
+            <article className="contents">
+              <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
+              <strong className="col-span-4">Total by Task</strong>
+              {Object.values(groupedTaskEntries).map((entry) => (
+                <div key={entry.task.id} className="grid grid-flow-row">
+                  <span>{entry.task.title}</span>
+                  <FormattedDuration title="Total by task" minutes={entry.duration} />
+                </div>
+              ))}
+              <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
+            </article>
+          </section>
+        )}
       </div>
     </>
   )

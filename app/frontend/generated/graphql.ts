@@ -194,6 +194,8 @@ export type Query = {
   project: Project
   /** Returns a list of all projects */
   projects: Array<Project>
+  /** Returns a monthly project report */
+  report: Report
   /** Returns a single task */
   task: Task
   /** Return team by slug provided in the api route (/api/[teamSlug]/graphql) */
@@ -218,6 +220,12 @@ export type QueryProjectArgs = {
   projectId: Scalars['ID']
 }
 
+export type QueryReportArgs = {
+  from: Scalars['Date']
+  projectId: Scalars['ID']
+  to: Scalars['Date']
+}
+
 export type QueryTaskArgs = {
   taskId: Scalars['ID']
 }
@@ -234,6 +242,19 @@ export type QueryWorkHoursArgs = {
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
+}
+
+export type Report = {
+  __typename?: 'Report'
+  groupedByTask: Array<ReportGroupedByTask>
+}
+
+export type ReportGroupedByTask = {
+  __typename?: 'ReportGroupedByTask'
+  /** Sum of the total duration of all the work hours for the task */
+  duration: Scalars['Int']
+  task: Task
+  workHours: Array<WorkHour>
 }
 
 /** Roles a user can have in a team */
