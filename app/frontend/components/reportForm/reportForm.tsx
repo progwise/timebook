@@ -17,6 +17,8 @@ interface WorkHourGroup {
   workHours: WorkHourFragment[]
 }
 
+type GroupedTaskEntries = Record<string, { task: TaskFragment; duration: number }>
+
 const ReportForm = () => {
   const router = useRouter()
   const [{ data: projectsData }] = useProjectsQuery({ pause: !router.isReady })
@@ -57,8 +59,6 @@ const ReportForm = () => {
     const rightDate = parseISO(rightGroup.date)
     return compareAsc(leftDate, rightDate)
   })
-
-  type GroupedTaskEntries = Record<string, { task: TaskFragment; duration: number }>
 
   const groupedTaskEntries: GroupedTaskEntries = {}
   for (const workHour of filteredWorkHours) {
