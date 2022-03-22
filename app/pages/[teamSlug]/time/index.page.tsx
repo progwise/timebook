@@ -52,7 +52,7 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
-      <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid bg-black">
+      <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid">
         {data?.workHours.map((item) => (
           <article key={item.id} className="contents border-2 border-black">
             <header className="col-span-2 ">
