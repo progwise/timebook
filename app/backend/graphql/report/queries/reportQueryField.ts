@@ -38,5 +38,29 @@ export const reportQueryField = queryField('report', {
           }),
       }))
     },
+
+    groupedByDate: async () => {
+      const groupByDateResult = await context.prisma.workHour.groupBy({
+        by: ['date'],
+        where: {
+          task: { projectId },
+          date: { gte: from, lte: to },
+        },
+        _sum: {
+          duration: true,
+        },
+      })
+
+      return groupByDateResult.map(({ date, _sum: { duration } }) => ({
+        date,
+        duration,
+        workHours: () =>
+          context.prisma.workHour.findMany({
+            where: {
+              date: { equals: date },
+            },
+          }),
+      }))
+    },
   }),
 })
