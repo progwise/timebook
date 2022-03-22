@@ -1,5 +1,6 @@
 import { booleanArg, objectType } from 'nexus'
 import { Customer } from '../customer'
+import { ModifyInterface } from '../interfaces/modifyInterface'
 import { Task } from '../task'
 import { User } from '../user'
 import { WorkHour } from '../workHour'
@@ -7,6 +8,7 @@ import { WorkHour } from '../workHour'
 export const Project = objectType({
   name: 'Project',
   definition: (t) => {
+    t.implements(ModifyInterface)
     t.id('id', { description: 'identifies the project' })
     t.string('title', {})
     t.nullable.date('startDate', { resolve: (project) => project.startDate })

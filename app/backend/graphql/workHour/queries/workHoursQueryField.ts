@@ -1,6 +1,5 @@
 import { ForbiddenError } from 'apollo-server-core'
 import { arg, idArg, list, nullable, queryField } from 'nexus'
-import { DateScalar } from '../../scalars'
 import { isTeamMember } from '../../team/utils'
 import { WorkHour } from '../workHour'
 
@@ -8,10 +7,10 @@ export const workHoursQueryField = queryField('workHours', {
   type: list(WorkHour),
   description: 'Returns a list of work hours for a given time period and a list of users',
   args: {
-    from: arg({ type: DateScalar, description: 'Start of the time period' }),
+    from: arg({ type: 'Date', description: 'Start of the time period' }),
     to: nullable(
       arg({
-        type: DateScalar,
+        type: 'Date',
         description: 'End of the time period. If not provided the from arg is used as the end.',
       }),
     ),

@@ -56,7 +56,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       comment: data.comment,
     }
     const result = await (!data.workHourId
-      ? createWorkHour(workHourInput)
+      ? createWorkHour({ data: workHourInput })
       : updateWorkHour({
           id: data.workHourId.toString(),
           data: workHourInput,
