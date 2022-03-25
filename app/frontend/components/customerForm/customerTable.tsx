@@ -25,7 +25,7 @@ export const CustomerTable = (): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Name</TableHeadCell>
             <TableHeadCell>Customer-ID</TableHeadCell>
-            <TableHeadCell>Details</TableHeadCell>
+            <TableHeadCell />
           </TableHeadRow>
           <TableBody>
             {data?.teamBySlug.customers.map((customer) => (
@@ -34,7 +34,7 @@ export const CustomerTable = (): JSX.Element => {
                 <TableCell>{customer.id}</TableCell>
 
                 <TableCell>
-                  <Button variant="tertiary_blue" onClick={() => handleCustomerDetails(customer.id)}>
+                  <Button variant="tertiary" onClick={() => handleCustomerDetails(customer.id)}>
                     Details
                   </Button>
                 </TableCell>
@@ -43,7 +43,7 @@ export const CustomerTable = (): JSX.Element => {
           </TableBody>
         </Table>
       </article>
-      <Button ariaLabel="Add" variant="primary_gray" onClick={handleAddCustomer}>
+      <Button ariaLabel="Add" variant="secondary" onClick={handleAddCustomer}>
         <MdPersonAddAlt1 />
         Add
       </Button>

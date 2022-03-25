@@ -60,16 +60,16 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
           <div className="mt-16 flex justify-center gap-2">
             <div className="flex justify-start">
               {customer ? (
-                <Button type="button" variant="tertiary_gray_underlined" onClick={() => setIsDeleteModalOpen(true)}>
+                <Button type="button" variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
                   Delete
                   <BiTrash />
                 </Button>
               ) : undefined}
             </div>
-            <Button variant="secondary_blue" onClick={handleCancelClick}>
+            <Button variant="secondary" onClick={handleCancelClick}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary_blue">
+            <Button type="submit" variant="primary">
               Submit
             </Button>
           </div>

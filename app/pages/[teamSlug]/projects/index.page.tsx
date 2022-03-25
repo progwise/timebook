@@ -19,7 +19,7 @@ const Projects = (): JSX.Element => {
       <article className="timebook">
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold text-gray-400">Your projects</h2>
-          <Button variant="primary_gray" onClick={handleAddProject}>
+          <Button variant="secondary" onClick={handleAddProject}>
             Add
           </Button>
         </div>

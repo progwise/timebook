@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 import { useTeamQuery, useTeamsQuery } from '../../generated/graphql'
-function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode }) {
+
+const MyLink = (props: { [x: string]: unknown; href: string; children: ReactNode }) => {
   const { href, children } = props
+
   return (
     <Link href={href}>
       <span className="delay-25 my-1 mx-1 py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
@@ -13,6 +15,7 @@ function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode
     </Link>
   )
 }
+
 export const TeamSelect = () => {
   const [{ data: teamsData }] = useTeamsQuery()
   const [{ data: teamData }] = useTeamQuery()

@@ -15,7 +15,7 @@ export const TopNavigation = (): JSX.Element => {
       <div className="flex justify-end md:container md:mx-auto">
         <span
           onClick={handleTimeBookClick}
-          className=" mx-3 my-3 cursor-pointer rounded-full  border-r-2 border-r-2 border-gray-400 py-1 px-4 text-xl font-semibold text-blue-400"
+          className=" mx-3 my-3 cursor-pointer rounded-full  py-1 px-4 text-xl font-semibold text-blue-400"
         >
           timebook
         </span>

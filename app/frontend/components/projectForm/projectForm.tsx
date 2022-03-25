@@ -125,19 +125,14 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </div>
       </div>
       <div className="mt-16 flex justify-center gap-2">
-        <Button variant="tertiary_gray_underlined" onClick={() => setIsDeleteModalOpen(true)}>
+        <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
           Delete
           <BiTrash />
         </Button>
-        <Button
-          disabled={formState.isSubmitting}
-          variant="secondary_blue"
-          onClick={onCancel}
-          tooltip="Cancel the changes"
-        >
+        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
-        <Button type="submit" variant="primary_blue" disabled={formState.isSubmitting} tooltip="Save changes">
+        <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
           Save
         </Button>
         {project ? (

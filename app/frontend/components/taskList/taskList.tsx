@@ -67,7 +67,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               <TableCell className="mt-1 flex items-center">
                 <Button
                   ariaLabel="Delete Task"
-                  variant="primary_gray"
+                  variant="danger"
                   tooltip="Delete Task"
                   onClick={() => setTaskToBeDeleted(task)}
                 >
@@ -80,7 +80,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               </TableCell>
               <TableCell>
                 <Button
-                  variant="tertiary_blue"
+                  variant="tertiary"
                   onClick={() => {
                     setTaskToBeUpdated(task)
                   }}
@@ -117,7 +117,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
                 </div>
 
-                <Button variant="primarySlim" type="submit" disabled={isSubmitting}>
+                <Button variant="secondary" type="submit" disabled={isSubmitting}>
                   Add task
                 </Button>
               </form>

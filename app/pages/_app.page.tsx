@@ -32,11 +32,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
           <Component {...pageProps} />
         </main>
         <footer className="mt-80 flex h-full w-full justify-start bg-gray-400">
-          <Button variant="tertiary_white">Impress </Button>
+          <Button variant="tertiary">Impress </Button>
 
-          <Button variant="tertiary_white"> Privacy Policy </Button>
+          <Button variant="tertiary"> Privacy Policy </Button>
 
-          <Button variant="tertiary_white">Conditions </Button>
+          <Button variant="tertiary">Conditions </Button>
         </footer>
       </Provider>
     </SessionProvider>

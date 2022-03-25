@@ -28,7 +28,7 @@ export const DeleteCustomerModal = ({ onClose }: DeleteCustomerModalProps) => {
       title={`Are you sure you want to delete customer: ${customerId}?`}
       actions={
         <>
-          <Button variant="tertiary_gray" onClick={onClose}>
+          <Button variant="tertiary" onClick={onClose}>
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteCustomer}>

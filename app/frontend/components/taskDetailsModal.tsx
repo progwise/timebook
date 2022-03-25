@@ -44,16 +44,10 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
       title="Task Details"
       actions={
         <>
-          <Button variant="secondarySlim" onClick={onClose} tooltip="Cancel the changes" disabled={fetching}>
+          <Button variant="secondary" onClick={onClose} tooltip="Cancel the changes" disabled={fetching}>
             Cancel
           </Button>
-          <Button
-            form="task-details"
-            type="submit"
-            variant="primarySlim"
-            tooltip="Submit the changes"
-            disabled={fetching}
-          >
+          <Button form="task-details" type="submit" variant="primary" tooltip="Submit the changes" disabled={fetching}>
             Save
           </Button>
         </>

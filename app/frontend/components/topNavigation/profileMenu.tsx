@@ -38,7 +38,7 @@ export const ProfileMenu = () => {
             src={session.data?.user.image}
             alt={session.data?.user.name ?? 'Profile picture'}
           />
-        )}{' '}
+        )}
       </Menu.Button>
 
       <Menu.Items className=" absolute right-1 mx-3 flex w-64 flex-col rounded-md bg-white p-2 px-1 shadow ">
@@ -48,11 +48,11 @@ export const ProfileMenu = () => {
           </Menu.Item>
         )}
         <Menu.Item>
-          <MyLink href={`/time`}>My Timetable</MyLink>
+          <MyLink href="/time">My Timetable</MyLink>
         </Menu.Item>
         {teamSlug && (
           <Menu.Item>
-            <MyLink href={`/team`}>Switch Team</MyLink>
+            <MyLink href="/team">Switch Team</MyLink>
           </Menu.Item>
         )}
         <Menu.Item>
@@ -66,9 +66,3 @@ export const ProfileMenu = () => {
     </Menu>
   )
 }
-
-/*{({ active }) => (
-  <MyLink className={`${active && 'bg-blue-500'}`} href="/team">
-  Create new team
-</MyLink>
-)}*/
