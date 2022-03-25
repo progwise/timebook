@@ -26,43 +26,45 @@ const Team = (): JSX.Element => {
   return (
     <>
       <ProtectedPage>
-        <article className="timebook">
-          <h2>Team Details</h2>
-          {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
-        </article>
-        <article className="timebook">
-          <h2 className="flex justify-between">
-            <span>Members</span>
-          </h2>
-          <Table className="w-full table-auto">
-            <TableHeadRow>
-              <TableHeadCell className="text-left">Username</TableHeadCell>
-              <TableHeadCell className="text-left">Projects</TableHeadCell>
-              <TableHeadCell className="text-left">Details</TableHeadCell>
-            </TableHeadRow>
-            <TableBody>
-              {teamData?.team.members.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {user.image ? (
-                      <Image width={12} height={12} src={user.image} alt={user.name ?? 'Profile picture'} />
-                    ) : undefined}
-                    {user.name}
-                  </TableCell>
-                  <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="primarySlim">Details</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <Button variant="primary">Invite Member</Button>
-        </article>
-        <article className="timebook">
-          <h2>Customers</h2>
-          <CustomerTable />
-        </article>
+        <div className="timebook">
+          <article className="timebook">
+            <h2>Team Details</h2>
+            {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
+          </article>
+          <article className="timebook">
+            <h2 className="flex justify-between">
+              <span>Members</span>
+            </h2>
+            <Table className="w-full table-auto">
+              <TableHeadRow>
+                <TableHeadCell className="text-left">Username</TableHeadCell>
+                <TableHeadCell className="text-left">Projects</TableHeadCell>
+                <TableHeadCell className="text-left">Details</TableHeadCell>
+              </TableHeadRow>
+              <TableBody>
+                {teamData?.team.members.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      {user.image ? (
+                        <Image width={12} height={12} src={user.image} alt={user.name ?? 'Profile picture'} />
+                      ) : undefined}
+                      {user.name}
+                    </TableCell>
+                    <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="tertiary_blue">Details</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Button variant="primary_gray">Invite Member</Button>
+          </article>
+          <article className="timebook">
+            <h2>Customers</h2>
+            <CustomerTable />
+          </article>
+        </div>
       </ProtectedPage>
     </>
   )

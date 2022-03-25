@@ -46,7 +46,7 @@ describe('TeamForm', () => {
 
     render(<TeamForm team={team} />, { wrapper })
 
-    const companyField = screen.getByRole('textbox', { name: 'Company:' })
+    const companyField = screen.getByRole('textbox', { name: 'Company' })
     const slugField = screen.getByRole('textbox', { name: 'Slug' })
     const invitationLink = screen.getByRole('textbox', { name: 'Invitation link' })
     const saveButton = screen.getByRole('button', { name: 'Save' })

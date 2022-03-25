@@ -5,6 +5,7 @@ import { TopNavigation } from '../frontend/components/topNavigation/topNavigatio
 import { createClient, Provider } from 'urql'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { Button } from '../frontend/components/button/button'
 
 interface MyAppProps {
   Component: new (props: unknown) => React.Component
@@ -24,13 +25,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
   return (
     <SessionProvider session={session}>
       <Provider value={client}>
-        <header className="bg-indigo-50">
+        <header className="  border-b-2 border-blue-400 bg-transparent">
           <TopNavigation />
         </header>
         <main className="md:m-auto md:w-2/3">
           <Component {...pageProps} />
         </main>
-        <footer className="mr-28 mt-80 text-right">Impress</footer>
+        <footer className="mt-80 flex h-full w-full justify-start bg-gray-400">
+          <Button variant="tertiary_white">Impress </Button>
+
+          <Button variant="tertiary_white"> Privacy Policy </Button>
+
+          <Button variant="tertiary_white">Conditions </Button>
+        </footer>
       </Provider>
     </SessionProvider>
   )

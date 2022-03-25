@@ -28,7 +28,7 @@ export const DeleteCustomerModal = ({ onClose }: DeleteCustomerModalProps) => {
       title={`Are you sure you want to delete customer: ${customerId}?`}
       actions={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="tertiary_gray" onClick={onClose}>
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteCustomer}>
@@ -55,7 +55,6 @@ const CustomerDetailsPage = (): JSX.Element => {
   return (
     <ProtectedPage>
       <div>
-        <h1>Customers Details</h1>
         <CustomerForm customer={data?.customer} />
       </div>
     </ProtectedPage>

@@ -4,7 +4,7 @@ import { useCustomersQuery } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { ProtectedPage } from '../protectedPage'
 import { Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '../table/table'
-
+import { MdPersonAddAlt1 } from 'react-icons/md'
 export const CustomerTable = (): JSX.Element => {
   const router = useRouter()
   const slug = router.query.teamSlug?.toString() ?? ''
@@ -34,7 +34,7 @@ export const CustomerTable = (): JSX.Element => {
                 <TableCell>{customer.id}</TableCell>
 
                 <TableCell>
-                  <Button variant="primarySlim" onClick={() => handleCustomerDetails(customer.id)}>
+                  <Button variant="tertiary_blue" onClick={() => handleCustomerDetails(customer.id)}>
                     Details
                   </Button>
                 </TableCell>
@@ -43,7 +43,8 @@ export const CustomerTable = (): JSX.Element => {
           </TableBody>
         </Table>
       </article>
-      <Button ariaLabel="Add" variant="primary" onClick={handleAddCustomer}>
+      <Button ariaLabel="Add" variant="primary_gray" onClick={handleAddCustomer}>
+        <MdPersonAddAlt1 />
         Add
       </Button>
     </ProtectedPage>

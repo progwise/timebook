@@ -4,6 +4,7 @@ import { TeamFragment, TeamInput, useTeamCreateMutation, useTeamUpdateMutation }
 import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { useRouter } from 'next/router'
+import { route } from 'next/dist/server/router'
 
 interface TeamFormProps {
   team?: TeamFragment
@@ -29,7 +30,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   return (
     <form onSubmit={handleSubmit(handleTeamSave)}>
       <label>
-        Company:
+        <span>Company</span>
         <InputField
           variant="primary"
           placeholder="Please enter the companies name"
@@ -38,7 +39,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </label>
       <ErrorMessage name="title" errors={formState.errors} />
       <label>
-        Slug
+        <span>Slug</span>
         <InputField
           variant="primary"
           placeholder="This team is accessible on https://tb.com/[slug]"
@@ -48,7 +49,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </label>
       {team && (
         <label>
-          Invitation link
+          <span>Invitation link</span>
           <InputField
             readonly={true}
             variant="primary"
@@ -57,9 +58,13 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           />
         </label>
       )}
-      <Button variant="primary" type="submit">
-        Save
-      </Button>
+
+      <div className="flex space-x-6">
+        <Button variant="primary_blue" type="submit">
+          Save
+        </Button>
+        <Button variant="tertiary_gray_underlined">Dismiss</Button>
+      </div>
     </form>
   )
 }

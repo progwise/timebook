@@ -3,12 +3,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 import { useTeamQuery, useTeamsQuery } from '../../generated/graphql'
-
 function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode }) {
   const { href, children } = props
   return (
     <Link href={href}>
-      <span className="my-1 mx-1 py-1 px-1 text-blue-500 hover:text-indigo-900 ">{children}</span>
+      <span className="delay-25 my-1 mx-1 py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
+        {children}
+      </span>
     </Link>
   )
 }
@@ -16,12 +17,11 @@ export const TeamSelect = () => {
   const [{ data: teamsData }] = useTeamsQuery()
   const [{ data: teamData }] = useTeamQuery()
   const router = useRouter()
-  let classNames =
-    'relative mx-3 my-3 bg-transparent text-indigo-500 font-semibold py-1 px-4 border border-indigo-300 rounded'
+  let classNames = 'relative mx-3 my-3 bg-transparent py-1 px-4 font-semibold'
   classNames =
     router.pathname === '/[teamSlug]/team'
-      ? classNames + ' cursor-default text-indigo-900 border-indigo-900'
-      : classNames + ' cursor-pointer hover:text-indigo-900 hover:border-indigo-900'
+      ? classNames + ' cursor-default text-white border-2 bg-blue-400 border-blue-400 rounded-full'
+      : classNames + ' cursor-pointer text-blue-400 hover:text-blue-500 hover:scale-105 duration-300  '
 
   return (
     <Menu as="div" className={classNames}>

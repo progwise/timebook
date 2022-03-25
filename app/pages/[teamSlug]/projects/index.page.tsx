@@ -18,8 +18,8 @@ const Projects = (): JSX.Element => {
     <ProtectedPage>
       <article className="timebook">
         <div className="flex justify-between">
-          <h2>Your projects</h2>
-          <Button variant="secondarySlim" onClick={handleAddProject}>
+          <h2 className="text-lg font-semibold text-gray-400">Your projects</h2>
+          <Button variant="primary_gray" onClick={handleAddProject}>
             Add
           </Button>
         </div>
