@@ -7,6 +7,7 @@ import { Button } from '../button/button'
 import { DeleteProjectModal } from '../deleteProjectModal'
 import { useState } from 'react'
 import { InputField } from '../inputField/inputField'
+import { BiTrash } from 'react-icons/bi'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -40,19 +41,24 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isNewProject = !project
   return (
     <form onSubmit={handleSubmit(handleSubmitHelper)}>
-      {isNewProject ? <h2>Create Project</h2> : <h2>Edit Project</h2>}
-      <label className="text-gray-500">
-        <span>Name</span>
+      {isNewProject ? (
+        <h2 className="py-4 text-lg font-semibold text-gray-400">Create Project</h2>
+      ) : (
+        <h2>Edit Project</h2>
+      )}
+      <div className="text-gray-500">
+        <label>
+          <span>Name</span>
+        </label>
+      </div>
+      <InputField
+        variant="primary"
+        disabled={formState.isSubmitting}
+        {...register('title', { required: true })}
+        placeholder="Enter project name"
+      />
 
-        <InputField
-          variant="primary"
-          disabled={formState.isSubmitting}
-          {...register('title', { required: true })}
-          placeholder="Enter project name"
-        />
-
-        {formState.errors.title && <span>Required</span>}
-      </label>
+      {formState.errors.title && <span>Required</span>}
       <div className="flex flex-wrap gap-x-5">
         <div>
           <label htmlFor="start" className="block pl-0.5 text-gray-500">
@@ -119,6 +125,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </div>
       </div>
       <div className="mt-16 flex justify-center gap-2">
+        <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
+          Delete
+          <BiTrash />
+        </Button>
         <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
@@ -132,9 +142,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               onClose={() => setIsDeleteModalOpen(false)}
               project={project}
             />
-            <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
-              Delete
-            </Button>
           </>
         ) : undefined}
       </div>

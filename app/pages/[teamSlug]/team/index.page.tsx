@@ -38,7 +38,7 @@ const Team = (): JSX.Element => {
             <TableHeadRow>
               <TableHeadCell className="text-left">Username</TableHeadCell>
               <TableHeadCell className="text-left">Projects</TableHeadCell>
-              <TableHeadCell className="text-left">Details</TableHeadCell>
+              <TableHeadCell />
             </TableHeadRow>
             <TableBody>
               {teamData?.team.members.map((user) => (
@@ -51,13 +51,13 @@ const Team = (): JSX.Element => {
                   </TableCell>
                   <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="primarySlim">Details</Button>
+                    <Button variant="tertiary">Details</Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-          <Button variant="primary">Invite Member</Button>
+          <Button variant="secondary">Invite Member</Button>
         </article>
         <article className="timebook">
           <h2>Customers</h2>

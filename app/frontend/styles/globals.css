@@ -3,12 +3,20 @@
 @tailwind components;
 @tailwind utilities;
 
+html footer {
+  @apply bg-gray-500;
+}
+
+html body {
+  @apply bg-gray-200;
+}
+
 article.timebook {
-  @apply m-4 space-y-3 rounded-xl border bg-white p-6 shadow-md;
+  @apply m-4 space-y-4 bg-transparent p-6;
 }
 
 article.timebook > h2 {
-  @apply mb-3 text-xl font-bold text-gray-400;
+  @apply mb-3 text-xl font-bold text-gray-700;
 }
 
 article.timebook form {
@@ -20,5 +28,5 @@ article.timebook form > label {
 }
 
 article.timebook form > label span {
-  @apply m-0.5 w-3.5 text-gray-500;
+  @apply m-1 w-3.5 font-semibold text-gray-500;
 }
