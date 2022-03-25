@@ -1,6 +1,6 @@
 import { TeamForm } from '../frontend/components/teamForm/teamForm'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoice'
+import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 
 const Team = (): JSX.Element => {
   return (
