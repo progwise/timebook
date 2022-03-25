@@ -85,7 +85,7 @@ const MaintainWorkHoursPage = () => {
                 Edit
               </Button>
             </div>
-            <hr className="col-span-4" />
+            <hr className=" col-span-4 border-gray-500" />
           </article>
         ))}
         <article className="  contents  pt-4">
