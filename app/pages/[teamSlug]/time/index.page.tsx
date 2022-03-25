@@ -52,18 +52,18 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
-      <section className="mt-5">
+      <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid">
         {data?.workHours.map((item) => (
-          <article key={item.id} className="flex items-center justify-between gap-1 border-t-2  pt-4 pb-4">
-            <header className="w-1/2">
+          <article key={item.id} className="contents border-2 border-black">
+            <header className="col-span-2 ">
               <h1 className="font-bold">{item.project.title}</h1>
               <h2 className="font-semibold">{item.task.title}</h2>
               {item.comment && <p>{item.comment}</p>}
             </header>
-            <div className="w-1/4 text-right text-2xl">
+            <div className="text-right text-2xl">
               <FormattedDuration title="Task work for the selected day" minutes={item.duration} />
             </div>
-            <div className="flex w-1/4 justify-end gap-2">
+            <div className="flex justify-end gap-2 ">
               <Button variant="primary">
                 <BiTimer />
                 Start
@@ -87,19 +87,18 @@ const MaintainWorkHoursPage = () => {
             </div>
           </article>
         ))}
+        <article className="  contents  pt-4">
+          <header className=" col-span-2 ">
+            <h1 className="  text-xl ">Total</h1>
+          </header>
+          <div className="justify-self-end text-2xl">
+            <FormattedDuration
+              title="Total work for the selected day"
+              minutes={data?.workHours.map((item) => item.duration).reduce((sum, duration) => duration + sum, 0)}
+            />
+          </div>
+        </article>
       </section>
-      <article className="flex items-center justify-between border-t-2 pt-4">
-        <header className="w-1/2">
-          <h1 className="text-xl">Total</h1>
-        </header>
-        <div className="w-1/4 text-right text-2xl">
-          <FormattedDuration
-            title="Total work for the selected day"
-            minutes={data?.workHours.map((item) => item.duration).reduce((sum, duration) => duration + sum, 0)}
-          />
-        </div>
-        <div className="w-1/4">{''}</div>
-      </article>
     </ProtectedPage>
   )
 }
