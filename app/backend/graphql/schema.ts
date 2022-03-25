@@ -93,6 +93,7 @@ export const schema = makeSchema({
       Project: 'prisma.Project',
       WorkHour: 'prisma.WorkHour',
       Task: 'prisma.Task',
+      Report: 'NexusGenArgTypes["Query"]["report"]',
     },
   },
   plugins: [fieldAuthorizePlugin()],

@@ -340,7 +340,21 @@ type Query {
 }
 
 type Report {
+  groupedByDate: [ReportGroupedByDate!]!
   groupedByTask: [ReportGroupedByTask!]!
+}
+
+type ReportGroupedByDate {
+  """
+  Booking date of the work hour
+  """
+  date: Date!
+
+  """
+  Sum of the total duration of all the work hours for the specific date
+  """
+  duration: Int!
+  workHours: [WorkHour!]!
 }
 
 type ReportGroupedByTask {

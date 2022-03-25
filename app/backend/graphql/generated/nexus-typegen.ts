@@ -92,9 +92,12 @@ export interface NexusGenObjects {
   Mutation: {}
   Project: prisma.Project
   Query: {}
-  Report: {
+  Report: NexusGenArgTypes['Query']['report']
+  ReportGroupedByDate: {
     // root type
-    groupedByTask: NexusGenRootTypes['ReportGroupedByTask'][] // [ReportGroupedByTask!]!
+    date: NexusGenScalars['Date'] // Date!
+    duration: number // Int!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   ReportGroupedByTask: {
     // root type
@@ -190,7 +193,14 @@ export interface NexusGenFieldTypes {
   }
   Report: {
     // field return type
+    groupedByDate: NexusGenRootTypes['ReportGroupedByDate'][] // [ReportGroupedByDate!]!
     groupedByTask: NexusGenRootTypes['ReportGroupedByTask'][] // [ReportGroupedByTask!]!
+  }
+  ReportGroupedByDate: {
+    // field return type
+    date: NexusGenScalars['Date'] // Date!
+    duration: number // Int!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   ReportGroupedByTask: {
     // field return type
@@ -299,7 +309,14 @@ export interface NexusGenFieldTypeNames {
   }
   Report: {
     // field return type name
+    groupedByDate: 'ReportGroupedByDate'
     groupedByTask: 'ReportGroupedByTask'
+  }
+  ReportGroupedByDate: {
+    // field return type name
+    date: 'Date'
+    duration: 'Int'
+    workHours: 'WorkHour'
   }
   ReportGroupedByTask: {
     // field return type name
