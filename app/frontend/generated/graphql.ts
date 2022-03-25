@@ -246,7 +246,17 @@ export type QueryWorkHoursArgs = {
 
 export type Report = {
   __typename?: 'Report'
+  groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
+}
+
+export type ReportGroupedByDate = {
+  __typename?: 'ReportGroupedByDate'
+  /** Booking date of the work hour */
+  date: Scalars['Date']
+  /** Sum of the total duration of all the work hours for the specific date */
+  duration: Scalars['Int']
+  workHours: Array<WorkHour>
 }
 
 export type ReportGroupedByTask = {
