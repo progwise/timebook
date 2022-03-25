@@ -1,40 +1,41 @@
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { TeamSelect } from './teamSelect'
 import { TopNavigationLink } from './topNavigationLink'
-import Image from 'next/image'
+import { ProfileMenu } from './profileMenu'
 
 export const TopNavigation = (): JSX.Element => {
-  const session = useSession()
   const router = useRouter()
   const teamSlug = router.query.teamSlug
+  const session = useSession()
+
+  const handleTimeBookClick = () => router.push(`/home`)
 
   return (
-    <nav className="flex justify-center md:container md:mx-auto">
-      <TopNavigationLink href="/home">Home</TopNavigationLink>
-      <TopNavigationLink href="/time">Time</TopNavigationLink>
+    <>
+      <div className="flex justify-end md:container md:mx-auto">
+        <span
+          onClick={handleTimeBookClick}
+          className=" mx-3 my-3 cursor-pointer rounded-full  py-1 px-4 text-xl font-semibold text-blue-400"
+        >
+          timebook
+        </span>
+        <nav className="flex justify-end md:container md:mx-auto">
+          <TopNavigationLink href="/home">Home</TopNavigationLink>
+          {session.status === 'authenticated' ? (
+            <>
+              <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
+            </>
+          ) : (
+            <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
+          )}
 
-      {teamSlug && <TopNavigationLink href={`/${teamSlug}/time`}>Time</TopNavigationLink>}
-      {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
-      {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
-      <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
-      <TeamSelect />
-      {session.status === 'authenticated' ? (
-        <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
-      ) : (
-        <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
-      )}
-      {teamSlug && session.data?.user.image && (
-        <TopNavigationLink href={`/${teamSlug}/me`}>
-          <Image
-            className="rounded-full"
-            width={30}
-            height={30}
-            src={session.data?.user.image}
-            alt={session.data?.user.name ?? 'Profile picture'}
-          />
-        </TopNavigationLink>
-      )}
-    </nav>
+          {teamSlug && <TopNavigationLink href={`/${teamSlug}/time`}>Time</TopNavigationLink>}
+          {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
+          {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
+
+          <ProfileMenu />
+        </nav>
+      </div>
+    </>
   )
 }

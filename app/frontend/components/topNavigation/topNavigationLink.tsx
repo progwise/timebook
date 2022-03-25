@@ -10,11 +10,11 @@ export interface TopNavigationLinkProps {
 
 export const TopNavigationLink = (props: TopNavigationLinkProps): JSX.Element => {
   const router = useRouter()
-  let classNames = 'mx-3 my-3 bg-transparent text-indigo-500 font-semibold py-1 px-4 border border-indigo-300 rounded'
+  let classNames = 'mx-3 my-3 bg-transparent  py-1 px-4 font-semibold'
   classNames =
     props.href && router.pathname.startsWith(props.href)
-      ? classNames + ' cursor-default text-indigo-900 border-indigo-900'
-      : classNames + ' cursor-pointer hover:text-indigo-900 hover:border-indigo-900'
+      ? classNames + ' cursor-default text-blue-400 border-b-2 border-blue-400 '
+      : classNames + ' cursor-pointer text-blue-400 hover:text-blue-500 hover:border-b-2 hover:border-blue-300  '
 
   if (props.href) {
     return (

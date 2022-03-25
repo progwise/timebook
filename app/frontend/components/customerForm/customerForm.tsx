@@ -2,6 +2,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { BiTrash } from 'react-icons/bi'
 import { DeleteCustomerModal } from '../../../pages/[teamSlug]/customers/[customerId].page'
 import {
   CustomerFragment,
@@ -40,35 +41,40 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(handleSave)}>
-        <label className="text-gray-500">
-          <InputField
-            variant="primary"
-            placeholder="Name"
-            {...register('title', {
-              required: 'Name required',
-              minLength: { value: 3, message: 'At least 3 characters' },
-            })}
-          />
-        </label>
-        <div>
-          <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
-        </div>
+      <article className="timebook">
+        <form onSubmit={handleSubmit(handleSave)}>
+          <label className="text-gray-500">
+            <InputField
+              variant="primary"
+              placeholder="Name"
+              {...register('title', {
+                required: 'Name required',
+                minLength: { value: 3, message: 'At least 3 characters' },
+              })}
+            />
+          </label>
+          <div>
+            <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
+          </div>
 
-        <div className="mt-16 flex justify-center gap-2">
-          <Button variant="secondary" onClick={handleCancelClick}>
-            Cancel
-          </Button>
-          {customer ? (
-            <Button type="button" variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
-              Delete
+          <div className="mt-16 flex justify-center gap-2">
+            <div className="flex justify-start">
+              {customer ? (
+                <Button type="button" variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
+                  Delete
+                  <BiTrash />
+                </Button>
+              ) : undefined}
+            </div>
+            <Button variant="secondary" onClick={handleCancelClick}>
+              Cancel
             </Button>
-          ) : undefined}
-          <Button type="submit" variant="primary">
-            Save
-          </Button>
-        </div>
-      </form>
+            <Button type="submit" variant="primary">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </article>
       {isDeleteModalOpen ? <DeleteCustomerModal onClose={() => setIsDeleteModalOpen(false)} /> : undefined}
     </>
   )
