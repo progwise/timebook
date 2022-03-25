@@ -13,12 +13,12 @@ export const TopNavigation = (): JSX.Element => {
   return (
     <>
       <div className="flex justify-end md:container md:mx-auto">
-        <span
-          onClick={handleTimeBookClick}
-          className=" mx-3 my-3 cursor-pointer rounded-full  py-1 px-4 text-xl font-semibold text-blue-400"
-        >
-          timebook
-        </span>
+        <span className="my-4 text-2xl font-semibold text-blue-400">timebook</span>
+        {teamSlug && (
+          <span onClick={handleTimeBookClick} className="my-4 mx-1 text-2xl text-gray-400">
+            /{teamSlug}
+          </span>
+        )}
         <nav className="flex justify-end md:container md:mx-auto">
           <TopNavigationLink href="/home">Home</TopNavigationLink>
           {session.status === 'authenticated' ? (
