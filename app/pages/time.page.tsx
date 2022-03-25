@@ -138,8 +138,8 @@ const Time = (): JSX.Element => {
                 {timeEntry.times.map(({ date, workHours }, index) => (
                   <td className="min-w-min pl-2 pr-2" key={index}>
                     <HourInput
-                      onChange={(newWorkHours) => setWorkHours(timeEntry.project, date, newWorkHours)}
-                      workHours={workHours}
+                      onChange={(event) => setWorkHours(timeEntry.project, date, Number.parseInt(event.target.value))}
+                      value={workHours}
                     />
                   </td>
                 ))}

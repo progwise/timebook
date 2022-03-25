@@ -73,13 +73,25 @@ export const getFormattedWorkHours = (workHours: number): string => {
   return `${hours}:${pad(minutes)}`
 }
 
-export const HourInput = (props: { workHours: number; onChange: (workHours: number) => void }): JSX.Element => {
+export interface HourInputProps {
+  name?: string
+  value?: number
+  onBlur?: (event: React.FocusEvent) => void
+  placeholder?: string
+  disabled?: boolean
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  readonly?: boolean
+}
+
+export const HourInput: React.FC<HourInputProps> = ({ value, onChange }) => {
   const [workHours, setWorkHours] = useState(0)
   const [formattedValue, setFormattedValue] = useState('0:00')
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
     const workHours = parseWorkHours(event.target.value)
     const formattedWorkHours = getFormattedWorkHours(workHours)
-    props.onChange(workHours)
+    const newEvent = event
+    newEvent.target.value = workHours.toString()
+    onChange?.(newEvent)
     setWorkHours(workHours)
     setFormattedValue(formattedWorkHours)
   }
@@ -89,9 +101,9 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   }
 
   useEffect(() => {
-    setWorkHours(props.workHours)
+    setWorkHours(value ?? 0)
     setFormattedValue(getFormattedWorkHours(workHours))
-  }, [props.workHours])
+  }, [value])
 
   useEffect(() => {
     setFormattedValue(getFormattedWorkHours(workHours))

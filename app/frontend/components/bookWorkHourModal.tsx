@@ -10,6 +10,7 @@ import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
+import { HourInput } from './hourInput'
 
 interface BookWorkHourModalProps {
   workHourItem: WorkHourItem
@@ -142,11 +143,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           <ErrorMessage errors={errors} name="taskId" as={<span className="text-red-700" />} />
         </div>
         <div className="flex flex-col gap-y-4">
-          <InputField
-            variant="primary"
-            placeholder="Enter Work Duration"
-            {...register('duration', { valueAsNumber: true, required: 'Duration is required' })}
-          />
+          <HourInput {...register('duration', { valueAsNumber: true, required: 'Duration is required' })} />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
           <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
         </div>
