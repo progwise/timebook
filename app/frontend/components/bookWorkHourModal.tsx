@@ -89,14 +89,14 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'New entry'}
       actions={
         <>
-          <Button variant="primarySlim" form="book-work-hour" type="submit" disabled={isSubmitting}>
+          <Button variant="primary" form="book-work-hour" type="submit" disabled={isSubmitting}>
             Submit
           </Button>
-          <Button variant="secondarySlim" disabled={isSubmitting} onClick={onClose}>
+          <Button variant="secondary" disabled={isSubmitting} onClick={onClose}>
             Cancel
           </Button>
           {workHourItem.workHourId && (
-            <Button variant="danger" disabled={isSubmitting} onClick={handleDelete}>
+            <Button variant="tertiary" disabled={isSubmitting} onClick={handleDelete}>
               Delete
             </Button>
           )}

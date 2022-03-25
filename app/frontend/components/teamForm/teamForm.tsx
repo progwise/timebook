@@ -29,7 +29,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   return (
     <form onSubmit={handleSubmit(handleTeamSave)}>
       <label>
-        Company:
+        Company
         <InputField
           variant="primary"
           placeholder="Please enter the companies name"
@@ -38,7 +38,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </label>
       <ErrorMessage name="title" errors={formState.errors} />
       <label>
-        Slug
+        <span>Slug</span>
         <InputField
           variant="primary"
           placeholder="This team is accessible on https://tb.com/[slug]"
@@ -48,7 +48,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </label>
       {team && (
         <label>
-          Invitation link
+          <span>Invitation link</span>
           <InputField
             readonly={true}
             variant="primary"
@@ -57,9 +57,13 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           />
         </label>
       )}
-      <Button variant="primary" type="submit">
-        Save
-      </Button>
+
+      <div className="flex space-x-6">
+        <Button variant="primary" type="submit">
+          Save
+        </Button>
+        <Button variant="tertiary">Dismiss</Button>
+      </div>
     </form>
   )
 }
