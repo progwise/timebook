@@ -72,7 +72,7 @@ const MaintainWorkHoursPage = () => {
                 variant="secondary"
                 onClick={() =>
                   handleEditWorkItem({
-                    workHourId: Number.parseInt(item.id, 10),
+                    workHourId: item.id,
                     date: selectedDate,
                     duration: item.duration,
                     comment: item.comment ?? undefined,
