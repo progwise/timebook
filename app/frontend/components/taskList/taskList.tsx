@@ -104,29 +104,29 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         </TableBody>
         <TableFoot>
           <TableFootRow>
-            <TableCell>
-              <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
-                <div className="flex flex-col">
-                  <label>
-                    <InputField
-                      variant="primary"
-                      placeholder="Enter Taskname"
-                      {...register('title', {
-                        required: 'Four characters needed',
-                        minLength: { value: 4, message: 'Four characters needed' },
-                      })}
-                    />
-                  </label>
-                  <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
-                </div>
+            {project.canModify && (
+              <TableCell>
+                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
+                  <div className="flex flex-col">
+                    <label>
+                      <InputField
+                        variant="primary"
+                        placeholder="Enter Taskname"
+                        {...register('title', {
+                          required: 'Four characters needed',
+                          minLength: { value: 4, message: 'Four characters needed' },
+                        })}
+                      />
+                    </label>
+                    <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
+                  </div>
 
-                {project.canModify && (
                   <Button variant="secondary" type="submit" disabled={isSubmitting}>
                     Add task
                   </Button>
-                )}
-              </form>
-            </TableCell>
+                </form>
+              </TableCell>
+            )}
           </TableFootRow>
         </TableFoot>
       </Table>
