@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import {
   useWorkHourCreateMutation,
   useWorkHourUpdateMutation,
@@ -10,6 +10,7 @@ import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
+import { HourInput } from './hourInput'
 
 interface BookWorkHourModalProps {
   workHourItem: WorkHourItem
@@ -34,6 +35,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     getValues,
     watch,
     setValue,
+    control,
     formState: { isSubmitting, errors },
   } = useForm<WorkHourItem>({ defaultValues: workHourItem, shouldUnregister: true })
   const [, createWorkHour] = useWorkHourCreateMutation()
@@ -146,6 +148,20 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             variant="primary"
             placeholder="Enter Work Duration"
             {...register('duration', { valueAsNumber: true, required: 'Duration is required' })}
+          />
+          <Controller
+            control={control}
+            render={({ field }) => {
+              return (
+                <HourInput
+                  workHours={field.value / 60}
+                  onChange={(workHours: number) => {
+                    setValue('duration', workHours * 60)
+                  }}
+                />
+              )
+            }}
+            name="duration"
           />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
           <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
