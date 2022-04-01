@@ -17,10 +17,11 @@ interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
   onCancel: () => void
   project?: ProjectFragment
+  hasError: boolean
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
-  const { project, onSubmit, onCancel } = props
+  const { project, onSubmit, onCancel, hasError } = props
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
@@ -128,6 +129,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
         </div>
       </div>
+      {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       <div className="mt-16 flex justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
