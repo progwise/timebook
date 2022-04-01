@@ -12,10 +12,7 @@ export const Report = objectType({
         const groupByTaskResult = await context.prisma.workHour.groupBy({
           by: ['taskId'],
           where: {
-            task: {
-              projectId,
-              project: { team: { slug: context.teamSlug } },
-            },
+            task: { projectId },
             date: { gte: from, lte: to },
           },
           _sum: {
@@ -32,10 +29,7 @@ export const Report = objectType({
           duration: duration!,
           workHours: context.prisma.workHour.findMany({
             where: {
-              task: {
-                id: taskId,
-                project: { team: { slug: context.teamSlug } },
-              },
+              taskId,
               date: { gte: from, lte: to },
             },
           }),
@@ -49,10 +43,7 @@ export const Report = objectType({
         const groupedByUserResult = await context.prisma.workHour.groupBy({
           by: ['userId'],
           where: {
-            task: {
-              projectId,
-              project: { team: { slug: context.teamSlug } },
-            },
+            task: { projectId },
             date: { gte: from, lte: to },
           },
           _sum: {
@@ -67,10 +58,7 @@ export const Report = objectType({
           }),
           workHours: context.prisma.workHour.findMany({
             where: {
-              task: {
-                projectId,
-                project: { team: { slug: context.teamSlug } },
-              },
+              task: { projectId },
               userId,
               date: { gte: from, lte: to },
             },
@@ -87,10 +75,7 @@ export const Report = objectType({
         const groupByDateResult = await context.prisma.workHour.groupBy({
           by: ['date'],
           where: {
-            task: {
-              projectId,
-              project: { team: { slug: context.teamSlug } },
-            },
+            task: { projectId },
             date: { gte: from, lte: to },
           },
           _sum: {
@@ -104,10 +89,7 @@ export const Report = objectType({
           duration: duration!,
           workHours: context.prisma.workHour.findMany({
             where: {
-              task: {
-                projectId,
-                project: { team: { slug: context.teamSlug } },
-              },
+              task: { projectId },
               date: { equals: date },
             },
           }),
