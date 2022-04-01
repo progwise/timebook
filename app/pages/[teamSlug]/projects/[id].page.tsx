@@ -46,7 +46,7 @@ const ProjectDetails = (): JSX.Element => {
   return (
     <ProtectedPage>
       <article className="timebook">
-        <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
+        <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} hasError={false} />
       </article>
       <article className="timebook">
         <TaskList project={selectedProject} tasks={selectedProject.tasks} />
