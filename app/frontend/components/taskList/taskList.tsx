@@ -1,4 +1,4 @@
-import { TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
+import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
 import { InputField } from '../inputField/inputField'
@@ -21,11 +21,11 @@ import {
 
 export interface TaskListProps {
   tasks: TaskFragment[]
-  projectId: string
+  project: ProjectFragment
 }
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
-  const { tasks, projectId } = props
+  const { tasks, project } = props
   const {
     register,
     handleSubmit,
@@ -40,7 +40,8 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     try {
       const result = await taskCreate({
         data: {
-          projectId,
+          projectId: project.id,
+
           title: taskData.title,
         },
       })
@@ -65,14 +66,16 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                <Button
-                  ariaLabel="Delete Task"
-                  variant="danger"
-                  tooltip="Delete Task"
-                  onClick={() => setTaskToBeDeleted(task)}
-                >
-                  <BiTrash />
-                </Button>
+                {task.canModify && (
+                  <Button
+                    ariaLabel="Delete Task"
+                    variant="danger"
+                    tooltip="Delete Task"
+                    onClick={() => setTaskToBeDeleted(task)}
+                  >
+                    <BiTrash />
+                  </Button>
+                )}
                 <span className="ml-2">{task.title}</span>
               </TableCell>
               <TableCell className="text-center">
@@ -117,9 +120,11 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
                 </div>
 
-                <Button variant="secondary" type="submit" disabled={isSubmitting}>
-                  Add task
-                </Button>
+                {project.canModify && (
+                  <Button variant="secondary" type="submit" disabled={isSubmitting}>
+                    Add task
+                  </Button>
+                )}
               </form>
             </TableCell>
           </TableFootRow>

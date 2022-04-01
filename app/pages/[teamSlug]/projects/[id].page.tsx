@@ -49,7 +49,7 @@ const ProjectDetails = (): JSX.Element => {
         <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} />
       </article>
       <article className="timebook">
-        <TaskList projectId={selectedProject?.id} tasks={selectedProject.tasks} />
+        <TaskList project={selectedProject} tasks={selectedProject.tasks} />
       </article>
     </ProtectedPage>
   )
