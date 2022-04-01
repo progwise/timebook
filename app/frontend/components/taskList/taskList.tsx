@@ -102,9 +102,9 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
           ) : undefined}
         </TableBody>
-        <TableFoot>
-          <TableFootRow>
-            {project.canModify && (
+        {project.canModify && (
+          <TableFoot>
+            <TableFootRow>
               <TableCell>
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <div className="flex flex-col">
@@ -126,9 +126,9 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   </Button>
                 </form>
               </TableCell>
-            )}
-          </TableFootRow>
-        </TableFoot>
+            </TableFootRow>
+          </TableFoot>
+        )}
       </Table>
     </>
   )
