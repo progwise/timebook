@@ -9,6 +9,7 @@ fragment Project on Project {
   title
   startDate
   endDate
+  canModify
   tasks {
     ...Task
   }

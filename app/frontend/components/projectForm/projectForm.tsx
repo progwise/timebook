@@ -39,6 +39,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   }
 
   const isNewProject = !project
+  const isProjectFormReadOnly = !project?.canModify && !isNewProject
   return (
     <form onSubmit={handleSubmit(handleSubmitHelper)}>
       {isNewProject ? (
@@ -54,6 +55,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       <InputField
         variant="primary"
         disabled={formState.isSubmitting}
+        readOnly={isProjectFormReadOnly}
         {...register('title', { required: true })}
         placeholder="Enter project name"
       />
@@ -76,6 +78,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   onBlur={onBlur}
                   onChange={onChange}
                   value={value ?? undefined}
+                  readOnly={isProjectFormReadOnly}
                   id="start"
                   type="text"
                   className="rounded"
@@ -106,6 +109,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   mask="9999-99-99"
                   disabled={formState.isSubmitting}
                   onBlur={onBlur}
+                  readOnly={isProjectFormReadOnly}
                   onChange={onChange}
                   value={value ?? undefined}
                   id="end"
@@ -125,16 +129,20 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </div>
       </div>
       <div className="mt-16 flex justify-center gap-2">
-        <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
-          Delete
-          <BiTrash />
-        </Button>
+        {project?.canModify && (
+          <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
+            Delete
+            <BiTrash />
+          </Button>
+        )}
         <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
-        <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
-          Save
-        </Button>
+        {!isProjectFormReadOnly && (
+          <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
+            Save
+          </Button>
+        )}
         {project ? (
           <>
             <DeleteProjectModal

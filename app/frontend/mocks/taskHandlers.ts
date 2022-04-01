@@ -7,6 +7,7 @@ export const taskHandlers = [
         __typename: 'Mutation',
         taskDelete: {
           id: '1',
+          canModify: true,
           hasWorkHours: false,
           project: { id: 'ProjectId', title: 'Projects' },
           title: 'Task 1',
@@ -20,6 +21,7 @@ export const taskHandlers = [
         __typename: 'Mutation',
         taskCreate: {
           id: '1',
+          canModify: true,
           hasWorkHours: false,
           project: {
             id: request.variables.data.projectId,

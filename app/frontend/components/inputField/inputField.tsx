@@ -8,12 +8,12 @@ interface InputProps {
   placeholder?: string
   disabled?: boolean
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  readonly?: boolean
+  readOnly?: boolean
 }
 
 export const InputField = React.forwardRef(
   (
-    { placeholder, variant, disabled, onChange, onBlur, value, name, readonly }: InputProps,
+    { placeholder, variant, disabled, onChange, onBlur, value, name, readOnly }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -27,7 +27,7 @@ export const InputField = React.forwardRef(
         type="text"
         placeholder={placeholder}
         disabled={disabled}
-        readOnly={readonly}
+        readOnly={readOnly}
         onChange={onChange}
         onBlur={onBlur}
         value={value}
