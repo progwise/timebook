@@ -61,7 +61,7 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
           </label>
           <label>
             <span className="mr-1 whitespace-nowrap">Project ID</span>
-            <InputField variant="primary" {...register('projectId', { required: true })} readonly />
+            <InputField variant="primary" {...register('projectId', { required: true })} readOnly />
           </label>
         </div>
       </form>

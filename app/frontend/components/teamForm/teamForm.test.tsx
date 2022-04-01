@@ -38,6 +38,7 @@ describe('TeamForm', () => {
   it('should update a team', async () => {
     const team: TeamFragment = {
       id: 'ckyh7z2xr000509lbd993cyyu',
+      canModify: true,
       inviteKey: 'ckyh7z75t000609lb5vkvhmxq',
       slug: 'google',
       theme: Theme.Blue,

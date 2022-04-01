@@ -50,7 +50,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         <label>
           <span>Invitation link</span>
           <InputField
-            readonly={true}
+            readOnly={true}
             variant="primary"
             name="tbInvitationLink"
             value={`http://localhost:3000/${team.slug}/team/invite/${team.inviteKey}`}
