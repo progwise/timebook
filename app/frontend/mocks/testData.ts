@@ -4,6 +4,7 @@ import { ProjectFragment, TaskFragment, WorkHourFragment } from '../generated/gr
 export const testProject1: ProjectFragment = {
   __typename: 'Project',
   id: 'project1',
+  canModify: true,
   title: 'Project 1',
   tasks: [],
 }
@@ -11,6 +12,7 @@ export const testProject1: ProjectFragment = {
 export const testProject2: ProjectFragment = {
   __typename: 'Project',
   id: 'project2',
+  canModify: true,
   title: 'Project 2',
   tasks: [],
 }
@@ -19,6 +21,7 @@ export const testTask: TaskFragment = {
   __typename: 'Task',
   hasWorkHours: true,
   id: 'task1',
+  canModify: true,
   title: 'Task 1',
   project: {
     __typename: 'Project',
