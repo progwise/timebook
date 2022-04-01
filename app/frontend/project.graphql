@@ -11,10 +11,9 @@ fragment Task on Task {
   id
   title
   hasWorkHours
- canModify
- project {
+  canModify
+  project {
     id
     title
-  
   }
 }
