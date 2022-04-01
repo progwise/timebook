@@ -17,7 +17,7 @@ interface BookWorkHourModalProps {
 }
 
 export interface WorkHourItem {
-  workHourId?: number
+  workHourId?: string
   date: Date
   duration: number
   projectId?: string
@@ -58,7 +58,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     const result = await (!data.workHourId
       ? createWorkHour({ data: workHourInput })
       : updateWorkHour({
-          id: data.workHourId.toString(),
+          id: data.workHourId,
           data: workHourInput,
         }))
 
@@ -76,10 +76,10 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   }
 
   const handleDelete = async () => {
-    if (!workHourItem.workHourId?.toString) {
+    if (!workHourItem.workHourId) {
       throw new Error('No workHour item id')
     }
-    await deleteWorkHour({ id: workHourItem.workHourId.toString() })
+    await deleteWorkHour({ id: workHourItem.workHourId })
     onClose()
   }
 
