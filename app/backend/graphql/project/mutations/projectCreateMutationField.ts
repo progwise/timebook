@@ -10,6 +10,9 @@ export const projectCreateMutationField = mutationField('projectCreate', {
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: async (_source, { data: { title, start, end, customerId } }, context) => {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    throw new Error('not authenticated')
+    
     if (!context.session?.user.id || !context.teamSlug) {
       throw new Error('not authenticated')
     }
