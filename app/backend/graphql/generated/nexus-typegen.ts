@@ -92,6 +92,19 @@ export interface NexusGenObjects {
   Mutation: {}
   Project: prisma.Project
   Query: {}
+  Report: NexusGenArgTypes['Query']['report']
+  ReportGroupedByDate: {
+    // root type
+    date: NexusGenScalars['Date'] // Date!
+    duration: number // Int!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  ReportGroupedByTask: {
+    // root type
+    duration: number // Int!
+    task: NexusGenRootTypes['Task'] // Task!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
   Task: prisma.Task
   Team: {
     // root type
@@ -169,12 +182,30 @@ export interface NexusGenFieldTypes {
     customer: NexusGenRootTypes['Customer'] // Customer!
     project: NexusGenRootTypes['Project'] // Project!
     projects: NexusGenRootTypes['Project'][] // [Project!]!
+    report: NexusGenRootTypes['Report'] // Report!
     task: NexusGenRootTypes['Task'] // Task!
     team: NexusGenRootTypes['Team'] // Team!
     teamBySlug: NexusGenRootTypes['Team'] // Team!
     teams: NexusGenRootTypes['Team'][] // [Team!]!
     user: NexusGenRootTypes['User'] // User!
     users: NexusGenRootTypes['User'][] // [User!]!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  Report: {
+    // field return type
+    groupedByDate: NexusGenRootTypes['ReportGroupedByDate'][] // [ReportGroupedByDate!]!
+    groupedByTask: NexusGenRootTypes['ReportGroupedByTask'][] // [ReportGroupedByTask!]!
+  }
+  ReportGroupedByDate: {
+    // field return type
+    date: NexusGenScalars['Date'] // Date!
+    duration: number // Int!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  ReportGroupedByTask: {
+    // field return type
+    duration: number // Int!
+    task: NexusGenRootTypes['Task'] // Task!
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Task: {
@@ -267,12 +298,30 @@ export interface NexusGenFieldTypeNames {
     customer: 'Customer'
     project: 'Project'
     projects: 'Project'
+    report: 'Report'
     task: 'Task'
     team: 'Team'
     teamBySlug: 'Team'
     teams: 'Team'
     user: 'User'
     users: 'User'
+    workHours: 'WorkHour'
+  }
+  Report: {
+    // field return type name
+    groupedByDate: 'ReportGroupedByDate'
+    groupedByTask: 'ReportGroupedByTask'
+  }
+  ReportGroupedByDate: {
+    // field return type name
+    date: 'Date'
+    duration: 'Int'
+    workHours: 'WorkHour'
+  }
+  ReportGroupedByTask: {
+    // field return type name
+    duration: 'Int'
+    task: 'Task'
     workHours: 'WorkHour'
   }
   Task: {
@@ -410,6 +459,12 @@ export interface NexusGenArgTypes {
     project: {
       // args
       projectId: string // ID!
+    }
+    report: {
+      // args
+      from: NexusGenScalars['Date'] // Date!
+      projectId: string // ID!
+      to: NexusGenScalars['Date'] // Date!
     }
     task: {
       // args
