@@ -144,11 +144,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           <ErrorMessage errors={errors} name="taskId" as={<span className="text-red-700" />} />
         </div>
         <div className="flex flex-col gap-y-4">
-          <InputField
-            variant="primary"
-            placeholder="Enter Work Duration"
-            {...register('duration', { valueAsNumber: true, required: 'Duration is required' })}
-          />
           <Controller
             control={control}
             render={({ field }) => {
