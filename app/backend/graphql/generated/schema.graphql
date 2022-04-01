@@ -342,6 +342,7 @@ type Query {
 type Report {
   groupedByDate: [ReportGroupedByDate!]!
   groupedByTask: [ReportGroupedByTask!]!
+  groupedByUser: [ReportGroupedByUser!]!
 }
 
 type ReportGroupedByDate {
@@ -363,6 +364,15 @@ type ReportGroupedByTask {
   """
   duration: Int!
   task: Task!
+  workHours: [WorkHour!]!
+}
+
+type ReportGroupedByUser {
+  """
+  Sum of the total duration of all the work hours for a specific user
+  """
+  duration: Int!
+  user: User!
   workHours: [WorkHour!]!
 }
 

@@ -1,5 +1,6 @@
 import { objectType } from 'nexus'
 import { ReportGroupedByDate } from './reportGroupedByDate'
+import { ReportGroupedByUser } from './reportGroupedByUser'
 import { ReportGroupedByTask } from './reportGroupedByTask'
 
 export const Report = objectType({
@@ -11,7 +12,10 @@ export const Report = objectType({
         const groupByTaskResult = await context.prisma.workHour.groupBy({
           by: ['taskId'],
           where: {
-            task: { projectId },
+            task: {
+              projectId,
+              project: { team: { slug: context.teamSlug } },
+            },
             date: { gte: from, lte: to },
           },
           _sum: {
@@ -24,13 +28,55 @@ export const Report = objectType({
             where: { id: taskId },
             rejectOnNotFound: true,
           }),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           duration: duration!,
           workHours: context.prisma.workHour.findMany({
             where: {
-              taskId,
+              task: {
+                id: taskId,
+                project: { team: { slug: context.teamSlug } },
+              },
               date: { gte: from, lte: to },
             },
           }),
+        }))
+      },
+    })
+
+    t.list.field('groupedByUser', {
+      type: ReportGroupedByUser,
+      resolve: async ({ projectId, from, to }, _arguments, context) => {
+        const groupedByUserResult = await context.prisma.workHour.groupBy({
+          by: ['userId'],
+          where: {
+            task: {
+              projectId,
+              project: { team: { slug: context.teamSlug } },
+            },
+            date: { gte: from, lte: to },
+          },
+          _sum: {
+            duration: true,
+          },
+        })
+
+        return groupedByUserResult.map(({ userId, _sum: { duration } }) => ({
+          user: context.prisma.user.findUnique({
+            where: { id: userId },
+            rejectOnNotFound: true,
+          }),
+          workHours: context.prisma.workHour.findMany({
+            where: {
+              task: {
+                projectId,
+                project: { team: { slug: context.teamSlug } },
+              },
+              userId,
+              date: { gte: from, lte: to },
+            },
+          }),
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          duration: duration!,
         }))
       },
     })
@@ -41,7 +87,10 @@ export const Report = objectType({
         const groupByDateResult = await context.prisma.workHour.groupBy({
           by: ['date'],
           where: {
-            task: { projectId },
+            task: {
+              projectId,
+              project: { team: { slug: context.teamSlug } },
+            },
             date: { gte: from, lte: to },
           },
           _sum: {
@@ -51,9 +100,14 @@ export const Report = objectType({
 
         return groupByDateResult.map(({ date, _sum: { duration } }) => ({
           date,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           duration: duration!,
           workHours: context.prisma.workHour.findMany({
             where: {
+              task: {
+                projectId,
+                project: { team: { slug: context.teamSlug } },
+              },
               date: { equals: date },
             },
           }),
