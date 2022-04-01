@@ -9,6 +9,6 @@ export const workHourDeleteMutationField = mutationField('workHourDelete', {
   },
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: async (_source, { id }, context) => {
-    return await context.prisma.workHour.delete({ where: { id: Number.parseInt(id, 10) } })
+    return await context.prisma.workHour.delete({ where: { id } })
   },
 })

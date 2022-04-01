@@ -62,7 +62,7 @@ model Task {
 }
 
 model WorkHour {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(cuid())
   date     DateTime  @db.Date
   start    DateTime? @db.Time
   end      DateTime? @db.Time
