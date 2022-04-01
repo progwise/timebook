@@ -21,9 +21,7 @@ export const taskQueryField = queryField('task', {
           team: { slug: context.teamSlug },
           projectMemberships: {
             some: {
-              teamMembership: {
-                userId: context.session?.user.id,
-              },
+              userId: context.session?.user.id,
             },
           },
         },
