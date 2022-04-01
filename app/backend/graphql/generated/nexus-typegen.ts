@@ -105,6 +105,12 @@ export interface NexusGenObjects {
     task: NexusGenRootTypes['Task'] // Task!
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
+  ReportGroupedByUser: {
+    // root type
+    duration: number // Int!
+    user: NexusGenRootTypes['User'] // User!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
   Task: prisma.Task
   Team: {
     // root type
@@ -195,6 +201,7 @@ export interface NexusGenFieldTypes {
     // field return type
     groupedByDate: NexusGenRootTypes['ReportGroupedByDate'][] // [ReportGroupedByDate!]!
     groupedByTask: NexusGenRootTypes['ReportGroupedByTask'][] // [ReportGroupedByTask!]!
+    groupedByUser: NexusGenRootTypes['ReportGroupedByUser'][] // [ReportGroupedByUser!]!
   }
   ReportGroupedByDate: {
     // field return type
@@ -206,6 +213,12 @@ export interface NexusGenFieldTypes {
     // field return type
     duration: number // Int!
     task: NexusGenRootTypes['Task'] // Task!
+    workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
+  }
+  ReportGroupedByUser: {
+    // field return type
+    duration: number // Int!
+    user: NexusGenRootTypes['User'] // User!
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Task: {
@@ -311,6 +324,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     groupedByDate: 'ReportGroupedByDate'
     groupedByTask: 'ReportGroupedByTask'
+    groupedByUser: 'ReportGroupedByUser'
   }
   ReportGroupedByDate: {
     // field return type name
@@ -322,6 +336,12 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     duration: 'Int'
     task: 'Task'
+    workHours: 'WorkHour'
+  }
+  ReportGroupedByUser: {
+    // field return type name
+    duration: 'Int'
+    user: 'User'
     workHours: 'WorkHour'
   }
   Task: {

@@ -248,6 +248,7 @@ export type Report = {
   __typename?: 'Report'
   groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
+  groupedByUser: Array<ReportGroupedByUser>
 }
 
 export type ReportGroupedByDate = {
@@ -264,6 +265,14 @@ export type ReportGroupedByTask = {
   /** Sum of the total duration of all the work hours for the task */
   duration: Scalars['Int']
   task: Task
+  workHours: Array<WorkHour>
+}
+
+export type ReportGroupedByUser = {
+  __typename?: 'ReportGroupedByUser'
+  /** Sum of the total duration of all the work hours for a specific user */
+  duration: Scalars['Int']
+  user: User
   workHours: Array<WorkHour>
 }
 
