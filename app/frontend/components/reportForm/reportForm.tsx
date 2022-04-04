@@ -1,23 +1,10 @@
 import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
-import {
-  ProjectFragment,
-  TaskFragment,
-  useProjectsQuery,
-  useWorkHoursQuery,
-  WorkHourFragment,
-} from '../../generated/graphql'
+import { ProjectFragment, useProjectsQuery, useReportQuery } from '../../generated/graphql'
 import { HiCheck, HiSelector } from 'react-icons/hi'
-import { compareAsc, endOfMonth, format, formatISO, parse, parseISO, startOfMonth } from 'date-fns'
+import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { FormattedDuration } from '../duration/formattedDuration'
-
-interface WorkHourGroup {
-  date: string
-  workHours: WorkHourFragment[]
-}
-
-type GroupedTaskEntries = Record<string, { task: TaskFragment; duration: number }>
 
 const ReportForm = () => {
   const router = useRouter()
@@ -36,38 +23,14 @@ const ReportForm = () => {
   const startOfMonthString = formatISO(startOfMonth(parsedDate), { representation: 'date' })
   const endOfMonthString = formatISO(endOfMonth(parsedDate), { representation: 'date' })
 
-  const [{ data: workHoursData }] = useWorkHoursQuery({
-    variables: { from: startOfMonthString, to: endOfMonthString },
+  const [{ data: reportGroupedData }] = useReportQuery({
+    variables: {
+      projectId: selectedProject?.id ?? '',
+      startDate: startOfMonthString,
+      endDate: endOfMonthString,
+    },
     pause: !router.isReady,
   })
-
-  const filteredWorkHours =
-    workHoursData?.workHours.filter((workHour) => workHour.project.id === selectedProject?.id) ?? []
-
-  const groupedWorkHours: WorkHourGroup[] = []
-  for (const workHour of filteredWorkHours) {
-    const groupIndex = groupedWorkHours.findIndex((group) => group.date === workHour.date)
-    if (groupIndex === -1) {
-      groupedWorkHours.push({ date: workHour.date, workHours: [workHour] })
-    } else {
-      groupedWorkHours[groupIndex].workHours.push(workHour)
-    }
-  }
-
-  const sortedGroupedWorkHours = groupedWorkHours.sort((leftGroup, rightGroup) => {
-    const leftDate = parseISO(leftGroup.date)
-    const rightDate = parseISO(rightGroup.date)
-    return compareAsc(leftDate, rightDate)
-  })
-
-  const groupedTaskEntries: GroupedTaskEntries = {}
-  for (const workHour of filteredWorkHours) {
-    if (workHour.task.id in groupedTaskEntries) {
-      groupedTaskEntries[workHour.task.id].duration = groupedTaskEntries[workHour.task.id].duration + workHour.duration
-    } else {
-      groupedTaskEntries[workHour.task.id] = { task: workHour.task, duration: workHour.duration }
-    }
-  }
 
   return (
     <>
@@ -156,7 +119,7 @@ const ReportForm = () => {
               <strong>Person</strong>
               <strong>Hours</strong>
             </article>
-            {sortedGroupedWorkHours?.map((group) => (
+            {reportGroupedData?.report.groupedByDate.map((group) => (
               <Fragment key={group.date}>
                 <article className="contents">
                   <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
@@ -183,18 +146,28 @@ const ReportForm = () => {
               <strong className="col-span-3">Total</strong>
               <FormattedDuration
                 title="Total work hours of the selected project"
-                minutes={filteredWorkHours
-                  ?.map((WorkHourDuration) => WorkHourDuration.duration)
+                minutes={reportGroupedData?.report.groupedByDate
+                  .map((WorkHourDuration) => WorkHourDuration.duration)
                   .reduce((sum, duration) => duration + sum, 0)}
               />
             </article>
             <article className="contents">
               <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
               <strong className="col-span-4">Total by Task</strong>
-              {Object.values(groupedTaskEntries).map((entry) => (
+              {reportGroupedData?.report.groupedByTask.map((entry) => (
                 <div key={entry.task.id} className="grid grid-flow-row">
                   <span>{entry.task.title}</span>
                   <FormattedDuration title="Total by task" minutes={entry.duration} />
+                </div>
+              ))}
+            </article>
+            <article className="contents">
+              <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
+              <strong className="col-span-4">Total by Person</strong>
+              {reportGroupedData?.report.groupedByUser.map((group) => (
+                <div key={group.user.id} className="grid grid-flow-row">
+                  <span>{group.user.name}</span>
+                  <FormattedDuration title="Total by user" minutes={group.duration} />
                 </div>
               ))}
               <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />

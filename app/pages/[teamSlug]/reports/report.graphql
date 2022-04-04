@@ -1,0 +1,48 @@
+query report($projectId: ID!, $startDate: Date!, $endDate: Date!) {
+  report(projectId: $projectId, from: $startDate, to: $endDate) {
+    groupedByDate {
+      date
+      duration
+      workHours {
+        id
+        comment
+        date
+        duration
+        user {
+          id
+          name
+          image
+        }
+        task {
+          id
+          title
+          project {
+            id
+            title
+          }
+        }
+      }
+    }
+    groupedByTask {
+      task {
+        id
+        title
+      }
+      duration
+    }
+    groupedByUser {
+      user {
+        id
+        name
+      }
+      duration
+      workHours {
+        id
+        task {
+          title
+        }
+        duration
+      }
+    }
+  }
+}
