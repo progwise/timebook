@@ -1,5 +1,5 @@
-query report($projectId: ID!, $startDate: Date!, $endDate: Date!) {
-  report(projectId: $projectId, from: $startDate, to: $endDate) {
+query report($projectId: ID!, $from: Date!, $to: Date!) {
+  report(projectId: $projectId, from: $from, to: $to) {
     groupedByDate {
       date
       duration

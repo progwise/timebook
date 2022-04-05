@@ -26,8 +26,8 @@ const ReportForm = () => {
   const [{ data: reportGroupedData }] = useReportQuery({
     variables: {
       projectId: selectedProject?.id ?? '',
-      startDate: startOfMonthString,
-      endDate: endOfMonthString,
+      from: startOfMonthString,
+      to: endOfMonthString,
     },
     pause: !router.isReady,
   })

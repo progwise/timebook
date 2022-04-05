@@ -880,8 +880,8 @@ export type MeQuery = {
 
 export type ReportQueryVariables = Exact<{
   projectId: Scalars['ID']
-  startDate: Scalars['Date']
-  endDate: Scalars['Date']
+  from: Scalars['Date']
+  to: Scalars['Date']
 }>
 
 export type ReportQuery = {
@@ -1293,8 +1293,8 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
-  query report($projectId: ID!, $startDate: Date!, $endDate: Date!) {
-    report(projectId: $projectId, from: $startDate, to: $endDate) {
+  query report($projectId: ID!, $from: Date!, $to: Date!) {
+    report(projectId: $projectId, from: $from, to: $to) {
       groupedByDate {
         date
         duration
@@ -1733,7 +1733,7 @@ export const mockMeQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportQuery((req, res, ctx) => {
- *   const { projectId, startDate, endDate } = req.variables;
+ *   const { projectId, from, to } = req.variables;
  *   return res(
  *     ctx.data({ report })
  *   )
