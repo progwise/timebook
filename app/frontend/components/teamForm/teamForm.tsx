@@ -20,12 +20,18 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   })
   const router = useRouter()
   const [, updateTeam] = useTeamUpdateMutation()
-  const [, createTeam] = useTeamCreateMutation()
+  const [createTeamResult, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
     await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
-    router.push(`/${data.slug}/team`)
+    //router.push(`/${data.slug}/team`)
   }
+  console.log(createTeamResult)
+  const actionErrors: string[] = []
+  if (createTeamResult.error) {
+    actionErrors.push('CreateTeamResult Error')
+  }
+  console.log(actionErrors)
   return (
     <form onSubmit={handleSubmit(handleTeamSave)}>
       <label>
@@ -63,6 +69,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
         <Button variant="tertiary">Dismiss</Button>
+        {actionErrors && actionErrors.length > 0 && <span>Fehler !!! </span>}
+        <ErrorMessage name="actions" errors={actionErrors} />
       </div>
     </form>
   )
