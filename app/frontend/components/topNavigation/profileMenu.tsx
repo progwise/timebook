@@ -6,11 +6,12 @@ import { TopNavigationLink } from './topNavigationLink'
 import Image from 'next/image'
 import { ReactNode } from 'react'
 import Link from 'next/link'
+import { useTeamsQuery } from '../../generated/graphql'
 
 function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode }) {
   const { href, children } = props
   return (
-    <Link href={href}>
+    <Link href={href} passHref>
       <span className="delay-25 my-1 mx-6 cursor-pointer py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
         {children}
       </span>
@@ -21,6 +22,7 @@ export const ProfileMenu = () => {
   const session = useSession()
   const router = useRouter()
   const teamSlug = router.query.teamSlug
+  const [{ data: teamsData }] = useTeamsQuery()
   let classNames = ' relative mx-3 my-3 bg-transparent py-1 px-4 font-semibold'
   classNames =
     router.pathname === '/[teamSlug]/team'
@@ -50,7 +52,7 @@ export const ProfileMenu = () => {
         <Menu.Item>
           <MyLink href="/time">My Timetable</MyLink>
         </Menu.Item>
-        {teamSlug && (
+        {teamsData && teamsData.teams.length > 0 && (
           <Menu.Item>
             <MyLink href="/team">Switch Team</MyLink>
           </Menu.Item>
