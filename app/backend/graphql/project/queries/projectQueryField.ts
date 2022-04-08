@@ -15,7 +15,7 @@ export const projectQueryField = queryField('project', {
     return context.prisma.project.findFirst({
       where: {
         id: _arguments.projectId,
-        projectMemberships: { some: { teamMembership: { userId: context.session.user.id } } },
+        projectMemberships: { some: { userId: context.session.user.id } },
       },
       rejectOnNotFound: true,
     })

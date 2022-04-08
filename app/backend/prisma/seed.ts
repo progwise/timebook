@@ -14,28 +14,19 @@ async function main() {
         create: [
           {
             user: {
-              connectOrCreate: {
-                where: { email: 'seeded.user1@timebook.progfiles.net' },
-                create: {
-                  name: 'Seeded User 1',
-                  email: 'seeded.user1@timebook.progfiles.net',
-                },
-              },
-            },
-            projectMemberships: {
               create: {
-                project: {
+                name: 'Seeded User 1',
+                email: 'seeded.user1@timebook.progfiles.net',
+                projectMemberships: {
                   create: {
-                    team: { connect: { slug: 'progwise' } },
-                    title: 'Project 1',
-                    customer: {
+                    project: {
                       create: {
-                        title: 'Customer 1',
                         team: { connect: { slug: 'progwise' } },
+                        title: 'Project 1',
+                        tasks: {
+                          create: [{ title: 'Task 1' }, { title: 'Task 2' }],
+                        },
                       },
-                    },
-                    tasks: {
-                      create: [{ title: 'Task 1' }, { title: 'Task 2' }],
                     },
                   },
                 },
@@ -45,28 +36,19 @@ async function main() {
           },
           {
             user: {
-              connectOrCreate: {
-                where: { email: 'seeded.user2@timebook.progfiles.net' },
-                create: {
-                  name: 'Seeded User 2',
-                  email: 'seeded.user2@timebook.progfiles.net',
-                },
-              },
-            },
-            projectMemberships: {
               create: {
-                project: {
+                name: 'Seeded User 2',
+                email: 'seeded.user2@timebook.progfiles.net',
+                projectMemberships: {
                   create: {
-                    team: { connect: { slug: 'progwise' } },
-                    title: 'Project 1',
-                    customer: {
+                    project: {
                       create: {
-                        title: 'Customer 2',
                         team: { connect: { slug: 'progwise' } },
+                        title: 'Project 2',
+                        tasks: {
+                          create: [{ title: 'Task 3' }, { title: 'Task 4' }],
+                        },
                       },
-                    },
-                    tasks: {
-                      create: [{ title: 'Task 3' }, { title: 'Task 4' }],
                     },
                   },
                 },

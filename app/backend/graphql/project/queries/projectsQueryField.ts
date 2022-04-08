@@ -13,9 +13,7 @@ export const projectsQueryField = queryField('projects', {
           {
             projectMemberships: {
               some: {
-                teamMembership: {
-                  userId: context.session?.user.id,
-                },
+                userId: context.session?.user.id,
               },
             },
           },
