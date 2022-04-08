@@ -49,9 +49,9 @@ export const Project = objectType({
       resolve: (project, _arguments, context) =>
         context.prisma.user.findMany({
           where: {
-            teamMemberships: {
+            projectMemberships: {
               some: {
-                projectMemberships: { some: { projectId: project.id } },
+                projectId: project.id,
               },
             },
           },

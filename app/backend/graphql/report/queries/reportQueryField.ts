@@ -35,9 +35,7 @@ export const reportQueryField = queryField('report', {
     const projectMember = await context.prisma.projectMembership.findFirst({
       where: {
         projectId: arguments_.projectId,
-        teamMembership: {
-          userId: context.session.user.id,
-        },
+        userId: context.session.user.id,
       },
     })
     const teamMember = await context.prisma.teamMembership.findFirst({

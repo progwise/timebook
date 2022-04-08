@@ -46,14 +46,7 @@ export const projectCreateMutationField = mutationField('projectCreate', {
           create: {
             inviteAcceptedAt: now,
             invitedAt: now,
-            teamMembership: {
-              connect: {
-                userId_teamId: {
-                  teamId: team.id,
-                  userId: context.session.user.id,
-                },
-              },
-            },
+            userId: context.session.user.id,
           },
         },
       },

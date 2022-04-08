@@ -22,12 +22,7 @@ export const User = objectType({
               slug: context.teamSlug,
             },
             projectMemberships: {
-              some: {
-                teamMembership: {
-                  team: { slug: context.teamSlug },
-                  userId: user.id,
-                },
-              },
+              some: { userId: user.id },
             },
           },
         })
