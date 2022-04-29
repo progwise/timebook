@@ -67,7 +67,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
         <Button variant="tertiary">Dismiss</Button>
-        {createTeamResult.error || (updateTeamResult.error && <span className="text-red-600">Fehler !!! </span>)}
+        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
         <ErrorMessage name="actions" errors={createTeamResult} />
       </div>
     </form>
