@@ -8,7 +8,7 @@ const MyLink = (props: { [x: string]: unknown; href: string; children: ReactNode
   const { href, children } = props
 
   return (
-    <Link href={href}>
+    <Link href={href} passHref>
       <span className="delay-25 my-1 mx-1 py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
         {children}
       </span>
