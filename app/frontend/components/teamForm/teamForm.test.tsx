@@ -24,11 +24,11 @@ describe('TeamForm', () => {
   it('should create a new team', async () => {
     render(<TeamForm />, { wrapper })
 
-    const companyField = screen.getByRole('textbox', { name: 'Team name' })
+    const teamNameField = screen.getByRole('textbox', { name: 'Team name' })
     const slugField = screen.getByRole('textbox', { name: 'Slug' })
     const saveButton = screen.getByRole('button', { name: 'Save' })
 
-    userEvent.type(companyField, 'Apple')
+    userEvent.type(teamNameField, 'Apple')
     userEvent.type(slugField, 'apple')
     userEvent.click(saveButton)
 
@@ -47,17 +47,17 @@ describe('TeamForm', () => {
 
     render(<TeamForm team={team} />, { wrapper })
 
-    const companyField = screen.getByRole('textbox', { name: 'Team name' })
+    const teamNameField = screen.getByRole('textbox', { name: 'Team name' })
     const slugField = screen.getByRole('textbox', { name: 'Slug' })
     const invitationLink = screen.getByRole('textbox', { name: 'Invitation link' })
     const saveButton = screen.getByRole('button', { name: 'Save' })
 
-    expect(companyField).toHaveValue('Google')
+    expect(teamNameField).toHaveValue('Google')
     expect(slugField).toHaveValue('google')
     expect(invitationLink).toHaveValue('http://localhost:3000/google/team/invite/ckyh7z75t000609lb5vkvhmxq')
 
-    userEvent.clear(companyField)
-    userEvent.type(companyField, 'Alphabet')
+    userEvent.clear(teamNameField)
+    userEvent.type(teamNameField, 'Alphabet')
     userEvent.clear(slugField)
     userEvent.type(slugField, 'alphabet')
 

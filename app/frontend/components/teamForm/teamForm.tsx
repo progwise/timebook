@@ -13,7 +13,7 @@ interface TeamFormProps {
 
 const teamInputSchema: yup.SchemaOf<TeamInput> = yup.object({
   slug: yup.string().trim().required().min(1).max(50),
-  theme: yup.mixed<Theme>().oneOf(Object.values(Theme)).required(),
+  theme: yup.mixed<Theme>().oneOf(Object.values(Theme)),
   title: yup.string().trim().required().min(1).max(50),
 })
 
@@ -39,11 +39,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     <form onSubmit={handleSubmit(handleTeamSave)}>
       <label>
         Team name
-        <InputField
-          variant="primary"
-          placeholder="Please enter the team name"
-          {...register('title', { required: 'title is required' })}
-        />
+        <InputField variant="primary" placeholder="Please enter the team name" {...register('title')} />
       </label>
       <ErrorMessage name="title" errors={formState.errors} as={<span className="text-red-700" />} />
       <label>
