@@ -1,30 +1,44 @@
 import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 import { InputField } from './inputField/inputField'
 import { TaskFragment, TaskInput, useTaskUpdateMutation } from '../generated/graphql'
 import { Button } from './button/button'
 import { Modal } from './modal'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { ErrorMessage } from '@hookform/error-message'
 
 interface TaskDetailsModalProps {
   onClose: () => void
   task: TaskFragment
 }
 
+type TaskDetailsFormData = Pick<TaskInput, 'title'>
+
+export const taskInputSchema: yup.SchemaOf<TaskDetailsFormData> = yup.object({
+  title: yup.string().trim().required().min(4).max(50),
+})
+
 export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
   const { onClose, task } = props
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
-  const { register, handleSubmit, reset } = useForm<TaskInput>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TaskDetailsFormData>({
     defaultValues: {
       title: task.title,
-      projectId: task.project.id,
     },
+    resolver: yupResolver(taskInputSchema),
   })
 
-  const handleSubmitTask = async (taskData: TaskInput) => {
+  const handleSubmitTask = async (taskData: TaskDetailsFormData) => {
     try {
       const result = await taskUpdate({
         id: task.id,
         data: {
-          projectId: taskData.projectId,
+          projectId: task.project.id,
           title: taskData.title,
         },
       })
@@ -59,10 +73,7 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
             <span className="mr-2 whitespace-nowrap">Task Title</span>
             <InputField variant="primary" {...register('title', { required: true })} />
           </label>
-          <label>
-            <span className="mr-1 whitespace-nowrap">Project ID</span>
-            <InputField variant="primary" {...register('projectId', { required: true })} readOnly />
-          </label>
+          <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
         </div>
       </form>
     </Modal>

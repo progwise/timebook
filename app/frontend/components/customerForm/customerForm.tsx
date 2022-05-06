@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { DeleteCustomerModal } from '../../../pages/[teamSlug]/customers/[customerId].page'
 import {
   CustomerFragment,
@@ -17,6 +19,10 @@ interface CustomerFormProps {
   customer?: CustomerFragment
 }
 
+const customerInputSchema: yup.SchemaOf<CustomerInput> = yup.object({
+  title: yup.string().trim().required().min(2).max(50),
+})
+
 export const CustomerForm = ({ customer }: CustomerFormProps) => {
   const [, updateCustomer] = useCustomerUpdateMutation()
   const [, createCustomer] = useCustomerCreateMutation()
@@ -26,7 +32,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CustomerInput>({ defaultValues: { title: customer?.title } })
+  } = useForm<CustomerInput>({ defaultValues: { title: customer?.title }, resolver: yupResolver(customerInputSchema) })
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
   const handleCancelClick = async () => {
@@ -44,14 +50,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
       <article className="timebook">
         <form onSubmit={handleSubmit(handleSave)}>
           <label className="text-gray-500">
-            <InputField
-              variant="primary"
-              placeholder="Name"
-              {...register('title', {
-                required: 'Name required',
-                minLength: { value: 3, message: 'At least 3 characters' },
-              })}
-            />
+            <InputField variant="primary" placeholder="Name" {...register('title')} />
           </label>
           <div>
             <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
