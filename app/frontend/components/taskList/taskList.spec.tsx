@@ -61,7 +61,7 @@ describe('TaskList', () => {
       userEvent.type(titleInput, 'abc')
       userEvent.click(submitButton)
 
-      const errorMessage = await screen.findByText('Four characters needed')
+      const errorMessage = await screen.findByText('title must be at least 4 characters')
       expect(errorMessage).toBeInTheDocument()
     })
 
