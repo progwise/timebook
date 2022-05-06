@@ -3,15 +3,25 @@ import { useForm, Controller } from 'react-hook-form'
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import InputMask from 'react-input-mask'
+import * as yup from 'yup'
 import { Button } from '../button/button'
 import { DeleteProjectModal } from '../deleteProjectModal'
 import { useState } from 'react'
 import { InputField } from '../inputField/inputField'
 import { BiTrash } from 'react-icons/bi'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { ErrorMessage } from '@hookform/error-message'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
   acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
+
+const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
+  customerId: yup.string(),
+  title: yup.string().trim().required().max(20),
+  start: yup.string(),
+  end: yup.string(),
+})
 
 interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
@@ -29,6 +39,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : '',
     },
+    resolver: yupResolver(projectInputSchema),
   })
 
   const handleSubmitHelper = (data: ProjectInput) => {
@@ -57,11 +68,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         variant="primary"
         disabled={formState.isSubmitting}
         readOnly={isProjectFormReadOnly}
-        {...register('title', { required: true })}
+        {...register('title')}
         placeholder="Enter project name"
       />
 
-      {formState.errors.title && <span>Required</span>}
+      <div>
+        <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
+      </div>
       <div className="flex flex-wrap gap-x-5">
         <div>
           <label htmlFor="start" className="block pl-0.5 text-gray-500">
