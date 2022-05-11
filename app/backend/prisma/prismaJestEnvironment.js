@@ -5,9 +5,10 @@ const { Client } = require('pg')
 const NodeEnvironment = require('jest-environment-node')
 const { nanoid } = require('nanoid')
 const { promisify } = require('util')
+const path = require('path')
 const exec = promisify(require('child_process').exec)
 
-const prismaBinary = './node_modules/.bin/prisma2'
+const prismaBinary = path.join('./node_modules/.bin/', 'prisma2')
 
 class PrismaTestEnvironment extends NodeEnvironment {
   constructor(config) {
