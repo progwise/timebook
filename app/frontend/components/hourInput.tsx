@@ -100,6 +100,7 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   return (
     <div className="w-full border">
       <input
+        onFocus={(event) => event.target.select()}
         className="w-full p-1 text-center"
         type="text"
         name="hours"
