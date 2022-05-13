@@ -590,11 +590,11 @@ export type TeamQuery = {
   __typename?: 'Query'
   team: {
     __typename?: 'Team'
+    canModify: boolean
     id: string
     title: string
     slug: string
     theme: Theme
-    canModify: boolean
     inviteKey: string
     members: Array<{
       __typename?: 'User'
@@ -612,7 +612,6 @@ export type TeamFragment = {
   title: string
   slug: string
   theme: Theme
-  canModify: boolean
   inviteKey: string
 }
 
@@ -622,15 +621,7 @@ export type TeamCreateMutationVariables = Exact<{
 
 export type TeamCreateMutation = {
   __typename?: 'Mutation'
-  teamCreate: {
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    theme: Theme
-    canModify: boolean
-    inviteKey: string
-  }
+  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
 export type TeamUpdateMutationVariables = Exact<{
@@ -640,15 +631,7 @@ export type TeamUpdateMutationVariables = Exact<{
 
 export type TeamUpdateMutation = {
   __typename?: 'Mutation'
-  teamUpdate: {
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    theme: Theme
-    canModify: boolean
-    inviteKey: string
-  }
+  teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
 export type WorkHourCreateMutationVariables = Exact<{
@@ -949,7 +932,6 @@ export const TeamFragmentDoc = gql`
     title
     slug
     theme
-    canModify
     inviteKey
   }
 `
@@ -1124,6 +1106,7 @@ export const TeamDocument = gql`
   query team {
     team {
       ...Team
+      canModify
       members {
         id
         name
