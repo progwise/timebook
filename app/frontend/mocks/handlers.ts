@@ -7,7 +7,6 @@ export const handlers = [
         __typename: 'Mutation',
         teamCreate: {
           id: 'ckyh7xze0000209lb4ijfbncn',
-          canModify: true,
           inviteKey: 'ckyh7yr2k000409lb3rxj3v4t',
           slug: request.variables.data.slug,
           theme: Theme.Blue,
@@ -22,7 +21,6 @@ export const handlers = [
       context.data({
         teamUpdate: {
           id: request.variables.id,
-          canModify: true,
           inviteKey: '',
           slug: request.variables.data.slug,
           title: request.variables.data.title,
