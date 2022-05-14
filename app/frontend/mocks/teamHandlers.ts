@@ -3,7 +3,6 @@ import { mockTeamQuery, mockTeamsQuery, TeamFragment, Theme } from '../generated
 const testTeam1: TeamFragment = {
   __typename: 'Team',
   id: 'okay',
-  canModify: true,
   inviteKey: 'inviteKey',
   slug: 'team1',
   theme: Theme.Blue,
@@ -12,7 +11,6 @@ const testTeam1: TeamFragment = {
 const testTeam2: TeamFragment = {
   __typename: 'Team',
   id: 'okay2',
-  canModify: true,
   inviteKey: 'inviteKey2',
   slug: 'team2',
   theme: Theme.Red,
@@ -33,7 +31,7 @@ export const teamHandlers = [
     const result = response(
       context.data({
         __typename: 'Query',
-        team: { ...testTeam1, members: [] },
+        team: { ...testTeam1, members: [], canModify: true },
       }),
     )
     return result

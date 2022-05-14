@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { useState } from 'react'
-import { TaskDetailsModal } from '../../../frontend/components/taskDetailsModal'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
 import {
   Table,
   TableBody,
@@ -24,6 +25,8 @@ export interface TaskListProps {
   project: ProjectFragment
 }
 
+type TaskFormData = Pick<TaskInput, 'title'>
+
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, project } = props
   const {
@@ -31,12 +34,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     handleSubmit,
     reset,
     formState: { isSubmitting, errors },
-  } = useForm<TaskInput>()
+  } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
   const [taskToBeUpdated, setTaskToBeUpdated] = useState<TaskFragment | undefined>()
 
-  const handleAddTask = async (taskData: TaskInput) => {
+  const handleAddTask = async (taskData: TaskFormData) => {
     try {
       const result = await taskCreate({
         data: {
@@ -109,14 +112,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <div className="flex flex-col">
                     <label>
-                      <InputField
-                        variant="primary"
-                        placeholder="Enter Taskname"
-                        {...register('title', {
-                          required: 'Four characters needed',
-                          minLength: { value: 4, message: 'Four characters needed' },
-                        })}
-                      />
+                      <InputField variant="primary" placeholder="Enter Taskname" {...register('title')} />
                     </label>
                     <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
                   </div>

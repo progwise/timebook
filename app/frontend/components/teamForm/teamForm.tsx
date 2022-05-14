@@ -1,13 +1,21 @@
 import { Button } from '../button/button'
 import { InputField } from '../inputField/inputField'
-import { TeamFragment, TeamInput, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
+import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
 import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'
 import { useRouter } from 'next/router'
 
 interface TeamFormProps {
   team?: TeamFragment
 }
+
+const teamInputSchema: yup.SchemaOf<TeamInput> = yup.object({
+  slug: yup.string().trim().required().min(1).max(50),
+  theme: yup.mixed<Theme>().oneOf(Object.values(Theme)),
+  title: yup.string().trim().required().min(1).max(50),
+})
 
 export const TeamForm = (props: TeamFormProps): JSX.Element => {
   const { team } = props
@@ -17,40 +25,42 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       slug: team?.slug,
       theme: team?.theme,
     },
+    resolver: yupResolver(teamInputSchema),
   })
   const router = useRouter()
-  const [, updateTeam] = useTeamUpdateMutation()
-  const [, createTeam] = useTeamCreateMutation()
+  const [updateTeamResult, updateTeam] = useTeamUpdateMutation()
+  const [createTeamResult, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
-    await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
-    router.push(`/${data.slug}/team`)
+    const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+
+    if (!error) {
+      router.push(`/${data.slug}/team`)
+    }
   }
+
   return (
     <form onSubmit={handleSubmit(handleTeamSave)}>
       <label>
-        Company
-        <InputField
-          variant="primary"
-          placeholder="Please enter the companies name"
-          {...register('title', { required: 'title is required' })}
-        />
+        Team name
+        <InputField variant="primary" placeholder="Please enter the team name" {...register('title')} />
       </label>
-      <ErrorMessage name="title" errors={formState.errors} />
+      <ErrorMessage name="title" errors={formState.errors} as={<span className="text-red-700" />} />
       <label>
         <span>Slug</span>
         <InputField
           variant="primary"
           placeholder="This team is accessible on https://tb.com/[slug]"
           disabled={formState.isSubmitting}
-          {...register('slug', { required: 'slug is required' })}
+          {...register('slug')}
         />
       </label>
+      <ErrorMessage name="slug" errors={formState.errors} as={<span className="text-red-700" />} />
       {team && (
         <label>
           <span>Invitation link</span>
           <InputField
-            readOnly={true}
+            readOnly
             variant="primary"
             name="tbInvitationLink"
             value={`http://localhost:3000/${team.slug}/team/invite/${team.inviteKey}`}
@@ -63,6 +73,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
         <Button variant="tertiary">Dismiss</Button>
+        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
       </div>
     </form>
   )

@@ -11,6 +11,8 @@ import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 import { HourInput } from './hourInput'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface BookWorkHourModalProps {
   workHourItem: WorkHourItem
@@ -26,6 +28,19 @@ export interface WorkHourItem {
   comment?: string
 }
 
+const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
+  workHourId: yup.string(),
+  date: yup.date().required(),
+  duration: yup
+    .number()
+    .required()
+    .max(24 * 60)
+    .positive(),
+  projectId: yup.string().required('Project is required'),
+  taskId: yup.string().required('Task is required'),
+  comment: yup.string().trim().max(200),
+})
+
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
   const { onClose, workHourItem } = props
   const [{ data }] = useProjectsQuery()
@@ -37,7 +52,11 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     setValue,
     control,
     formState: { isSubmitting, errors },
-  } = useForm<WorkHourItem>({ defaultValues: workHourItem, shouldUnregister: true })
+  } = useForm<WorkHourItem>({
+    defaultValues: workHourItem,
+    shouldUnregister: true,
+    resolver: yupResolver(bookWorkHourModalSchema),
+  })
   const [, createWorkHour] = useWorkHourCreateMutation()
   const [, updateWorkHour] = useWorkHourUpdateMutation()
   const [, deleteWorkHour] = useWorkHourDeleteMutation()
@@ -130,7 +149,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         </div>
         <div className="mb-4 flex flex-col">
           <label>
-            <select className="w-72 rounded-md" {...register('taskId', { required: 'Task is required' })}>
+            <select className="w-72 rounded-md" {...register('taskId')}>
               <option value="">Please Select</option>
               {selectedProject?.tasks.map((task) => {
                 return (
@@ -151,7 +170,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
                 <HourInput
                   workHours={field.value / 60}
                   onChange={(workHours: number) => {
-                    setValue('duration', workHours * 60)
+                    setValue('duration', workHours * 60, { shouldValidate: true })
                   }}
                 />
               )
@@ -160,6 +179,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
           <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
+          <ErrorMessage errors={errors} name="comment" as={<span className="text-red-700" />} />
         </div>
       </form>
     </Modal>

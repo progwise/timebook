@@ -1,6 +1,5 @@
 import { mutationField } from 'nexus'
 import { WorkHour } from '../workHour'
-
 import { WorkHourInput } from '../workHourInput'
 
 export const workHourCreateMutationField = mutationField('workHourCreate', {
@@ -9,9 +8,31 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
   args: {
     data: WorkHourInput,
   },
-  authorize: (_source, _arguments, context) => !!context.session?.user.id,
+  authorize: async (_source, arguments_, context) => {
+    if (!context.session || !context.teamSlug) {
+      return false
+    }
+
+    const task = await context.prisma.task.findFirst({
+      where: {
+        id: arguments_.data.taskId,
+        project: { team: { slug: context.teamSlug } },
+      },
+    })
+
+    if (!task) {
+      return false
+    }
+
+    const projectMember = await context.prisma.projectMembership.findUnique({
+      where: { userId_projectId: { userId: context.session.user.id, projectId: task.projectId } },
+    })
+
+    return !!projectMember
+  },
+
   resolve: (_source, arguments_, context) => {
-    if (!context.session?.user.id) {
+    if (!context.session) {
       throw new Error('unauthenticated')
     }
 
