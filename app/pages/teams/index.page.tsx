@@ -11,10 +11,10 @@ const Teams = (): JSX.Element => {
   return (
     <ProtectedPage>
       <article className="timebook">
-        <h2 className="timebook">Active teams</h2>
         <Button variant="secondary" onClick={handleAddTeam}>
           Add a new team
         </Button>
+        <h2 className="timebook">Your teams</h2>
         <TeamChoiceForm />
       </article>
     </ProtectedPage>

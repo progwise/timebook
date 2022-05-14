@@ -312,6 +312,8 @@ export type Team = ModifyInterface & {
   inviteKey: Scalars['String']
   /** All members of the team */
   members: Array<User>
+  /** List of all projects of the team */
+  projects: Array<Project>
   /** Slug that is used in the team URL */
   slug: Scalars['String']
   /** Color theme of the team */
@@ -378,7 +380,13 @@ export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamsQuery = {
   __typename?: 'Query'
-  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string }>
+  teams: Array<{
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+  }>
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -992,6 +1000,10 @@ export const TeamsDocument = gql`
       id
       title
       slug
+      projects {
+        id
+        title
+      }
     }
   }
 `
