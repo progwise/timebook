@@ -17,6 +17,10 @@ import { CustomerTable } from '../../../frontend/components/customerForm/custome
 
 const Team = (): JSX.Element => {
   const router = useRouter()
+  const slug = router.query.teamSlug?.toString() ?? ''
+  const handleUserDetails = async (userId: string) => {
+    await router.push(`/${slug}/team/${userId}`)
+  }
 
   const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
   if (!router.isReady) {
@@ -51,7 +55,9 @@ const Team = (): JSX.Element => {
                   </TableCell>
                   <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="tertiary">Details</Button>
+                    <Button onClick={() => handleUserDetails(user.id)} variant="tertiary">
+                      Details
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
