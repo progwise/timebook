@@ -9,12 +9,12 @@ const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 describe('teamChoiceForm', () => {
   it('should display teams', async () => {
-    render(<TeamChoiceForm />, {wrapper})
-    expect(await screen.findByRole('link', { name: /team1/i})).toBeVisible()
+    render(<TeamChoiceForm />, { wrapper })
+    expect(await screen.findByRole('link', { name: /team1/i })).toBeVisible()
   })
   it('should display projects', async () => {
-    render(<TeamChoiceForm />, {wrapper})
-    expect(await screen.findByRole('link', { name: /project 1/i})).toBeVisible()
-    expect(await screen.findByRole('link', { name: /project 2/i})).toBeVisible()
+    render(<TeamChoiceForm />, { wrapper })
+    expect(await screen.findByRole('link', { name: /project 1/i })).toBeVisible()
+    expect(await screen.findByRole('link', { name: /project 2/i })).toBeVisible()
   })
 })
