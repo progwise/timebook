@@ -1,36 +1,23 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { BsFillArrowRightSquareFill } from 'react-icons/bs'
 import { useTeamsQuery } from '../../generated/graphql'
-import { Button } from '../button/button'
 
 export const TeamChoiceForm = (): JSX.Element => {
   const [{ data: teamsData }] = useTeamsQuery()
 
-  const router = useRouter()
-
-  const handleSwitchProfile = async (teamSlug: string) => {
-    await router.push(`/${teamSlug}/team`)
-  }
-
   return (
-    <>
+    <div className="flex gap-2">
       {teamsData?.teams.map((team) => {
         return (
-          <div className="rounded-lg  px-4" key={team.id}>
-            <h2 className="text-md  font-bold text-gray-700">{team.title}</h2>
-            <Button
-              variant="tertiary"
-              onClick={() => {
-                handleSwitchProfile(team.slug)
-              }}
-            >
-              Select this team
-              <BsFillArrowRightSquareFill />
-            </Button>
-          </div>
+          <article className="border-2 border-solid rounded-lg border-blue-500 p-4" key={team.id}>
+            <h2 className="text-md  font-bold text-gray-700 mb-2">Team &quot;{team.title}&quot;</h2>
+            <Link href={`/${team.slug}/team`} passHref={false}>
+              {`/${team.slug}`}
+            </Link>
+          </article>
         )
       })}
-    </>
+    </div>
   )
 }
