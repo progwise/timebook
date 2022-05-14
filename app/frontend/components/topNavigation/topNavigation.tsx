@@ -11,15 +11,16 @@ export const TopNavigation = (): JSX.Element => {
   const handleTimeBookClick = () => router.push(`/home`)
 
   return (
-    <>
-      <div className="flex justify-end md:container md:mx-auto">
-        <span className="my-4 text-2xl font-semibold text-blue-400">timebook</span>
-        {teamSlug && (
-          <span onClick={handleTimeBookClick} className="my-4 mx-1 text-2xl text-gray-400">
-            /{teamSlug}
-          </span>
-        )}
-        <nav className="flex justify-end md:container md:mx-auto">
+      <section className="flex flex-row items-stretch w-full">
+        <h1 className="flex items-center flex-1">
+          <span className="text-2xl font-semibold text-blue-400">timebook</span>
+          {teamSlug && (
+            <span onClick={handleTimeBookClick} className="text-2xl text-gray-400">
+              /{teamSlug}
+            </span>
+          )}
+        </h1>
+        <nav className="flex flex-1 self-end">
           <TopNavigationLink href="/home">Home</TopNavigationLink>
           {session.status === 'authenticated' ? (
             <>
@@ -35,7 +36,6 @@ export const TopNavigation = (): JSX.Element => {
 
           <ProfileMenu />
         </nav>
-      </div>
-    </>
+      </section>
   )
 }
