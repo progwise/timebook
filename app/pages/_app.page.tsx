@@ -25,14 +25,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
   return (
     <SessionProvider session={session}>
       <Provider value={client}>
-        <header className="px-5 my-2 border-b-2 bg-transparent">
+        <header className="my-2 border-b-2 bg-transparent px-5 pb-3">
           <TopNavigation />
         </header>
         <main className="px-5 ">
           <Component {...pageProps} />
         </main>
-        <footer className="fixed bottom-0 w-full flex justify-around bg-gray-200">
-          <Button className="text-white" variant="tertiary">Impress </Button>
+        <footer className="fixed bottom-0 flex w-full justify-around bg-gray-200">
+          <Button className="text-white" variant="tertiary">
+            Impress{' '}
+          </Button>
           <Button variant="tertiary"> Privacy Policy </Button>
           <Button variant="tertiary">Conditions </Button>
         </footer>
