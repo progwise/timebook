@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 
 export default function Home(): JSX.Element {
   return (
@@ -12,6 +13,7 @@ export default function Home(): JSX.Element {
       <article className="timebook">
         <h2>Welcome</h2>
         This is the new app to maintain your hours and report them
+        <TeamChoiceForm />
       </article>
 
       <article className="timebook">

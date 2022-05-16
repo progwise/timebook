@@ -42,7 +42,9 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
                 src={session.data?.user.image}
                 alt={session.data?.user.name ?? 'Profile picture'}
               />
-              <span className="text-m cursor-pointer text-gray-500 hover:text-blue-500 whitespace-nowrap">{session.data.user.name}</span>
+              <span className="text-m cursor-pointer whitespace-nowrap text-gray-500 hover:text-blue-500">
+                {session.data.user.name}
+              </span>
             </>
           )}
         </Menu.Button>
