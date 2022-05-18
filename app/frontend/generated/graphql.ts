@@ -312,6 +312,8 @@ export type Team = ModifyInterface & {
   inviteKey: Scalars['String']
   /** All members of the team */
   members: Array<User>
+  /** List of all projects of the team */
+  projects: Array<Project>
   /** Slug that is used in the team URL */
   slug: Scalars['String']
   /** Color theme of the team */
@@ -379,6 +381,19 @@ export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 export type TeamsQuery = {
   __typename?: 'Query'
   teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string }>
+}
+
+export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamsWithProjectsQuery = {
+  __typename?: 'Query'
+  teams: Array<{
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+  }>
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -999,6 +1014,25 @@ export const TeamsDocument = gql`
 export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
 }
+export const TeamsWithProjectsDocument = gql`
+  query teamsWithProjects {
+    teams {
+      id
+      title
+      slug
+      projects {
+        id
+        title
+      }
+    }
+  }
+`
+
+export function useTeamsWithProjectsQuery(
+  options: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'> = {},
+) {
+  return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
+}
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
@@ -1362,6 +1396,24 @@ export function useTeamAcceptInviteMutation() {
 export const mockTeamsQuery = (
   resolver: ResponseResolver<GraphQLRequest<TeamsQueryVariables>, GraphQLContext<TeamsQuery>, any>,
 ) => graphql.query<TeamsQuery, TeamsQueryVariables>('teams', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamsWithProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ teams })
+ *   )
+ * })
+ */
+export const mockTeamsWithProjectsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TeamsWithProjectsQueryVariables>,
+    GraphQLContext<TeamsWithProjectsQuery>,
+    any
+  >,
+) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

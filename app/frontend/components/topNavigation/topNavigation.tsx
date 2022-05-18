@@ -23,7 +23,7 @@ export const TopNavigation = (): JSX.Element => {
           <TopNavigationLink href="/home">Home</TopNavigationLink>
           {session.status === 'authenticated' ? (
             <>
-              <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
+              <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/teams'}>Team</TopNavigationLink>
             </>
           ) : (
             <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>

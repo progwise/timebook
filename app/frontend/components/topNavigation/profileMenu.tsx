@@ -54,7 +54,7 @@ export const ProfileMenu = () => {
         </Menu.Item>
         {teamsData && teamsData.teams.length > 0 && (
           <Menu.Item>
-            <MyLink href="/team">Switch Team</MyLink>
+            <MyLink href="/teams">Switch Team</MyLink>
           </Menu.Item>
         )}
         <Menu.Item>
