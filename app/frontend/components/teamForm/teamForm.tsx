@@ -73,9 +73,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
         <Button variant="tertiary">Dismiss</Button>
-        {(createTeamResult.error || updateTeamResult.error) && (
-          <span className="text-red-600">That team name is taken. Try another. </span>
-        )}
+        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
       </div>
     </form>
   )
