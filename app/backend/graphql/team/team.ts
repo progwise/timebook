@@ -33,7 +33,18 @@ export const Team = objectType({
     t.list.field('projects', {
       type: Project,
       description: 'List of all projects of the team',
-      resolve: (team, _arguments, context) => context.prisma.project.findMany({ where: { teamId: team.id } }),
+      resolve: (team, _arguments, context) =>
+        context.prisma.project.findMany({
+          where: {
+            AND: {
+              teamId: team.id,
+              OR: {
+                projectMemberships: { some: { userId: context.session?.user.id } },
+                team: { teamMemberships: { some: { role: 'ADMIN', userId: context.session?.user.id } } },
+              },
+            },
+          },
+        }),
     })
   },
 })
