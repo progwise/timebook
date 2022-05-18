@@ -42,11 +42,7 @@ export const workHourUpdateMutationField = mutationField('workHourUpdate', {
   resolve: (_source, { id, data }, context) => {
     return context.prisma.workHour.update({
       where: { id },
-      data: {
-        comment: data.comment,
-        duration: data.duration,
-        taskId: data.taskId,
-      },
+      data,
     })
   },
 })

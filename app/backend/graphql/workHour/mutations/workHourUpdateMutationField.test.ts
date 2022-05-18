@@ -115,9 +115,9 @@ describe('workHourUpdateMutationField', () => {
       variables: {
         id: '1',
         data: {
-          comment: 'Update',
-          date: '2022-01-01',
-          duration: 120,
+          comment: 'Just Updated',
+          date: '2022-01-02',
+          duration: 60,
           taskId: '1',
         },
       },
@@ -126,9 +126,9 @@ describe('workHourUpdateMutationField', () => {
     expect(response.data).toEqual({
       workHourUpdate: {
         id: '1',
-        comment: 'Update',
-        date: '2022-01-01',
-        duration: 120,
+        comment: 'Just Updated',
+        date: '2022-01-02',
+        duration: 60,
         task: {
           id: '1',
           title: 'Task',
