@@ -1,3 +1,4 @@
+import { GraphQLError } from 'graphql'
 import { objectType } from 'nexus'
 import { Customer } from '../customer'
 import { ModifyInterface } from '../interfaces/modifyInterface'
@@ -33,8 +34,11 @@ export const Team = objectType({
     t.list.field('projects', {
       type: Project,
       description: 'List of all projects of the team',
-      resolve: (team, _arguments, context) =>
-        context.prisma.project.findMany({
+      resolve: (team, _arguments, context) => {
+        if (!context.session?.user) {
+          throw new GraphQLError('Not authorized', {})
+        }
+        return context.prisma.project.findMany({
           where: {
             AND: {
               teamId: team.id,
@@ -44,7 +48,8 @@ export const Team = objectType({
               },
             },
           },
-        }),
+        })
+      },
     })
   },
 })
