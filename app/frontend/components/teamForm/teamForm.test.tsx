@@ -53,7 +53,7 @@ describe('TeamForm', () => {
 
     expect(teamNameField).toHaveValue('Google')
     expect(slugField).toHaveValue('google')
-    expect(invitationLink).toHaveValue('http://localhost:3000/google/team/invite/ckyh7z75t000609lb5vkvhmxq')
+    expect(invitationLink).toHaveValue(`${process.env.NEXTAUTH_URL}/google/team/invite/ckyh7z75t000609lb5vkvhmxq`)
 
     userEvent.clear(teamNameField)
     userEvent.type(teamNameField, 'Alphabet')
