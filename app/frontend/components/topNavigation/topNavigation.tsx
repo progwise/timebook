@@ -29,11 +29,7 @@ export const TopNavigation = (): JSX.Element => {
         )}
       </h1>
       <nav className="flex flex-row items-center gap-5">
-        {session.status === 'authenticated' ? (
-          <>
-            <TopNavigationLink href={teamSlug ? `/${teamSlug}/team` : '/team'}>Team</TopNavigationLink>
-          </>
-        ) : (
+        {session.status !== 'authenticated' && (
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
 

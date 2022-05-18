@@ -27,7 +27,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
   const session = useSession()
   const router = useRouter()
   const teamSlug = router.query.teamSlug
-  const [{ data: teamsData }] = useTeamsQuery()
 
   return (
     <div className={`flex flex-row items-center ${className}`}>
@@ -51,23 +50,21 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
 
         <Menu.Items className=" absolute right-1 mx-3 flex w-64 flex-col rounded-md bg-white p-2 px-1 shadow ">
           {teamSlug && (
-            <Menu.Item>
-              <MyLink href={`/${teamSlug}/me`}>Profile</MyLink>
-            </Menu.Item>
+            <>
+              <Menu.Item>
+                <MyLink href={`/${teamSlug}/team`}>Team</MyLink>
+              </Menu.Item>
+              <Menu.Item>
+                <MyLink href={`/${teamSlug}/time`}>My Timetable</MyLink>
+              </Menu.Item>
+            </>
           )}
           <Menu.Item>
-            <MyLink href="/time">My Timetable</MyLink>
+            <MyLink href="/teams">Manage Teams</MyLink>
           </Menu.Item>
-          {teamsData && teamsData.teams.length > 0 && (
-            <Menu.Item>
-              <MyLink href="/teams">Switch Team</MyLink>
-            </Menu.Item>
-          )}
           <Menu.Item>
-            {session.status === 'authenticated' ? (
+            {session.status === 'authenticated' && (
               <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
-            ) : (
-              <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
             )}
           </Menu.Item>
         </Menu.Items>

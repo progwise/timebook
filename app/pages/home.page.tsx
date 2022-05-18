@@ -1,7 +1,13 @@
+import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { Button } from '../frontend/components/button/button'
 import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 
 export default function Home(): JSX.Element {
+  const router = useRouter()
+  const session = useSession()
+  const handleManageTeams = () => router.push('/teams')
   return (
     <>
       <Head>
@@ -12,8 +18,17 @@ export default function Home(): JSX.Element {
 
       <article className="timebook">
         <h2>Welcome</h2>
-        This is the new app to maintain your hours and report them
-        <TeamChoiceForm />
+        <p>This is the new app for reporting your work.</p>
+        {session.status === 'authenticated' ? (
+          <>
+            <h3>Select your team</h3>
+            <TeamChoiceForm />
+            <Button variant="secondary" onClick={handleManageTeams}>
+              Manage your teams
+            </Button>
+          </>) : (
+              <Button onClick={() => signIn('github')} variant={'primary'}>Sign in</Button>
+            )}
       </article>
 
       <article className="timebook">
