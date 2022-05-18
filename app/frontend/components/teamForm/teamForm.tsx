@@ -63,7 +63,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
             readOnly
             variant="primary"
             name="tbInvitationLink"
-            value={`http://localhost:3000/${team.slug}/team/invite/${team.inviteKey}`}
+            value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
           />
         </label>
       )}
@@ -73,7 +73,9 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
         <Button variant="tertiary">Dismiss</Button>
-        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
+        {(createTeamResult.error || updateTeamResult.error) && (
+          <span className="text-red-600">That team name is taken. Try another. </span>
+        )}
       </div>
     </form>
   )

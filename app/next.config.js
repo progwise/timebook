@@ -6,6 +6,7 @@ module.exports = {
   },
   env: {
     ROOT: __dirname,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
   pageExtensions: ['page.tsx', 'page.ts'],
   images: {
