@@ -6,6 +6,8 @@ import { TeamFragment, Theme } from '../../generated/graphql'
 
 import '../../mocks/mockServer'
 
+process.env.NEXTAUTH_URL = 'http://localhost:3000'
+
 const routerPush = jest.fn()
 
 jest.mock('next/router', () => ({

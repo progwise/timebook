@@ -63,7 +63,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
             readOnly
             variant="primary"
             name="tbInvitationLink"
-            value={`http://localhost:3000/${team.slug}/team/invite/${team.inviteKey}`}
+            value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
           />
         </label>
       )}

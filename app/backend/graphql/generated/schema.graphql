@@ -434,6 +434,11 @@ type Team implements ModifyInterface {
   members: [User!]!
 
   """
+  List of all projects of the team
+  """
+  projects: [Project!]!
+
+  """
   Slug that is used in the team URL
   """
   slug: String!
