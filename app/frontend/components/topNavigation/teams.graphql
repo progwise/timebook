@@ -5,3 +5,15 @@ query teams {
     slug
   }
 }
+
+query teamsWithProjects {
+  teams {
+    id
+    title
+    slug
+    projects {
+      id
+      title
+    }
+  }
+}

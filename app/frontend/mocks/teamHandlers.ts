@@ -1,4 +1,5 @@
-import { mockTeamQuery, mockTeamsQuery, TeamFragment, Theme } from '../generated/graphql'
+import { mockTeamQuery, mockTeamsQuery, mockTeamsWithProjectsQuery, TeamFragment, Theme } from '../generated/graphql'
+import { testProject1, testProject2 } from './testData'
 
 const testTeam1: TeamFragment = {
   __typename: 'Team',
@@ -32,6 +33,15 @@ export const teamHandlers = [
       context.data({
         __typename: 'Query',
         team: { ...testTeam1, members: [], canModify: true },
+      }),
+    )
+    return result
+  }),
+  mockTeamsWithProjectsQuery((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        teams: [{ ...testTeam1, projects: [testProject1, testProject2] }],
       }),
     )
     return result
