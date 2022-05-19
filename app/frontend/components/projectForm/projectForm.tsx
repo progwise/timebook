@@ -71,7 +71,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
-      <label className="flex-1 flex flex-col flex-wrap">
+      <label className="flex flex-1 flex-col flex-wrap">
         <span className="w-full text-sm text-gray-700">Start</span>
         <Controller
           control={control}
@@ -89,7 +89,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="rounded font-small"
+                className="font-small rounded"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting}
@@ -102,7 +102,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
-      <label className="flex-1 flex flex-col flex-wrap">
+      <label className="flex flex-1 flex-col flex-wrap">
         <span className="w-full text-sm text-gray-700">End</span>
         <Controller
           control={control}
@@ -120,7 +120,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="rounded font-small"
+                className="font-small rounded"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting}
@@ -134,7 +134,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
         {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
-      <div className="w-full mt-8 flex justify-center gap-2">
+      <div className="mt-8 flex w-full justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
             Delete
@@ -150,11 +150,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </Button>
         )}
         {project ? (
-            <DeleteProjectModal
-              open={isDeleteModalOpen}
-              onClose={() => setIsDeleteModalOpen(false)}
-              project={project}
-            />
+          <DeleteProjectModal open={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} project={project} />
         ) : undefined}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       </div>
