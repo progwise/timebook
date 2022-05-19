@@ -2,23 +2,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* article.timebook {
-  @apply m-4 space-y-4 bg-transparent p-6;
-}
-
-article.timebook > h2 {
-  @apply mb-3 text-xl font-bold text-gray-700;
-}
-
-article.timebook form {
-  @apply md:mx-auto;
-}
-
-article.timebook form > label {
-  @apply mb-4 flex flex-col;
-}
-
-article.timebook form > label span {
-  @apply m-1 w-3.5 font-semibold text-gray-500;
-} */

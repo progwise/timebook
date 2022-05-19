@@ -1,5 +1,5 @@
 import { Popover, Transition } from '@headlessui/react'
-import calendarIcon from '../assets/calendarIcon.svg'
+import { AiOutlineCalendar } from 'react-icons/ai'
 import backIcon from '../assets/backIcon.svg'
 import forwardIcon from '../assets/forwardIcon.svg'
 import home from '../assets/home.svg'
@@ -92,13 +92,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
     <section className={props.className}>
       <Popover className="flex justify-center">
         <Popover.Button aria-label="select date">
-          <CalendarIcon src={calendarIcon} childPosition="right">
-            {props.hideLabel ? undefined : (
-              <span className="ml-2" title="Display value">
-                {selectedDate.toLocaleDateString()}
-              </span>
-            )}
-          </CalendarIcon>
+          <AiOutlineCalendar className="ml-2" size="1.3em" title={selectedDate.toLocaleDateString()} />
         </Popover.Button>
 
         <Transition

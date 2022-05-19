@@ -53,97 +53,88 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isNewProject = !project
   const isProjectFormReadOnly = !project?.canModify && !isNewProject
   return (
-    <form onSubmit={handleSubmit(handleSubmitHelper)}>
+    <form className="mt-4 flex flex-row flex-wrap gap-2" onSubmit={handleSubmit(handleSubmitHelper)}>
       {isNewProject ? (
-        <h2 className="py-4 text-lg font-semibold text-gray-400">Create Project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400">Create new project</h2>
       ) : (
-        <h2>Edit Project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400">Edit project</h2>
       )}
-      <div className="text-gray-500">
-        <label>
-          <span>Name</span>
-        </label>
-      </div>
-      <InputField
-        variant="primary"
-        disabled={formState.isSubmitting}
-        readOnly={isProjectFormReadOnly}
-        {...register('title')}
-        placeholder="Enter project name"
-      />
-
-      <div>
+      <label className="mt-4 flex w-full flex-col">
+        <span className="w-full text-sm text-gray-700">Name</span>
+        <InputField
+          variant="primary"
+          disabled={formState.isSubmitting}
+          readOnly={isProjectFormReadOnly}
+          {...register('title')}
+          placeholder="Enter project name"
+          size={30}
+        />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
-      </div>
-      <div className="flex flex-wrap gap-x-5">
-        <div>
-          <label htmlFor="start" className="block pl-0.5 text-gray-500">
-            Start
-          </label>
-          <div className="flex items-center gap-x-2">
-            <Controller
-              control={control}
-              rules={{ validate: (value) => !value || isValidDateString(value) }}
-              name="start"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <InputMask
-                  disabled={formState.isSubmitting}
-                  mask="9999-99-99"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  value={value ?? undefined}
-                  readOnly={isProjectFormReadOnly}
-                  id="start"
-                  type="text"
-                  className="rounded"
-                />
-              )}
-            />
-            <CalendarSelector
-              disabled={formState.isSubmitting}
-              className="shrink-0"
-              hideLabel={true}
-              onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
-            />
-          </div>
-        </div>
+      </label>
+      <label className="flex-1 flex flex-col flex-wrap">
+        <span className="w-full text-sm text-gray-700">Start</span>
+        <Controller
+          control={control}
+          rules={{ validate: (value) => !value || isValidDateString(value) }}
+          name="start"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <div className="flex items-center">
+              <InputMask
+                disabled={formState.isSubmitting}
+                mask="9999-99-99"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value ?? undefined}
+                readOnly={isProjectFormReadOnly}
+                id="start"
+                type="text"
+                size={10}
+                className="rounded font-small"
+              />
+              <CalendarSelector
+                disabled={formState.isSubmitting}
+                className="shrink-0"
+                hideLabel={true}
+                onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
+              />
+            </div>
+          )}
+        />
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+      </label>
+      <label className="flex-1 flex flex-col flex-wrap">
+        <span className="w-full text-sm text-gray-700">End</span>
+        <Controller
+          control={control}
+          rules={{ validate: (value) => !value || isValidDateString(value) }}
+          name="end"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <div className="flex items-center">
+              <InputMask
+                mask="9999-99-99"
+                disabled={formState.isSubmitting}
+                onBlur={onBlur}
+                readOnly={isProjectFormReadOnly}
+                onChange={onChange}
+                value={value ?? undefined}
+                id="end"
+                type="text"
+                size={10}
+                className="rounded font-small"
+              />
+              <CalendarSelector
+                disabled={formState.isSubmitting}
+                className="shrink-0"
+                hideLabel={true}
+                onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+              />
+            </div>
+          )}
+        />
 
-        <div>
-          <label htmlFor="end" className="block pl-0.5 text-gray-500">
-            End
-          </label>
-          <div className="flex items-center gap-x-2">
-            <Controller
-              control={control}
-              rules={{ validate: (value) => !value || isValidDateString(value) }}
-              name="end"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <InputMask
-                  mask="9999-99-99"
-                  disabled={formState.isSubmitting}
-                  onBlur={onBlur}
-                  readOnly={isProjectFormReadOnly}
-                  onChange={onChange}
-                  value={value ?? undefined}
-                  id="end"
-                  type="text"
-                  className="rounded"
-                />
-              )}
-            />
-            <CalendarSelector
-              disabled={formState.isSubmitting}
-              className="shrink-0"
-              hideLabel={true}
-              onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
-            />
-          </div>
-          {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
-        </div>
-      </div>
-      {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
-      <div className="mt-16 flex justify-center gap-2">
+        {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
+      </label>
+      <div className="w-full mt-8 flex justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
             Delete
@@ -159,14 +150,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </Button>
         )}
         {project ? (
-          <>
             <DeleteProjectModal
               open={isDeleteModalOpen}
               onClose={() => setIsDeleteModalOpen(false)}
               project={project}
             />
-          </>
         ) : undefined}
+        {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       </div>
     </form>
   )
