@@ -15,7 +15,7 @@ export const TopNavigation = (): JSX.Element => {
   return (
     <section className="items-strech flex w-full flex-row">
       <h1 className="flex min-w-0 flex-1 flex-row items-center gap-2">
-        <AiOutlineFieldTime className="text-blue-500" size={30} />
+        <AiOutlineFieldTime className="text-blue-500" size="2em" />
         <Link href={'/'}>
           <a className="text-2xl font-semibold text-blue-400">timebook</a>
         </Link>
