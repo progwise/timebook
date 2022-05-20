@@ -326,6 +326,7 @@ type Query {
     Start of the time period
     """
     from: Date!
+    teamSlug: String!
 
     """
     End of the time period. If not provided the from arg is used as the end.

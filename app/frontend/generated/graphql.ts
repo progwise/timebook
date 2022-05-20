@@ -240,6 +240,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
+  teamSlug: Scalars['String']
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
@@ -740,6 +741,7 @@ export type WorkHourUpdateMutation = {
 }
 
 export type WorkHoursQueryVariables = Exact<{
+  teamSlug: Scalars['String']
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
@@ -1234,8 +1236,8 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($from: Date!, $to: Date) {
-    workHours(from: $from, to: $to) {
+  query workHours($teamSlug: String!, $from: Date!, $to: Date) {
+    workHours(teamSlug: $teamSlug, from: $from, to: $to) {
       ...WorkHour
     }
   }
@@ -1686,7 +1688,7 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHoursQuery((req, res, ctx) => {
- *   const { from, to } = req.variables;
+ *   const { teamSlug, from, to } = req.variables;
  *   return res(
  *     ctx.data({ workHours })
  *   )
