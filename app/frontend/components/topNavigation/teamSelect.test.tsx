@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Client, Provider } from 'urql'
 import { TeamSelect } from './teamSelect'
 import '../../mocks/mockServer'

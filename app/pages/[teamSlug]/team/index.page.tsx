@@ -26,11 +26,11 @@ const Team = (): JSX.Element => {
   return (
     <>
       <ProtectedPage>
-        <article className="timebook">
+        <section>
           <h2>Team Details</h2>
           {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
-        </article>
-        <article className="timebook">
+        </section>
+        <section>
           <h2 className="flex justify-between">
             <span>Members</span>
           </h2>
@@ -58,11 +58,11 @@ const Team = (): JSX.Element => {
             </TableBody>
           </Table>
           <Button variant="secondary">Invite Member</Button>
-        </article>
-        <article className="timebook">
+        </section>
+        <section>
           <h2>Customers</h2>
           <CustomerTable />
-        </article>
+        </section>
       </ProtectedPage>
     </>
   )
