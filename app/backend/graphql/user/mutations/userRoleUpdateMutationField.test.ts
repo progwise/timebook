@@ -18,7 +18,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.deleteMany()
     await prisma.team.deleteMany()
   })
-  
+
   it('should throw error when unauthorized', async () => {
     const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
 
@@ -91,7 +91,7 @@ describe('userRoleUpdateMutationField', () => {
     expect(response.data).toEqual({ userRoleUpdate: { id: '2', role: 'ADMIN' } })
     expect(response.errors).toBeUndefined()
   })
-  
+
   it('should throw error if user is not teamMember', async () => {
     await prisma.team.create({ data: { slug: 'progwise', id: '1', title: 'Progwise' } })
     await prisma.user.create({ data: { id: '1' } })
