@@ -2,7 +2,6 @@ import { idArg, mutationField } from 'nexus'
 import { Role } from '../role'
 
 import { User } from '..'
-import { isTeamMember } from '../../team/utils'
 import { isTeamAdmin } from '../../isTeamAdmin'
 
 export const userRoleUpdateMutationField = mutationField('userRoleUpdate', {
@@ -24,7 +23,6 @@ export const userRoleUpdateMutationField = mutationField('userRoleUpdate', {
 
     const team = await context.prisma.team.findUnique({
       where: { slug: context.teamSlug },
-
       rejectOnNotFound: true,
     })
 
