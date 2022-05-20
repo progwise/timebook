@@ -8,7 +8,7 @@ import { ProjectList } from '../../../frontend/components/projectList/projectLis
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
-  const [{ data, error }] = useProjectsQuery({ context })
+  const [{ data, error, fetching: projectsLoading }] = useProjectsQuery({ context })
   const router = useRouter()
 
   const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
@@ -29,16 +29,19 @@ const Projects = (): JSX.Element => {
         </div>
 
         {error && <span>{error.message}</span>}
-        {!data?.projects ? (
-          <div>...loading</div>
-        ) : (data.projects.length === 0 ? (
-          <div>No projects in team {teamData?.team.title}</div>
-        ) : (
+        {projectsLoading && <div>...loading</div>}
+        {data?.projects && (
           <>
-            <ProjectList className="mb-6" projects={data.projects} />
-            <ProjectTable projects={data.projects} />
+            {data.projects.length === 0 ? (
+              <div>No projects in team {teamData?.team.title}</div>
+            ) : (
+              <>
+                <ProjectList className="mb-6" projects={data.projects} />
+                <ProjectTable projects={data.projects} />
+              </>
+            )}
           </>
-        ))}
+        )}
       </article>
     </ProtectedPage>
   )

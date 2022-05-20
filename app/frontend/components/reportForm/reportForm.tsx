@@ -5,7 +5,6 @@ import { ProjectFragment, useProjectsQuery, useReportQuery } from '../../generat
 import { HiCheck, HiSelector } from 'react-icons/hi'
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { FormattedDuration } from '../duration/formattedDuration'
-import { ProtectedPage } from '../protectedPage'
 
 const ReportForm = () => {
   const router = useRouter()
@@ -34,7 +33,7 @@ const ReportForm = () => {
   })
 
   return (
-    <ProtectedPage>
+    <>
       <div>
         {
           <h1 className="mb-4 mt-4 font-bold">
@@ -176,7 +175,7 @@ const ReportForm = () => {
           </section>
         )}
       </div>
-    </ProtectedPage>
+    </>
   )
 }
 

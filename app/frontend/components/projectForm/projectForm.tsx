@@ -67,7 +67,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           readOnly={isProjectFormReadOnly}
           {...register('title')}
           placeholder="Enter project name"
-          size={30}
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
