@@ -8,13 +8,18 @@ export interface ProjectListProps {
 
 export const ProjectList: React.FC<ProjectListProps> = ({ projects, className }) => {
   const router = useRouter()
-  const handleProjectSelect = (project: ProjectFragment) => router.push(`/${router.query.teamSlug}/projects/${project.id}`)
+  const handleProjectSelect = (project: ProjectFragment) =>
+    router.push(`/${router.query.teamSlug}/projects/${project.id}`)
 
   return (
     <section className={`${className} flex flex-row flex-wrap gap-6`}>
       {projects &&
         projects.map((project) => (
-          <article key={project.id} className="hover:cursor-pointer border-2 rounded-lg py-2 px-4" onClick={() => handleProjectSelect(project)}>
+          <article
+            key={project.id}
+            className="rounded-lg border-2 py-2 px-4 hover:cursor-pointer"
+            onClick={() => handleProjectSelect(project)}
+          >
             <h2 className="flex items-center">
               <DiScrum size="1.6em" />
               <span className="font-semibold">{project.title}</span>
