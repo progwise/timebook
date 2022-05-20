@@ -938,7 +938,7 @@ export type UserQuery = {
     name?: string | null
     image?: string | null
     role: Role
-    projects: Array<{ __typename?: 'Project'; id: string }>
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
 
@@ -1373,6 +1373,7 @@ export const UserDocument = gql`
       role
       projects {
         id
+        title
       }
     }
   }
