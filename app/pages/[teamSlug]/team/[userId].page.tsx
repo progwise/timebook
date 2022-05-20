@@ -8,7 +8,7 @@ const UserDetailsPage = (): JSX.Element => {
 
   const { userId } = router.query
 
-  const [{ data, error, fetching }] = useUserQuery({
+  const [{ data }] = useUserQuery({
     pause: !router.isReady,
     variables: { userId: userId?.toString() ?? '' },
   })
