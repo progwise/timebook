@@ -1,7 +1,6 @@
 query team {
   team {
     ...Team
-    canModify
     members {
       id
       name
@@ -20,4 +19,5 @@ fragment Team on Team {
   slug
   theme
   inviteKey
+  canModify
 }

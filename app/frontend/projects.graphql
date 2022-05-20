@@ -1,10 +1,18 @@
-query projects {
+query projectsWithTasks {
   projects {
-    ...Project
+    ...ProjectWithTasks
   }
 }
 
 fragment Project on Project {
+  id
+  title
+  startDate
+  endDate
+  canModify
+}
+
+fragment ProjectWithTasks on Project {
   id
   title
   startDate

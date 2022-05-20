@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 import {
   useWorkHourCreateMutation,
   useWorkHourUpdateMutation,
-  useProjectsQuery,
+  useProjectsWithTasksQuery,
   useWorkHourDeleteMutation,
 } from '../generated/graphql'
 import { Button } from './button/button'
@@ -43,7 +43,7 @@ const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
   const { onClose, workHourItem } = props
-  const [{ data }] = useProjectsQuery()
+  const [{ data }] = useProjectsWithTasksQuery()
   const {
     register,
     handleSubmit,

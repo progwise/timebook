@@ -376,26 +376,6 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
-export type TeamsQueryVariables = Exact<{ [key: string]: never }>
-
-export type TeamsQuery = {
-  __typename?: 'Query'
-  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string }>
-}
-
-export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
-
-export type TeamsWithProjectsQuery = {
-  __typename?: 'Query'
-  teams: Array<{
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
-  }>
-}
-
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -429,9 +409,9 @@ export type TaskFragment = {
   project: { __typename?: 'Project'; id: string; title: string }
 }
 
-export type ProjectsQueryVariables = Exact<{ [key: string]: never }>
+export type ProjectsWithTasksQueryVariables = Exact<{ [key: string]: never }>
 
-export type ProjectsQuery = {
+export type ProjectsWithTasksQuery = {
   __typename?: 'Query'
   projects: Array<{
     __typename?: 'Project'
@@ -452,6 +432,15 @@ export type ProjectsQuery = {
 }
 
 export type ProjectFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  startDate?: string | null
+  endDate?: string | null
+  canModify: boolean
+}
+
+export type ProjectWithTasksFragment = {
   __typename?: 'Project'
   id: string
   title: string
@@ -481,14 +470,6 @@ export type ProjectCreateMutation = {
     startDate?: string | null
     endDate?: string | null
     canModify: boolean
-    tasks: Array<{
-      __typename?: 'Task'
-      id: string
-      title: string
-      hasWorkHours: boolean
-      canModify: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
-    }>
   }
 }
 
@@ -505,14 +486,6 @@ export type ProjectDeleteMutation = {
     startDate?: string | null
     endDate?: string | null
     canModify: boolean
-    tasks: Array<{
-      __typename?: 'Task'
-      id: string
-      title: string
-      hasWorkHours: boolean
-      canModify: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
-    }>
   }
 }
 
@@ -530,14 +503,6 @@ export type ProjectUpdateMutation = {
     startDate?: string | null
     endDate?: string | null
     canModify: boolean
-    tasks: Array<{
-      __typename?: 'Task'
-      id: string
-      title: string
-      hasWorkHours: boolean
-      canModify: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
-    }>
   }
 }
 
@@ -605,12 +570,12 @@ export type TeamQuery = {
   __typename?: 'Query'
   team: {
     __typename?: 'Team'
-    canModify: boolean
     id: string
     title: string
     slug: string
     theme: Theme
     inviteKey: string
+    canModify: boolean
     members: Array<{
       __typename?: 'User'
       id: string
@@ -628,6 +593,7 @@ export type TeamFragment = {
   slug: string
   theme: Theme
   inviteKey: string
+  canModify: boolean
 }
 
 export type TeamCreateMutationVariables = Exact<{
@@ -636,7 +602,15 @@ export type TeamCreateMutationVariables = Exact<{
 
 export type TeamCreateMutation = {
   __typename?: 'Mutation'
-  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+  teamCreate: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    canModify: boolean
+  }
 }
 
 export type TeamUpdateMutationVariables = Exact<{
@@ -646,7 +620,71 @@ export type TeamUpdateMutationVariables = Exact<{
 
 export type TeamUpdateMutation = {
   __typename?: 'Mutation'
-  teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+  teamUpdate: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    canModify: boolean
+  }
+}
+
+export type TeamsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamsQuery = {
+  __typename?: 'Query'
+  teams: Array<{
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    canModify: boolean
+  }>
+}
+
+export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamsWithProjectsQuery = {
+  __typename?: 'Query'
+  teams: Array<{
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    canModify: boolean
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      canModify: boolean
+    }>
+  }>
+}
+
+export type TeamWithProjectsFragment = {
+  __typename?: 'Team'
+  id: string
+  title: string
+  slug: string
+  theme: Theme
+  inviteKey: string
+  canModify: boolean
+  projects: Array<{
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    canModify: boolean
+  }>
 }
 
 export type WorkHourCreateMutationVariables = Exact<{
@@ -669,14 +707,6 @@ export type WorkHourCreateMutation = {
       startDate?: string | null
       endDate?: string | null
       canModify: boolean
-      tasks: Array<{
-        __typename?: 'Task'
-        id: string
-        title: string
-        hasWorkHours: boolean
-        canModify: boolean
-        project: { __typename?: 'Project'; id: string; title: string }
-      }>
     }
     task: {
       __typename?: 'Task'
@@ -719,14 +749,6 @@ export type WorkHourUpdateMutation = {
       startDate?: string | null
       endDate?: string | null
       canModify: boolean
-      tasks: Array<{
-        __typename?: 'Task'
-        id: string
-        title: string
-        hasWorkHours: boolean
-        canModify: boolean
-        project: { __typename?: 'Project'; id: string; title: string }
-      }>
     }
     task: {
       __typename?: 'Task'
@@ -760,14 +782,6 @@ export type WorkHoursQuery = {
       startDate?: string | null
       endDate?: string | null
       canModify: boolean
-      tasks: Array<{
-        __typename?: 'Task'
-        id: string
-        title: string
-        hasWorkHours: boolean
-        canModify: boolean
-        project: { __typename?: 'Project'; id: string; title: string }
-      }>
     }
     task: {
       __typename?: 'Task'
@@ -794,14 +808,6 @@ export type WorkHourFragment = {
     startDate?: string | null
     endDate?: string | null
     canModify: boolean
-    tasks: Array<{
-      __typename?: 'Task'
-      id: string
-      title: string
-      hasWorkHours: boolean
-      canModify: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
-    }>
   }
   task: {
     __typename?: 'Task'
@@ -957,15 +963,6 @@ export type UserQuery = {
   }
 }
 
-export const TeamFragmentDoc = gql`
-  fragment Team on Team {
-    id
-    title
-    slug
-    theme
-    inviteKey
-  }
-`
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -978,8 +975,8 @@ export const TaskFragmentDoc = gql`
     }
   }
 `
-export const ProjectFragmentDoc = gql`
-  fragment Project on Project {
+export const ProjectWithTasksFragmentDoc = gql`
+  fragment ProjectWithTasks on Project {
     id
     title
     startDate
@@ -990,6 +987,35 @@ export const ProjectFragmentDoc = gql`
     }
   }
   ${TaskFragmentDoc}
+`
+export const TeamFragmentDoc = gql`
+  fragment Team on Team {
+    id
+    title
+    slug
+    theme
+    inviteKey
+    canModify
+  }
+`
+export const ProjectFragmentDoc = gql`
+  fragment Project on Project {
+    id
+    title
+    startDate
+    endDate
+    canModify
+  }
+`
+export const TeamWithProjectsFragmentDoc = gql`
+  fragment TeamWithProjects on Team {
+    ...Team
+    projects {
+      ...Project
+    }
+  }
+  ${TeamFragmentDoc}
+  ${ProjectFragmentDoc}
 `
 export const WorkHourFragmentDoc = gql`
   fragment WorkHour on WorkHour {
@@ -1017,38 +1043,6 @@ export const CustomerFragmentDoc = gql`
     title
   }
 `
-export const TeamsDocument = gql`
-  query teams {
-    teams {
-      id
-      title
-      slug
-    }
-  }
-`
-
-export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
-}
-export const TeamsWithProjectsDocument = gql`
-  query teamsWithProjects {
-    teams {
-      id
-      title
-      slug
-      projects {
-        id
-        title
-      }
-    }
-  }
-`
-
-export function useTeamsWithProjectsQuery(
-  options: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'> = {},
-) {
-  return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
-}
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
@@ -1065,17 +1059,19 @@ export const ProjectDocument = gql`
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options })
 }
-export const ProjectsDocument = gql`
-  query projects {
+export const ProjectsWithTasksDocument = gql`
+  query projectsWithTasks {
     projects {
-      ...Project
+      ...ProjectWithTasks
     }
   }
-  ${ProjectFragmentDoc}
+  ${ProjectWithTasksFragmentDoc}
 `
 
-export function useProjectsQuery(options: Omit<Urql.UseQueryArgs<ProjectsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<ProjectsQuery>({ query: ProjectsDocument, ...options })
+export function useProjectsWithTasksQuery(
+  options: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'> = {},
+) {
+  return Urql.useQuery<ProjectsWithTasksQuery>({ query: ProjectsWithTasksDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
   mutation projectCreate($data: ProjectInput!) {
@@ -1156,7 +1152,6 @@ export const TeamDocument = gql`
   query team {
     team {
       ...Team
-      canModify
       members {
         id
         name
@@ -1197,6 +1192,32 @@ export const TeamUpdateDocument = gql`
 
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
+}
+export const TeamsDocument = gql`
+  query teams {
+    teams {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
+}
+export const TeamsWithProjectsDocument = gql`
+  query teamsWithProjects {
+    teams {
+      ...TeamWithProjects
+    }
+  }
+  ${TeamWithProjectsFragmentDoc}
+`
+
+export function useTeamsWithProjectsQuery(
+  options: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'> = {},
+) {
+  return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
 }
 export const WorkHourCreateDocument = gql`
   mutation workHourCreate($data: WorkHourInput!) {
@@ -1421,38 +1442,6 @@ export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockTeamsQuery((req, res, ctx) => {
- *   return res(
- *     ctx.data({ teams })
- *   )
- * })
- */
-export const mockTeamsQuery = (
-  resolver: ResponseResolver<GraphQLRequest<TeamsQueryVariables>, GraphQLContext<TeamsQuery>, any>,
-) => graphql.query<TeamsQuery, TeamsQueryVariables>('teams', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockTeamsWithProjectsQuery((req, res, ctx) => {
- *   return res(
- *     ctx.data({ teams })
- *   )
- * })
- */
-export const mockTeamsWithProjectsQuery = (
-  resolver: ResponseResolver<
-    GraphQLRequest<TeamsWithProjectsQueryVariables>,
-    GraphQLContext<TeamsWithProjectsQuery>,
-    any
-  >,
-) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
  * mockProjectQuery((req, res, ctx) => {
  *   const { projectId } = req.variables;
  *   return res(
@@ -1468,15 +1457,19 @@ export const mockProjectQuery = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockProjectsQuery((req, res, ctx) => {
+ * mockProjectsWithTasksQuery((req, res, ctx) => {
  *   return res(
  *     ctx.data({ projects })
  *   )
  * })
  */
-export const mockProjectsQuery = (
-  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
-) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('projects', resolver)
+export const mockProjectsWithTasksQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectsWithTasksQueryVariables>,
+    GraphQLContext<ProjectsWithTasksQuery>,
+    any
+  >,
+) => graphql.query<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>('projectsWithTasks', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1623,6 +1616,38 @@ export const mockTeamCreateMutation = (
 export const mockTeamUpdateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
 ) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ teams })
+ *   )
+ * })
+ */
+export const mockTeamsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamsQueryVariables>, GraphQLContext<TeamsQuery>, any>,
+) => graphql.query<TeamsQuery, TeamsQueryVariables>('teams', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamsWithProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ teams })
+ *   )
+ * })
+ */
+export const mockTeamsWithProjectsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TeamsWithProjectsQueryVariables>,
+    GraphQLContext<TeamsWithProjectsQuery>,
+    any
+  >,
+) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

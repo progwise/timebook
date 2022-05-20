@@ -1,7 +1,7 @@
 import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
-import { ProjectFragment, TaskFragment } from '../../generated/graphql'
+import { ProjectWithTasksFragment, TaskFragment } from '../../generated/graphql'
 import { TaskList } from './taskList'
 
 import '../../mocks/mockServer'
@@ -23,7 +23,7 @@ const tasks: TaskFragment[] = [
   },
 ]
 
-const project: ProjectFragment = {
+const project: ProjectWithTasksFragment = {
   id: '1',
   title: 'Project 1',
   canModify: true,
