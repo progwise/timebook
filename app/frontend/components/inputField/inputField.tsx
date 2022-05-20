@@ -1,6 +1,4 @@
-import { BooleanSupportOption } from 'prettier'
 import React from 'react'
-import { boolean } from 'yup'
 
 interface InputProps {
   name?: string

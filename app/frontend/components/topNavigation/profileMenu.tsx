@@ -49,22 +49,12 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
         </Menu.Button>
 
         <Menu.Items className=" absolute right-1 mx-3 flex w-64 flex-col rounded-md bg-white p-2 px-1 shadow ">
-          {teamSlug && (
-            <>
-              <Menu.Item>
-                <MyLink href={`/${teamSlug}/team`}>Team</MyLink>
-              </Menu.Item>
-              <Menu.Item>
-                <MyLink href={`/${teamSlug}/time`}>My Timetable</MyLink>
-              </Menu.Item>
-            </>
-          )}
-          <Menu.Item>
-            <MyLink href="/teams">Manage Teams</MyLink>
-          </Menu.Item>
           <Menu.Item>
             {session.status === 'authenticated' && (
-              <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
+              <>
+                <TopNavigationLink href="/me">Me</TopNavigationLink>
+                <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
+              </>
             )}
           </Menu.Item>
         </Menu.Items>
