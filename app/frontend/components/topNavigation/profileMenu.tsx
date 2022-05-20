@@ -1,23 +1,9 @@
 import { Menu } from '@headlessui/react'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
 import { TopNavigationLink } from './topNavigationLink'
 import Image from 'next/image'
-import { ReactNode } from 'react'
-import Link from 'next/link'
-import { useTeamsQuery } from '../../generated/graphql'
-
-function MyLink(props: { [x: string]: unknown; href: string; children: ReactNode }) {
-  const { href, children } = props
-  return (
-    <Link href={href} passHref>
-      <span className="delay-25 my-1 mx-6 cursor-pointer py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
-        {children}
-      </span>
-    </Link>
-  )
-}
 
 export interface ProfileMenuProps {
   className?: string
@@ -52,7 +38,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
           <Menu.Item>
             {session.status === 'authenticated' && (
               <>
-                <TopNavigationLink href="/me">Me</TopNavigationLink>
                 <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
               </>
             )}
