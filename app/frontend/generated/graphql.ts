@@ -941,6 +941,22 @@ export type TeamAcceptInviteMutation = {
   }
 }
 
+export type UserQueryVariables = Exact<{
+  userId: Scalars['ID']
+}>
+
+export type UserQuery = {
+  __typename?: 'Query'
+  user: {
+    __typename?: 'User'
+    id: string
+    name?: string | null
+    image?: string | null
+    role: Role
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+  }
+}
+
 export const TeamFragmentDoc = gql`
   fragment Team on Team {
     id
@@ -1382,6 +1398,24 @@ export const TeamAcceptInviteDocument = gql`
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
+export const UserDocument = gql`
+  query user($userId: ID!) {
+    user(userId: $userId) {
+      id
+      name
+      image
+      role
+      projects {
+        id
+        title
+      }
+    }
+  }
+`
+
+export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<UserQuery>({ query: UserDocument, ...options })
+}
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1796,3 +1830,18 @@ export const mockTeamAcceptInviteMutation = (
     any
   >,
 ) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserQuery((req, res, ctx) => {
+ *   const { userId } = req.variables;
+ *   return res(
+ *     ctx.data({ user })
+ *   )
+ * })
+ */
+export const mockUserQuery = (
+  resolver: ResponseResolver<GraphQLRequest<UserQueryVariables>, GraphQLContext<UserQuery>, any>,
+) => graphql.query<UserQuery, UserQueryVariables>('user', resolver)
