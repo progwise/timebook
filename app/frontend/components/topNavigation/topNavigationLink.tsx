@@ -6,29 +6,32 @@ export interface TopNavigationLinkProps {
   href?: string
   onClick?: () => void
   children: ReactNode
+  className?: string
 }
 
-export const TopNavigationLink = (props: TopNavigationLinkProps): JSX.Element => {
+export const TopNavigationLink: React.FC<TopNavigationLinkProps> = ({
+  href,
+  children,
+  onClick,
+  className,
+}): JSX.Element => {
   const router = useRouter()
 
-  let classNames = 'mx-3 my-3 bg-transparent  py-1 px-4 font-semibold'
-
-  classNames =
-    props.href && router.asPath.startsWith(props.href)
-      ? classNames + ' cursor-default text-blue-400 border-b-2 border-blue-400 '
-      : classNames + ' cursor-pointer text-blue-400 hover:text-blue-500 hover:border-b-2 hover:border-blue-300  '
-
-  if (props.href) {
+  if (href) {
     return (
-      <Link href={props.href} passHref>
-        <span className={classNames}>{props.children}</span>
+      <Link href={href} passHref>
+        {href && router.asPath.startsWith(href) ? (
+          <span className={`text-blue-500 underline ${className}`}>{children}</span>
+        ) : (
+          <span className={`cursor-pointer text-gray-500 hover:text-blue-500 ${className}`}>{children}</span>
+        )}
       </Link>
     )
   }
 
   return (
-    <span className={classNames} onClick={props.onClick}>
-      {props.children}
+    <span className={`cursor-pointer text-gray-500 hover:text-blue-500 ${className}`} onClick={onClick}>
+      {children}
     </span>
   )
 }

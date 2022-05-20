@@ -5,7 +5,7 @@ import { TopNavigation } from '../frontend/components/topNavigation/topNavigatio
 import { createClient, Provider } from 'urql'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { Button } from '../frontend/components/button/button'
+import Link from 'next/link'
 
 interface MyAppProps {
   Component: new (props: unknown) => React.Component
@@ -25,18 +25,22 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
   return (
     <SessionProvider session={session}>
       <Provider value={client}>
-        <header className="  border-b-2 border-blue-400 bg-transparent">
+        <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3">
           <TopNavigation />
         </header>
-        <main className="md:m-auto md:w-2/3">
+        <main className="mb-10 mt-12 px-6">
           <Component {...pageProps} />
         </main>
-        <footer className="mt-80 flex h-full w-full justify-start bg-gray-400">
-          <Button variant="tertiary">Impress </Button>
-
-          <Button variant="tertiary"> Privacy Policy </Button>
-
-          <Button variant="tertiary">Conditions </Button>
+        <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200">
+          <Link href={'/impress'}>
+            <a className="hover:text-blue-500 hover:underline">Impress</a>
+          </Link>
+          <Link href="/privacy">
+            <a className="hover:text-blue-500 hover:underline">Privacy Policy</a>
+          </Link>
+          <Link href="/privacy">
+            <a className="hover:text-blue-500 hover:underline">Conditions</a>
+          </Link>
         </footer>
       </Provider>
     </SessionProvider>

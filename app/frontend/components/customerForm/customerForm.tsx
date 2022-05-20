@@ -47,7 +47,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
 
   return (
     <>
-      <article className="timebook">
+      <article>
         <form onSubmit={handleSubmit(handleSave)}>
           <label className="text-gray-500">
             <InputField variant="primary" placeholder="Name" {...register('title')} />

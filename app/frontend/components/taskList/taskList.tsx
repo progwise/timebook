@@ -23,12 +23,13 @@ import {
 export interface TaskListProps {
   tasks: TaskFragment[]
   project: ProjectFragment
+  className?: string
 }
 
 type TaskFormData = Pick<TaskInput, 'title'>
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
-  const { tasks, project } = props
+  const { tasks, project, className } = props
   const {
     register,
     handleSubmit,
@@ -56,7 +57,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   }
 
   return (
-    <>
+    <section className={className}>
       <Table className="min-w-full">
         <TableHead>
           <TableHeadRow>
@@ -126,6 +127,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           </TableFoot>
         )}
       </Table>
-    </>
+    </section>
   )
 }
