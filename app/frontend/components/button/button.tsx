@@ -26,7 +26,7 @@ export const Button = ({
     primary:
       ' px-5 hover:scale-95 duration-300 shadow-xl   font-medium bg-blue-400 text-white rounded-md hover:bg-blue-500',
     secondary:
-      'shadow-xl font-medium text-blue-400 border-2 border-blue-400 rounded-md hover:text-blue-500 hover:border-blue-500',
+      'shadow-xl hover:scale-95 duration-300 font-medium text-blue-400 border-2 border-blue-400 rounded-md hover:text-blue-500 hover:border-blue-500',
     tertiary: 'font-medium text-blue-400 border-b-2 border-blue-400 hover:text-blue-500 hover:border-blue-500 ',
 
     danger: 'shadow-xl font medium bg-red-400 text-white hover:bg-red-600 rounded-md',
