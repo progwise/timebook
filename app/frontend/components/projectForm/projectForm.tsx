@@ -57,7 +57,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       {isNewProject ? (
         <h2 className="w-full text-lg font-semibold text-gray-400">Create new project</h2>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-400">Edit project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400">{isProjectFormReadOnly ? 'View' : 'Edit'} project</h2>
       )}
       <label className="mt-4 flex w-full flex-col">
         <span className="w-full text-sm text-gray-700">Name</span>
@@ -88,10 +88,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="font-small rounded"
+                className="font-small rounded read-only:opacity-50 read-only:bg-gray-100"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting}
+                disabled={formState.isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
                 hideLabel={true}
                 onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
@@ -119,10 +119,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="font-small rounded"
+                className="font-small rounded read-only:opacity-50 read-only:bg-gray-100"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting}
+                disabled={formState.isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
                 hideLabel={true}
                 onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}

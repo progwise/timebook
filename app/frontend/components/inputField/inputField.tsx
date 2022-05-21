@@ -18,12 +18,12 @@ export const InputField = React.forwardRef(
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
-      primary: 'font-small px-2 py-1 border-b2 border-black disabled:bg-gray-300 disabled:border-black',
+      primary: 'font-small px-2 py-1 border-b2 border border-gray-600 disabled:bg-gray-100 disabled:opacity-50 read-only:bg-gray-100 read-only:opacity-50',
     }[variant]
 
     return (
       <input
-        className={`rounded-md text-black disabled:opacity-50 ${variantClassName}`}
+        className={`rounded-md text-black ${variantClassName}`}
         type="text"
         placeholder={placeholder}
         disabled={disabled}
