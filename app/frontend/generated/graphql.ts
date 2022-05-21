@@ -384,17 +384,17 @@ export type ProjectQuery = {
   __typename?: 'Query'
   project: {
     __typename?: 'Project'
+    canModify: boolean
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
     tasks: Array<{
       __typename?: 'Task'
+      canModify: boolean
       id: string
       title: string
       hasWorkHours: boolean
-      canModify: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }>
   }
@@ -405,7 +405,6 @@ export type TaskFragment = {
   id: string
   title: string
   hasWorkHours: boolean
-  canModify: boolean
   project: { __typename?: 'Project'; id: string; title: string }
 }
 
@@ -419,13 +418,11 @@ export type ProjectsWithTasksQuery = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
     tasks: Array<{
       __typename?: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      canModify: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }>
   }>
@@ -437,7 +434,6 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
-  canModify: boolean
 }
 
 export type ProjectWithTasksFragment = {
@@ -446,13 +442,11 @@ export type ProjectWithTasksFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
-  canModify: boolean
   tasks: Array<{
     __typename?: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }>
 }
@@ -469,7 +463,6 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
   }
 }
 
@@ -485,7 +478,6 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
   }
 }
 
@@ -502,7 +494,6 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
   }
 }
 
@@ -517,7 +508,6 @@ export type TaskCreateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }
 }
@@ -534,7 +524,6 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }
   taskArchive?: {
@@ -542,7 +531,6 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }
 }
@@ -559,7 +547,6 @@ export type TaskUpdateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }
 }
@@ -570,12 +557,12 @@ export type TeamQuery = {
   __typename?: 'Query'
   team: {
     __typename?: 'Team'
+    canModify: boolean
     id: string
     title: string
     slug: string
     theme: Theme
     inviteKey: string
-    canModify: boolean
     members: Array<{
       __typename?: 'User'
       id: string
@@ -593,7 +580,6 @@ export type TeamFragment = {
   slug: string
   theme: Theme
   inviteKey: string
-  canModify: boolean
 }
 
 export type TeamCreateMutationVariables = Exact<{
@@ -602,15 +588,7 @@ export type TeamCreateMutationVariables = Exact<{
 
 export type TeamCreateMutation = {
   __typename?: 'Mutation'
-  teamCreate: {
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    theme: Theme
-    inviteKey: string
-    canModify: boolean
-  }
+  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
 export type TeamUpdateMutationVariables = Exact<{
@@ -620,30 +598,14 @@ export type TeamUpdateMutationVariables = Exact<{
 
 export type TeamUpdateMutation = {
   __typename?: 'Mutation'
-  teamUpdate: {
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    theme: Theme
-    inviteKey: string
-    canModify: boolean
-  }
+  teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamsQuery = {
   __typename?: 'Query'
-  teams: Array<{
-    __typename?: 'Team'
-    id: string
-    title: string
-    slug: string
-    theme: Theme
-    inviteKey: string
-    canModify: boolean
-  }>
+  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }>
 }
 
 export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
@@ -657,14 +619,12 @@ export type TeamsWithProjectsQuery = {
     slug: string
     theme: Theme
     inviteKey: string
-    canModify: boolean
     projects: Array<{
       __typename?: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
-      canModify: boolean
     }>
   }>
 }
@@ -676,14 +636,12 @@ export type TeamWithProjectsFragment = {
   slug: string
   theme: Theme
   inviteKey: string
-  canModify: boolean
   projects: Array<{
     __typename?: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    canModify: boolean
   }>
 }
 
@@ -700,20 +658,12 @@ export type WorkHourCreateMutation = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: {
-      __typename?: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      canModify: boolean
-    }
+    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename?: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      canModify: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }
   }
@@ -742,20 +692,12 @@ export type WorkHourUpdateMutation = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: {
-      __typename?: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      canModify: boolean
-    }
+    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename?: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      canModify: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }
   }
@@ -775,20 +717,12 @@ export type WorkHoursQuery = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: {
-      __typename?: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      canModify: boolean
-    }
+    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename?: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      canModify: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }
   }>
@@ -801,20 +735,12 @@ export type WorkHourFragment = {
   comment?: string | null
   duration: number
   user: { __typename?: 'User'; id: string; name?: string | null }
-  project: {
-    __typename?: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    canModify: boolean
-  }
+  project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
   task: {
     __typename?: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    canModify: boolean
     project: { __typename?: 'Project'; id: string; title: string }
   }
 }
@@ -968,7 +894,6 @@ export const TaskFragmentDoc = gql`
     id
     title
     hasWorkHours
-    canModify
     project {
       id
       title
@@ -981,7 +906,6 @@ export const ProjectWithTasksFragmentDoc = gql`
     title
     startDate
     endDate
-    canModify
     tasks {
       ...Task
     }
@@ -995,7 +919,6 @@ export const TeamFragmentDoc = gql`
     slug
     theme
     inviteKey
-    canModify
   }
 `
 export const ProjectFragmentDoc = gql`
@@ -1004,7 +927,6 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
-    canModify
   }
 `
 export const TeamWithProjectsFragmentDoc = gql`
@@ -1047,7 +969,9 @@ export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
       ...Project
+      canModify
       tasks {
+        canModify
         ...Task
       }
     }
@@ -1152,6 +1076,7 @@ export const TeamDocument = gql`
   query team {
     team {
       ...Team
+      canModify
       members {
         id
         name

@@ -1,7 +1,9 @@
 query project($projectId: ID!) {
   project(projectId: $projectId) {
     ...Project
+    canModify
     tasks {
+      canModify
       ...Task
     }
   }
@@ -11,7 +13,6 @@ fragment Task on Task {
   id
   title
   hasWorkHours
-  canModify
   project {
     id
     title

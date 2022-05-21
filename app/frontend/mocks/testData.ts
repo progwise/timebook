@@ -4,7 +4,6 @@ import { ProjectWithTasksFragment, TaskFragment, WorkHourFragment } from '../gen
 export const testProject1: ProjectWithTasksFragment = {
   __typename: 'Project',
   id: 'project1',
-  canModify: true,
   title: 'Project 1',
   tasks: [],
 }
@@ -12,7 +11,6 @@ export const testProject1: ProjectWithTasksFragment = {
 export const testProject2: ProjectWithTasksFragment = {
   __typename: 'Project',
   id: 'project2',
-  canModify: true,
   title: 'Project 2',
   tasks: [],
 }
@@ -21,7 +19,6 @@ export const testTask: TaskFragment = {
   __typename: 'Task',
   hasWorkHours: true,
   id: 'task1',
-  canModify: true,
   title: 'Task 1',
   project: {
     __typename: 'Project',

@@ -10,24 +10,24 @@ const client = new Client({ url: '/api/graphql' })
 
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 
-const tasks: TaskFragment[] = [
+const tasks: (TaskFragment & { canModify: boolean })[] = [
   {
     id: '1',
     hasWorkHours: false,
-    canModify: true,
     title: 'Task 1',
     project: {
       id: '1',
       title: 'Project 1',
     },
+    canModify: true,
   },
 ]
 
-const project: ProjectWithTasksFragment = {
+const project: ProjectWithTasksFragment & { canModify: boolean } = {
   id: '1',
   title: 'Project 1',
-  canModify: true,
   tasks: [],
+  canModify: true,
 }
 
 describe('TaskList', () => {

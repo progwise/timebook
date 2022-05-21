@@ -21,8 +21,8 @@ import {
 } from '../table/table'
 
 export interface TaskListProps {
-  tasks: TaskFragment[]
-  project: ProjectFragment
+  tasks: (TaskFragment & { canModify: boolean })[]
+  project: ProjectFragment & { canModify: boolean }
   className?: string
 }
 

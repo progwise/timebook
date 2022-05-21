@@ -14,7 +14,7 @@ export const ModifyInterface = interfaceType({
         }
 
         if (!context.teamSlug) {
-          throw new GraphQLError('team slug not found')
+          throw new GraphQLError('team slug not found', {})
         }
 
         const membership = await context.prisma.teamMembership.findFirst({

@@ -9,7 +9,6 @@ fragment Project on Project {
   title
   startDate
   endDate
-  canModify
 }
 
 fragment ProjectWithTasks on Project {
@@ -17,7 +16,6 @@ fragment ProjectWithTasks on Project {
   title
   startDate
   endDate
-  canModify
   tasks {
     ...Task
   }

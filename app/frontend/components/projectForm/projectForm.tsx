@@ -26,7 +26,7 @@ const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
 interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
   onCancel: () => void
-  project?: ProjectFragment
+  project?: ProjectFragment & { canModify: boolean }
   hasError: boolean
 }
 
