@@ -106,7 +106,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
 
   return (
     <Modal
-      autoShowHide={false}
       title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'New entry'}
       actions={
         <>

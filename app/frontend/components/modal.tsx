@@ -7,7 +7,6 @@ interface ModalProps {
   title: string
   actions: JSX.Element
   children?: ReactNode
-  autoShowHide?: boolean
 }
 
 export const Modal = ({
@@ -17,10 +16,9 @@ export const Modal = ({
   title,
   actions,
   children,
-  autoShowHide,
 }: ModalProps): JSX.Element => {
   return (
-    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto" static={autoShowHide ?? false}>
+    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
         <div className="relative rounded-3xl bg-white p-7 shadow-lg">
