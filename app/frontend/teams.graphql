@@ -1,0 +1,18 @@
+query teams {
+  teams {
+    ...Team
+  }
+}
+
+query teamsWithProjects {
+  teams {
+    ...TeamWithProjects
+  }
+}
+
+fragment TeamWithProjects on Team {
+  ...Team
+  projects {
+    ...Project
+  }
+}
