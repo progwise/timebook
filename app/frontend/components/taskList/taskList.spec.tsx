@@ -1,7 +1,7 @@
 import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
-import { ProjectFragment, TaskFragment } from '../../generated/graphql'
+import { ProjectWithTasksFragment, TaskFragment } from '../../generated/graphql'
 import { TaskList } from './taskList'
 
 import '../../mocks/mockServer'
@@ -10,24 +10,24 @@ const client = new Client({ url: '/api/graphql' })
 
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 
-const tasks: TaskFragment[] = [
+const tasks: (TaskFragment & { canModify: boolean })[] = [
   {
     id: '1',
     hasWorkHours: false,
-    canModify: true,
     title: 'Task 1',
     project: {
       id: '1',
       title: 'Project 1',
     },
+    canModify: true,
   },
 ]
 
-const project: ProjectFragment = {
+const project: ProjectWithTasksFragment & { canModify: boolean } = {
   id: '1',
   title: 'Project 1',
-  canModify: true,
   tasks: [],
+  canModify: true,
 }
 
 describe('TaskList', () => {

@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { useProjectsQuery, useTeamQuery } from '../../../frontend/generated/graphql'
+import { useProjectsWithTasksQuery, useTeamQuery } from '../../../frontend/generated/graphql'
 import { ProjectTable } from '../../../frontend/components/projectTable'
 import { Button } from '../../../frontend/components/button/button'
 import { ProjectList } from '../../../frontend/components/projectList/projectList'
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
-  const [{ data, error, fetching: projectsLoading }] = useProjectsQuery({ context })
+  const [{ data, error, fetching: projectsLoading }] = useProjectsWithTasksQuery({ context })
   const router = useRouter()
 
   const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
