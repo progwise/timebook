@@ -76,6 +76,8 @@ export type Mutation = {
   teamDelete: Team
   /** Update a new team */
   teamUpdate: Team
+  /** Update a user role */
+  userRoleUpdate: User
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -142,6 +144,11 @@ export type MutationTeamDeleteArgs = {
 export type MutationTeamUpdateArgs = {
   data: TeamInput
   id: Scalars['ID']
+}
+
+export type MutationUserRoleUpdateArgs = {
+  role: Role
+  userId: Scalars['ID']
 }
 
 export type MutationWorkHourCreateArgs = {

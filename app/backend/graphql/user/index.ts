@@ -1,3 +1,3 @@
 export * from './user'
-export * from './queries/userQueryField'
-export * from './queries/usersQueryField'
+export * from './queries'
+export * from './mutations'
