@@ -53,11 +53,16 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isNewProject = !project
   const isProjectFormReadOnly = !project?.canModify && !isNewProject
   return (
-    <form className="mt-4 flex flex-row flex-wrap gap-2 items-start justify-start" onSubmit={handleSubmit(handleSubmitHelper)}>
+    <form
+      className="mt-4 flex flex-row flex-wrap items-start justify-start gap-2"
+      onSubmit={handleSubmit(handleSubmitHelper)}
+    >
       {isNewProject ? (
         <h2 className="w-full text-lg font-semibold text-gray-400">Create new project</h2>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-400">{isProjectFormReadOnly ? 'View' : 'Edit'} project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400">
+          {isProjectFormReadOnly ? 'View' : 'Edit'} project
+        </h2>
       )}
       <label className="flex flex-1 flex-col">
         <span className="w-full text-sm text-gray-700">Name</span>
@@ -68,7 +73,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {...register('title')}
           placeholder="Enter project name"
           size={30}
-          className="font-small rounded read-only:opacity-50 read-only:bg-gray-100"
+          className="font-small rounded read-only:bg-gray-100 read-only:opacity-50"
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
@@ -90,7 +95,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="pt-1 pb-1 font-small rounded read-only:opacity-50 read-only:bg-gray-100"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}
@@ -121,7 +126,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="pt-1 pb-1 font-small rounded read-only:opacity-50 read-only:bg-gray-100"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}

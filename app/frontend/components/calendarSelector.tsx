@@ -91,7 +91,11 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   return (
     <section className={props.className}>
       <Popover className="flex justify-center">
-        <Popover.Button aria-label="select date" className="flex disabled:opacity-50" disabled={props.disabled ?? false}>
+        <Popover.Button
+          aria-label="select date"
+          className="flex disabled:opacity-50"
+          disabled={props.disabled ?? false}
+        >
           {!props.hideLabel && <span title="Display value">{selectedDate.toLocaleDateString()}</span>}
           <AiOutlineCalendar className="ml-2" size="1.3em" title="Calendar icon" />
         </Popover.Button>
