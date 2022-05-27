@@ -1,6 +1,5 @@
 import { Menu } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
 
 import { TopNavigationLink } from './topNavigationLink'
 import Image from 'next/image'
