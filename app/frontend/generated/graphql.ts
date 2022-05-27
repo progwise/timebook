@@ -253,6 +253,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
+  teamSlug: Scalars['String']
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
@@ -687,6 +688,16 @@ export type TeamWithProjectsFragment = {
   }>
 }
 
+export type UserRoleUpdateMutationVariables = Exact<{
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type UserRoleUpdateMutation = {
+  __typename?: 'Mutation'
+  userRoleUpdate: { __typename?: 'User'; id: string; role: Role }
+}
+
 export type WorkHourCreateMutationVariables = Exact<{
   data: WorkHourInput
 }>
@@ -746,6 +757,7 @@ export type WorkHourUpdateMutation = {
 }
 
 export type WorkHoursQueryVariables = Exact<{
+  teamSlug: Scalars['String']
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
@@ -846,6 +858,7 @@ export type MeQuery = {
     id: string
     image?: string | null
     name?: string | null
+    role: Role
     projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
@@ -1204,6 +1217,18 @@ export function useTeamsWithProjectsQuery(
 ) {
   return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
 }
+export const UserRoleUpdateDocument = gql`
+  mutation userRoleUpdate($userId: ID!, $role: Role!) {
+    userRoleUpdate(userId: $userId, role: $role) {
+      id
+      role
+    }
+  }
+`
+
+export function useUserRoleUpdateMutation() {
+  return Urql.useMutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>(UserRoleUpdateDocument)
+}
 export const WorkHourCreateDocument = gql`
   mutation workHourCreate($data: WorkHourInput!) {
     workHourCreate(data: $data) {
@@ -1240,8 +1265,8 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($from: Date!, $to: Date) {
-    workHours(from: $from, to: $to) {
+  query workHours($teamSlug: String!, $from: Date!, $to: Date) {
+    workHours(teamSlug: $teamSlug, from: $from, to: $to) {
       ...WorkHour
     }
   }
@@ -1320,6 +1345,7 @@ export const MeDocument = gql`
       id
       image
       name
+      role
       projects {
         id
         title
@@ -1650,6 +1676,25 @@ export const mockTeamsWithProjectsQuery = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockUserRoleUpdateMutation((req, res, ctx) => {
+ *   const { userId, role } = req.variables;
+ *   return res(
+ *     ctx.data({ userRoleUpdate })
+ *   )
+ * })
+ */
+export const mockUserRoleUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UserRoleUpdateMutationVariables>,
+    GraphQLContext<UserRoleUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>('userRoleUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockWorkHourCreateMutation((req, res, ctx) => {
  *   const { data } = req.variables;
  *   return res(
@@ -1708,7 +1753,7 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHoursQuery((req, res, ctx) => {
- *   const { from, to } = req.variables;
+ *   const { teamSlug, from, to } = req.variables;
  *   return res(
  *     ctx.data({ workHours })
  *   )

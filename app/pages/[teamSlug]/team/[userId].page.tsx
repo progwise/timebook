@@ -1,4 +1,4 @@
-import { useUserQuery } from '../../../frontend/generated/graphql'
+import { Role, useMeQuery, useUserQuery, useUserRoleUpdateMutation } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import { Button } from '../../../frontend/components/button/button'
 import { useRouter } from 'next/router'
@@ -7,12 +7,25 @@ import { ProtectedPage } from '../../../frontend/components/protectedPage'
 const UserDetailsPage = (): JSX.Element => {
   const router = useRouter()
 
-  const { userId } = router.query
+  const { userId: queryUserId } = router.query
+  const userId = queryUserId?.toString() ?? '' // hack: better solution?
 
+  const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
+  const teamSlug = router.query.teamSlug
+  const [{ data: userData }] = useMeQuery()
   const [{ data }] = useUserQuery({
     pause: !router.isReady,
-    variables: { userId: userId?.toString() ?? '' },
+    variables: { userId },
   })
+
+  const handleUpgradeClick = () => {
+    userRoleUpdate({ role: Role.Admin, userId })
+    router.push(`/${teamSlug}/team/${userId}`)
+  }
+
+  const handleDowngradeClick = () => {
+    userRoleUpdate({ role: Role.Member, userId })
+  }
 
   return (
     <>
@@ -33,17 +46,27 @@ const UserDetailsPage = (): JSX.Element => {
             ))}
           </ul>
         </article>
-        <div className="flex justify-between pt-20">
-          <div className="flex justify-center">
-            <Button className="mx-4" variant="primary">
-              Upgrade
-            </Button>
-            <Button variant="secondary">Downgrade</Button>
+        {userData?.user.role === 'ADMIN' && (
+          <div className="flex justify-between pt-20">
+            <div className="flex justify-center">
+              {data?.user.role === 'MEMBER' && (
+                <Button className="mx-4" variant="primary" onClick={handleUpgradeClick}>
+                  Upgrade
+                </Button>
+              )}
+              {data?.user.role === 'ADMIN' && (
+                <Button variant="secondary" onClick={handleDowngradeClick}>
+                  Downgrade
+                </Button>
+              )}
+            </div>
+            <div>
+              <Button variant="danger">Kick from Team</Button>
+            </div>
           </div>
-          <div>
-            <Button variant="danger">Kick from Team</Button>
-          </div>
-        </div>
+        )}
+        {fetching && <span>Loading...</span>}
+        {error && <span className="text-red-600">{error.message}!</span>}
       </ProtectedPage>
     </>
   )

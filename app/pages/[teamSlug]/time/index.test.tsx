@@ -7,7 +7,15 @@ jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
 }))
 
-const client = new Client({ url: '/api/graphql' })
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      query: { teamSLug: 'test1' },
+    }
+  },
+}))
+
+const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 describe('The workhours time page', () => {
   it('should render the select date button', async () => {
