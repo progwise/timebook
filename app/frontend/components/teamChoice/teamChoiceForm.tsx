@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
 
@@ -12,16 +11,7 @@ export const TeamChoiceForm = (): JSX.Element => {
       {teamsData?.teams.map((team) => {
         return (
           <React.Fragment key={team.id}>
-            <TeamTile
-              team={{
-                id: team.id,
-                title: team.title,
-                slug: team.slug,
-                inviteKey: team.inviteKey,
-                projects: team.projects,
-                theme: team.theme,
-              }}
-            />
+            <TeamTile team={{ ...team }} />
           </React.Fragment>
         )
       })}
