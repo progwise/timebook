@@ -656,6 +656,16 @@ export type TeamUpdateMutation = {
   teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
 }
 
+export type UserRoleUpdateMutationVariables = Exact<{
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type UserRoleUpdateMutation = {
+  __typename?: 'Mutation'
+  userRoleUpdate: { __typename?: 'User'; id: string; role: Role }
+}
+
 export type WorkHourCreateMutationVariables = Exact<{
   data: WorkHourInput
 }>
@@ -879,6 +889,7 @@ export type MeQuery = {
     id: string
     image?: string | null
     name?: string | null
+    role: Role
     projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
@@ -1205,6 +1216,18 @@ export const TeamUpdateDocument = gql`
 export function useTeamUpdateMutation() {
   return Urql.useMutation<TeamUpdateMutation, TeamUpdateMutationVariables>(TeamUpdateDocument)
 }
+export const UserRoleUpdateDocument = gql`
+  mutation userRoleUpdate($userId: ID!, $role: Role!) {
+    userRoleUpdate(userId: $userId, role: $role) {
+      id
+      role
+    }
+  }
+`
+
+export function useUserRoleUpdateMutation() {
+  return Urql.useMutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>(UserRoleUpdateDocument)
+}
 export const WorkHourCreateDocument = gql`
   mutation workHourCreate($data: WorkHourInput!) {
     workHourCreate(data: $data) {
@@ -1321,6 +1344,7 @@ export const MeDocument = gql`
       id
       image
       name
+      role
       projects {
         id
         title
@@ -1630,6 +1654,25 @@ export const mockTeamCreateMutation = (
 export const mockTeamUpdateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TeamUpdateMutationVariables>, GraphQLContext<TeamUpdateMutation>, any>,
 ) => graphql.mutation<TeamUpdateMutation, TeamUpdateMutationVariables>('teamUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserRoleUpdateMutation((req, res, ctx) => {
+ *   const { userId, role } = req.variables;
+ *   return res(
+ *     ctx.data({ userRoleUpdate })
+ *   )
+ * })
+ */
+export const mockUserRoleUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UserRoleUpdateMutationVariables>,
+    GraphQLContext<UserRoleUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>('userRoleUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { useTeamQuery } from '../../../frontend/generated/graphql'
+import { Role, useTeamQuery, useUserQuery } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import {
   Table,
@@ -17,12 +17,16 @@ import { CustomerTable } from '../../../frontend/components/customerForm/custome
 
 const Team = (): JSX.Element => {
   const router = useRouter()
+  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
+
   const slug = router.query.teamSlug?.toString() ?? ''
+
   const handleUserDetails = async (userId: string) => {
+    // if (data?.user.role === 'ADMIN') {
     await router.push(`/${slug}/team/${userId}`)
+    //}
   }
 
-  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
   if (!router.isReady) {
     return <div>Loading...</div>
   }
