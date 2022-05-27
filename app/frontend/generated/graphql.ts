@@ -70,6 +70,8 @@ export type Mutation = {
   taskUpdate: Task
   /** Accept an invite to a team */
   teamAcceptInvite: Team
+  /** Archive a team */
+  teamArchive: Team
   /** Create a new team */
   teamCreate: Team
   /** Delete a new team */
@@ -131,6 +133,10 @@ export type MutationTaskUpdateArgs = {
 
 export type MutationTeamAcceptInviteArgs = {
   inviteKey: Scalars['String']
+}
+
+export type MutationTeamArchiveArgs = {
+  teamId: Scalars['ID']
 }
 
 export type MutationTeamCreateArgs = {
@@ -311,6 +317,7 @@ export type TaskInput = {
 
 export type Team = ModifyInterface & {
   __typename?: 'Team'
+  archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   /** List of all customers of the team */
@@ -571,6 +578,7 @@ export type TeamQuery = {
     slug: string
     theme: Theme
     inviteKey: string
+    archived: boolean
     members: Array<{
       __typename?: 'User'
       id: string
@@ -588,6 +596,7 @@ export type TeamFragment = {
   slug: string
   theme: Theme
   inviteKey: string
+  archived: boolean
 }
 
 export type TeamCreateMutationVariables = Exact<{
@@ -596,7 +605,15 @@ export type TeamCreateMutationVariables = Exact<{
 
 export type TeamCreateMutation = {
   __typename?: 'Mutation'
-  teamCreate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+  teamCreate: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    archived: boolean
+  }
 }
 
 export type TeamUpdateMutationVariables = Exact<{
@@ -606,14 +623,30 @@ export type TeamUpdateMutationVariables = Exact<{
 
 export type TeamUpdateMutation = {
   __typename?: 'Mutation'
-  teamUpdate: { __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }
+  teamUpdate: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    archived: boolean
+  }
 }
 
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamsQuery = {
   __typename?: 'Query'
-  teams: Array<{ __typename?: 'Team'; id: string; title: string; slug: string; theme: Theme; inviteKey: string }>
+  teams: Array<{
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    archived: boolean
+  }>
 }
 
 export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
@@ -627,6 +660,7 @@ export type TeamsWithProjectsQuery = {
     slug: string
     theme: Theme
     inviteKey: string
+    archived: boolean
     projects: Array<{
       __typename?: 'Project'
       id: string
@@ -644,6 +678,7 @@ export type TeamWithProjectsFragment = {
   slug: string
   theme: Theme
   inviteKey: string
+  archived: boolean
   projects: Array<{
     __typename?: 'Project'
     id: string
@@ -893,6 +928,23 @@ export type TeamAcceptInviteMutation = {
   }
 }
 
+export type TeamArchiveMutationVariables = Exact<{
+  teamId: Scalars['ID']
+}>
+
+export type TeamArchiveMutation = {
+  __typename?: 'Mutation'
+  teamArchive: {
+    __typename?: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    archived: boolean
+  }
+}
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID']
 }>
@@ -939,6 +991,7 @@ export const TeamFragmentDoc = gql`
     slug
     theme
     inviteKey
+    archived
   }
 `
 export const ProjectFragmentDoc = gql`
@@ -1372,6 +1425,18 @@ export const TeamAcceptInviteDocument = gql`
 
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
+}
+export const TeamArchiveDocument = gql`
+  mutation teamArchive($teamId: ID!) {
+    teamArchive(teamId: $teamId) {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamArchiveMutation() {
+  return Urql.useMutation<TeamArchiveMutation, TeamArchiveMutationVariables>(TeamArchiveDocument)
 }
 export const UserDocument = gql`
   query user($userId: ID!) {
@@ -1828,6 +1893,21 @@ export const mockTeamAcceptInviteMutation = (
     any
   >,
 ) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamArchiveMutation((req, res, ctx) => {
+ *   const { teamId } = req.variables;
+ *   return res(
+ *     ctx.data({ teamArchive })
+ *   )
+ * })
+ */
+export const mockTeamArchiveMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TeamArchiveMutationVariables>, GraphQLContext<TeamArchiveMutation>, any>,
+) => graphql.mutation<TeamArchiveMutation, TeamArchiveMutationVariables>('teamArchive', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -133,13 +133,14 @@ model VerificationToken {
 }
 
 model Team {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  theme     Theme    @default(BLUE)
-  inviteKey String   @unique @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(cuid())
+  title      String
+  slug       String    @unique
+  theme      Theme     @default(BLUE)
+  inviteKey  String    @unique @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  archivedAt DateTime?
 
   teamMemberships TeamMembership[]
   customers       Customer[]
