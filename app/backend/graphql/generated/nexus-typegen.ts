@@ -510,6 +510,7 @@ export interface NexusGenArgTypes {
     workHours: {
       // args
       from: NexusGenScalars['Date'] // Date!
+      teamSlug: string // String!
       to?: NexusGenScalars['Date'] | null // Date
       userIds?: string[] | null // [ID!]
     }
