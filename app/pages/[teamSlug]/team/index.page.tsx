@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { Role, useTeamQuery, useUserQuery } from '../../../frontend/generated/graphql'
+import { useTeamQuery } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import {
   Table,

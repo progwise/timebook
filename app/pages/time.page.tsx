@@ -2,7 +2,7 @@ import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
 import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInput'
 import { CalendarSelector } from '../frontend/components/calendarSelector'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { ProjectFragment, useProjectsQuery } from '../frontend/generated/graphql'
+import { ProjectFragment, useProjectsWithTasksQuery } from '../frontend/generated/graphql'
 import { BookWorkHourModal } from '../frontend/components/bookWorkHourModal'
 import { Button } from '../frontend/components/button/button'
 import { BiPlus } from 'react-icons/bi'
@@ -24,7 +24,7 @@ const Time = (): JSX.Element => {
 
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
-  const [{ data }] = useProjectsQuery()
+  const [{ data }] = useProjectsWithTasksQuery()
 
   const [isBookWorkHourModalOpen, setIsBookWorkHourModalOpen] = useState(false)
 

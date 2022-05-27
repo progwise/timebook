@@ -11,8 +11,6 @@ export interface ProfileMenuProps {
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
   const session = useSession()
-  const router = useRouter()
-  const teamSlug = router.query.teamSlug
 
   return (
     <div className={`flex flex-row items-center ${className}`}>
