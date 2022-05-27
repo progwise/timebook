@@ -50,8 +50,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
 
   return (
     <form className="flex flex-col gap-2 pt-4" onSubmit={handleSubmit(handleTeamSave)}>
-      <span className=" text-sm font-semibold text-gray-500">Team name</span>
       <FormField>
+        <span className=" text-sm font-semibold text-gray-500">Team name</span>
         <InputField
           className="w-full"
           variant="primary"
@@ -61,8 +61,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         <ErrorMessage name="title" errors={formState.errors} as={<span className="text-red-700" />} />
       </FormField>
 
-      <span className="text-sm font-semibold text-gray-500">Slug</span>
       <FormField>
+        <span className="text-sm font-semibold text-gray-500">Slug</span>
         <InputField
           className="w-full"
           variant="primary"
@@ -74,16 +74,18 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </FormField>
       {team && (
         <>
-          <span className=" text-sm font-semibold text-gray-500">Invitation link</span>
-          <FormField className="flex-row items-center">
-            <InputField
-              className="flex-1"
-              readOnly
-              variant="primary"
-              name="tbInvitationLink"
-              value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
-            />
-            <FiCopy className="right-0 cursor-pointer text-2xl text-gray-500" onClick={handleCopyClick} />
+          <FormField>
+            <span className=" text-sm font-semibold text-gray-500">Invitation link</span>
+            <div className=" flex w-full flex-row items-center gap-2">
+              <InputField
+                className="flex-1"
+                readOnly
+                variant="primary"
+                name="tbInvitationLink"
+                value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
+              />
+              <FiCopy className="right-0 cursor-pointer text-2xl text-gray-500" onClick={handleCopyClick} />
+            </div>
           </FormField>
         </>
       )}
