@@ -1,14 +1,14 @@
 import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
-import { ProjectFragment, useProjectsQuery, useReportQuery } from '../../generated/graphql'
+import { ProjectFragment, useProjectsWithTasksQuery, useReportQuery } from '../../generated/graphql'
 import { HiCheck, HiSelector } from 'react-icons/hi'
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { FormattedDuration } from '../duration/formattedDuration'
 
 const ReportForm = () => {
   const router = useRouter()
-  const [{ data: projectsData }] = useProjectsQuery({ pause: !router.isReady })
+  const [{ data: projectsData }] = useProjectsWithTasksQuery({ pause: !router.isReady })
   const [selectedProject, setSelectedProject] = useState<ProjectFragment | undefined>()
   const [projectQuery, setProjectQuery] = useState('')
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))

@@ -21,7 +21,7 @@ import {
   taskQueryField,
   taskUpdateMutationField,
 } from './task'
-import { usersQueryField, userQueryField } from './user'
+import { usersQueryField, userQueryField, userRoleUpdateMutationField } from './user'
 import {
   teamAcceptInviteMutationField,
   teamBySlugQueryField,
@@ -59,6 +59,7 @@ export const schema = makeSchema({
     taskUpdateMutationField,
     userQueryField,
     usersQueryField,
+    userRoleUpdateMutationField,
     teamsQueryField,
     teamQueryField,
     teamBySlugQueryField,
