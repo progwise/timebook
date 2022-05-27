@@ -147,6 +147,16 @@ type Mutation {
   ): Team!
 
   """
+  Archive a team
+  """
+  teamArchive(
+    """
+    id of the team
+    """
+    teamId: ID!
+  ): Team!
+
+  """
   Create a new team
   """
   teamCreate(data: TeamInput!): Team!
@@ -424,6 +434,8 @@ input TaskInput {
 }
 
 type Team implements ModifyInterface {
+  archived: Boolean!
+
   """
   Can the user modify the entity
   """
