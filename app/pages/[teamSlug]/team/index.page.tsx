@@ -17,12 +17,14 @@ import { CustomerTable } from '../../../frontend/components/customerForm/custome
 
 const Team = (): JSX.Element => {
   const router = useRouter()
+  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
+
   const slug = router.query.teamSlug?.toString() ?? ''
+
   const handleUserDetails = async (userId: string) => {
     await router.push(`/${slug}/team/${userId}`)
   }
 
-  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
   if (!router.isReady) {
     return <div>Loading...</div>
   }

@@ -3,6 +3,7 @@ query me {
     id
     image
     name
+    role
     projects {
       id
       title

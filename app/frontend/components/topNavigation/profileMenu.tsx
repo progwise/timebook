@@ -1,6 +1,5 @@
 import { Menu } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
 
 import { TopNavigationLink } from './topNavigationLink'
 import Image from 'next/image'
@@ -11,8 +10,6 @@ export interface ProfileMenuProps {
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
   const session = useSession()
-  const router = useRouter()
-  const teamSlug = router.query.teamSlug
 
   return (
     <div className={`flex flex-row items-center ${className}`}>
