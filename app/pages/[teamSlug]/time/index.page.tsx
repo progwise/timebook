@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
 import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
@@ -14,7 +15,9 @@ const MaintainWorkHoursPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const selectedDateString = format(selectedDate, 'yyyy-MM-dd')
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  const [{ data }] = useWorkHoursQuery({ variables: { from: selectedDateString }, context })
+  const router = useRouter()
+  const teamSlug = router.query.teamSlug?.toString() ?? ''
+  const [{ data }] = useWorkHoursQuery({ variables: { teamSlug, from: selectedDateString }, context })
   const handleEditWorkItem = (workHourItem: WorkHourItem) => {
     setSelectedWorkHourItem(workHourItem)
     setIsBookWorkHourModalOpen(true)
