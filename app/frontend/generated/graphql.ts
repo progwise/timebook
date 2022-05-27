@@ -652,6 +652,16 @@ export type TeamWithProjectsFragment = {
   }>
 }
 
+export type UserRoleUpdateMutationVariables = Exact<{
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type UserRoleUpdateMutation = {
+  __typename?: 'Mutation'
+  userRoleUpdate: { __typename?: 'User'; id: string; role: Role }
+}
+
 export type WorkHourCreateMutationVariables = Exact<{
   data: WorkHourInput
 }>
@@ -811,6 +821,7 @@ export type MeQuery = {
     id: string
     image?: string | null
     name?: string | null
+    role: Role
     projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
@@ -1147,6 +1158,18 @@ export const TeamsWithProjectsDocument = gql`
 export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
 }
+export const UserRoleUpdateDocument = gql`
+  mutation userRoleUpdate($userId: ID!, $role: Role!) {
+    userRoleUpdate(userId: $userId, role: $role) {
+      id
+      role
+    }
+  }
+`
+
+export function useUserRoleUpdateMutation() {
+  return Urql.useMutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>(UserRoleUpdateDocument)
+}
 export const WorkHourCreateDocument = gql`
   mutation workHourCreate($data: WorkHourInput!) {
     workHourCreate(data: $data) {
@@ -1263,6 +1286,7 @@ export const MeDocument = gql`
       id
       image
       name
+      role
       projects {
         id
         title
@@ -1576,6 +1600,25 @@ export const mockTeamsWithProjectsQuery = (
     any
   >,
 ) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserRoleUpdateMutation((req, res, ctx) => {
+ *   const { userId, role } = req.variables;
+ *   return res(
+ *     ctx.data({ userRoleUpdate })
+ *   )
+ * })
+ */
+export const mockUserRoleUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UserRoleUpdateMutationVariables>,
+    GraphQLContext<UserRoleUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<UserRoleUpdateMutation, UserRoleUpdateMutationVariables>('userRoleUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

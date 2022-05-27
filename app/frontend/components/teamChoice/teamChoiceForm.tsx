@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
@@ -12,7 +11,7 @@ export const TeamChoiceForm = (): JSX.Element => {
     <div className="flex flex-wrap gap-4">
       {teamsData?.teams.map((team) => {
         return (
-          <>
+          <React.Fragment key={team.id}>
             <TeamTile
               team={{
                 id: team.id,
@@ -23,7 +22,7 @@ export const TeamChoiceForm = (): JSX.Element => {
                 theme: team.theme,
               }}
             />
-          </>
+          </React.Fragment>
         )
       })}
     </div>
