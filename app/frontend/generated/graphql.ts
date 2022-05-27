@@ -987,7 +987,7 @@ export const ProjectDocument = gql`
   ${TaskFragmentDoc}
 `
 
-export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'> = {}) {
+export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
@@ -999,9 +999,7 @@ export const ProjectsWithTasksDocument = gql`
   ${ProjectWithTasksFragmentDoc}
 `
 
-export function useProjectsWithTasksQuery(
-  options: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'> = {},
-) {
+export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectsWithTasksQuery>({ query: ProjectsWithTasksDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
@@ -1098,7 +1096,7 @@ export const TeamDocument = gql`
   ${TeamFragmentDoc}
 `
 
-export function useTeamQuery(options: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'> = {}) {
+export function useTeamQuery(options?: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamQuery>({ query: TeamDocument, ...options })
 }
 export const TeamCreateDocument = gql`
@@ -1134,7 +1132,7 @@ export const TeamsDocument = gql`
   ${TeamFragmentDoc}
 `
 
-export function useTeamsQuery(options: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'> = {}) {
+export function useTeamsQuery(options?: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
 }
 export const TeamsWithProjectsDocument = gql`
@@ -1146,9 +1144,7 @@ export const TeamsWithProjectsDocument = gql`
   ${TeamWithProjectsFragmentDoc}
 `
 
-export function useTeamsWithProjectsQuery(
-  options: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'> = {},
-) {
+export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
 }
 export const WorkHourCreateDocument = gql`
@@ -1195,7 +1191,7 @@ export const WorkHoursDocument = gql`
   ${WorkHourFragmentDoc}
 `
 
-export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'> = {}) {
+export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'>) {
   return Urql.useQuery<WorkHoursQuery>({ query: WorkHoursDocument, ...options })
 }
 export const CustomerDocument = gql`
@@ -1207,7 +1203,7 @@ export const CustomerDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'> = {}) {
+export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'>) {
   return Urql.useQuery<CustomerQuery>({ query: CustomerDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
@@ -1258,7 +1254,7 @@ export const CustomersDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'> = {}) {
+export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
   return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
@@ -1275,7 +1271,7 @@ export const MeDocument = gql`
   }
 `
 
-export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
@@ -1329,7 +1325,7 @@ export const ReportDocument = gql`
   }
 `
 
-export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'> = {}) {
+export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
   return Urql.useQuery<ReportQuery>({ query: ReportDocument, ...options })
 }
 export const TeamAcceptInviteDocument = gql`
@@ -1366,7 +1362,7 @@ export const UserDocument = gql`
   }
 `
 
-export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'> = {}) {
+export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
   return Urql.useQuery<UserQuery>({ query: UserDocument, ...options })
 }
 

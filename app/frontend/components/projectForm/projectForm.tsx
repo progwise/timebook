@@ -53,13 +53,18 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isNewProject = !project
   const isProjectFormReadOnly = !project?.canModify && !isNewProject
   return (
-    <form className="mt-4 flex flex-row flex-wrap gap-2" onSubmit={handleSubmit(handleSubmitHelper)}>
+    <form
+      className="mt-4 flex flex-row flex-wrap items-start justify-start gap-2"
+      onSubmit={handleSubmit(handleSubmitHelper)}
+    >
       {isNewProject ? (
         <h2 className="w-full text-lg font-semibold text-gray-400">Create new project</h2>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-400">Edit project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400">
+          {isProjectFormReadOnly ? 'View' : 'Edit'} project
+        </h2>
       )}
-      <label className="mt-4 flex w-full flex-col">
+      <label className="flex flex-1 flex-col">
         <span className="w-full text-sm text-gray-700">Name</span>
         <InputField
           variant="primary"
@@ -67,10 +72,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           readOnly={isProjectFormReadOnly}
           {...register('title')}
           placeholder="Enter project name"
+          size={30}
+          className="font-small rounded read-only:bg-gray-100 read-only:opacity-50"
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
-      <label className="flex flex-1 flex-col flex-wrap">
+      <label className="flex flex-col">
         <span className="w-full text-sm text-gray-700">Start</span>
         <Controller
           control={control}
@@ -88,10 +95,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="font-small rounded"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting}
+                disabled={formState.isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
                 hideLabel={true}
                 onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
@@ -101,7 +108,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
-      <label className="flex flex-1 flex-col flex-wrap">
+      <label className="flex flex-col">
         <span className="w-full text-sm text-gray-700">End</span>
         <Controller
           control={control}
@@ -119,10 +126,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="font-small rounded"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting}
+                disabled={formState.isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
                 hideLabel={true}
                 onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
