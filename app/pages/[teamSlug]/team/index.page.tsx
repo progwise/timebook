@@ -35,11 +35,11 @@ const Team = (): JSX.Element => {
     <>
       <ProtectedPage>
         <section>
-          <h2>Team Details</h2>
+          <h2 className="text-xl  font-medium text-gray-500">Team Details</h2>
           {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
         </section>
         <section>
-          <h2 className="flex justify-between">
+          <h2 className="text-xl font-medium text-gray-500">
             <span>Members</span>
           </h2>
           <Table className="w-full table-auto">
@@ -67,10 +67,9 @@ const Team = (): JSX.Element => {
               ))}
             </TableBody>
           </Table>
-          <Button variant="secondary">Invite Member</Button>
         </section>
         <section>
-          <h2>Customers</h2>
+          <h2 className="text-xl font-medium text-gray-500">Customers</h2>
           <CustomerTable />
         </section>
       </ProtectedPage>

@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
+import { FiCopy } from 'react-icons/fi'
 
 interface TeamFormProps {
   team?: TeamFragment
@@ -18,8 +19,8 @@ const teamInputSchema: yup.SchemaOf<TeamInput> = yup.object({
   title: yup.string().trim().required().min(1).max(50),
 })
 
-const FormField: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <label className="flex flex-row flex-wrap gap-2">{children}</label>
+const FormField: React.FC<{ className?: string; children: ReactNode }> = ({ children, className }) => (
+  <label className={`flex flex-row flex-wrap gap-2 ${className}`}>{children}</label>
 )
 
 export const TeamForm = (props: TeamFormProps): JSX.Element => {
@@ -43,17 +44,27 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       router.push(`/${data.slug}/team`)
     }
   }
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(`${process.env.NEXTAUTH_URL}/${team?.slug}/team/invite/${team?.inviteKey}`)
+  }
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit(handleTeamSave)}>
+    <form className="flex flex-col gap-2 pt-4" onSubmit={handleSubmit(handleTeamSave)}>
+      <span className=" text-sm font-semibold text-gray-500">Team name</span>
       <FormField>
-        <span className="w-1/3">Team name</span>
-        <InputField variant="primary" placeholder="Please enter the team name" {...register('title')} />
+        <InputField
+          className="w-full"
+          variant="primary"
+          placeholder="Please enter the team name"
+          {...register('title')}
+        />
         <ErrorMessage name="title" errors={formState.errors} as={<span className="text-red-700" />} />
       </FormField>
+
+      <span className="text-sm font-semibold text-gray-500">Slug</span>
       <FormField>
-        <span className="w-1/3">Slug</span>
         <InputField
+          className="w-full"
           variant="primary"
           placeholder="This team is accessible on https://tb.com/[slug]"
           disabled={formState.isSubmitting}
@@ -62,22 +73,26 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         <ErrorMessage name="slug" errors={formState.errors} as={<span className="text-red-700" />} />
       </FormField>
       {team && (
-        <FormField>
-          <span className="w-1/3">Invitation link</span>
-          <InputField
-            readOnly
-            variant="primary"
-            name="tbInvitationLink"
-            value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
-          />
-        </FormField>
+        <>
+          <span className=" text-sm font-semibold text-gray-500">Invitation link</span>
+          <FormField className="flex-row items-center">
+            <InputField
+              className="flex-1"
+              readOnly
+              variant="primary"
+              name="tbInvitationLink"
+              value={`${process.env.NEXTAUTH_URL}/${team.slug}/team/invite/${team.inviteKey}`}
+            />
+            <FiCopy className="right-0 cursor-pointer text-2xl text-gray-500" onClick={handleCopyClick} />
+          </FormField>
+        </>
       )}
 
-      <div className="mt-4 flex flex-row justify-center gap-2">
+      <div className="start mt-4 flex flex-row justify-end gap-2">
+        <Button variant="secondary">Dismiss</Button>
         <Button variant="primary" type="submit">
           Save
         </Button>
-        <Button variant="tertiary">Dismiss</Button>
         {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
       </div>
     </form>
