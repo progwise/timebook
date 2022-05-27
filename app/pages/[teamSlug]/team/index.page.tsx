@@ -22,9 +22,7 @@ const Team = (): JSX.Element => {
   const slug = router.query.teamSlug?.toString() ?? ''
 
   const handleUserDetails = async (userId: string) => {
-    // if (data?.user.role === 'ADMIN') {
     await router.push(`/${slug}/team/${userId}`)
-    //}
   }
 
   if (!router.isReady) {
