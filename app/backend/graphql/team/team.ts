@@ -13,7 +13,7 @@ export const Team = objectType({
     t.id('id', { description: 'Identifier of the team' })
     t.string('title', { description: 'Title of the team' })
     t.string('slug', { description: 'Slug that is used in the team URL' })
-    t.boolean('archived', { description: 'Whether the team is archived', resolve: (team) => !!team.archivedAt })
+    t.boolean('archived', { resolve: (team) => !!team.archivedAt })
     t.field('theme', {
       type: Theme,
       description: 'Color theme of the team',

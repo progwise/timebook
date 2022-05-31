@@ -440,6 +440,8 @@ input TaskInput {
 }
 
 type Team implements ModifyInterface {
+  archived: Boolean!
+
   """
   Whether the team is archived
   """
