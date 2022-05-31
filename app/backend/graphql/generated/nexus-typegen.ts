@@ -504,6 +504,10 @@ export interface NexusGenArgTypes {
       // args
       slug: string // String!
     }
+    teams: {
+      // args
+      includeArchived: boolean // Boolean!
+    }
     user: {
       // args
       userId?: string | null // ID

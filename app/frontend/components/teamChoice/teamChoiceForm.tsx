@@ -2,18 +2,18 @@ import React, { useMemo } from 'react'
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
 
-export const TeamChoiceForm = (): JSX.Element => {
+interface TeamChoiceFormProps {
+  includeArchived?: boolean
+}
+
+export const TeamChoiceForm = ({ includeArchived }: TeamChoiceFormProps): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Projects'] }), [])
-  const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context })
+  const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context, variables: { includeArchived } })
 
   return (
     <div className="flex flex-wrap gap-4">
       {teamsData?.teams.map((team) => {
-        return (
-          <React.Fragment key={team.id}>
-            <TeamTile team={{ ...team }} />
-          </React.Fragment>
-        )
+        return <TeamTile key={team.id} team={team} />
       })}
     </div>
   )

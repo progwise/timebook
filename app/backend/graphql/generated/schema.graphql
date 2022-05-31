@@ -327,7 +327,12 @@ type Query {
   """
   Return all teams
   """
-  teams: [Team!]!
+  teams(
+    """
+    Show archived teams
+    """
+    includeArchived: Boolean! = false
+  ): [Team!]!
 
   """
   Returns a single user
@@ -435,6 +440,9 @@ input TaskInput {
 }
 
 type Team implements ModifyInterface {
+  """
+  Whether the team is archived
+  """
   archived: Boolean!
 
   """
