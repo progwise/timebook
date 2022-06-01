@@ -42,9 +42,11 @@ const Team = (): JSX.Element => {
         <section>
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-xl font-medium text-gray-500">Team Details</h2>
-            <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
-              Archive
-            </Button>
+            {teamData.team.canModify && (
+              <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
+                Archive
+              </Button>
+            )}
           </div>
           <TeamForm key={teamData.team.id} team={teamData.team} />
         </section>

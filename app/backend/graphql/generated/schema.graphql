@@ -443,11 +443,6 @@ type Team implements ModifyInterface {
   archived: Boolean!
 
   """
-  Whether the team is archived
-  """
-  archived: Boolean!
-
-  """
   Can the user modify the entity
   """
   canModify: Boolean!
