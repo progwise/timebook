@@ -14,7 +14,7 @@ const Teams = (): JSX.Element => {
         Add a new team
       </Button>
       <h2 className="timebook">Your teams</h2>
-      <TeamChoiceForm />
+      <TeamChoiceForm includeArchived />
     </ProtectedPage>
   )
 }

@@ -247,6 +247,10 @@ export type QueryTeamBySlugArgs = {
   slug: Scalars['String']
 }
 
+export type QueryTeamsArgs = {
+  includeArchived?: Scalars['Boolean']
+}
+
 export type QueryUserArgs = {
   userId?: InputMaybe<Scalars['ID']>
 }
@@ -649,7 +653,9 @@ export type TeamsQuery = {
   }>
 }
 
-export type TeamsWithProjectsQueryVariables = Exact<{ [key: string]: never }>
+export type TeamsWithProjectsQueryVariables = Exact<{
+  includeArchived?: InputMaybe<Scalars['Boolean']>
+}>
 
 export type TeamsWithProjectsQuery = {
   __typename?: 'Query'
@@ -1202,8 +1208,8 @@ export function useTeamsQuery(options?: Omit<Urql.UseQueryArgs<TeamsQueryVariabl
   return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
 }
 export const TeamsWithProjectsDocument = gql`
-  query teamsWithProjects {
-    teams {
+  query teamsWithProjects($includeArchived: Boolean) {
+    teams(includeArchived: $includeArchived) {
       ...TeamWithProjects
     }
   }
@@ -1655,6 +1661,7 @@ export const mockTeamsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTeamsWithProjectsQuery((req, res, ctx) => {
+ *   const { includeArchived } = req.variables;
  *   return res(
  *     ctx.data({ teams })
  *   )
