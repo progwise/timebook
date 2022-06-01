@@ -321,7 +321,6 @@ export type TaskInput = {
 
 export type Team = ModifyInterface & {
   __typename?: 'Team'
-  /** Whether the team is archived */
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
