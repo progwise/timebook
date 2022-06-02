@@ -4,8 +4,8 @@ query teams {
   }
 }
 
-query teamsWithProjects {
-  teams {
+query teamsWithProjects($includeArchived: Boolean) {
+  teams(includeArchived: $includeArchived) {
     ...TeamWithProjects
   }
 }

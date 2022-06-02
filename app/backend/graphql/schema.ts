@@ -24,6 +24,7 @@ import {
 import { usersQueryField, userQueryField, userRoleUpdateMutationField } from './user'
 import {
   teamAcceptInviteMutationField,
+  teamArchiveMutationField,
   teamBySlugQueryField,
   teamCreateMutationField,
   teamDeleteMutationField,
@@ -64,6 +65,7 @@ export const schema = makeSchema({
     teamQueryField,
     teamBySlugQueryField,
     teamAcceptInviteMutationField,
+    teamArchiveMutationField,
     teamCreateMutationField,
     teamUpdateMutationField,
     teamDeleteMutationField,
@@ -94,6 +96,7 @@ export const schema = makeSchema({
       Project: 'prisma.Project',
       WorkHour: 'prisma.WorkHour',
       Task: 'prisma.Task',
+      Team: 'prisma.Team',
       Report: 'NexusGenArgTypes["Query"]["report"]',
     },
   },

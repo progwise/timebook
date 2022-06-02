@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { useTeamQuery } from '../../../frontend/generated/graphql'
+import { TeamFragment, useTeamQuery } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import {
   Table,
@@ -14,28 +14,44 @@ import {
   TableRow,
 } from '../../../frontend/components/table/table'
 import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
+import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
+import { useState } from 'react'
 
 const Team = (): JSX.Element => {
   const router = useRouter()
+  const [{ data: teamData, fetching }] = useTeamQuery({ pause: !router.isReady })
+  const [teamToBeArchived, setTeamToBeArchived] = useState<TeamFragment | undefined>()
+
   const slug = router.query.teamSlug?.toString() ?? ''
+
   const handleUserDetails = async (userId: string) => {
     await router.push(`/${slug}/team/${userId}`)
   }
 
-  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
-  if (!router.isReady) {
+  if (!router.isReady || fetching) {
     return <div>Loading...</div>
+  }
+
+  if (!teamData?.team) {
+    return <div>Team not found</div>
   }
 
   return (
     <>
       <ProtectedPage>
         <section>
-          <h2>Team Details</h2>
-          {teamData?.team && <TeamForm key={teamData.team.id} team={teamData.team} />}
+          <div className="flex flex-row items-center justify-between">
+            <h2 className="text-xl font-medium text-gray-500">Team Details</h2>
+            {teamData.team.canModify && (
+              <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
+                Archive
+              </Button>
+            )}
+          </div>
+          <TeamForm key={teamData.team.id} team={teamData.team} />
         </section>
         <section>
-          <h2 className="flex justify-between">
+          <h2 className="text-xl font-medium text-gray-500">
             <span>Members</span>
           </h2>
           <Table className="w-full table-auto">
@@ -63,12 +79,15 @@ const Team = (): JSX.Element => {
               ))}
             </TableBody>
           </Table>
-          <Button variant="secondary">Invite Member</Button>
         </section>
         <section>
-          <h2>Customers</h2>
+          <h2 className="text-xl font-medium text-gray-500">Customers</h2>
           <CustomerTable />
         </section>
+        {teamToBeArchived ? (
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          <TeamArchiveModal open onClose={() => setTeamToBeArchived(undefined)} team={teamToBeArchived} />
+        ) : undefined}
       </ProtectedPage>
     </>
   )

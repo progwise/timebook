@@ -112,14 +112,7 @@ export interface NexusGenObjects {
     workHours: NexusGenRootTypes['WorkHour'][] // [WorkHour!]!
   }
   Task: prisma.Task
-  Team: {
-    // root type
-    id: string // ID!
-    inviteKey: string // String!
-    slug: string // String!
-    theme: NexusGenEnums['Theme'] // Theme!
-    title: string // String!
-  }
+  Team: prisma.Team
   User: {
     // root type
     id: string // ID!
@@ -164,6 +157,7 @@ export interface NexusGenFieldTypes {
     taskDelete: NexusGenRootTypes['Task'] // Task!
     taskUpdate: NexusGenRootTypes['Task'] // Task!
     teamAcceptInvite: NexusGenRootTypes['Team'] // Team!
+    teamArchive: NexusGenRootTypes['Team'] // Team!
     teamCreate: NexusGenRootTypes['Team'] // Team!
     teamDelete: NexusGenRootTypes['Team'] // Team!
     teamUpdate: NexusGenRootTypes['Team'] // Team!
@@ -234,6 +228,7 @@ export interface NexusGenFieldTypes {
   }
   Team: {
     // field return type
+    archived: boolean // Boolean!
     canModify: boolean // Boolean!
     customers: NexusGenRootTypes['Customer'][] // [Customer!]!
     id: string // ID!
@@ -289,6 +284,7 @@ export interface NexusGenFieldTypeNames {
     taskDelete: 'Task'
     taskUpdate: 'Task'
     teamAcceptInvite: 'Team'
+    teamArchive: 'Team'
     teamCreate: 'Team'
     teamDelete: 'Team'
     teamUpdate: 'Team'
@@ -359,6 +355,7 @@ export interface NexusGenFieldTypeNames {
   }
   Team: {
     // field return type name
+    archived: 'Boolean'
     canModify: 'Boolean'
     customers: 'Customer'
     id: 'ID'
@@ -442,6 +439,10 @@ export interface NexusGenArgTypes {
       // args
       inviteKey: string // String!
     }
+    teamArchive: {
+      // args
+      teamId: string // ID!
+    }
     teamCreate: {
       // args
       data: NexusGenInputs['TeamInput'] // TeamInput!
@@ -503,6 +504,10 @@ export interface NexusGenArgTypes {
       // args
       slug: string // String!
     }
+    teams: {
+      // args
+      includeArchived: boolean // Boolean!
+    }
     user: {
       // args
       userId?: string | null // ID
@@ -510,6 +515,7 @@ export interface NexusGenArgTypes {
     workHours: {
       // args
       from: NexusGenScalars['Date'] // Date!
+      teamSlug: string // String!
       to?: NexusGenScalars['Date'] | null // Date
       userIds?: string[] | null // [ID!]
     }

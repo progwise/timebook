@@ -8,6 +8,7 @@ const testTeam1: TeamFragment = {
   slug: 'team1',
   theme: Theme.Blue,
   title: 'testTeam1',
+  archived: false,
 }
 const testTeam2: TeamFragment = {
   __typename: 'Team',
@@ -16,6 +17,7 @@ const testTeam2: TeamFragment = {
   slug: 'team2',
   theme: Theme.Red,
   title: 'testTeam2',
+  archived: false,
 }
 
 export const teamHandlers = [

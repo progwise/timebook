@@ -147,6 +147,16 @@ type Mutation {
   ): Team!
 
   """
+  Archive a team
+  """
+  teamArchive(
+    """
+    id of the team
+    """
+    teamId: ID!
+  ): Team!
+
+  """
   Create a new team
   """
   teamCreate(data: TeamInput!): Team!
@@ -317,7 +327,12 @@ type Query {
   """
   Return all teams
   """
-  teams: [Team!]!
+  teams(
+    """
+    Show archived teams
+    """
+    includeArchived: Boolean! = false
+  ): [Team!]!
 
   """
   Returns a single user
@@ -338,6 +353,7 @@ type Query {
     Start of the time period
     """
     from: Date!
+    teamSlug: String!
 
     """
     End of the time period. If not provided the from arg is used as the end.
@@ -424,6 +440,8 @@ input TaskInput {
 }
 
 type Team implements ModifyInterface {
+  archived: Boolean!
+
   """
   Can the user modify the entity
   """

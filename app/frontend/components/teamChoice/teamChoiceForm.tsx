@@ -1,29 +1,19 @@
-import { useMemo } from 'react'
-
+import React, { useMemo } from 'react'
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
 
-export const TeamChoiceForm = (): JSX.Element => {
+interface TeamChoiceFormProps {
+  includeArchived?: boolean
+}
+
+export const TeamChoiceForm = ({ includeArchived }: TeamChoiceFormProps): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Projects'] }), [])
-  const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context })
+  const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context, variables: { includeArchived } })
 
   return (
     <div className="flex flex-wrap gap-4 dark:text-white">
       {teamsData?.teams.map((team) => {
-        return (
-          <>
-            <TeamTile
-              team={{
-                id: team.id,
-                title: team.title,
-                slug: team.slug,
-                inviteKey: team.inviteKey,
-                projects: team.projects,
-                theme: team.theme,
-              }}
-            />
-          </>
-        )
+        return <TeamTile key={team.id} team={team} />
       })}
     </div>
   )

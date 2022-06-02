@@ -1,0 +1,5 @@
+mutation teamArchive($teamId: ID!) {
+  teamArchive(teamId: $teamId) {
+    ...Team
+  }
+}

@@ -1,4 +1,5 @@
 export * from './teamAcceptInviteMutationField'
+export * from './teamArchiveMutationField'
 export * from './teamCreateMutationField'
 export * from './teamDeleteMutationField'
 export * from './teamUpdateMutationField'

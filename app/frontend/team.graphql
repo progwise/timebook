@@ -20,4 +20,5 @@ fragment Team on Team {
   slug
   theme
   inviteKey
+  archived
 }
