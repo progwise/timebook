@@ -54,18 +54,18 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isProjectFormReadOnly = !project?.canModify && !isNewProject
   return (
     <form
-      className="mt-4 flex flex-row flex-wrap items-start justify-start gap-2"
+      className="mt-4 flex flex-row flex-wrap items-start justify-start gap-2 "
       onSubmit={handleSubmit(handleSubmitHelper)}
     >
       {isNewProject ? (
-        <h2 className="w-full text-lg font-semibold text-gray-400">Create new project</h2>
+        <h2 className="w-full text-lg font-semibold text-gray-400 dark:text-white">Create new project</h2>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-400">
+        <h2 className="w-full text-lg font-semibold text-gray-400 ">
           {isProjectFormReadOnly ? 'View' : 'Edit'} project
         </h2>
       )}
       <label className="flex flex-1 flex-col">
-        <span className="w-full text-sm text-gray-700">Name</span>
+        <span className="w-full text-sm text-gray-700 dark:text-white">Name</span>
         <InputField
           variant="primary"
           disabled={formState.isSubmitting}
@@ -73,18 +73,18 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {...register('title')}
           placeholder="Enter project name"
           size={30}
-          className="font-small rounded read-only:bg-gray-100 read-only:opacity-50"
+          className="font-small dark:placeholder-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
-      <label className="flex flex-col">
-        <span className="w-full text-sm text-gray-700">Start</span>
+      <label className="flex flex-col ">
+        <span className="w-full text-sm text-gray-700 dark:text-white">Start</span>
         <Controller
           control={control}
           rules={{ validate: (value) => !value || isValidDateString(value) }}
           name="start"
           render={({ field: { onChange, onBlur, value } }) => (
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <InputMask
                 disabled={formState.isSubmitting}
                 mask="9999-99-99"
@@ -95,7 +95,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}
@@ -109,7 +109,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
       <label className="flex flex-col">
-        <span className="w-full text-sm text-gray-700">End</span>
+        <span className="w-full text-sm text-gray-700 dark:text-white">End</span>
         <Controller
           control={control}
           rules={{ validate: (value) => !value || isValidDateString(value) }}
@@ -126,7 +126,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50"
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}

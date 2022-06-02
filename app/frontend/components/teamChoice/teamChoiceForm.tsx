@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useMemo } from 'react'
 
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
@@ -9,7 +8,7 @@ export const TeamChoiceForm = (): JSX.Element => {
   const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context })
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap gap-4 dark:text-white">
       {teamsData?.teams.map((team) => {
         return (
           <>

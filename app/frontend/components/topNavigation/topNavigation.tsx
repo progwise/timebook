@@ -13,22 +13,22 @@ export const TopNavigation = (): JSX.Element => {
   const handleTimeBookClick = () => router.push(`/home`)
 
   return (
-    <section className="items-strech flex w-full flex-row">
-      <h1 className="flex min-w-0 flex-1 flex-row items-center gap-2">
-        <AiOutlineFieldTime className="text-blue-500" size="2em" />
+    <section className="items-strech flex  w-full flex-row ">
+      <h1 className="flex min-w-0 flex-1 flex-row  items-center gap-2">
+        <AiOutlineFieldTime className="text-blue-500  " size="2em" />
         <Link href={'/'}>
-          <a className="text-2xl font-semibold text-blue-400">timebook</a>
+          <a className="text-2xl font-semibold  text-blue-400 ">timebook</a>
         </Link>
         {teamSlug && (
           <span
             onClick={handleTimeBookClick}
-            className="overflow-hidden text-ellipsis whitespace-nowrap text-2xl text-gray-400"
+            className="overflow-hidden text-ellipsis whitespace-nowrap  text-2xl text-gray-400"
           >
             /{teamSlug}
           </span>
         )}
       </h1>
-      <nav className="flex flex-row items-center gap-5">
+      <nav className="flex flex-row items-center  gap-5 dark:text-white">
         {session.status !== 'authenticated' && (
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
@@ -38,7 +38,7 @@ export const TopNavigation = (): JSX.Element => {
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/team`}>Team</TopNavigationLink>}
 
-        <ProfileMenu className="ml-3" />
+        <ProfileMenu className="ml-3 dark:text-white " />
       </nav>
     </section>
   )

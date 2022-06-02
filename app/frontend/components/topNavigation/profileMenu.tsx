@@ -1,7 +1,5 @@
 import { Menu } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-
 import { TopNavigationLink } from './topNavigationLink'
 import Image from 'next/image'
 
@@ -11,11 +9,8 @@ export interface ProfileMenuProps {
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
   const session = useSession()
-  const router = useRouter()
-  const teamSlug = router.query.teamSlug
-
   return (
-    <div className={`flex flex-row items-center ${className}`}>
+    <div className={`flex flex-row items-center  ${className}`}>
       <Menu as="div" className="relative inline-block text-left">
         <Menu.Button className="flex gap-2">
           {session.data?.user.image && (
@@ -27,18 +22,20 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
                 src={session.data?.user.image}
                 alt={session.data?.user.name ?? 'Profile picture'}
               />
-              <span className="text-m cursor-pointer whitespace-nowrap text-gray-500 hover:text-blue-500">
+              <span className="text-m cursor-pointer whitespace-nowrap text-gray-500 hover:text-blue-500 dark:text-white">
                 {session.data.user.name}
               </span>
             </>
           )}
         </Menu.Button>
 
-        <Menu.Items className=" absolute right-1 mx-3 flex w-64 flex-col rounded-md bg-white p-2 px-1 shadow ">
+        <Menu.Items className=" absolute right-1 mx-3 flex w-64 flex-col rounded-md  bg-white p-2 px-1 shadow dark:bg-slate-800 ">
           <Menu.Item>
             {session.status === 'authenticated' && (
               <>
-                <TopNavigationLink onClick={() => signOut({ callbackUrl: '/' })}>Sign out</TopNavigationLink>
+                <TopNavigationLink className="dark:text-white " onClick={() => signOut({ callbackUrl: '/' })}>
+                  Sign out
+                </TopNavigationLink>
               </>
             )}
           </Menu.Item>

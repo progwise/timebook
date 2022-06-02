@@ -48,13 +48,19 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(handleTeamSave)}>
       <FormField>
         <span className="w-1/3">Team name</span>
-        <InputField variant="primary" placeholder="Please enter the team name" {...register('title')} />
+        <InputField
+          variant="primary"
+          className="dark:border-white dark:bg-slate-800 dark:text-white"
+          placeholder="Please enter the team name"
+          {...register('title')}
+        />
         <ErrorMessage name="title" errors={formState.errors} as={<span className="text-red-700" />} />
       </FormField>
       <FormField>
         <span className="w-1/3">Slug</span>
         <InputField
           variant="primary"
+          className="dark:border-white dark:bg-slate-800 dark:text-white"
           placeholder="This team is accessible on https://tb.com/[slug]"
           disabled={formState.isSubmitting}
           {...register('slug')}
