@@ -131,7 +131,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             Project
           </label>
           <select
-            className="w-72 rounded-md"
+            className="w-72 rounded-md dark:bg-slate-800"
             id="projectId"
             {...register('projectId', { required: 'Project is required' })}
           >
@@ -148,7 +148,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         </div>
         <div className="mb-4 flex flex-col">
           <label>
-            <select className="w-72 rounded-md" {...register('taskId')}>
+            <select className="w-72 rounded-md dark:bg-slate-800" {...register('taskId')}>
               <option value="">Please Select</option>
               {selectedProject?.tasks.map((task) => {
                 return (
@@ -161,7 +161,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </label>
           <ErrorMessage errors={errors} name="taskId" as={<span className="text-red-700" />} />
         </div>
-        <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4 dark:bg-slate-800">
           <Controller
             control={control}
             render={({ field }) => {
@@ -177,7 +177,12 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             name="duration"
           />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
-          <InputField variant="primary" placeholder="Notes (Optional)" {...register('comment')} />
+          <InputField
+            variant="primary"
+            className=" dark:bg-slate-800 dark:text-white"
+            placeholder="Notes (Optional)"
+            {...register('comment')}
+          />
           <ErrorMessage errors={errors} name="comment" as={<span className="text-red-700" />} />
         </div>
       </form>

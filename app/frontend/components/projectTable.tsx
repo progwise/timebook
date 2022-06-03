@@ -15,7 +15,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   }
 
   return (
-    <Table className="w-full bg-white shadow-lg">
+    <Table className="w-full bg-white shadow-lg dark:bg-slate-800">
       <TableHead>
         <TableHeadRow>
           <TableHeadCell>Name</TableHeadCell>
