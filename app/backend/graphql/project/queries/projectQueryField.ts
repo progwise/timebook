@@ -17,9 +17,9 @@ export const projectQueryField = queryField('project', {
       where: {
         id: _arguments.projectId,
         OR: [
-        {projectMemberships: { some: { userId: context.session.user.id } }},
-        {team: {teamMemberships: {some: {role: 'ADMIN', userId: context.session.user.id}}}},
-      ]
+          { projectMemberships: { some: { userId: context.session.user.id } } },
+          { team: { teamMemberships: { some: { role: 'ADMIN', userId: context.session.user.id } } } },
+        ],
       },
       rejectOnNotFound: true,
     })
