@@ -49,14 +49,19 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
     <>
       <article>
         <form onSubmit={handleSubmit(handleSave)}>
-          <label className="text-gray-500">
-            <InputField variant="primary" placeholder="Name" {...register('title')} />
+          <label className="text-gray-500 ">
+            <InputField
+              variant="primary"
+              className=" dark:border-white dark:bg-slate-800 dark:text-white "
+              placeholder="Name"
+              {...register('title')}
+            />
           </label>
           <div>
             <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
           </div>
 
-          <div className="mt-16 flex justify-center gap-2">
+          <div className="mt-16 flex justify-center gap-2 ">
             <div className="flex justify-start">
               {customer ? (
                 <Button type="button" variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>

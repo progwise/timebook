@@ -11,7 +11,7 @@ export const TeamChoiceForm = ({ includeArchived }: TeamChoiceFormProps): JSX.El
   const [{ data: teamsData }] = useTeamsWithProjectsQuery({ context, variables: { includeArchived } })
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap gap-4 dark:text-white">
       {teamsData?.teams.map((team) => {
         return <TeamTile key={team.id} team={team} />
       })}

@@ -53,7 +53,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       <FormField>
         <span className=" text-sm font-semibold text-gray-500">Team name</span>
         <InputField
-          className="w-full"
+          className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
           variant="primary"
           placeholder="Please enter the team name"
           {...register('title')}
@@ -64,8 +64,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       <FormField>
         <span className="text-sm font-semibold text-gray-500">Slug</span>
         <InputField
-          className="w-full"
           variant="primary"
+          className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
           placeholder="This team is accessible on https://tb.com/[slug]"
           disabled={formState.isSubmitting}
           {...register('slug')}

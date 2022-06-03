@@ -20,7 +20,9 @@ const Projects = (): JSX.Element => {
     <ProtectedPage>
       <article className="timebook">
         <div className="flex justify-between">
-          <h2 className="text-lg font-semibold text-gray-400">Team projects for {teamData?.team.title}</h2>
+          <h2 className="text-lg font-semibold text-gray-400 dark:text-white">
+            Team projects for {teamData?.team.title}
+          </h2>
           {teamData?.team.canModify && (
             <Button variant="primary" onClick={handleAddProject}>
               Add
@@ -36,7 +38,7 @@ const Projects = (): JSX.Element => {
               <div>No projects in team {teamData?.team.title}</div>
             ) : (
               <>
-                <ProjectList className="mb-6" projects={data.projects} />
+                <ProjectList className="mb-6 " projects={data.projects} />
                 <ProjectTable projects={data.projects} />
               </>
             )}
