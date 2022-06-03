@@ -1,4 +1,3 @@
-import is from 'date-fns/locale/is'
 import { idArg, mutationField } from 'nexus'
 import { isTeamAdmin } from '../../isTeamAdmin'
 import { Project } from '../../project/project'
