@@ -88,6 +88,11 @@ type Mutation {
   ): Project!
 
   """
+  Assign user to Project
+  """
+  projectMembershipCreate(projectId: ID!, userId: ID!): Project!
+
+  """
   Update a project
   """
   projectUpdate(

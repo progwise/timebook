@@ -58,6 +58,8 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  /** Assign user to Project */
+  projectMembershipCreate: Project
   /** Update a project */
   projectUpdate: Project
   /** Archive a task */
@@ -107,6 +109,11 @@ export type MutationProjectCreateArgs = {
 
 export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationProjectMembershipCreateArgs = {
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
