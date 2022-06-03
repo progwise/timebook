@@ -9,6 +9,7 @@ const teamUpdateMutation = `
     teamUpdate(id: $id, data: $data) {
       id 
       title
+      slug
     }
   }
 `
@@ -84,5 +85,28 @@ describe('teamUpdateMutationField', () => {
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
+
+  it('should update team', async () => {
+    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+    const response = await testServer.executeOperation({
+      query: teamUpdateMutation,
+      variables: {
+        id: '1',
+        data: {
+          title: 'Progwise-Updated',
+          slug: 'progwise-updated',
+        },
+      },
+    })
+
+    expect(response.data).toEqual({
+      teamUpdate: {
+        id: '1',
+        title: 'Progwise-Updated',
+        slug: 'progwise-updated',
+      },
+    })
+    expect(response.errors).toBeUndefined()
   })
 })
