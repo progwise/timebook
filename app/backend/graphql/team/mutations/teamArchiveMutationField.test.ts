@@ -18,20 +18,27 @@ describe('teamArchiveMutationField', () => {
   beforeAll(async () => {
     await prisma.user.create({
       data: {
-        id: 'Can Archive',
-        name: 'Admin User',
+        id: '1',
+        name: 'Admin',
       },
     })
     await prisma.user.create({
       data: {
-        id: 'Can not Archive',
-        name: 'Member User',
+        id: '2',
+        name: 'Member',
+      },
+    })
+
+    await prisma.user.create({
+      data: {
+        id: '3',
+        name: 'Admin of another team',
       },
     })
 
     await prisma.team.create({
       data: {
-        id: '1',
+        id: 'Team 1',
         slug: 'progwise',
         title: 'Progwise',
         teamMemberships: {
@@ -39,15 +46,30 @@ describe('teamArchiveMutationField', () => {
             data: [
               {
                 id: '1',
-                userId: 'Can Archive',
+                userId: '1',
                 role: 'ADMIN',
               },
               {
                 id: '2',
-                userId: 'Can not Archive',
+                userId: '2',
                 role: 'MEMBER',
               },
             ],
+          },
+        },
+      },
+    })
+
+    await prisma.team.create({
+      data: {
+        id: 'Team 2',
+        slug: 'google',
+        title: 'Google',
+        teamMemberships: {
+          create: {
+            id: '3',
+            userId: '3',
+            role: 'ADMIN',
           },
         },
       },
@@ -56,27 +78,35 @@ describe('teamArchiveMutationField', () => {
 
   it('should throw error when unauthorized', async () => {
     const testServer = getTestServer({ prisma, noSession: true })
-    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: '1' } })
+    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
   it('should throw error when user is not admin', async () => {
-    const testServer = getTestServer({ prisma, userId: 'Can not Archive', teamSlug: 'progwise' })
-    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: '1' } })
+    const testServer = getTestServer({ prisma, userId: '2', teamSlug: 'progwise' })
+    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
+
+  it('should throw error when admin from another team', async () => {
+    const testServer = getTestServer({ prisma, userId: '3', teamSlug: 'google' })
+    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
   it('should archive team', async () => {
-    const testServer = getTestServer({ prisma, userId: 'Can Archive', teamSlug: 'progwise' })
-    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: '1' } })
+    const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'progwise' })
+    const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toEqual({
       teamArchive: {
-        id: '1',
+        id: 'Team 1',
         title: 'Progwise',
         archived: true,
       },
