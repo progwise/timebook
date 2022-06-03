@@ -110,7 +110,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         >
           <Popover.Panel className=" absolute z-10">
             {({ close }) => (
-              <section className="absolute w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white ">
+              <section className="relative w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white ">
                 <header className="flex justify-between p-0 pb-2 font-bold">
                   <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
                   <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>
