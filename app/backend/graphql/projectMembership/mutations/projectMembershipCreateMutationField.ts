@@ -20,7 +20,14 @@ export const projectMembershipCreateMutationField = mutationField('projectMember
       where: { id: _arguments.projectId },
       include: { team: true },
     })
-    return context.teamSlug === project?.team.slug
+    if (context.teamSlug !== project?.team.slug) return false
+    const teamMembership = await context.prisma.teamMembership.findUnique({
+      where: { userId_teamId: { userId: _arguments.userId, teamId: project.teamId } },
+    })
+    if (!teamMembership) {
+      return false
+    }
+    return true
   },
   resolve: async (_source, _arguments, context) => {
     const projectMembership = await context.prisma.projectMembership.findUnique({
