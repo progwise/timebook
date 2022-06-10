@@ -14,7 +14,13 @@ interface TeamFormProps {
 }
 
 const teamInputSchema: yup.SchemaOf<TeamInput> = yup.object({
-  slug: yup.string().trim().required().min(1).max(50),
+  slug: yup
+    .string()
+    .trim()
+    .required()
+    .min(1)
+    .max(50)
+    .matches(/^[\w\-]+$/, 'You are only allowed to use digits, characters, -, _'),
   theme: yup.mixed<Theme>().oneOf(Object.values(Theme)),
   title: yup.string().trim().required().min(1).max(50),
 })
