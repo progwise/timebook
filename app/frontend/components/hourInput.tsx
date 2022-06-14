@@ -98,10 +98,10 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   }, [workHours])
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <input
         onFocus={(event) => event.target.select()}
-        className="w-full p-1 text-center  dark:bg-slate-800"
+        className="w-full rounded-md p-1 text-center dark:bg-slate-800"
         type="text"
         name="hours"
         placeholder="0:00"
