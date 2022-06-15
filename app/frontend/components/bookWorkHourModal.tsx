@@ -5,6 +5,7 @@ import {
   useWorkHourUpdateMutation,
   useProjectsWithTasksQuery,
   useWorkHourDeleteMutation,
+  useTaskCreateMutation,
 } from '../generated/graphql'
 import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
@@ -13,6 +14,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { HourInput } from './hourInput'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useEffect } from 'react'
 
 interface BookWorkHourModalProps {
   workHourItem: WorkHourItem
@@ -23,10 +25,13 @@ export interface WorkHourItem {
   workHourId?: string
   date: Date
   duration: number
-  projectId?: string
-  taskId?: string
+  projectId: string
+  taskId: string
   comment?: string
+  taskTitle?: string
 }
+
+const CREATE_NEW_TASK = 'CREATE-NEW-TASK'
 
 const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
   workHourId: yup.string(),
@@ -39,6 +44,17 @@ const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
   projectId: yup.string().required('Project is required'),
   taskId: yup.string().required('Task is required'),
   comment: yup.string().trim().max(200),
+  //When create new task is selected, task title is required
+
+  taskTitle: yup
+    .string()
+    .trim()
+    .when('taskId', {
+      is: CREATE_NEW_TASK,
+      // eslint-disable-next-line unicorn/no-thenable
+      then: (schema) =>
+        schema.min(4, 'task title must be at least 4 characters').max(50, 'task title must be at most 50 characters'),
+    }),
 })
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
@@ -47,35 +63,49 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   const {
     register,
     handleSubmit,
-    getValues,
     watch,
     setValue,
     control,
     formState: { isSubmitting, errors },
   } = useForm<WorkHourItem>({
     defaultValues: workHourItem,
-    shouldUnregister: true,
+    shouldUnregister: false,
     resolver: yupResolver(bookWorkHourModalSchema),
   })
   const [, createWorkHour] = useWorkHourCreateMutation()
   const [, updateWorkHour] = useWorkHourUpdateMutation()
   const [, deleteWorkHour] = useWorkHourDeleteMutation()
-
-  if (!data?.projects) {
-    return <div>Loading...</div>
-  }
+  const [, taskCreate] = useTaskCreateMutation()
 
   const handleSubmitHelper = async (data: WorkHourItem) => {
     if (!data.taskId) {
       throw new Error('no Task selected')
     }
 
+    let taskId = data.taskId
+    //if there is no selected task, create a new task
+    if (data.taskId === CREATE_NEW_TASK) {
+      const taskResult = await taskCreate({
+        data: {
+          projectId: data.projectId ?? '',
+          title: data.taskTitle ?? '',
+        },
+      })
+
+      if (taskResult.data) {
+        taskId = taskResult.data.taskCreate.id
+      } else {
+        throw new Error('Task not created')
+      }
+    }
+
     const workHourInput = {
       duration: data.duration,
-      taskId: data.taskId,
+      taskId,
       date: format(data.date, 'yyyy-MM-dd'),
       comment: data.comment,
     }
+
     const result = await (!data.workHourId
       ? createWorkHour({ data: workHourInput })
       : updateWorkHour({
@@ -88,12 +118,19 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     }
   }
 
-  watch('projectId', workHourItem.projectId)
-  const currentValues = getValues()
-  const selectedProject = data?.projects.find((project) => project.id === currentValues.projectId)
-  if (!selectedProject?.tasks.some((task) => task.id === currentValues.taskId)) {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    setValue('taskId', undefined)
+  const [currentProjectId, currentTaskId] = watch(['projectId', 'taskId'])
+  const selectedProject = data?.projects.find((project) => project.id === currentProjectId)
+
+  useEffect(() => {
+    const isTaskFromSelectedProject = selectedProject?.tasks.some((task) => task.id === currentTaskId)
+    if (!isTaskFromSelectedProject) {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      setValue('taskId', '')
+    }
+  }, [currentProjectId, selectedProject])
+
+  if (!data?.projects) {
+    return <div>Loading...</div>
   }
 
   const handleDelete = async () => {
@@ -106,7 +143,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
 
   return (
     <Modal
-      title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'New entry'}
+      title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'Book hours'}
       actions={
         <>
           <Button variant="primary" form="book-work-hour" type="submit" disabled={isSubmitting}>
@@ -131,11 +168,13 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             Project
           </label>
           <select
-            className="w-72 rounded-md dark:bg-slate-800"
+            className="w-96 rounded-md dark:bg-slate-800"
             id="projectId"
             {...register('projectId', { required: 'Project is required' })}
           >
-            <option value="">Please Select</option>
+            <option value="" disabled>
+              Please Select
+            </option>
             {data?.projects.map((project) => {
               return (
                 <option value={project.id} key={project.id}>
@@ -148,8 +187,11 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         </div>
         <div className="mb-4 flex flex-col">
           <label>
-            <select className="w-72 rounded-md dark:bg-slate-800" {...register('taskId')}>
-              <option value="">Please Select</option>
+            <select className="w-96 rounded-md dark:bg-slate-800" {...register('taskId')}>
+              <option value="" disabled>
+                Please Select
+              </option>
+              {selectedProject && <option value={CREATE_NEW_TASK}>Create a new task</option>}
               {selectedProject?.tasks.map((task) => {
                 return (
                   <option value={task.id} key={task.id}>
@@ -161,7 +203,18 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           </label>
           <ErrorMessage errors={errors} name="taskId" as={<span className="text-red-700" />} />
         </div>
-        <div className="flex flex-col gap-y-4 dark:bg-slate-800">
+        <div className="flex flex-col gap-y-4 rounded-md dark:bg-slate-800">
+          {currentTaskId === CREATE_NEW_TASK && (
+            <div className="mb-4 flex flex-col">
+              <InputField
+                variant="primary"
+                className="dark:bg-slate-800 dark:text-white"
+                placeholder="Enter task name"
+                {...register('taskTitle')}
+              />
+              <ErrorMessage errors={errors} name="taskTitle" as={<span className="text-red-700" />} />
+            </div>
+          )}
           <Controller
             control={control}
             render={({ field }) => {
@@ -179,7 +232,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
           <InputField
             variant="primary"
-            className=" dark:bg-slate-800 dark:text-white"
+            className="dark:bg-slate-800 dark:text-white"
             placeholder="Notes (Optional)"
             {...register('comment')}
           />
