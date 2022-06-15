@@ -24,7 +24,11 @@ export const Modal = ({
       <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
         <div className="relative rounded-3xl bg-white p-7 shadow-lg  dark:bg-slate-800">
-          <div className={`grid grid-cols-1 gap-8 ${variant === 'twoColumns' ? 'sm:grid-cols-2' : ''}`}>
+          <div
+            className={`grid grid-cols-1 gap-8 ${
+              variant === 'twoColumns' ? 'sm:grid-cols-[minmax(0,_1fr)_minmax(0,_2fr)]' : ''
+            }`}
+          >
             <div>
               <Dialog.Title className="text-xl">{title}</Dialog.Title>
             </div>

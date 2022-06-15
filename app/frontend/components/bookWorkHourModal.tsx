@@ -165,6 +165,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         <input type="hidden" {...register('workHourId')} />
         <div className="mb-4 flex flex-col">
           <select
+            aria-label="Project"
             className="w-full rounded-md dark:bg-slate-800"
             id="projectId"
             {...register('projectId', { required: 'Project is required' })}
@@ -184,7 +185,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         </div>
         <div className="mb-4 flex flex-col">
           <label>
-            <select className="w-full rounded-md dark:bg-slate-800" {...register('taskId')}>
+            <select aria-label="Task" className="w-full rounded-md dark:bg-slate-800" {...register('taskId')}>
               <option value="" disabled>
                 Please Select
               </option>
@@ -217,6 +218,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             render={({ field }) => {
               return (
                 <HourInput
+                  className="self-end"
                   workHours={field.value / 60}
                   onChange={(workHours: number) => {
                     setValue('duration', workHours * 60, { shouldValidate: true })
