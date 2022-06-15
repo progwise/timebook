@@ -44,12 +44,11 @@ const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
   projectId: yup.string().required('Project is required'),
   taskId: yup.string().required('Task is required'),
   comment: yup.string().trim().max(200),
-  //When create new task is selected, task title is required
-
   taskTitle: yup
     .string()
     .trim()
     .when('taskId', {
+      //When create new task is selected, task title is required
       is: CREATE_NEW_TASK,
       // eslint-disable-next-line unicorn/no-thenable
       then: (schema) =>
@@ -143,32 +142,31 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
 
   return (
     <Modal
-      title={workHourItem.workHourId ? 'Edit entry ' + workHourItem.workHourId : 'Book hours'}
+      title={workHourItem.workHourId ? 'Edit booked hours' : 'Book hours'}
       actions={
         <>
-          <Button variant="primary" form="book-work-hour" type="submit" disabled={isSubmitting}>
+          <Button className="w-full" variant="primary" form="book-work-hour" type="submit" disabled={isSubmitting}>
             Submit
           </Button>
-          <Button variant="secondary" disabled={isSubmitting} onClick={onClose}>
+          <Button className="w-full" variant="secondary" disabled={isSubmitting} onClick={onClose}>
             Cancel
           </Button>
           {workHourItem.workHourId && (
-            <Button variant="tertiary" disabled={isSubmitting} onClick={handleDelete}>
+            <Button className="w-full" variant="tertiary" disabled={isSubmitting} onClick={handleDelete}>
               Delete
             </Button>
           )}
         </>
       }
+      variant="twoColumns"
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
         <input type="hidden" {...register('date')} />
         <input type="hidden" {...register('workHourId')} />
         <div className="mb-4 flex flex-col">
-          <label htmlFor="projectId" className="mb-2">
-            Project
-          </label>
           <select
-            className="w-96 rounded-md dark:bg-slate-800"
+            aria-label="Project"
+            className="w-full rounded-md dark:bg-slate-800"
             id="projectId"
             {...register('projectId', { required: 'Project is required' })}
           >
@@ -187,7 +185,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
         </div>
         <div className="mb-4 flex flex-col">
           <label>
-            <select className="w-96 rounded-md dark:bg-slate-800" {...register('taskId')}>
+            <select aria-label="Task" className="w-full rounded-md dark:bg-slate-800" {...register('taskId')}>
               <option value="" disabled>
                 Please Select
               </option>
@@ -220,6 +218,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             render={({ field }) => {
               return (
                 <HourInput
+                  className="self-end"
                   workHours={field.value / 60}
                   onChange={(workHours: number) => {
                     setValue('duration', workHours * 60, { shouldValidate: true })
@@ -230,9 +229,8 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             name="duration"
           />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
-          <InputField
-            variant="primary"
-            className="dark:bg-slate-800 dark:text-white"
+          <textarea
+            className="rounded-md dark:bg-slate-800 dark:text-white"
             placeholder="Notes (Optional)"
             {...register('comment')}
           />
