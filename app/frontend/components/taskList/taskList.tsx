@@ -45,7 +45,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       const result = await taskCreate({
         data: {
           projectId: project.id,
-
           title: taskData.title,
         },
       })

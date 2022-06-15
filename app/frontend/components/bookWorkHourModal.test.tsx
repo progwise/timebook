@@ -11,6 +11,8 @@ describe('BookWorkHourModal', () => {
   const testItem: WorkHourItem = {
     date: new Date(),
     duration: 0,
+    projectId: '',
+    taskId: '',
   }
   const onCloseMock = jest.fn()
 

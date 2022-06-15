@@ -26,6 +26,8 @@ const MaintainWorkHoursPage = () => {
     setSelectedWorkHourItem({
       date: selectedDate,
       duration: 0,
+      taskId: '',
+      projectId: '',
     })
     setIsBookWorkHourModalOpen(true)
   }
@@ -40,11 +42,11 @@ const MaintainWorkHoursPage = () => {
           onClose={handleModalClose}
           workHourItem={{
             date: selectedDate,
-            taskId: selectedWorkHourItem?.taskId,
+            taskId: selectedWorkHourItem?.taskId ?? '',
             duration: selectedWorkHourItem?.duration ?? 0,
             comment: selectedWorkHourItem?.comment,
             workHourId: selectedWorkHourItem?.workHourId,
-            projectId: selectedWorkHourItem?.projectId,
+            projectId: selectedWorkHourItem?.projectId ?? '',
           }}
         />
       )}
