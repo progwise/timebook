@@ -90,6 +90,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=public
       SECRET: secr3t
+      NEXTAUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
