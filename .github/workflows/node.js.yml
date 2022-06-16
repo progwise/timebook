@@ -87,6 +87,8 @@ jobs:
     defaults:
       run:
         working-directory: ./app
+    env:
+      DATABASE_URL: postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=public
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
