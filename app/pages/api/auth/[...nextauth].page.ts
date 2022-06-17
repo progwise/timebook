@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
+import EmailProvider from 'next-auth/providers/email'
 import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 
@@ -9,10 +10,12 @@ export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     GitHubProvider({
-      // TODO: move this into .env file
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
+
+    // Email Provider only used for e2e testing
+    ...(process.env.NODE_ENV !== 'production' ? [EmailProvider({})] : []),
   ],
   callbacks: {
     async session({ session, user }) {
