@@ -165,6 +165,8 @@ const Time = (): JSX.Element => {
           workHourItem={{
             date: selectedDate,
             duration: 0,
+            taskId: '',
+            projectId: '',
           }}
           onClose={() => setIsBookWorkHourModalOpen(false)}
         />
