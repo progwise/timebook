@@ -20,6 +20,9 @@ beforeEach(async () => {
       {
         id: '2',
       },
+      {
+        id: '3',
+      },
     ],
   })
   await prisma.team.create({
@@ -97,4 +100,33 @@ it('user can not change project memberships of another team', async () => {
   })
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   expect(response.data).toBeNull()
+})
+
+it('user must be team member', async () => {
+  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const response = await testServer.executeOperation({
+    query: projectMembershipCreateMutation,
+    variables: {
+      userID: '3',
+      projectID: 'project1',
+    },
+  })
+  expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  expect(response.data).toBeNull()
+})
+
+it('user is already project member', async () => {
+  await prisma.projectMembership.create({
+    data: { userId: '2', projectId: 'project1' },
+  })
+  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const response = await testServer.executeOperation({
+    query: projectMembershipCreateMutation,
+    variables: {
+      userID: '2',
+      projectID: 'project1',
+    },
+  })
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toEqual({ projectMembershipCreate: { title: 'P1', members: [{ id: '2' }] } })
 })
