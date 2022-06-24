@@ -4,6 +4,12 @@ query projectsWithTasks {
   }
 }
 
+query teamProjects {
+  projects {
+    ...Project
+  }
+}
+
 fragment Project on Project {
   id
   title

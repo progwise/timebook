@@ -58,6 +58,10 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  /** Assign user to Project */
+  projectMembershipCreate: Project
+  /** Unassign user to Project */
+  projectMembershipDelete: Project
   /** Update a project */
   projectUpdate: Project
   /** Archive a task */
@@ -107,6 +111,16 @@ export type MutationProjectCreateArgs = {
 
 export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationProjectMembershipCreateArgs = {
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipDeleteArgs = {
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -444,6 +458,19 @@ export type ProjectsWithTasksQuery = {
       hasWorkHours: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }>
+  }>
+}
+
+export type TeamProjectsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamProjectsQuery = {
+  __typename?: 'Query'
+  projects: Array<{
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
   }>
 }
 
@@ -934,6 +961,34 @@ export type TeamAcceptInviteMutation = {
   }
 }
 
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  userID: Scalars['ID']
+  projectID: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
+}
+
+export type ProjectMembershipDeleteMutationVariables = Exact<{
+  userID: Scalars['ID']
+  projectID: Scalars['ID']
+}>
+
+export type ProjectMembershipDeleteMutation = {
+  __typename?: 'Mutation'
+  projectMembershipDelete: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; id: string }>
+  }
+}
+
 export type TeamArchiveMutationVariables = Exact<{
   teamId: Scalars['ID']
 }>
@@ -1073,6 +1128,18 @@ export const ProjectsWithTasksDocument = gql`
 
 export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectsWithTasksQuery>({ query: ProjectsWithTasksDocument, ...options })
+}
+export const TeamProjectsDocument = gql`
+  query teamProjects {
+    projects {
+      ...Project
+    }
+  }
+  ${ProjectFragmentDoc}
+`
+
+export function useTeamProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
+  return Urql.useQuery<TeamProjectsQuery>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
   mutation projectCreate($data: ProjectInput!) {
@@ -1432,6 +1499,38 @@ export const TeamAcceptInviteDocument = gql`
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
 }
+export const ProjectMembershipCreateDocument = gql`
+  mutation projectMembershipCreate($userID: ID!, $projectID: ID!) {
+    projectMembershipCreate(userId: $userID, projectId: $projectID) {
+      title
+      members {
+        name
+      }
+    }
+  }
+`
+
+export function useProjectMembershipCreateMutation() {
+  return Urql.useMutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    ProjectMembershipCreateDocument,
+  )
+}
+export const ProjectMembershipDeleteDocument = gql`
+  mutation projectMembershipDelete($userID: ID!, $projectID: ID!) {
+    projectMembershipDelete(userId: $userID, projectId: $projectID) {
+      title
+      members {
+        id
+      }
+    }
+  }
+`
+
+export function useProjectMembershipDeleteMutation() {
+  return Urql.useMutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    ProjectMembershipDeleteDocument,
+  )
+}
 export const TeamArchiveDocument = gql`
   mutation teamArchive($teamId: ID!) {
     teamArchive(teamId: $teamId) {
@@ -1495,6 +1594,20 @@ export const mockProjectsWithTasksQuery = (
     any
   >,
 ) => graphql.query<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>('projectsWithTasks', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockTeamProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamProjectsQueryVariables>, GraphQLContext<TeamProjectsQuery>, any>,
+) => graphql.query<TeamProjectsQuery, TeamProjectsQueryVariables>('teamProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1900,6 +2013,52 @@ export const mockTeamAcceptInviteMutation = (
     any
   >,
 ) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipCreateMutation((req, res, ctx) => {
+ *   const { userID, projectID } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    'projectMembershipCreate',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipDeleteMutation((req, res, ctx) => {
+ *   const { userID, projectID } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipDelete })
+ *   )
+ * })
+ */
+export const mockProjectMembershipDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipDeleteMutationVariables>,
+    GraphQLContext<ProjectMembershipDeleteMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    'projectMembershipDelete',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
