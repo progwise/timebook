@@ -151,6 +151,8 @@ export interface NexusGenFieldTypes {
     customerUpdate: NexusGenRootTypes['Customer'] // Customer!
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
+    projectMembershipCreate: NexusGenRootTypes['Project'] // Project!
+    projectMembershipDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
     taskArchive: NexusGenRootTypes['Task'] // Task!
     taskCreate: NexusGenRootTypes['Task'] // Task!
@@ -278,6 +280,8 @@ export interface NexusGenFieldTypeNames {
     customerUpdate: 'Customer'
     projectCreate: 'Project'
     projectDelete: 'Project'
+    projectMembershipCreate: 'Project'
+    projectMembershipDelete: 'Project'
     projectUpdate: 'Project'
     taskArchive: 'Task'
     taskCreate: 'Task'
@@ -412,6 +416,16 @@ export interface NexusGenArgTypes {
     projectDelete: {
       // args
       id: string // ID!
+    }
+    projectMembershipCreate: {
+      // args
+      projectId: string // ID!
+      userId: string // ID!
+    }
+    projectMembershipDelete: {
+      // args
+      projectId: string // ID!
+      userId: string // ID!
     }
     projectUpdate: {
       // args
