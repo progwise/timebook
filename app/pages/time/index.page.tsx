@@ -1,11 +1,12 @@
 import React, { ReactChild, ReactChildren, useEffect, useState } from 'react'
-import { getFormattedWorkHours, HourInput } from '../frontend/components/hourInput'
-import { CalendarSelector } from '../frontend/components/calendarSelector'
-import { ProtectedPage } from '../frontend/components/protectedPage'
-import { ProjectFragment, useProjectsWithTasksQuery } from '../frontend/generated/graphql'
-import { BookWorkHourModal } from '../frontend/components/bookWorkHourModal'
-import { Button } from '../frontend/components/button/button'
+import { getFormattedWorkHours, HourInput } from '../../frontend/components/hourInput'
+import { CalendarSelector } from '../../frontend/components/calendarSelector'
+import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { ProjectFragment, useProjectsWithTasksQuery } from '../../frontend/generated/graphql'
+import { BookWorkHourModal } from '../../frontend/components/bookWorkHourModal'
+import { Button } from '../../frontend/components/button/button'
 import { BiPlus } from 'react-icons/bi'
+import { DayWeekSwitch } from '../../frontend/components/dayWeekSwitchButton'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
@@ -102,7 +103,8 @@ const Time = (): JSX.Element => {
         </Button>
       </div>
       <article className="timebook">
-        <h2>Your timetable</h2>
+        <DayWeekSwitch selectedButton="week" />
+        <h2>Your timetable for day</h2>
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
         </div>
@@ -163,6 +165,8 @@ const Time = (): JSX.Element => {
           workHourItem={{
             date: selectedDate,
             duration: 0,
+            taskId: '',
+            projectId: '',
           }}
           onClose={() => setIsBookWorkHourModalOpen(false)}
         />

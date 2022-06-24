@@ -48,9 +48,9 @@ const ReportForm = () => {
             <Combobox value={selectedProject} onChange={setSelectedProject}>
               <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-                  <Combobox.Input<'input', ProjectFragment>
+                  <Combobox.Input<'input', ProjectFragment | undefined>
                     className="w-full border-none py-2 pl-3 text-sm leading-5 text-gray-900 focus:ring-0"
-                    displayValue={(project) => project.title}
+                    displayValue={(project) => project?.title ?? ''}
                     onChange={(event) => setProjectQuery(event.target.value)}
                   />
                   <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
