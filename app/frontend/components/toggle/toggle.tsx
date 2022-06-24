@@ -1,28 +1,24 @@
 import { Switch } from '@headlessui/react'
-import { useState } from 'react'
-
 interface ToggleProps {
+  onChange: (value: boolean) => void
+  checked: boolean
   disabled?: boolean
-
-  onChange?: (value: boolean) => void
-  children?: React.ReactNode
-  className?: string
-  form?: string
-  checked?: boolean
 }
 
-export const Toggle = ({ children, className, form, onChange, checked }: ToggleProps): JSX.Element => {
+export const Toggle = ({ onChange, disabled = false, checked }: ToggleProps): JSX.Element => {
   return (
     <Switch
       checked={checked ?? false}
-      onChange={() => onChange?.(!checked)}
-      className={`${checked ? 'bg-blue-600' : 'bg-gray-200'} relative inline-flex h-6 w-11 items-center rounded-full`}
+      onChange={() => onChange(!checked)}
+      className={`${
+        checked ? 'bg-blue-600' : 'bg-gray-200'
+      } relative inline-flex h-6 w-11 items-center rounded-full disabled:opacity-50`}
+      disabled={disabled}
     >
-      <span className="sr-only">Enable notifications</span>
       <span
         className={`${
           checked ? 'translate-x-6' : 'translate-x-1'
-        } inline-block h-4 w-4 transform rounded-full bg-white`}
+        } inline-block h-4 w-4 transform rounded-full	 bg-white transition-transform`}
       />
     </Switch>
   )
