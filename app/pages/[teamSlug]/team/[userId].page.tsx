@@ -3,7 +3,6 @@ import {
   useMeQuery,
   useProjectMembershipCreateMutation,
   useProjectMembershipDeleteMutation,
-  useProjectQuery,
   useTeamProjectsQuery,
   useUserQuery,
   useUserRoleUpdateMutation,
@@ -13,7 +12,6 @@ import { Button } from '../../../frontend/components/button/button'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { Toggle } from '../../../frontend/components/toggle/toggle'
-import { projectMembershipDeleteMutationField } from '../../../backend/graphql/projectMembership/mutations/projectMembershipDeleteMutationField'
 
 const UserDetailsPage = (): JSX.Element => {
   const router = useRouter()
@@ -29,7 +27,8 @@ const UserDetailsPage = (): JSX.Element => {
     pause: !router.isReady,
     variables: { userId },
   })
-
+  const [{ data: meData }] = useMeQuery()
+  const isAdmin = meData?.user.role === Role.Admin
   const [, createProjectMembership] = useProjectMembershipCreateMutation()
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
 
@@ -67,7 +66,8 @@ const UserDetailsPage = (): JSX.Element => {
               <li key={project.id} className="p-3">
                 <span className=" inline-block w-32"> {project.title} </span>
                 <Toggle
-                  checked={data?.user.projects.some((userProject) => userProject.id === project.id)}
+                  disabled={!isAdmin}
+                  checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
                   onChange={(newValue) => {
                     if (!data?.user) {
                       return
