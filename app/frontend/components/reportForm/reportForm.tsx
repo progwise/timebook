@@ -49,7 +49,7 @@ const ReportForm = () => {
               <div className="relative mt-1">
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                   <Combobox.Input<'input', ProjectFragment | undefined>
-                    className="w-full border-none py-2 pl-3 text-sm leading-5 text-gray-900 focus:ring-0"
+                    className="w-full border-none py-2 pl-3 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-slate-700 dark:text-white "
                     displayValue={(project) => project?.title ?? ''}
                     onChange={(event) => setProjectQuery(event.target.value)}
                   />
@@ -63,14 +63,14 @@ const ReportForm = () => {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
                     {filteredProjects.map((project) => (
                       <Combobox.Option
                         key={project.id}
                         value={project}
                         className={({ active }) =>
                           `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                            active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                            active ? 'bg-indigo-600 text-white' : 'text-gray-900 dark:text-white '
                           }`
                         }
                       >
@@ -99,7 +99,7 @@ const ReportForm = () => {
           </div>
           <div>
             <input
-              className="rounded-lg border-none py-2 pl-3 text-sm leading-5 shadow-md"
+              className="rounded-lg border-none py-2 pl-3 text-sm leading-5  shadow-md dark:bg-slate-700"
               type="month"
               value={date}
               onChange={(event) => {
@@ -122,7 +122,7 @@ const ReportForm = () => {
             {reportGroupedData?.report.groupedByDate.map((group) => (
               <Fragment key={group.date}>
                 <article className="contents">
-                  <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
+                  <hr className="col-span-4 -mt-2 h-0.5 bg-gray-700 " />
                   <strong className="col-span-3">{group.date}</strong>
                   <FormattedDuration
                     title="Total work hours of the day"
