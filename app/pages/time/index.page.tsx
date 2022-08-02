@@ -5,13 +5,23 @@ import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectFragment, useProjectsWithTasksQuery } from '../../frontend/generated/graphql'
 import { BookWorkHourModal } from '../../frontend/components/bookWorkHourModal'
 import { Button } from '../../frontend/components/button/button'
-import { BiPlus } from 'react-icons/bi'
+import { BiChevronLeft, BiChevronRight, BiPlus } from 'react-icons/bi'
 import { DayWeekSwitch } from '../../frontend/components/dayWeekSwitchButton'
+import { useRouter } from 'next/router'
+import { date } from 'yup'
+import { addDays, addWeeks, endOfWeek, format, parse, startOfWeek } from 'date-fns'
+import Link from 'next/link'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
   times: Array<{ date: Date; workHours: number }>
 }
+
+
+
+
+
+
 
 const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
   new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
@@ -22,6 +32,33 @@ const Time = (): JSX.Element => {
   }
 
   const [selectedDate, setSelectedDate] = useState(new Date())
+
+ const router = useRouter()
+
+  const urldate = router.query.date?.toString()
+
+  const CurrentDate= 
+ urldate ? 
+parse(urldate, 'yyyy-MM-dd', new Date())
+:
+new Date()
+
+const StartOfWeek = startOfWeek(CurrentDate,{weekStartsOn:1} )
+const EndOfWeek = endOfWeek(CurrentDate, {weekStartsOn: 1})
+
+
+const startDate = format(StartOfWeek, "	dd.MM")
+const endDate = format(EndOfWeek, "dd.MM.yyyy")
+
+
+
+ const nextWeek = addDays(CurrentDate,7)
+ const previousWeek = addDays(CurrentDate, -7)
+ const previousWeekString = format(new Date(previousWeek), 'yyyy-MM-dd')
+ const nextWeekString = format(new Date(nextWeek), 'yyyy-MM-dd')
+ 
+
+
 
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
@@ -102,9 +139,31 @@ const Time = (): JSX.Element => {
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </div>
+      
+      <span className="text-center text-xs">
+      <Link href={`/time?date=${previousWeekString}`}>
+        <a
+          className={`k w-10 px-2 rounded-l-lg py-1 bg-gray-400`}
+        >
+        
+       Last
+
+        </a>
+      </Link>
+      <Link href={`/time?date=${nextWeekString}`}>
+        <a
+          className={` w-10 px-2 rounded-r-lg py-1 bg-gray-400`}
+        >
+          Next
+        </a>
+      </Link>
+    </span>
+      <div className='text-lg font-semibold'>This Week: {startDate + "-" + endDate}</div>
       <article className="timebook">
+
         <DayWeekSwitch selectedButton="week" />
-        <h2>Your timetable for day</h2>
+        <h2>Your timetable for week</h2>
+     
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
         </div>
