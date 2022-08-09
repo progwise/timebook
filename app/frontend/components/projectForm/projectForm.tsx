@@ -11,6 +11,7 @@ import { InputField } from '../inputField/inputField'
 import { BiTrash } from 'react-icons/bi'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'
+import { CustomerInput } from '../customerForm/customerInput'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
@@ -33,11 +34,12 @@ interface ProjectFormProps {
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { project, onSubmit, onCancel, hasError } = props
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
+  const { register, handleSubmit, formState, setValue, control, watch } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : '',
+      customerId: project?.customer?.id,
     },
     resolver: yupResolver(projectInputSchema),
   })
@@ -77,7 +79,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
-      <label className="flex flex-col ">
+      <label className="flex flex-col">
         <span className="w-full text-sm text-gray-700 dark:text-white">Start</span>
         <Controller
           control={control}
@@ -108,7 +110,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
-      <label className="flex flex-col">
+      <label className="mb-6 flex flex-col">
         <span className="w-full text-sm text-gray-700 dark:text-white">End</span>
         <Controller
           control={control}
@@ -140,6 +142,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
         {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
+      <CustomerInput control={control} name="customerId" />
       <div className="mt-8 flex w-full justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
