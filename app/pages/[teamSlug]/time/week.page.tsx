@@ -1,7 +1,8 @@
-import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isDate, isToday, parseISO } from 'date-fns'
+import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
 import { DayWeekSwitch } from '../../../frontend/components/dayWeekSwitchButton'
 import { FormattedDuration } from '../../../frontend/components/duration/formattedDuration'
+import { HourInput } from '../../../frontend/components/hourInput'
 import {
   Table,
   TableBody,
@@ -51,7 +52,7 @@ const WeekPage = () => {
     }
   }
 
-  const classNameMarkDay = 'bg-slate-300 dark:bg-gray-700'
+  const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
 
   return (
     <div>
@@ -79,7 +80,7 @@ const WeekPage = () => {
               </TableCell>
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                  {row.durations[dayIndex]}
+                  <HourInput readOnly onChange={console.log} workHours={row.durations[dayIndex] / 60} />
                 </TableCell>
               ))}
               <TableCell>
@@ -90,6 +91,27 @@ const WeekPage = () => {
               </TableCell>
             </TableRow>
           ))}
+          <TableRow>
+            <TableCell />
+            {eachDayOfInterval(interval).map((day, dayIndex) => (
+              <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                <FormattedDuration
+                  title=""
+                  minutes={tableData
+                    .map((row) => row.durations[dayIndex])
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+                />
+              </TableCell>
+            ))}
+            <TableCell>
+              <FormattedDuration
+                title=""
+                minutes={tableData
+                  .flatMap((row) => row.durations)
+                  .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+              />
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
       <DayWeekSwitch selectedButton="week" />
