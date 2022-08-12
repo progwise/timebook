@@ -6,7 +6,14 @@ import { teamHandlers } from './teamHandlers'
 import { workhourHandlers } from './workhourHandlers'
 import { customerHandlers } from './customerHandlers'
 
-const allHandlers = [...handlers, ...workhourHandlers, ...projectHandlers, ...taskHandlers, ...teamHandlers, ...customerHandlers]
+const allHandlers = [
+  ...handlers,
+  ...workhourHandlers,
+  ...projectHandlers,
+  ...taskHandlers,
+  ...teamHandlers,
+  ...customerHandlers,
+]
 export const mockServer = setupServer(...allHandlers)
 
 // eslint-disable-next-line no-console
