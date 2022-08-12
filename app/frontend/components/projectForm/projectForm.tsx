@@ -11,7 +11,7 @@ import { InputField } from '../inputField/inputField'
 import { BiTrash } from 'react-icons/bi'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'
-import { CustomerInput } from '../customerForm/customerInput'
+import { CustomerInput } from './customerInput'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
