@@ -1,4 +1,4 @@
-import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, parseISO } from 'date-fns'
+import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isDate, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
 import { DayWeekSwitch } from '../../../frontend/components/dayWeekSwitchButton'
 import { FormattedDuration } from '../../../frontend/components/duration/formattedDuration'
@@ -13,7 +13,7 @@ import {
 } from '../../../frontend/components/table/table'
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../../../frontend/generated/graphql'
 
-const NUMBER_OF_DAYS = 14
+const NUMBER_OF_DAYS = 7
 
 interface WorkHoursTableRow {
   task: TaskFragment
@@ -21,7 +21,7 @@ interface WorkHoursTableRow {
   durations: number[]
 }
 const WeekPage = () => {
-  const fromDate = new Date(2022, 5, 25)
+  const fromDate = new Date(2022, 7, 8)
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
   const router = useRouter()
@@ -51,6 +51,8 @@ const WeekPage = () => {
     }
   }
 
+  const classNameMarkDay = 'bg-slate-300 dark:bg-gray-700'
+
   return (
     <div>
       <Table>
@@ -58,7 +60,7 @@ const WeekPage = () => {
           <TableHeadRow>
             <TableHeadCell />
             {eachDayOfInterval(interval).map((day) => (
-              <TableHeadCell key={day.toString()}>
+              <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
                 {format(day, 'EEE')}
                 <br />
                 {format(day, 'dd. MMM')}
@@ -76,7 +78,9 @@ const WeekPage = () => {
                 {row.task.title}
               </TableCell>
               {eachDayOfInterval(interval).map((day, dayIndex) => (
-                <TableCell key={day.toString()}>{row.durations[dayIndex]}</TableCell>
+                <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                  {row.durations[dayIndex]}
+                </TableCell>
               ))}
               <TableCell>
                 <FormattedDuration
