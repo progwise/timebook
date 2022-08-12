@@ -1,6 +1,6 @@
 import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
 import { HiCheck, HiSelector } from 'react-icons/hi'
 import { CustomerFragment, useCustomerCreateMutation, useCustomersQuery } from '../../generated/graphql'
@@ -15,8 +15,10 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   name,
 }: CustomerInputProps<TFieldValues>) => {
   const router = useRouter()
+  const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
   const [{ data: customersData }] = useCustomersQuery({
     pause: !router.isReady,
+    context,
   })
   const [{ fetching: createCustomerFetching }, createCustomer] = useCustomerCreateMutation()
   const [customersQuery, setCustomersQuery] = useState('')
@@ -60,7 +62,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
               <div className="relative w-full cursor-default overflow-hidden rounded bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                 <Combobox.Input<'input', CustomerFragment | undefined>
                   className="w-full py-2  pl-3 text-sm leading-5 focus:ring-0 dark:border-white dark:bg-slate-800 dark:text-white"
-                  displayValue={(customer) => customer?.title ?? ''}
+                  displayValue={(customer) => customer?.title ?? 'No Customer'}
                   onChange={(event) => setCustomersQuery(event.target.value)}
                   onBlur={onBlur}
                 />

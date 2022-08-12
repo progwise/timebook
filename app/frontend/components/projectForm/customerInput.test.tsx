@@ -46,12 +46,52 @@ describe('CustomerInput', () => {
     userEvent.click(customer2Option)
     expect(combobox).toHaveValue('Customer 2')
 
-    const submitButton = screen.getByRole('button', {name: 'Submit'})
+    const submitButton = screen.getByRole('button', { name: 'Submit' })
     userEvent.click(submitButton)
 
-    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: 'customer2'}, expect.any(Object)))
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: 'customer2' }, expect.any(Object)))
   })
 
-  it.todo('should be possible to select no customer')
-  it.todo('should be possible to create and select a new customer')
+  it('should be possible to select no customer', async () => {
+    const onSubmit = jest.fn()
+    render(<HelperForm onSubmit={onSubmit} />, { wrapper })
+
+    const combobox = screen.getByRole('combobox')
+    const submitButton = screen.getByRole('button', { name: 'Submit' })
+
+    await waitFor(() => expect(combobox).toHaveValue('Customer 1'))
+
+    userEvent.type(combobox, '{arrowdown}')
+
+    const noCustomerOption = screen.getByRole('option', { name: 'No Customer' })
+
+    userEvent.click(noCustomerOption)
+
+    expect(combobox).toHaveValue('No Customer')
+
+    userEvent.click(submitButton)
+
+    // eslint-disable-next-line unicorn/no-null
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: null }, expect.any(Object)))
+  })
+
+  it('should be possible to create and select a new customer', async () => {
+    const onSubmit = jest.fn()
+    render(<HelperForm onSubmit={onSubmit} />, { wrapper })
+
+    const combobox = screen.getByRole('combobox')
+    const submitButton = screen.getByRole('button', { name: 'Submit' })
+
+    await waitFor(() => expect(combobox).toHaveValue('Customer 1'))
+
+    userEvent.clear(combobox)
+    userEvent.type(combobox, 'Google')
+    const createOption = screen.getByRole('option', { name: 'Create "Google"' })
+    userEvent.click(createOption)
+
+    await waitFor(() => expect(combobox).toHaveValue('Google'))
+
+    userEvent.click(submitButton)
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: 'customer3' }, expect.any(Object)))
+  })
 })
