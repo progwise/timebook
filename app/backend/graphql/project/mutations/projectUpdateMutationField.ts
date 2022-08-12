@@ -28,22 +28,13 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
       throw new Error('not authenticated')
     }
 
-    const newCustomer = customerId
-      ? await context.prisma.customer.findFirst({
-          where: {
-            id: customerId,
-            team: {
-              id: team.id,
-              teamMemberships: {
-                some: {
-                  userId: context.session.user.id,
-                },
-              },
-            },
-          },
-          rejectOnNotFound: true,
-        })
-      : undefined
+    if (customerId) {
+      const newCustomer = await context.prisma.customer.findFirst({ where: { id: customerId }, rejectOnNotFound: true })
+
+      if (newCustomer.teamId !== team.id) {
+        throw new Error('Customer not found')
+      }
+    }
 
     return context.prisma.project.update({
       where: { id },
@@ -51,7 +42,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
         title,
         startDate: start,
         endDate: end,
-        customerId: newCustomer?.id,
+        customerId,
       },
     })
   },

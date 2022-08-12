@@ -18,7 +18,7 @@ const isValidDateString = (dateString: string): boolean =>
   acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
 const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
-  customerId: yup.string(),
+  customerId: yup.string().nullable(),
   title: yup.string().trim().required().max(20),
   start: yup.string(),
   end: yup.string(),
@@ -34,7 +34,7 @@ interface ProjectFormProps {
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { project, onSubmit, onCancel, hasError } = props
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const { register, handleSubmit, formState, setValue, control, watch } = useForm<ProjectInput>({
+  const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
@@ -142,7 +142,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
         {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
-      <CustomerInput control={control} name="customerId" />
+      <label className="w-full">
+        <h1>Customer</h1>
+        <CustomerInput control={control} name="customerId" />
+      </label>
       <div className="mt-8 flex w-full justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
