@@ -19,9 +19,7 @@ export const DayWeekSwitch = ({ selectedButton }: DayWeekSwitchProps) => {
       </Link>
       <Link href="/time/day">
         <a
-          className={` inline-block w-10 rounded-r-lg py-1 ${
-            selectedButton === 'day' ? selectedLink : unselectedLink
-          }`}
+          className={` inline-block w-10 rounded-r-lg py-1 ${selectedButton === 'day' ? selectedLink : unselectedLink}`}
         >
           Day
         </a>
