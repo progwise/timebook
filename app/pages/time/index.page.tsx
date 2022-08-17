@@ -5,12 +5,11 @@ import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectFragment, useProjectsWithTasksQuery } from '../../frontend/generated/graphql'
 import { BookWorkHourModal } from '../../frontend/components/bookWorkHourModal'
 import { Button } from '../../frontend/components/button/button'
-import { BiChevronLeft, BiChevronRight, BiPlus } from 'react-icons/bi'
 import { DayWeekSwitch } from '../../frontend/components/dayWeekSwitchButton'
 import { useRouter } from 'next/router'
-import { date } from 'yup'
-import { addDays, addWeeks, endOfWeek, format, parse, startOfWeek } from 'date-fns'
+import { addDays, endOfWeek, format, parse, startOfWeek } from 'date-fns'
 import Link from 'next/link'
+import { BiPlus } from 'react-icons/bi'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
@@ -26,7 +25,7 @@ export interface IProjectTimeEntry {
 const getDateForWeekday = (baseDate: Date, weekdayNumber: number) =>
   new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + weekdayNumber - baseDate.getDay())
 
-const Time = (): JSX.Element => {
+  const Time = (): JSX.Element => {
   const ColumnHeader = (props: { children: ReactChildren | ReactChild; className?: string }) => {
     return <th className={`text-center ${props.className}`}>{props.children}</th>
   }
@@ -35,30 +34,29 @@ const Time = (): JSX.Element => {
 
  const router = useRouter()
 
-  const urldate = router.query.date?.toString()
+  const urlDate = router.query.date?.toString()
 
-  const CurrentDate= 
- urldate ? 
-parse(urldate, 'yyyy-MM-dd', new Date())
+  const currentDate= 
+ urlDate ? 
+parse(urlDate, 'yyyy-MM-dd', new Date())
 :
 new Date()
 
-const StartOfWeek = startOfWeek(CurrentDate,{weekStartsOn:1} )
-const EndOfWeek = endOfWeek(CurrentDate, {weekStartsOn: 1})
+const startOfTheWeek = startOfWeek(currentDate,{weekStartsOn:1} ) //startOfWeek in camel case doesn´t work, because of the following function: startOfWeek()
+
+const endOfTheWeek = endOfWeek(currentDate, {weekStartsOn: 1})
 
 
-const startDate = format(StartOfWeek, "	dd.MM")
-const endDate = format(EndOfWeek, "dd.MM.yyyy")
+const startDate = format(startOfTheWeek, "dd.MM")
+const endDate = format(endOfTheWeek, "dd.MM.yyyy")
 
 
 
- const nextWeek = addDays(CurrentDate,7)
- const previousWeek = addDays(CurrentDate, -7)
- const previousWeekString = format(new Date(previousWeek), 'yyyy-MM-dd')
- const nextWeekString = format(new Date(nextWeek), 'yyyy-MM-dd')
+ const nextWeek = addDays(currentDate,7)
+ const previousWeek = addDays(currentDate, -7)
+ const previousWeekString = format((previousWeek), 'yyyy-MM-dd')
+ const nextWeekString = format((nextWeek), 'yyyy-MM-dd')
  
-
-
 
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
@@ -158,7 +156,7 @@ const endDate = format(EndOfWeek, "dd.MM.yyyy")
         </a>
       </Link>
     </span>
-      <div className='text-lg font-semibold'>This Week: {startDate + "-" + endDate}</div>
+      <div className='text-lg font-semibold'>This Week: {startDate} - {endDate}</div>
       <article className="timebook">
 
         <DayWeekSwitch selectedButton="week" />
@@ -213,7 +211,7 @@ const endDate = format(EndOfWeek, "dd.MM.yyyy")
               {Array.from({ length: 7 }).map((_, index) => (
                 <td className="text-center" key={index}>
                   {getFormattedWorkHours(getWeekdayDurationSum((index + 1) % 7))}
-                </td>
+                 </td>
               ))}
             </tr>
           </tfoot>
