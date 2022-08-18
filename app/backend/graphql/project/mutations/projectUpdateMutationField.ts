@@ -11,7 +11,8 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     data: ProjectInput,
   },
   authorize: async (_source, _arguments, context) => isTeamAdmin(context),
-  resolve: async (_source, { id, data: { title, start, end, customerId } }, context) => {
+  // eslint-disable-next-line unicorn/no-null
+  resolve: async (_source, { id, data: { title, start, end, customerId = null } }, context) => {
     if (!context.session?.user.id || !context.teamSlug) {
       throw new Error('not authenticated')
     }
@@ -29,9 +30,9 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     }
 
     if (customerId) {
-      const newCustomer = await context.prisma.customer.findFirst({ where: { id: customerId }, rejectOnNotFound: true })
+      const newCustomer = await context.prisma.customer.findFirst({ where: { id: customerId } })
 
-      if (newCustomer.teamId !== team.id) {
+      if (!newCustomer || newCustomer.teamId !== team.id) {
         throw new Error('Customer not found')
       }
     }

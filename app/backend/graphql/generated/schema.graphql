@@ -264,7 +264,7 @@ input ProjectInput {
   """
   Id of the customer to which the project belongs.
   """
-  customerId: ID
+  customerId: ID = null
   end: Date
   start: Date
   title: String!
