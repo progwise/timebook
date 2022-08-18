@@ -130,7 +130,7 @@ describe('projectUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when user is not team member', async () => {
+  it('should throw error when user is not a team member', async () => {
     const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
@@ -147,7 +147,7 @@ describe('projectUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when member tries to update a project', async () => {
+  it('should throw error when a member tries to update a project', async () => {
     const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
