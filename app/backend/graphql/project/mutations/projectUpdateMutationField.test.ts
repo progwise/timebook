@@ -164,14 +164,14 @@ describe('projectUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when the project is from another team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '1' })
+  it('should throw error when the project is from a different team', async () => {
+    const testServer = getTestServer({ prisma, teamSlug: 'apple' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
-        id: '4',
+        id: '1',
         data: {
-          title: 'Test Project 4',
+          title: 'Test Project 1',
         },
       },
     })
@@ -197,7 +197,7 @@ describe('projectUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Customer not found')])
   })
 
-  it('should throw error when customer is from another team', async () => {
+  it('should throw error when customer is from a different team', async () => {
     const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
