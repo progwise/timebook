@@ -8,7 +8,6 @@ import { addDays, format, parse, startOfWeek } from 'date-fns'
 import Link from 'next/link'
 
 const WeekTime = (): JSX.Element => {
- 
   const router = useRouter()
 
   const urlDate = router.query.date?.toString()
@@ -27,7 +26,7 @@ const WeekTime = (): JSX.Element => {
         </Button>
       </div>
       <article className="timebook">
-      <Link href={`/time/day?date=${previousDayString}`}>
+        <Link href={`/time/day?date=${previousDayString}`}>
           <a className={`k w-10 rounded-l-lg bg-gray-400 px-2 py-1`}>Last</a>
         </Link>
         <Link href={`/time/day?date=${nextDayString}`}>
@@ -35,7 +34,7 @@ const WeekTime = (): JSX.Element => {
         </Link>
 
         <div>This day: {CurrentDayString}</div>
-       <DayWeekSwitch selectedButton="day" />
+        <DayWeekSwitch selectedButton="day" />
         <h2>Your timetable for day</h2>
       </article>
     </ProtectedPage>
