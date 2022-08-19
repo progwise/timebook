@@ -5,8 +5,6 @@ name: Node.js CI
 
 on:
   push:
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -112,3 +110,17 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+  deploy:
+    needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy-to-digitalocean'
+    name: Deploy App
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: DigitalOcean App Platform deployment
+        uses: digitalocean/app_action@main
+        with:
+          app_name: timebook-app
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
