@@ -119,8 +119,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@main
         with:
           app_name: timebook-app
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Database migration
+        run: npx migrate deploy
