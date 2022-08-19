@@ -22,4 +22,5 @@ jobs:
         uses: digitalocean/app_action@main
         with:
           app_name: timebook-app
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          token: abc123
+          # token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
