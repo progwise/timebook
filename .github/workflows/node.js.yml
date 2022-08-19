@@ -139,3 +139,5 @@ jobs:
         run: npm ci
       - name: Database migration
         run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
