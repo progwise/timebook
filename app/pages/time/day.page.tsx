@@ -2,9 +2,9 @@ import { DayWeekSwitch } from '../../frontend/components/dayWeekSwitchButton'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 
 import { Button } from '../../frontend/components/button/button'
-import { BiPlus } from 'react-icons/bi'
+import { BiChevronLeft, BiChevronRight, BiPlus } from 'react-icons/bi'
 import { useRouter } from 'next/router'
-import { addDays, format, parse } from 'date-fns'
+import { addDays, format, intlFormat, parse } from 'date-fns'
 import Link from 'next/link'
 
 const WeekTime = (): JSX.Element => {
@@ -17,7 +17,13 @@ const WeekTime = (): JSX.Element => {
   const previousDay = addDays(currentDate, -1)
   const previousDayString = format(previousDay, 'yyyy-MM-dd')
   const nextDayString = format(nextDay, 'yyyy-MM-dd')
-  const currentDayString = format(currentDate, 'iii MM-dd')
+  const currentDayString = intlFormat(currentDate, {
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+
   return (
     <ProtectedPage>
       <div className="flex flex-col items-end">
@@ -26,14 +32,20 @@ const WeekTime = (): JSX.Element => {
         </Button>
       </div>
       <article className="timebook">
-        <Link href={`/time/day?date=${previousDayString}`}>
-          <a className={`k w-10 rounded-l-lg bg-gray-400 px-2 py-1`}>Last</a>
-        </Link>
-        <Link href={`/time/day?date=${nextDayString}`}>
-          <a className={` w-10 rounded-r-lg bg-gray-400 px-2 py-1`}>Next</a>
-        </Link>
+        <div className="flex gap-1">
+          <Link href={`/time/day?date=${previousDayString}`}>
+            <a className="rounded-l-lg bg-gray-400 px-2 py-1">
+              <BiChevronLeft />
+            </a>
+          </Link>
+          <div>{currentDayString}</div>
+          <Link href={`/time/day?date=${nextDayString}`}>
+            <a className="rounded-r-lg bg-gray-400 px-2 py-1">
+              <BiChevronRight />
+            </a>
+          </Link>
+        </div>
 
-        <div>This day: {currentDayString}</div>
         <DayWeekSwitch selectedButton="day" />
         <h2>Your timetable for day</h2>
       </article>
