@@ -14,7 +14,7 @@ const WeekTime = (): JSX.Element => {
       </div>
       <article className="timebook">
         <DayWeekSwitch selectedButton="day" />
-        <h2>Your timetable for week</h2>
+        <h2>Your timetable for day</h2>
       </article>
     </ProtectedPage>
   )
