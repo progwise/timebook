@@ -17,7 +17,7 @@ const WeekTime = (): JSX.Element => {
   const previousDay = addDays(currentDate, -1)
   const previousDayString = format(previousDay, 'yyyy-MM-dd')
   const nextDayString = format(nextDay, 'yyyy-MM-dd')
-  const CurrentDayString = format(currentDate, 'iii MM-dd')
+  const currentDayString = format(currentDate, 'iii MM-dd')
   return (
     <ProtectedPage>
       <div className="flex flex-col items-end">
@@ -33,7 +33,7 @@ const WeekTime = (): JSX.Element => {
           <a className={` w-10 rounded-r-lg bg-gray-400 px-2 py-1`}>Next</a>
         </Link>
 
-        <div>This day: {CurrentDayString}</div>
+        <div>This day: {currentDayString}</div>
         <DayWeekSwitch selectedButton="day" />
         <h2>Your timetable for day</h2>
       </article>
