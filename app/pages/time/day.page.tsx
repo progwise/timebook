@@ -4,7 +4,7 @@ import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { Button } from '../../frontend/components/button/button'
 import { BiPlus } from 'react-icons/bi'
 import { useRouter } from 'next/router'
-import { addDays, format, parse, startOfWeek } from 'date-fns'
+import { addDays, format, parse } from 'date-fns'
 import Link from 'next/link'
 
 const WeekTime = (): JSX.Element => {
