@@ -138,4 +138,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Database migration
-        run: npx migrate deploy
+        run: npx prisma migrate deploy
