@@ -1,5 +1,5 @@
-query customers($slug: String!) {
-  teamBySlug(slug: $slug) {
+query customers {
+  team {
     id
     title
     customers {
@@ -7,6 +7,7 @@ query customers($slug: String!) {
     }
   }
 }
+
 fragment Customer on Customer {
   id
   title
