@@ -114,7 +114,7 @@ jobs:
   deploy:
     needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy-to-digitalocean'
+    if: github.ref == 'refs/heads/main'
     name: Deploy App
     steps:
       - name: Checkout code
