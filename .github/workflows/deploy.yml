@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean
 on:
   workflow_run:
     workflows: Node.js CI
-    branches: [main, Node.js CI]
+    branches: [main, deploy-to-digitalocean]
     types: completed
 
 jobs:
