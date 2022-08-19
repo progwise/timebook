@@ -17,7 +17,7 @@ const projectUpdateMutation = `
   }
 `
 
-describe('projectUpdateMutationField', () => {
+describe('Error', () => {
   beforeEach(async () => {
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
@@ -52,7 +52,6 @@ describe('projectUpdateMutationField', () => {
             data: [
               { id: '1', title: 'Test Customer 1' },
               { id: '2', title: 'Test Customer 2' },
-              { id: '3', title: 'Test Customer 3' }, //Customer to be deleted
             ],
           },
         },
@@ -85,16 +84,13 @@ describe('projectUpdateMutationField', () => {
       },
     })
 
-    //Deleting Test Customer 3
-    await prisma.customer.delete({ where: { id: '3' } })
-
     //Creating Team 2
     await prisma.team.create({
       data: {
         id: '2',
         slug: 'apple',
         title: 'Apple',
-        customers: { create: { id: '4', title: 'Test Customer 4' } },
+        customers: { create: { id: '3', title: 'Test Customer 3' } },
         teamMemberships: {
           create: {
             id: '3',
@@ -106,7 +102,7 @@ describe('projectUpdateMutationField', () => {
           create: {
             id: '2',
             title: 'Test Project 2',
-            customerId: '4',
+            customerId: '3',
           },
         },
       },
@@ -165,7 +161,7 @@ describe('projectUpdateMutationField', () => {
   })
 
   it('should throw error when the project is from a different team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'apple' })
+    const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '3' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -177,7 +173,7 @@ describe('projectUpdateMutationField', () => {
     })
 
     expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+    expect(response.errors).toEqual([new GraphQLError('not authenticated')])
   })
 
   it('should throw error when customer does not exist', async () => {
@@ -188,7 +184,7 @@ describe('projectUpdateMutationField', () => {
         id: '1',
         data: {
           title: 'Test Project',
-          customerId: '3',
+          customerId: 'DoesNotExist',
         },
       },
     })
@@ -205,7 +201,7 @@ describe('projectUpdateMutationField', () => {
         id: '2',
         data: {
           title: 'Test Project 2',
-          customerId: '4',
+          customerId: '3',
         },
       },
     })
