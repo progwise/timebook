@@ -1,7 +1,8 @@
 import { addDays, endOfWeek, format, parse, startOfWeek } from 'date-fns'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { WeekPageTable } from '../../../frontend/components/WeekPageTable'
+import { WeekPageTable } from '../../../frontend/components/weekPageTable'
+
 
 const WeekPage = (): JSX.Element => {
   const router = useRouter()
