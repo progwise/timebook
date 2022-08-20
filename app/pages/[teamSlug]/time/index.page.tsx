@@ -58,7 +58,7 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
-         <DayWeekSwitch selectedButton={"day"} />
+      <DayWeekSwitch selectedButton={'day'} />
       <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid">
         {data?.workHours.map((item) => (
           <article key={item.id} className="contents border-2 border-black">
@@ -108,7 +108,6 @@ const MaintainWorkHoursPage = () => {
         </article>
       </section>
     </ProtectedPage>
-
   )
 }
 

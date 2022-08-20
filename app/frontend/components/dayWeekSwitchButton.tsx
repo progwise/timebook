@@ -9,8 +9,8 @@ export const DayWeekSwitch = ({ selectedButton }: DayWeekSwitchProps) => {
   const selectedLink = 'cursor-default bg-blue-400 border-1 border border-blue-700  '
   const unselectedLink = 'bg-gray-300 text-black border border-gray-500 '
 
-const router = useRouter()
-const teamSlug = router.query.teamSlug
+  const router = useRouter()
+  const teamSlug = router.query.teamSlug
 
   return (
     <span className="text-center text-xs">

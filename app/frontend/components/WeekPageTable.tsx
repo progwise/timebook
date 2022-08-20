@@ -1,33 +1,34 @@
 // eslint-disable-next-line unicorn/filename-case
-import { addDays, differenceInDays, eachDayOfInterval, endOfWeek, format, formatISO, isToday, parse, parseISO, startOfWeek } from 'date-fns'
+import {
+  addDays,
+  differenceInDays,
+  eachDayOfInterval,
+  endOfWeek,
+  format,
+  formatISO,
+  isToday,
+  parse,
+  parseISO,
+  startOfWeek,
+} from 'date-fns'
 import { useRouter } from 'next/router'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { FormattedDuration } from './duration/formattedDuration'
 import { HourInput } from './hourInput'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableHeadRow,
-  TableRow,
-} from './table/table'
+import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableHeadRow, TableRow } from './table/table'
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 
 const NUMBER_OF_DAYS = 7
 
-interface WeekPageTableProps{
+interface WeekPageTableProps {
   startDate: Date
 }
 interface WorkHoursTableRow {
   task: TaskFragment
   project: ProjectFragment
   durations: number[]
-  
 }
 export const WeekPageTable = (props: WeekPageTableProps) => {
-  
   const router = useRouter()
   const fromDate = props.startDate
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
@@ -61,77 +62,70 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
 
   return (
-    
-    
     <>
-    <div>
-     <div className='pt-10 pb-5'>
-
-      <DayWeekSwitch selectedButton="week" />
-
-     </div>
-      <Table>
-        <TableHead>
-          <TableHeadRow>
-            <TableHeadCell />
-            {eachDayOfInterval(interval).map((day) => (
-              <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                {format(day, 'EEE')}
-                <br />
-                {format(day, 'dd. MMM')}
-              </TableHeadCell>
+      <div>
+        <div className="pt-10 pb-5">
+          <DayWeekSwitch selectedButton="week" />
+        </div>
+        <Table>
+          <TableHead>
+            <TableHeadRow>
+              <TableHeadCell />
+              {eachDayOfInterval(interval).map((day) => (
+                <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                  {format(day, 'EEE')}
+                  <br />
+                  {format(day, 'dd. MMM')}
+                </TableHeadCell>
+              ))}
+              <TableHeadCell />
+            </TableHeadRow>
+          </TableHead>
+          <TableBody>
+            {tableData.map((row) => (
+              <TableRow key={row.task.id}>
+                <TableCell>
+                  {row.project.title}
+                  <br />
+                  {row.task.title}
+                </TableCell>
+                {eachDayOfInterval(interval).map((day, dayIndex) => (
+                  <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                    <HourInput readOnly onChange={console.log} workHours={row.durations[dayIndex] / 60} />
+                  </TableCell>
+                ))}
+                <TableCell>
+                  <FormattedDuration
+                    title=""
+                    minutes={row.durations.reduce((previousValue, currentValue) => previousValue + currentValue)}
+                  />
+                </TableCell>
+              </TableRow>
             ))}
-            <TableHeadCell />
-          </TableHeadRow>
-        </TableHead>
-        <TableBody>
-          {tableData.map((row) => (
-            <TableRow key={row.task.id}>
-              <TableCell>
-                {row.project.title}
-                <br />
-                {row.task.title}
-              </TableCell>
+            <TableRow>
+              <TableCell />
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                  <HourInput readOnly onChange={console.log} workHours={row.durations[dayIndex] / 60} />
+                  <FormattedDuration
+                    title=""
+                    minutes={tableData
+                      .map((row) => row.durations[dayIndex])
+                      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+                  />
                 </TableCell>
               ))}
               <TableCell>
                 <FormattedDuration
                   title=""
-                  minutes={row.durations.reduce((previousValue, currentValue) => previousValue + currentValue)}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-          <TableRow>
-            <TableCell />
-            {eachDayOfInterval(interval).map((day, dayIndex) => (
-              <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                <FormattedDuration
-                  title=""
                   minutes={tableData
-                    .map((row) => row.durations[dayIndex])
+                    .flatMap((row) => row.durations)
                     .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
                 />
               </TableCell>
-            ))}
-            <TableCell>
-              <FormattedDuration
-                title=""
-                minutes={tableData
-                  .flatMap((row) => row.durations)
-                  .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
-              />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
-  </>
-  
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </>
   )
-  
 }
-
