@@ -37,6 +37,10 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   })
 
   const handleChange = async (selectedCustomer?: CustomerFragment) => {
+    if (!selectedCustomer) {
+      setCustomersQuery('')
+    }
+
     if (selectedCustomer && !selectedCustomer.id) {
       const result = await createCustomer({ data: { title: selectedCustomer.title } })
 
@@ -52,6 +56,10 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   }
 
   const selectedCustomer = customersData?.team.customers.find((customer) => customer.id === value)
+
+  const customerTitleExists = customersData?.team.customers.some((customer) => customer.title === customersQuery)
+
+  const showCreateOption = customersQuery.length > 0 && !customerTitleExists
 
   return (
     <div className="flex flex-col">
@@ -102,7 +110,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
                       </>
                     )}
                   </Combobox.Option>
-                  {customersQuery.length > 0 && (
+                  {showCreateOption && (
                     <Combobox.Option
                       value={{ id: undefined, title: customersQuery }}
                       className={({ active }) =>
