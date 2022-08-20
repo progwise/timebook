@@ -5,6 +5,7 @@ import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
 import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
 import { Button } from '../../../frontend/components/button/button'
 import { CalendarSelector } from '../../../frontend/components/calendarSelector'
+import { DayWeekSwitch } from '../../../frontend/components/dayWeekSwitchButton'
 import { FormattedDuration } from '../../../frontend/components/duration/formattedDuration'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { useWorkHoursQuery } from '../../../frontend/generated/graphql'
@@ -57,6 +58,7 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
+         <DayWeekSwitch selectedButton={"day"} />
       <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid">
         {data?.workHours.map((item) => (
           <article key={item.id} className="contents border-2 border-black">
@@ -106,6 +108,7 @@ const MaintainWorkHoursPage = () => {
         </article>
       </section>
     </ProtectedPage>
+
   )
 }
 
