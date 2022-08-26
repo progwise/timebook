@@ -16,11 +16,10 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
       throw new Error('not authenticated')
     }
 
-    const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
+    const team = await context.prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
 
-    const project = await context.prisma.project.findUnique({
+    const project = await context.prisma.project.findUniqueOrThrow({
       where: { id },
-      rejectOnNotFound: true,
     })
 
     if (project.teamId !== team.id) {
@@ -29,7 +28,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     }
 
     const newCustomer = customerId
-      ? await context.prisma.customer.findFirst({
+      ? await context.prisma.customer.findFirstOrThrow({
           where: {
             id: customerId,
             team: {
@@ -41,7 +40,6 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
               },
             },
           },
-          rejectOnNotFound: true,
         })
       : undefined
 

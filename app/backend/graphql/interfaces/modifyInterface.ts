@@ -17,12 +17,11 @@ export const ModifyInterface = interfaceType({
           throw new GraphQLError('team slug not found', {})
         }
 
-        const membership = await context.prisma.teamMembership.findFirst({
+        const membership = await context.prisma.teamMembership.findFirstOrThrow({
           where: {
             userId: context.session.user.id,
             team: { slug: context.teamSlug },
           },
-          rejectOnNotFound: true,
         })
 
         return membership.role === 'ADMIN'

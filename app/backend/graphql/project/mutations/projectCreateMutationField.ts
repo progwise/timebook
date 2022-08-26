@@ -17,7 +17,7 @@ export const projectCreateMutationField = mutationField('projectCreate', {
     const now = new Date()
 
     const customer = customerId
-      ? await context.prisma.customer.findFirst({
+      ? await context.prisma.customer.findFirstOrThrow({
           where: {
             id: customerId,
             team: {
@@ -29,11 +29,10 @@ export const projectCreateMutationField = mutationField('projectCreate', {
               },
             },
           },
-          rejectOnNotFound: true,
         })
       : undefined
 
-    const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
+    const team = await context.prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
 
     return context.prisma.project.create({
       data: {

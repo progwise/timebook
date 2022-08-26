@@ -11,7 +11,7 @@ export const customerUpdateMutationField = mutationField('customerUpdate', {
     data: arg({ type: CustomerInput }),
   },
   authorize: async (_source, { customerId }, context) => {
-    const customer = await context.prisma.customer.findUnique({ where: { id: customerId }, rejectOnNotFound: true })
+    const customer = await context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } })
     return isTeamMember({ id: customer.teamId }, context)
   },
   resolve: (_source, { customerId, data }, context) =>
