@@ -7,7 +7,6 @@ export const WorkHour = objectType({
   name: 'WorkHour',
   definition: (t) => {
     t.id('id', { description: 'Identifies the work hour' })
-    t.nullable.string('comment')
     t.date('date', { resolve: (workHour) => workHour.date })
     t.int('duration', {
       resolve: (workHour) => workHour.duration,

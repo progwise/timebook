@@ -111,19 +111,18 @@ const ReportForm = () => {
           </div>
         </div>
         {selectedProject && (
-          <section className="mt-10 grid w-full grid-cols-4 gap-2 text-left">
+          <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
-              <hr className="col-span-4 -mb-2 h-0.5 bg-gray-600" />
+              <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />
               <strong>Tasks</strong>
-              <strong>Comment</strong>
               <strong>Person</strong>
               <strong>Hours</strong>
             </article>
             {reportGroupedData?.report.groupedByDate.map((group) => (
               <Fragment key={group.date}>
                 <article className="contents">
-                  <hr className="col-span-4 -mt-2 h-0.5 bg-gray-700 " />
-                  <strong className="col-span-3">{group.date}</strong>
+                  <hr className="col-span-3 -mt-2 h-0.5 bg-gray-700 " />
+                  <strong className="col-span-2">{group.date}</strong>
                   <FormattedDuration
                     title="Total work hours of the day"
                     minutes={group.workHours
@@ -134,7 +133,6 @@ const ReportForm = () => {
                 {group.workHours.map((workHour) => (
                   <article key={workHour.id} className="contents">
                     <h1>{workHour.task.title}</h1>
-                    <span>{workHour.comment}</span>
                     <span>{workHour.user?.name}</span>
                     <FormattedDuration title="Work duration" minutes={workHour.duration} />
                   </article>
@@ -142,8 +140,8 @@ const ReportForm = () => {
               </Fragment>
             ))}
             <article className="contents">
-              <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
-              <strong className="col-span-3">Total</strong>
+              <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
+              <strong className="col-span-2">Total</strong>
               <FormattedDuration
                 title="Total work hours of the selected project"
                 minutes={reportGroupedData?.report.groupedByDate
@@ -152,8 +150,8 @@ const ReportForm = () => {
               />
             </article>
             <article className="contents">
-              <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
-              <strong className="col-span-4">Total by Task</strong>
+              <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
+              <strong className="col-span-3">Total by Task</strong>
               {reportGroupedData?.report.groupedByTask.map((entry) => (
                 <div key={entry.task.id} className="grid grid-flow-row">
                   <span>{entry.task.title}</span>
@@ -162,15 +160,15 @@ const ReportForm = () => {
               ))}
             </article>
             <article className="contents">
-              <hr className="col-span-4 my-8 h-0.5 border-0 bg-gray-600" />
-              <strong className="col-span-4">Total by Person</strong>
+              <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
+              <strong className="col-span-3">Total by Person</strong>
               {reportGroupedData?.report.groupedByUser.map((group) => (
                 <div key={group.user.id} className="grid grid-flow-row">
                   <span>{group.user.name}</span>
                   <FormattedDuration title="Total by user" minutes={group.duration} />
                 </div>
               ))}
-              <hr className="col-span-4 -mt-2 h-0.5 bg-gray-600" />
+              <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
             </article>
           </section>
         )}

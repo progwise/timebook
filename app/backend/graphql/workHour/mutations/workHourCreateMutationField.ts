@@ -42,7 +42,6 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
         duration: arguments_.data.duration,
         taskId: arguments_.data.taskId,
         userId: context.session.user.id,
-        comment: arguments_.data.comment,
       },
     })
   },

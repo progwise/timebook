@@ -27,7 +27,6 @@ export interface WorkHourItem {
   duration: number
   projectId: string
   taskId: string
-  comment?: string
   taskTitle?: string
 }
 
@@ -43,7 +42,6 @@ const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
     .positive(),
   projectId: yup.string().required('Project is required'),
   taskId: yup.string().required('Task is required'),
-  comment: yup.string().trim().max(200),
   taskTitle: yup
     .string()
     .trim()
@@ -102,7 +100,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       duration: data.duration,
       taskId,
       date: format(data.date, 'yyyy-MM-dd'),
-      comment: data.comment,
     }
 
     const result = await (!data.workHourId
@@ -229,12 +226,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             name="duration"
           />
           <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
-          <textarea
-            className="rounded-md dark:bg-slate-800 dark:text-white"
-            placeholder="Notes (Optional)"
-            {...register('comment')}
-          />
-          <ErrorMessage errors={errors} name="comment" as={<span className="text-red-700" />} />
         </div>
       </form>
     </Modal>
