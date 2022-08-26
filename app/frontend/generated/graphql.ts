@@ -1152,7 +1152,7 @@ export const ProjectDocument = gql`
 `
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
-  return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options })
+  return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
   query projectsWithTasks {
@@ -1164,7 +1164,10 @@ export const ProjectsWithTasksDocument = gql`
 `
 
 export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
-  return Urql.useQuery<ProjectsWithTasksQuery>({ query: ProjectsWithTasksDocument, ...options })
+  return Urql.useQuery<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>({
+    query: ProjectsWithTasksDocument,
+    ...options,
+  })
 }
 export const TeamProjectsDocument = gql`
   query teamProjects {
@@ -1176,7 +1179,7 @@ export const TeamProjectsDocument = gql`
 `
 
 export function useTeamProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamProjectsQuery>({ query: TeamProjectsDocument, ...options })
+  return Urql.useQuery<TeamProjectsQuery, TeamProjectsQueryVariables>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
   mutation projectCreate($data: ProjectInput!) {
@@ -1273,7 +1276,7 @@ export const TeamDocument = gql`
 `
 
 export function useTeamQuery(options?: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamQuery>({ query: TeamDocument, ...options })
+  return Urql.useQuery<TeamQuery, TeamQueryVariables>({ query: TeamDocument, ...options })
 }
 export const TeamCreateDocument = gql`
   mutation teamCreate($data: TeamInput!) {
@@ -1309,7 +1312,7 @@ export const TeamsDocument = gql`
 `
 
 export function useTeamsQuery(options?: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
+  return Urql.useQuery<TeamsQuery, TeamsQueryVariables>({ query: TeamsDocument, ...options })
 }
 export const TeamsWithProjectsDocument = gql`
   query teamsWithProjects($includeArchived: Boolean) {
@@ -1321,7 +1324,10 @@ export const TeamsWithProjectsDocument = gql`
 `
 
 export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
+  return Urql.useQuery<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>({
+    query: TeamsWithProjectsDocument,
+    ...options,
+  })
 }
 export const UserRoleUpdateDocument = gql`
   mutation userRoleUpdate($userId: ID!, $role: Role!) {
@@ -1380,7 +1386,7 @@ export const WorkHoursDocument = gql`
 `
 
 export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'>) {
-  return Urql.useQuery<WorkHoursQuery>({ query: WorkHoursDocument, ...options })
+  return Urql.useQuery<WorkHoursQuery, WorkHoursQueryVariables>({ query: WorkHoursDocument, ...options })
 }
 export const CustomerDocument = gql`
   query customer($customerId: ID!) {
@@ -1392,7 +1398,7 @@ export const CustomerDocument = gql`
 `
 
 export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomerQuery>({ query: CustomerDocument, ...options })
+  return Urql.useQuery<CustomerQuery, CustomerQueryVariables>({ query: CustomerDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
@@ -1443,7 +1449,7 @@ export const CustomersDocument = gql`
 `
 
 export function useCustomersQuery(options?: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
+  return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
   query me {
@@ -1461,7 +1467,7 @@ export const MeDocument = gql`
 `
 
 export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
-  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
+  return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
   query report($projectId: ID!, $from: Date!, $to: Date!) {
@@ -1515,7 +1521,7 @@ export const ReportDocument = gql`
 `
 
 export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
-  return Urql.useQuery<ReportQuery>({ query: ReportDocument, ...options })
+  return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
 }
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {
@@ -1596,7 +1602,7 @@ export const UserDocument = gql`
 `
 
 export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
-  return Urql.useQuery<UserQuery>({ query: UserDocument, ...options })
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options })
 }
 
 /**
