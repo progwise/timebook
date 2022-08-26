@@ -5,8 +5,11 @@ import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectFragment, useProjectsWithTasksQuery } from '../../frontend/generated/graphql'
 import { BookWorkHourModal } from '../../frontend/components/bookWorkHourModal'
 import { Button } from '../../frontend/components/button/button'
-import { BiPlus } from 'react-icons/bi'
 import { DayWeekSwitch } from '../../frontend/components/dayWeekSwitchButton'
+import { useRouter } from 'next/router'
+import { addDays, endOfWeek, format, parse, startOfWeek } from 'date-fns'
+import Link from 'next/link'
+import { BiPlus } from 'react-icons/bi'
 
 export interface IProjectTimeEntry {
   project: ProjectFragment
@@ -22,6 +25,24 @@ const Time = (): JSX.Element => {
   }
 
   const [selectedDate, setSelectedDate] = useState(new Date())
+
+  const router = useRouter()
+
+  const urlDate = router.query.date?.toString()
+
+  const currentDate = urlDate ? parse(urlDate, 'yyyy-MM-dd', new Date()) : new Date()
+
+  const startOfTheWeek = startOfWeek(currentDate, { weekStartsOn: 1 }) //startOfWeek in camel case doesn´t work, because of the following function: startOfWeek()
+
+  const endOfTheWeek = endOfWeek(currentDate, { weekStartsOn: 1 })
+
+  const startDate = format(startOfTheWeek, 'dd.MM')
+  const endDate = format(endOfTheWeek, 'dd.MM.yyyy')
+
+  const nextWeek = addDays(currentDate, 7)
+  const previousWeek = addDays(currentDate, -7)
+  const previousWeekString = format(previousWeek, 'yyyy-MM-dd')
+  const nextWeekString = format(nextWeek, 'yyyy-MM-dd')
 
   const [timeData, setTimeData] = useState([] as Array<IProjectTimeEntry>)
 
@@ -102,9 +123,22 @@ const Time = (): JSX.Element => {
           <BiPlus className="flex items-end text-3xl" />
         </Button>
       </div>
+
+      <span className="text-center text-xs">
+        <Link href={`/time?date=${previousWeekString}`}>
+          <a className={`k w-10 rounded-l-lg bg-gray-400 px-2 py-1`}>Last</a>
+        </Link>
+        <Link href={`/time?date=${nextWeekString}`}>
+          <a className={` w-10 rounded-r-lg bg-gray-400 px-2 py-1`}>Next</a>
+        </Link>
+      </span>
+      <div className="text-lg font-semibold">
+        This Week: {startDate} - {endDate}
+      </div>
       <article className="timebook">
         <DayWeekSwitch selectedButton="week" />
-        <h2>Your timetable for day</h2>
+        <h2>Your timetable for week</h2>
+
         <div>
           <CalendarSelector onSelectedDateChange={handleSelectedDateChange} />
         </div>

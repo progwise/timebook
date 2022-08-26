@@ -430,6 +430,7 @@ export type ProjectQuery = {
       hasWorkHours: boolean
       project: { __typename?: 'Project'; id: string; title: string }
     }>
+    customer?: { __typename?: 'Customer'; id: string } | null
   }
 }
 
@@ -471,6 +472,7 @@ export type TeamProjectsQuery = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
   }>
 }
 
@@ -480,6 +482,7 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
+  customer?: { __typename?: 'Customer'; id: string } | null
 }
 
 export type ProjectWithTasksFragment = {
@@ -509,6 +512,7 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
   }
 }
 
@@ -524,6 +528,7 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
   }
 }
 
@@ -540,6 +545,7 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
   }
 }
 
@@ -700,6 +706,7 @@ export type TeamsWithProjectsQuery = {
       title: string
       startDate?: string | null
       endDate?: string | null
+      customer?: { __typename?: 'Customer'; id: string } | null
     }>
   }>
 }
@@ -718,6 +725,7 @@ export type TeamWithProjectsFragment = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
   }>
 }
 
@@ -744,7 +752,14 @@ export type WorkHourCreateMutation = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename?: 'Customer'; id: string } | null
+    }
     task: {
       __typename?: 'Task'
       id: string
@@ -778,7 +793,14 @@ export type WorkHourUpdateMutation = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename?: 'Customer'; id: string } | null
+    }
     task: {
       __typename?: 'Task'
       id: string
@@ -804,7 +826,14 @@ export type WorkHoursQuery = {
     comment?: string | null
     duration: number
     user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    project: {
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename?: 'Customer'; id: string } | null
+    }
     task: {
       __typename?: 'Task'
       id: string
@@ -822,7 +851,14 @@ export type WorkHourFragment = {
   comment?: string | null
   duration: number
   user: { __typename?: 'User'; id: string; name?: string | null }
-  project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+  project: {
+    __typename?: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    customer?: { __typename?: 'Customer'; id: string } | null
+  }
   task: {
     __typename?: 'Task'
     id: string
@@ -866,13 +902,11 @@ export type CustomerUpdateMutation = {
   customerUpdate: { __typename?: 'Customer'; id: string; title: string }
 }
 
-export type CustomersQueryVariables = Exact<{
-  slug: Scalars['String']
-}>
+export type CustomersQueryVariables = Exact<{ [key: string]: never }>
 
 export type CustomersQuery = {
   __typename?: 'Query'
-  teamBySlug: {
+  team: {
     __typename?: 'Team'
     id: string
     title: string
@@ -1061,6 +1095,9 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
+    customer {
+      id
+    }
   }
 `
 export const TeamWithProjectsFragmentDoc = gql`
@@ -1393,8 +1430,8 @@ export function useCustomerUpdateMutation() {
   return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
-  query customers($slug: String!) {
-    teamBySlug(slug: $slug) {
+  query customers {
+    team {
       id
       title
       customers {
@@ -1405,7 +1442,7 @@ export const CustomersDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
+export function useCustomersQuery(options?: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
   return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
@@ -1956,9 +1993,8 @@ export const mockCustomerUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomersQuery((req, res, ctx) => {
- *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ teamBySlug })
+ *     ctx.data({ team })
  *   )
  * })
  */
