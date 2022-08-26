@@ -69,6 +69,7 @@ describe('the custom calendar should ...', () => {
         await userEvent.click(screen.getByText(/^16$/))
         let selectedDayElement = screen.getByTitle(/^selected day/i)
         expect(selectedDayElement).toHaveTextContent(/16/)
+        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
         await userEvent.click(screen.getByTitle(/Goto today/))
         const today = new Date()
         const todayOfMonth = today.getDate()
