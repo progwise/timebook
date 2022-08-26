@@ -2,15 +2,15 @@ import { Combobox as HUCombobox, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { HiCheck, HiSelector } from 'react-icons/hi'
 
-interface ComboBoxProps<Option> {
-  value?: Option
+interface ComboBoxProps<TOption> {
+  value?: TOption
   disabled?: boolean
   onChange: (id: string | null) => void
-  displayValue: (option: Option) => string
+  displayValue: (option: TOption) => string
   onBlur: () => void
-  options: Option[]
+  options: TOption[]
   noOptionLabel: string
-  onCreateNew?: (title: string) => Promise<Option>
+  onCreateNew?: (title: string) => Promise<TOption>
   isCreating?: boolean
 }
 
@@ -18,7 +18,7 @@ type NewOption = 'newOption'
 
 type NoOption = 'noOption'
 
-export const ComboBox = <Option extends { id: string }>({
+export const ComboBox = <TOption extends { id: string }>({
   value,
   disabled,
   onChange,
@@ -28,10 +28,10 @@ export const ComboBox = <Option extends { id: string }>({
   noOptionLabel,
   onCreateNew,
   isCreating,
-}: ComboBoxProps<Option>): JSX.Element => {
+}: ComboBoxProps<TOption>): JSX.Element => {
   const [inputQuery, setInputQuery] = useState('')
 
-  const generateLabel = (option: Option | NewOption | NoOption) => {
+  const generateLabel = (option: TOption | NewOption | NoOption) => {
     if (option === 'newOption') {
       return `Create "${inputQuery}"`
     }
@@ -45,7 +45,7 @@ export const ComboBox = <Option extends { id: string }>({
     return displayValue(option).toLowerCase().includes(inputQuery.toLowerCase())
   })
 
-  const handleChange = async (selected: Option | NewOption | NoOption) => {
+  const handleChange = async (selected: TOption | NewOption | NoOption) => {
     if (selected === 'newOption') {
       if (onCreateNew) {
         const createdOption = await onCreateNew(inputQuery)
@@ -64,7 +64,7 @@ export const ComboBox = <Option extends { id: string }>({
 
   const showCreateOption = !!onCreateNew && inputQuery.length > 0 && !optionTitleExists
 
-  const allOptions: (Option | NewOption | NoOption)[] = ['noOption', ...filteredOptions]
+  const allOptions: (TOption | NewOption | NoOption)[] = ['noOption', ...filteredOptions]
 
   if (showCreateOption) {
     allOptions.push('newOption')
@@ -72,14 +72,14 @@ export const ComboBox = <Option extends { id: string }>({
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <HUCombobox<any, Option | NewOption | NoOption>
+    <HUCombobox<any, TOption | NewOption | NoOption>
       value={value ?? 'noOption'}
       disabled={isCreating || disabled}
       onChange={handleChange}
     >
       <div className="relative mt-1">
         <div className="relative w-full cursor-default overflow-hidden rounded bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-          <HUCombobox.Input<'input', Option | NoOption | NewOption>
+          <HUCombobox.Input<'input', TOption | NoOption | NewOption>
             className="w-full rounded py-2 pl-3 text-sm leading-5 focus:ring-0 dark:border-white dark:bg-slate-800 dark:text-white"
             displayValue={generateLabel}
             onChange={(event) => setInputQuery(event.target.value)}
@@ -92,7 +92,7 @@ export const ComboBox = <Option extends { id: string }>({
         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
           <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {allOptions.map((option) => (
-              <HUCombobox.Option<'li', Option | NewOption | NoOption>
+              <HUCombobox.Option<'li', TOption | NewOption | NoOption>
                 key={typeof option === 'string' ? option : option.id}
                 value={option}
                 className={({ active }) =>
