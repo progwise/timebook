@@ -17,20 +17,18 @@ export const WorkHour = objectType({
       type: User,
       description: 'User who booked the work hours',
       resolve: (workHour, _arguments, context) =>
-        context.prisma.user.findUnique({
+        context.prisma.user.findUniqueOrThrow({
           where: {
             id: workHour.userId,
           },
-          rejectOnNotFound: true,
         }),
     })
     t.field('project', {
       type: Project,
       resolve: async (workHour, _arguments, context) => {
-        const { task } = await context.prisma.workHour.findUnique({
+        const { task } = await context.prisma.workHour.findUniqueOrThrow({
           where: { id: workHour.id },
           select: { task: { select: { project: true } } },
-          rejectOnNotFound: true,
         })
         return task.project
       },
@@ -39,9 +37,8 @@ export const WorkHour = objectType({
       type: Task,
       description: 'Task for which the working hour was booked',
       resolve: (workHour, _arguments, context) =>
-        context.prisma.task.findUnique({
+        context.prisma.task.findUniqueOrThrow({
           where: { id: workHour.taskId },
-          rejectOnNotFound: true,
         }),
     })
   },

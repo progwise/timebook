@@ -14,9 +14,8 @@ export const projectDeleteMutationField = mutationField('projectDelete', {
       throw new Error('not authenticated')
     }
 
-    const project = await context.prisma.project.findUnique({
+    const project = await context.prisma.project.findUniqueOrThrow({
       where: { id },
-      rejectOnNotFound: true,
       include: { team: true },
     })
 

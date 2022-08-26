@@ -38,12 +38,11 @@ export const User = objectType({
           throw new GraphQLError('Team slug is missing.')
         }
 
-        const membership = await context.prisma.teamMembership.findFirst({
+        const membership = await context.prisma.teamMembership.findFirstOrThrow({
           where: {
             userId: user.id,
             team: { slug },
           },
-          rejectOnNotFound: true,
         })
 
         return membership.role
