@@ -12,9 +12,8 @@ export const teamQueryField = queryField('team', {
       throw new ForbiddenError('team not found')
     }
 
-    return context.prisma.team.findUnique({
+    return context.prisma.team.findUniqueOrThrow({
       where: { slug: context.teamSlug },
-      rejectOnNotFound: true,
     })
   },
 })

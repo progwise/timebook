@@ -13,7 +13,7 @@ export const projectQueryField = queryField('project', {
       throw new Error('User not authenticated')
     }
 
-    return context.prisma.project.findFirst({
+    return context.prisma.project.findFirstOrThrow({
       where: {
         id: _arguments.projectId,
         OR: [
@@ -21,7 +21,6 @@ export const projectQueryField = queryField('project', {
           { team: { teamMemberships: { some: { role: 'ADMIN', userId: context.session.user.id } } } },
         ],
       },
-      rejectOnNotFound: true,
     })
   },
 })

@@ -21,9 +21,8 @@ export const userRoleUpdateMutationField = mutationField('userRoleUpdate', {
       throw new Error('cant update own role')
     }
 
-    const team = await context.prisma.team.findUnique({
+    const team = await context.prisma.team.findUniqueOrThrow({
       where: { slug: context.teamSlug },
-      rejectOnNotFound: true,
     })
 
     try {
