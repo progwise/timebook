@@ -8,7 +8,6 @@ const workHourCreateMutation = `
   mutation workHourCreateMutation($data: WorkHourInput!) {
     workHourCreate(data: $data) {
       id
-      comment
       date
       duration
       user {
@@ -87,7 +86,6 @@ describe('workHourCreateMutationField', () => {
       query: workHourCreateMutation,
       variables: {
         data: {
-          comment: 'ok',
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
@@ -105,7 +103,6 @@ describe('workHourCreateMutationField', () => {
       query: workHourCreateMutation,
       variables: {
         data: {
-          comment: 'ok',
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
@@ -123,7 +120,6 @@ describe('workHourCreateMutationField', () => {
       query: workHourCreateMutation,
       variables: {
         data: {
-          comment: 'ok',
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
@@ -140,7 +136,6 @@ describe('workHourCreateMutationField', () => {
       query: workHourCreateMutation,
       variables: {
         data: {
-          comment: 'ok',
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
@@ -151,7 +146,6 @@ describe('workHourCreateMutationField', () => {
     expect(response.data).toEqual({
       workHourCreate: {
         id: expect.any(String),
-        comment: 'ok',
         date: '2022-01-01',
         duration: 120,
         task: {

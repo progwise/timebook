@@ -388,7 +388,6 @@ export type User = {
 
 export type WorkHour = {
   __typename: 'WorkHour'
-  comment?: Maybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -402,7 +401,6 @@ export type WorkHour = {
 }
 
 export type WorkHourInput = {
-  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -749,7 +747,6 @@ export type WorkHourCreateMutation = {
     __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
     project: {
@@ -787,7 +784,6 @@ export type WorkHourUpdateMutation = {
     __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
     project: {
@@ -820,7 +816,6 @@ export type WorkHoursQuery = {
     __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
     project: {
@@ -845,7 +840,6 @@ export type WorkHourFragment = {
   __typename: 'WorkHour'
   id: string
   date: string
-  comment?: string | null
   duration: number
   user: { __typename: 'User'; id: string; name?: string | null }
   project: {
@@ -941,7 +935,6 @@ export type ReportQuery = {
       workHours: Array<{
         __typename: 'WorkHour'
         id: string
-        comment?: string | null
         date: string
         duration: number
         user: { __typename: 'User'; id: string; name?: string | null; image?: string | null }
@@ -1104,7 +1097,6 @@ export const WorkHourFragmentDoc = gql`
   fragment WorkHour on WorkHour {
     id
     date
-    comment
     duration
     user {
       id
@@ -1467,7 +1459,6 @@ export const ReportDocument = gql`
         duration
         workHours {
           id
-          comment
           date
           duration
           user {
