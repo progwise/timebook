@@ -24,7 +24,7 @@ export type Scalars = {
 }
 
 export type Customer = ModifyInterface & {
-  __typename?: 'Customer'
+  __typename: 'Customer'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   /** Identifier of the customer */
@@ -47,7 +47,7 @@ export type ModifyInterface = {
 }
 
 export type Mutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   /** Create a new customer for a team */
   customerCreate: Customer
   /** Delete a customer */
@@ -185,7 +185,7 @@ export type MutationWorkHourUpdateArgs = {
 }
 
 export type Project = ModifyInterface & {
-  __typename?: 'Project'
+  __typename: 'Project'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   /** Customer of the project */
@@ -214,7 +214,7 @@ export type ProjectInput = {
 }
 
 export type Query = {
-  __typename?: 'Query'
+  __typename: 'Query'
   /** Returns a single customer */
   customer: Customer
   /** Returns a single project */
@@ -277,14 +277,14 @@ export type QueryWorkHoursArgs = {
 }
 
 export type Report = {
-  __typename?: 'Report'
+  __typename: 'Report'
   groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
   groupedByUser: Array<ReportGroupedByUser>
 }
 
 export type ReportGroupedByDate = {
-  __typename?: 'ReportGroupedByDate'
+  __typename: 'ReportGroupedByDate'
   /** Booking date of the work hour */
   date: Scalars['Date']
   /** Sum of the total duration of all the work hours for the specific date */
@@ -293,7 +293,7 @@ export type ReportGroupedByDate = {
 }
 
 export type ReportGroupedByTask = {
-  __typename?: 'ReportGroupedByTask'
+  __typename: 'ReportGroupedByTask'
   /** Sum of the total duration of all the work hours for the task */
   duration: Scalars['Int']
   task: Task
@@ -301,7 +301,7 @@ export type ReportGroupedByTask = {
 }
 
 export type ReportGroupedByUser = {
-  __typename?: 'ReportGroupedByUser'
+  __typename: 'ReportGroupedByUser'
   /** Sum of the total duration of all the work hours for a specific user */
   duration: Scalars['Int']
   user: User
@@ -315,7 +315,7 @@ export enum Role {
 }
 
 export type Task = ModifyInterface & {
-  __typename?: 'Task'
+  __typename: 'Task'
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
@@ -334,7 +334,7 @@ export type TaskInput = {
 }
 
 export type Team = ModifyInterface & {
-  __typename?: 'Team'
+  __typename: 'Team'
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
@@ -376,7 +376,7 @@ export enum Theme {
 }
 
 export type User = {
-  __typename?: 'User'
+  __typename: 'User'
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -387,7 +387,7 @@ export type User = {
 }
 
 export type WorkHour = {
-  __typename?: 'WorkHour'
+  __typename: 'WorkHour'
   comment?: Maybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
@@ -414,50 +414,50 @@ export type ProjectQueryVariables = Exact<{
 }>
 
 export type ProjectQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   project: {
-    __typename?: 'Project'
+    __typename: 'Project'
     canModify: boolean
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
     tasks: Array<{
-      __typename?: 'Task'
+      __typename: 'Task'
       canModify: boolean
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }>
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
 export type TaskFragment = {
-  __typename?: 'Task'
+  __typename: 'Task'
   id: string
   title: string
   hasWorkHours: boolean
-  project: { __typename?: 'Project'; id: string; title: string }
+  project: { __typename: 'Project'; id: string; title: string }
 }
 
 export type ProjectsWithTasksQueryVariables = Exact<{ [key: string]: never }>
 
 export type ProjectsWithTasksQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   projects: Array<{
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
     tasks: Array<{
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }>
   }>
 }
@@ -465,38 +465,38 @@ export type ProjectsWithTasksQuery = {
 export type TeamProjectsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamProjectsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   projects: Array<{
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }>
 }
 
 export type ProjectFragment = {
-  __typename?: 'Project'
+  __typename: 'Project'
   id: string
   title: string
   startDate?: string | null
   endDate?: string | null
-  customer?: { __typename?: 'Customer'; id: string } | null
+  customer?: { __typename: 'Customer'; id: string } | null
 }
 
 export type ProjectWithTasksFragment = {
-  __typename?: 'Project'
+  __typename: 'Project'
   id: string
   title: string
   startDate?: string | null
   endDate?: string | null
   tasks: Array<{
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }>
 }
 
@@ -505,14 +505,14 @@ export type ProjectCreateMutationVariables = Exact<{
 }>
 
 export type ProjectCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectCreate: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -521,14 +521,14 @@ export type ProjectDeleteMutationVariables = Exact<{
 }>
 
 export type ProjectDeleteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectDelete: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -538,14 +538,14 @@ export type ProjectUpdateMutationVariables = Exact<{
 }>
 
 export type ProjectUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectUpdate: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -554,13 +554,13 @@ export type TaskCreateMutationVariables = Exact<{
 }>
 
 export type TaskCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskCreate: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -570,20 +570,20 @@ export type TaskDeleteMutationVariables = Exact<{
 }>
 
 export type TaskDeleteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskDelete?: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
   taskArchive?: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -593,22 +593,22 @@ export type TaskUpdateMutationVariables = Exact<{
 }>
 
 export type TaskUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskUpdate: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
 export type TeamQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   team: {
-    __typename?: 'Team'
+    __typename: 'Team'
     canModify: boolean
     id: string
     title: string
@@ -617,17 +617,17 @@ export type TeamQuery = {
     inviteKey: string
     archived: boolean
     members: Array<{
-      __typename?: 'User'
+      __typename: 'User'
       id: string
       name?: string | null
       image?: string | null
-      projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+      projects: Array<{ __typename: 'Project'; id: string; title: string }>
     }>
   }
 }
 
 export type TeamFragment = {
-  __typename?: 'Team'
+  __typename: 'Team'
   id: string
   title: string
   slug: string
@@ -641,9 +641,9 @@ export type TeamCreateMutationVariables = Exact<{
 }>
 
 export type TeamCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamCreate: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -659,9 +659,9 @@ export type TeamUpdateMutationVariables = Exact<{
 }>
 
 export type TeamUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamUpdate: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -674,9 +674,9 @@ export type TeamUpdateMutation = {
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   teams: Array<{
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -691,9 +691,9 @@ export type TeamsWithProjectsQueryVariables = Exact<{
 }>
 
 export type TeamsWithProjectsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   teams: Array<{
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -701,18 +701,18 @@ export type TeamsWithProjectsQuery = {
     inviteKey: string
     archived: boolean
     projects: Array<{
-      __typename?: 'Project'
+      __typename: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename?: 'Customer'; id: string } | null
+      customer?: { __typename: 'Customer'; id: string } | null
     }>
   }>
 }
 
 export type TeamWithProjectsFragment = {
-  __typename?: 'Team'
+  __typename: 'Team'
   id: string
   title: string
   slug: string
@@ -720,12 +720,12 @@ export type TeamWithProjectsFragment = {
   inviteKey: string
   archived: boolean
   projects: Array<{
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }>
 }
 
@@ -735,8 +735,8 @@ export type UserRoleUpdateMutationVariables = Exact<{
 }>
 
 export type UserRoleUpdateMutation = {
-  __typename?: 'Mutation'
-  userRoleUpdate: { __typename?: 'User'; id: string; role: Role }
+  __typename: 'Mutation'
+  userRoleUpdate: { __typename: 'User'; id: string; role: Role }
 }
 
 export type WorkHourCreateMutationVariables = Exact<{
@@ -744,28 +744,28 @@ export type WorkHourCreateMutationVariables = Exact<{
 }>
 
 export type WorkHourCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   workHourCreate: {
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
     comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
     project: {
-      __typename?: 'Project'
+      __typename: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename?: 'Customer'; id: string } | null
+      customer?: { __typename: 'Customer'; id: string } | null
     }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }
 }
@@ -774,10 +774,7 @@ export type WorkHourDeleteMutationVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type WorkHourDeleteMutation = {
-  __typename?: 'Mutation'
-  workHourDelete: { __typename?: 'WorkHour'; id: string }
-}
+export type WorkHourDeleteMutation = { __typename: 'Mutation'; workHourDelete: { __typename: 'WorkHour'; id: string } }
 
 export type WorkHourUpdateMutationVariables = Exact<{
   id: Scalars['ID']
@@ -785,28 +782,28 @@ export type WorkHourUpdateMutationVariables = Exact<{
 }>
 
 export type WorkHourUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   workHourUpdate: {
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
     comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
     project: {
-      __typename?: 'Project'
+      __typename: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename?: 'Customer'; id: string } | null
+      customer?: { __typename: 'Customer'; id: string } | null
     }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }
 }
@@ -818,53 +815,53 @@ export type WorkHoursQueryVariables = Exact<{
 }>
 
 export type WorkHoursQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   workHours: Array<{
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
     comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
     project: {
-      __typename?: 'Project'
+      __typename: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename?: 'Customer'; id: string } | null
+      customer?: { __typename: 'Customer'; id: string } | null
     }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }>
 }
 
 export type WorkHourFragment = {
-  __typename?: 'WorkHour'
+  __typename: 'WorkHour'
   id: string
   date: string
   comment?: string | null
   duration: number
-  user: { __typename?: 'User'; id: string; name?: string | null }
+  user: { __typename: 'User'; id: string; name?: string | null }
   project: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename?: 'Customer'; id: string } | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
   task: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -872,25 +869,22 @@ export type CustomerQueryVariables = Exact<{
   customerId: Scalars['ID']
 }>
 
-export type CustomerQuery = { __typename?: 'Query'; customer: { __typename?: 'Customer'; id: string; title: string } }
+export type CustomerQuery = { __typename: 'Query'; customer: { __typename: 'Customer'; id: string; title: string } }
 
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
 }>
 
 export type CustomerCreateMutation = {
-  __typename?: 'Mutation'
-  customerCreate: { __typename?: 'Customer'; id: string; title: string }
+  __typename: 'Mutation'
+  customerCreate: { __typename: 'Customer'; id: string; title: string }
 }
 
 export type CustomerDeleteMutationVariables = Exact<{
   customerId: Scalars['ID']
 }>
 
-export type CustomerDeleteMutation = {
-  __typename?: 'Mutation'
-  customerDelete: { __typename?: 'Customer'; id: string }
-}
+export type CustomerDeleteMutation = { __typename: 'Mutation'; customerDelete: { __typename: 'Customer'; id: string } }
 
 export type CustomerUpdateMutationVariables = Exact<{
   customerId: Scalars['ID']
@@ -898,35 +892,35 @@ export type CustomerUpdateMutationVariables = Exact<{
 }>
 
 export type CustomerUpdateMutation = {
-  __typename?: 'Mutation'
-  customerUpdate: { __typename?: 'Customer'; id: string; title: string }
+  __typename: 'Mutation'
+  customerUpdate: { __typename: 'Customer'; id: string; title: string }
 }
 
 export type CustomersQueryVariables = Exact<{ [key: string]: never }>
 
 export type CustomersQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   team: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
-    customers: Array<{ __typename?: 'Customer'; id: string; title: string }>
+    customers: Array<{ __typename: 'Customer'; id: string; title: string }>
   }
 }
 
-export type CustomerFragment = { __typename?: 'Customer'; id: string; title: string }
+export type CustomerFragment = { __typename: 'Customer'; id: string; title: string }
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
 export type MeQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   user: {
-    __typename?: 'User'
+    __typename: 'User'
     id: string
     image?: string | null
     name?: string | null
     role: Role
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+    projects: Array<{ __typename: 'Project'; id: string; title: string }>
   }
 }
 
@@ -937,42 +931,42 @@ export type ReportQueryVariables = Exact<{
 }>
 
 export type ReportQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   report: {
-    __typename?: 'Report'
+    __typename: 'Report'
     groupedByDate: Array<{
-      __typename?: 'ReportGroupedByDate'
+      __typename: 'ReportGroupedByDate'
       date: string
       duration: number
       workHours: Array<{
-        __typename?: 'WorkHour'
+        __typename: 'WorkHour'
         id: string
         comment?: string | null
         date: string
         duration: number
-        user: { __typename?: 'User'; id: string; name?: string | null; image?: string | null }
+        user: { __typename: 'User'; id: string; name?: string | null; image?: string | null }
         task: {
-          __typename?: 'Task'
+          __typename: 'Task'
           id: string
           title: string
-          project: { __typename?: 'Project'; id: string; title: string }
+          project: { __typename: 'Project'; id: string; title: string }
         }
       }>
     }>
     groupedByTask: Array<{
-      __typename?: 'ReportGroupedByTask'
+      __typename: 'ReportGroupedByTask'
       duration: number
-      task: { __typename?: 'Task'; id: string; title: string }
+      task: { __typename: 'Task'; id: string; title: string }
     }>
     groupedByUser: Array<{
-      __typename?: 'ReportGroupedByUser'
+      __typename: 'ReportGroupedByUser'
       duration: number
-      user: { __typename?: 'User'; id: string; name?: string | null }
+      user: { __typename: 'User'; id: string; name?: string | null }
       workHours: Array<{
-        __typename?: 'WorkHour'
+        __typename: 'WorkHour'
         id: string
         duration: number
-        task: { __typename?: 'Task'; title: string }
+        task: { __typename: 'Task'; title: string }
       }>
     }>
   }
@@ -983,15 +977,15 @@ export type TeamAcceptInviteMutationVariables = Exact<{
 }>
 
 export type TeamAcceptInviteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamAcceptInvite: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
     theme: Theme
     inviteKey: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null }>
+    members: Array<{ __typename: 'User'; id: string; name?: string | null }>
   }
 }
 
@@ -1001,11 +995,11 @@ export type ProjectMembershipCreateMutationVariables = Exact<{
 }>
 
 export type ProjectMembershipCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectMembershipCreate: {
-    __typename?: 'Project'
+    __typename: 'Project'
     title: string
-    members: Array<{ __typename?: 'User'; name?: string | null }>
+    members: Array<{ __typename: 'User'; name?: string | null }>
   }
 }
 
@@ -1015,12 +1009,8 @@ export type ProjectMembershipDeleteMutationVariables = Exact<{
 }>
 
 export type ProjectMembershipDeleteMutation = {
-  __typename?: 'Mutation'
-  projectMembershipDelete: {
-    __typename?: 'Project'
-    title: string
-    members: Array<{ __typename?: 'User'; id: string }>
-  }
+  __typename: 'Mutation'
+  projectMembershipDelete: { __typename: 'Project'; title: string; members: Array<{ __typename: 'User'; id: string }> }
 }
 
 export type TeamArchiveMutationVariables = Exact<{
@@ -1028,9 +1018,9 @@ export type TeamArchiveMutationVariables = Exact<{
 }>
 
 export type TeamArchiveMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamArchive: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -1045,14 +1035,14 @@ export type UserQueryVariables = Exact<{
 }>
 
 export type UserQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   user: {
-    __typename?: 'User'
+    __typename: 'User'
     id: string
     name?: string | null
     image?: string | null
     role: Role
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+    projects: Array<{ __typename: 'Project'; id: string; title: string }>
   }
 }
 

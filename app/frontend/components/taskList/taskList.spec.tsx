@@ -18,8 +18,10 @@ const tasks: (TaskFragment & { canModify: boolean })[] = [
     project: {
       id: '1',
       title: 'Project 1',
+      __typename: 'Project',
     },
     canModify: true,
+    __typename: 'Task',
   },
 ]
 
@@ -28,6 +30,7 @@ const project: ProjectWithTasksFragment & { canModify: boolean } = {
   title: 'Project 1',
   tasks: [],
   canModify: true,
+  __typename: 'Project',
 }
 
 describe('TaskList', () => {
