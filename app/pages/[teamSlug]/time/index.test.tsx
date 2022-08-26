@@ -48,8 +48,6 @@ describe('The workhours time page', () => {
       name: /task 1/i,
     })
     expect(heading).toBeVisible()
-    const workHourComment = await screen.findByText(/test workhour/i)
-    expect(workHourComment).toBeInTheDocument()
   })
 
   it('should render the work hour total', async () => {
