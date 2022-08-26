@@ -22,7 +22,7 @@ describe('The Team select component', () => {
     render(<TeamSelect />, { wrapper })
 
     const yourTeamButton = await screen.findByRole('button', { name: /testteam1/i })
-    userEvent.click(yourTeamButton)
+    await userEvent.click(yourTeamButton)
 
     const menu = screen.getByRole('menu')
     expect(menu).toHaveTextContent('testTeam1')
