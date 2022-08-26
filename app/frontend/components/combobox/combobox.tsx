@@ -6,16 +6,17 @@ interface ComboBoxProps<Option> {
   value?: Option
   disabled?: boolean
   onChange: (id: string | null) => void
-  displayValue: (option?: Option) => string
+  displayValue: (option: Option) => string
   onBlur: () => void
   options: Option[]
+  noOptionLabel: string
   onCreateNew?: (title: string) => Promise<Option>
   isCreating?: boolean
 }
 
-interface NewOption {
-  id: undefined
-}
+type NewOption = 'newOption'
+
+type NoOption = 'noOption'
 
 export const ComboBox = <Option extends { id: string }>({
   value,
@@ -24,6 +25,7 @@ export const ComboBox = <Option extends { id: string }>({
   onBlur,
   displayValue,
   options,
+  noOptionLabel,
   onCreateNew,
   isCreating,
 }: ComboBoxProps<Option>): JSX.Element => {
@@ -33,33 +35,42 @@ export const ComboBox = <Option extends { id: string }>({
     return displayValue(option).toLowerCase().includes(inputQuery.toLowerCase())
   })
 
-  const handleChange = async (selected?: Option | NewOption) => {
-    if (selected && !selected.id && onCreateNew) {
-      const createdOption = await onCreateNew(inputQuery)
-      selected.id = createdOption.id
+  const handleChange = async (selected: Option | NewOption | NoOption) => {
+    if (selected === 'newOption') {
+      if (onCreateNew) {
+        const createdOption = await onCreateNew(inputQuery)
+        onChange(createdOption.id)
+      }
+    } else if (selected === 'noOption') {
+      // eslint-disable-next-line unicorn/no-null
+      onChange(null)
+    } else {
+      onChange(selected.id)
     }
     setInputQuery('')
-    // eslint-disable-next-line unicorn/no-null
-    onChange(selected?.id ?? null)
   }
 
   const optionTitleExists = options?.some((option) => displayValue(option) === inputQuery)
 
   const showCreateOption = !!onCreateNew && inputQuery.length > 0 && !optionTitleExists
 
-  const allOptions: (Option | NewOption | undefined)[] = [undefined, ...filteredOptions]
+  const allOptions: (Option | NewOption | NoOption)[] = ['noOption', ...filteredOptions]
 
   if (showCreateOption) {
-    const newOption: NewOption = { id: undefined }
-    allOptions.push(newOption)
+    allOptions.push('newOption')
   }
 
   return (
-    <HUCombobox value={value} disabled={isCreating || disabled} onChange={handleChange}>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <HUCombobox<any, Option | NewOption | NoOption>
+      value={value ?? 'noOption'}
+      disabled={isCreating || disabled}
+      onChange={handleChange}
+    >
       <div className="relative mt-1">
         <div className="relative w-full cursor-default overflow-hidden rounded bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
           <HUCombobox.Input<'input', Option | undefined>
-            className="w-full py-2  pl-3 text-sm leading-5 focus:ring-0 dark:border-white dark:bg-slate-800 dark:text-white"
+            className="w-full rounded py-2 pl-3 text-sm leading-5 focus:ring-0 dark:border-white dark:bg-slate-800 dark:text-white"
             displayValue={displayValue}
             onChange={(event) => setInputQuery(event.target.value)}
             onBlur={onBlur}
@@ -70,34 +81,42 @@ export const ComboBox = <Option extends { id: string }>({
         </div>
         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
           <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {allOptions.map((option) => (
-              <HUCombobox.Option<'li', Option | NewOption | undefined>
-                key={option ? option.id ?? 'New Option' : 'No Option'}
-                value={option}
-                className={({ active }) =>
-                  `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                    active ? 'bg-indigo-600 text-white' : 'text-gray-900'
-                  }`
-                }
-              >
-                {({ selected, active }) => (
-                  <>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {!option || option.id ? displayValue(option) : `Create "${inputQuery}"`}
-                    </span>
-                    {selected ? (
-                      <span
-                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                          active ? 'text-white' : 'text-indigo-600'
-                        }`}
-                      >
-                        <HiCheck className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : undefined}
-                  </>
-                )}
-              </HUCombobox.Option>
-            ))}
+            {allOptions.map((option) => {
+              let label: string
+              if (option === 'newOption') {
+                label = `Create "${inputQuery}"`
+              } else if (option === 'noOption') {
+                label = noOptionLabel
+              } else {
+                label = displayValue(option)
+              }
+              return (
+                <HUCombobox.Option<'li', Option | NewOption | NoOption>
+                  key={typeof option === 'string' ? option : option.id}
+                  value={option}
+                  className={({ active }) =>
+                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                      active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                    }`
+                  }
+                >
+                  {({ selected, active }) => (
+                    <>
+                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{label}</span>
+                      {selected ? (
+                        <span
+                          className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                            active ? 'text-white' : 'text-indigo-600'
+                          }`}
+                        >
+                          <HiCheck className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                      ) : undefined}
+                    </>
+                  )}
+                </HUCombobox.Option>
+              )
+            })}
           </HUCombobox.Options>
         </Transition>
       </div>

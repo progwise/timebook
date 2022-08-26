@@ -46,13 +46,14 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   return (
     <div className="flex flex-col">
       <div className="flex justify-between">
-        <ComboBox
+        <ComboBox<CustomerFragment>
           value={selectedCustomer}
           disabled={isSubmitting}
           onChange={onChange}
-          displayValue={(customer) => customer?.title ?? 'No Customer'}
+          displayValue={(customer) => customer.title}
           onBlur={onBlur}
           options={customersData?.team.customers ?? []}
+          noOptionLabel="No Customer"
           onCreateNew={handleCreateCustomer}
           isCreating={createCustomerFetching}
         />
