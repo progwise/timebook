@@ -73,7 +73,7 @@
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
     "msw": "^0.36.4",
-    "pg": "^8.7.3",
+    "pg": "^8.8.0",
     "postcss": "^8.4.4",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.8",
