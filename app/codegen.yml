@@ -19,6 +19,7 @@ generates:
       scalars:
         Date: string
         Time: string
+      nonOptionalTypename: true
 
 hooks:
   afterAllFileWrite:

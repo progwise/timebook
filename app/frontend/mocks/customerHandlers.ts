@@ -23,6 +23,7 @@ export const customerHandlers = [
           customers,
           __typename: 'Team',
         },
+        __typename: 'Query',
       }),
     ),
   ),
@@ -35,6 +36,6 @@ export const customerHandlers = [
 
     customers.push(newCustomer)
 
-    return response(context.data({ customerCreate: newCustomer }))
+    return response(context.data({ customerCreate: newCustomer, __typename: 'Mutation' }))
   }),
 ]

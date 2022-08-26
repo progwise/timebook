@@ -45,6 +45,7 @@ describe('TeamForm', () => {
       theme: Theme.Blue,
       title: 'Google',
       archived: false,
+      __typename: 'Team',
     }
 
     render(<TeamForm team={team} />, { wrapper })
