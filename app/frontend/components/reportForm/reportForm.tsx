@@ -1,22 +1,15 @@
-import { Combobox, Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 import { ProjectFragment, useProjectsWithTasksQuery, useReportQuery } from '../../generated/graphql'
-import { HiCheck, HiSelector } from 'react-icons/hi'
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { FormattedDuration } from '../duration/formattedDuration'
+import { ComboBox } from '../combobox/combobox'
 
-const ReportForm = () => {
+export const ReportForm = () => {
   const router = useRouter()
   const [{ data: projectsData }] = useProjectsWithTasksQuery({ pause: !router.isReady })
-  const [selectedProject, setSelectedProject] = useState<ProjectFragment | undefined>()
-  const [projectQuery, setProjectQuery] = useState('')
+  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))
-
-  const filteredProjects =
-    projectsData?.projects?.filter((project) => {
-      return project.title.toLowerCase().includes(projectQuery.toLowerCase())
-    }) ?? []
 
   const parsedDate = parse(date, 'yyyy-MM', new Date())
 
@@ -25,77 +18,39 @@ const ReportForm = () => {
 
   const [{ data: reportGroupedData }] = useReportQuery({
     variables: {
-      projectId: selectedProject?.id ?? '',
+      projectId: selectedProjectId ?? '',
       from: startOfMonthString,
       to: endOfMonthString,
     },
-    pause: !router.isReady,
+    pause: !router.isReady || !selectedProjectId,
   })
+
+  const selectedProject: ProjectFragment | undefined = projectsData?.projects.find(
+    (project) => project.id === selectedProjectId,
+  )
+
+  const handleChange = (selectedProjectId: string | null) => {
+    setSelectedProjectId(selectedProjectId ?? undefined)
+  }
 
   return (
     <>
       <div>
-        {
-          <h1 className="mb-4 mt-4 font-bold">
-            Detailed time report: {startOfMonthString} - {endOfMonthString}
-          </h1>
-        }
+        <h1 className="mb-4 mt-4 font-bold">
+          Detailed time report: {startOfMonthString} - {endOfMonthString}
+        </h1>
         <h2>Select a project</h2>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div>
-            <Combobox value={selectedProject} onChange={setSelectedProject}>
-              <div className="relative mt-1">
-                <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-                  <Combobox.Input<'input', ProjectFragment | undefined>
-                    className="w-full border-none py-2 pl-3 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-slate-700 dark:text-white "
-                    displayValue={(project) => project?.title ?? ''}
-                    onChange={(event) => setProjectQuery(event.target.value)}
-                  />
-                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                    <HiSelector className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                  </Combobox.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
-                    {filteredProjects.map((project) => (
-                      <Combobox.Option
-                        key={project.id}
-                        value={project}
-                        className={({ active }) =>
-                          `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                            active ? 'bg-indigo-600 text-white' : 'text-gray-900 dark:text-white '
-                          }`
-                        }
-                      >
-                        {({ selected, active }) => (
-                          <>
-                            <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                              {project.title}
-                            </span>
-                            {selected ? (
-                              <span
-                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                  active ? 'text-white' : 'text-indigo-600'
-                                }`}
-                              >
-                                <HiCheck className="h-5 w-5" aria-hidden="true" />
-                              </span>
-                            ) : undefined}
-                          </>
-                        )}
-                      </Combobox.Option>
-                    ))}
-                  </Combobox.Options>
-                </Transition>
-              </div>
-            </Combobox>
+          <div className="flex flex-row">
+            <ComboBox<ProjectFragment>
+              value={selectedProject}
+              displayValue={(project) => project.title}
+              noOptionLabel="No Project"
+              onChange={handleChange}
+              options={projectsData?.projects ?? []}
+            />
           </div>
           <div>
             <input
@@ -176,5 +131,3 @@ const ReportForm = () => {
     </>
   )
 }
-
-export default ReportForm
