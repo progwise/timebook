@@ -7,7 +7,7 @@ interface ComboBoxProps<TOption> {
   disabled?: boolean
   onChange: (id: string | null) => void
   displayValue: (option: TOption) => string
-  onBlur: () => void
+  onBlur?: () => void
   options: TOption[]
   noOptionLabel: string
   onCreateNew?: (title: string) => Promise<TOption>
@@ -90,14 +90,14 @@ export const ComboBox = <TOption extends { id: string }>({
           </HUCombobox.Button>
         </div>
         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-          <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
             {allOptions.map((option) => (
               <HUCombobox.Option<'li', TOption | NewOption | NoOption>
                 key={typeof option === 'string' ? option : option.id}
                 value={option}
                 className={({ active }) =>
                   `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                    active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                    active ? 'bg-indigo-600 text-white' : 'text-gray-900  dark:text-white'
                   }`
                 }
               >
