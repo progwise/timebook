@@ -544,7 +544,6 @@ type User {
 }
 
 type WorkHour {
-  comment: String
   date: Date!
 
   """
@@ -570,7 +569,6 @@ type WorkHour {
 }
 
 input WorkHourInput {
-  comment: String
   date: Date!
 
   """

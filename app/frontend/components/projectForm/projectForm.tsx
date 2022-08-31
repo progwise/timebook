@@ -47,8 +47,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
       ...data,
-      end: data.end ? data.end : undefined,
-      start: data.start ? data.start : undefined,
+      end: data.end ?? undefined,
+      start: data.start ?? undefined,
     })
   }
 

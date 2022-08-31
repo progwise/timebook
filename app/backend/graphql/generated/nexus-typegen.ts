@@ -61,7 +61,6 @@ export interface NexusGenInputs {
   }
   WorkHourInput: {
     // input type
-    comment?: string | null // String
     date: NexusGenScalars['Date'] // Date!
     duration: number // Int!
     taskId: string // ID!
@@ -251,7 +250,6 @@ export interface NexusGenFieldTypes {
   }
   WorkHour: {
     // field return type
-    comment: string | null // String
     date: NexusGenScalars['Date'] // Date!
     duration: number // Int!
     id: string // ID!
@@ -380,7 +378,6 @@ export interface NexusGenFieldTypeNames {
   }
   WorkHour: {
     // field return type name
-    comment: 'String'
     date: 'Date'
     duration: 'Int'
     id: 'ID'

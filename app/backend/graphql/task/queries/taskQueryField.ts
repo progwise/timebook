@@ -14,7 +14,7 @@ export const taskQueryField = queryField('task', {
       throw new ForbiddenError('team not found')
     }
 
-    return context.prisma.task.findFirst({
+    return context.prisma.task.findFirstOrThrow({
       where: {
         id: taskId,
         project: {
@@ -26,7 +26,6 @@ export const taskQueryField = queryField('task', {
           },
         },
       },
-      rejectOnNotFound: true,
     })
   },
 })

@@ -8,8 +8,9 @@ export const taskHandlers = [
         taskDelete: {
           id: '1',
           hasWorkHours: false,
-          project: { id: 'ProjectId', title: 'Projects' },
+          project: { id: 'ProjectId', title: 'Projects', __typename: 'Project' },
           title: 'Task 1',
+          __typename: 'Task',
         },
       }),
     ),

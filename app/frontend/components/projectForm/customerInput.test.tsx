@@ -36,18 +36,18 @@ describe('CustomerInput', () => {
 
     const combobox = screen.getByRole('combobox')
 
-    userEvent.type(combobox, '{arrowdown}')
+    await userEvent.type(combobox, '{arrowdown}')
 
     await screen.findByRole('option', { name: 'Customer 1' })
     const customer2Option = await screen.findByRole('option', { name: 'Customer 2' })
 
     expect(combobox).toHaveValue('Customer 1')
 
-    userEvent.click(customer2Option)
+    await userEvent.click(customer2Option)
     expect(combobox).toHaveValue('Customer 2')
 
     const submitButton = screen.getByRole('button', { name: 'Submit' })
-    userEvent.click(submitButton)
+    await userEvent.click(submitButton)
 
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: 'customer2' }, expect.any(Object)))
   })
@@ -61,15 +61,15 @@ describe('CustomerInput', () => {
 
     await waitFor(() => expect(combobox).toHaveValue('Customer 1'))
 
-    userEvent.type(combobox, '{arrowdown}')
+    await userEvent.type(combobox, '{arrowdown}')
 
     const noCustomerOption = screen.getByRole('option', { name: 'No Customer' })
 
-    userEvent.click(noCustomerOption)
+    await userEvent.click(noCustomerOption)
 
     expect(combobox).toHaveValue('No Customer')
 
-    userEvent.click(submitButton)
+    await userEvent.click(submitButton)
 
     // eslint-disable-next-line unicorn/no-null
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: null }, expect.any(Object)))
@@ -84,14 +84,14 @@ describe('CustomerInput', () => {
 
     await waitFor(() => expect(combobox).toHaveValue('Customer 1'))
 
-    userEvent.clear(combobox)
-    userEvent.type(combobox, 'Google')
+    await userEvent.clear(combobox)
+    await userEvent.type(combobox, 'Google')
     const createOption = screen.getByRole('option', { name: 'Create "Google"' })
-    userEvent.click(createOption)
+    await userEvent.click(createOption)
 
     await waitFor(() => expect(combobox).toHaveValue('Google'))
 
-    userEvent.click(submitButton)
+    await userEvent.click(submitButton)
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith({ customerId: 'customer3' }, expect.any(Object)))
   })
 })
