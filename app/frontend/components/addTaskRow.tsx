@@ -24,7 +24,6 @@ export interface WorkHourItem {
 const CREATE_NEW_TASK = 'CREATE-NEW-TASK'
 
 const addTaskRowSchema: yup.SchemaOf<WorkHourItem> = yup.object({
-  workHourId: yup.string(),
   date: yup.date().required(),
   projectId: yup.string().required('Project is required'),
   taskId: yup.string().required('Task is required'),
