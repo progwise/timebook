@@ -19,9 +19,8 @@ export const Task = objectType({
     t.field('project', {
       type: Project,
       resolve: async (task, _arguments, context) =>
-        context.prisma.project.findUnique({
+        context.prisma.project.findUniqueOrThrow({
           where: { id: task.projectId },
-          rejectOnNotFound: true,
         }),
     })
     t.field('workhours', {

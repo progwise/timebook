@@ -264,7 +264,7 @@ input ProjectInput {
   """
   Id of the customer to which the project belongs.
   """
-  customerId: ID
+  customerId: ID = null
   end: Date
   start: Date
   title: String!
@@ -544,7 +544,6 @@ type User {
 }
 
 type WorkHour {
-  comment: String
   date: Date!
 
   """
@@ -570,7 +569,6 @@ type WorkHour {
 }
 
 input WorkHourInput {
-  comment: String
   date: Date!
 
   """

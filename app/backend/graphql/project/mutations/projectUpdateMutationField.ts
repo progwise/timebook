@@ -11,16 +11,16 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
     data: ProjectInput,
   },
   authorize: async (_source, _arguments, context) => isTeamAdmin(context),
-  resolve: async (_source, { id, data: { title, start, end, customerId } }, context) => {
+  // eslint-disable-next-line unicorn/no-null
+  resolve: async (_source, { id, data: { title, start, end, customerId = null } }, context) => {
     if (!context.session?.user.id || !context.teamSlug) {
       throw new Error('not authenticated')
     }
 
-    const team = await context.prisma.team.findUnique({ where: { slug: context.teamSlug }, rejectOnNotFound: true })
+    const team = await context.prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
 
-    const project = await context.prisma.project.findUnique({
+    const project = await context.prisma.project.findUniqueOrThrow({
       where: { id },
-      rejectOnNotFound: true,
     })
 
     if (project.teamId !== team.id) {
@@ -28,22 +28,13 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
       throw new Error('not authenticated')
     }
 
-    const newCustomer = customerId
-      ? await context.prisma.customer.findFirst({
-          where: {
-            id: customerId,
-            team: {
-              id: team.id,
-              teamMemberships: {
-                some: {
-                  userId: context.session.user.id,
-                },
-              },
-            },
-          },
-          rejectOnNotFound: true,
-        })
-      : undefined
+    if (customerId) {
+      const newCustomer = await context.prisma.customer.findFirst({ where: { id: customerId } })
+
+      if (!newCustomer || newCustomer.teamId !== team.id) {
+        throw new Error('Customer not found')
+      }
+    }
 
     return context.prisma.project.update({
       where: { id },
@@ -51,7 +42,7 @@ export const projectUpdateMutationField = mutationField('projectUpdate', {
         title,
         startDate: start,
         endDate: end,
-        customerId: newCustomer?.id,
+        customerId,
       },
     })
   },

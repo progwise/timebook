@@ -34,7 +34,6 @@ export const testWorkHour: WorkHourFragment = {
   id: '123',
   date: format(new Date(), 'yyyy-MM-dd'),
   duration: 123,
-  comment: 'Test WorkHour',
   project: testProject1,
   user: {
     __typename: 'User',
@@ -46,11 +45,10 @@ export const testWorkHour: WorkHourFragment = {
     title: testTask.title,
     id: testTask.id,
     hasWorkHours: true,
-    canModify: true,
     project: {
       __typename: 'Project',
       id: testProject1.id,
       title: testProject1.title,
     },
   },
-} as WorkHourFragment
+}

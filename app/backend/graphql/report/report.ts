@@ -21,9 +21,8 @@ export const Report = objectType({
         })
 
         return groupByTaskResult.map(({ taskId, _sum: { duration } }) => ({
-          task: context.prisma.task.findUnique({
+          task: context.prisma.task.findUniqueOrThrow({
             where: { id: taskId },
-            rejectOnNotFound: true,
           }),
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           duration: duration!,
@@ -52,9 +51,8 @@ export const Report = objectType({
         })
 
         return groupedByUserResult.map(({ userId, _sum: { duration } }) => ({
-          user: context.prisma.user.findUnique({
+          user: context.prisma.user.findUniqueOrThrow({
             where: { id: userId },
-            rejectOnNotFound: true,
           }),
           workHours: context.prisma.workHour.findMany({
             where: {
