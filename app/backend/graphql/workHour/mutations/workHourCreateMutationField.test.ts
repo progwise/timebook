@@ -83,7 +83,7 @@ describe('workHourCreateMutationField', () => {
               createMany: { data: [{ userId: '1' }] },
             },
           },
-        }
+        },
       },
     })
 
@@ -92,8 +92,8 @@ describe('workHourCreateMutationField', () => {
         date: new Date('2022-01-01'),
         duration: 1,
         taskId: '2',
-        userId: '1'
-      }
+        userId: '1',
+      },
     })
   })
 
