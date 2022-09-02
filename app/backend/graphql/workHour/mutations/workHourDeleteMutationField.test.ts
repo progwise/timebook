@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
-
-const prisma = new PrismaClient()
+import '../../../prisma/prismaVitestEnvironment'
 
 const workHourDeleteMutation = `
   mutation workHourDeleteMutation($id: ID!) {
@@ -13,6 +12,11 @@ const workHourDeleteMutation = `
 `
 
 describe('workHourDeleteMutationField', () => {
+  let prisma: PrismaClient
+  beforeAll(() => {
+    prisma = new PrismaClient()
+  })
+
   beforeEach(async () => {
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()

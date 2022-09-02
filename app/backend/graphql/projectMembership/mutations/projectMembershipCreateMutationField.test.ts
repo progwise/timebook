@@ -1,8 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
+import '../../../prisma/prismaVitestEnvironment'
 
-const prisma = new PrismaClient()
+let prisma: PrismaClient
+beforeAll(() => {
+  prisma = new PrismaClient()
+})
 
 const projectMembershipCreateMutation = `
 mutation projectMembershipCreate($userID: ID!, $projectID: ID!) {

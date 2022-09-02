@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HourInput } from './hourInput'
@@ -8,7 +9,7 @@ describe('the hour input control should display ...', () => {
     // eslint-disable-next-line testing-library/no-render-in-setup
     render(
       <>
-        <HourInput workHours={0} onChange={jest.fn()} />
+        <HourInput workHours={0} onChange={vi.fn()} />
         <button>Click me!</button>
       </>,
     )
@@ -118,7 +119,7 @@ describe('the hour input control should display ...', () => {
   })
 
   it('... typing 24.018 reports an error', async () => {
-    window.alert = jest.fn()
+    window.alert = vi.fn()
     const hourBox = screen.getByRole('textbox')
 
     await userEvent.clear(hourBox)

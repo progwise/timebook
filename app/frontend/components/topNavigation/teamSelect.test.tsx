@@ -1,10 +1,11 @@
+import { vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Client, Provider } from 'urql'
 import { TeamSelect } from './teamSelect'
 import '../../mocks/mockServer'
 import userEvent from '@testing-library/user-event'
 
-jest.mock('next/router', () => ({
+vi.mock('next/router', () => ({
   pathname: '/[teamSlug]/team',
   useRouter: () => ({}),
 }))

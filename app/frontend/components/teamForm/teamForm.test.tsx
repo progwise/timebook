@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { Client, Provider } from 'urql'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -8,9 +9,9 @@ import '../../mocks/mockServer'
 
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 
-const routerPush = jest.fn()
+const routerPush = vi.fn()
 
-jest.mock('next/router', () => ({
+vi.mock('next/router', () => ({
   useRouter: () => ({ push: routerPush }),
 }))
 
@@ -19,7 +20,7 @@ const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}<
 
 afterEach(() => {
   cleanup()
-  jest.resetAllMocks()
+  vi.resetAllMocks()
 })
 
 describe('TeamForm', () => {

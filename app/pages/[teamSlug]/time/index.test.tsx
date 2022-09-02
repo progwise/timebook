@@ -1,13 +1,14 @@
+import { vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import MaintainWorkHoursPage from './index.page'
 import '../../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
 
-jest.mock('next-auth/react', () => ({
+vi.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
 }))
 
-jest.mock('next/router', () => ({
+vi.mock('next/router', () => ({
   useRouter() {
     return {
       query: { teamSLug: 'test1' },

@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { Client, Provider } from 'urql'
 import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
@@ -14,7 +15,7 @@ describe('BookWorkHourModal', () => {
     projectId: '',
     taskId: '',
   }
-  const onCloseMock = jest.fn()
+  const onCloseMock = vi.fn()
 
   it('should render the project selection', async () => {
     render(<BookWorkHourModal workHourItem={testItem} onClose={onCloseMock} />, { wrapper })

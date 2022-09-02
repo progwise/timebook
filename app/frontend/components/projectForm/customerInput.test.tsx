@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForm } from 'react-hook-form'
@@ -5,7 +6,7 @@ import { Client, Provider } from 'urql'
 import { CustomerInput } from './customerInput'
 import '../../mocks/mockServer'
 
-jest.mock('next/router', () => ({
+vi.mock('next/router', () => ({
   useRouter: () => ({
     isReady: true,
   }),
@@ -31,7 +32,7 @@ const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}<
 
 describe('CustomerInput', () => {
   it('should be possible to select an existing customer', async () => {
-    const onSubmit = jest.fn()
+    const onSubmit = vi.fn()
     render(<HelperForm onSubmit={onSubmit} />, { wrapper })
 
     const combobox = screen.getByRole('combobox')
@@ -53,7 +54,7 @@ describe('CustomerInput', () => {
   })
 
   it('should be possible to select no customer', async () => {
-    const onSubmit = jest.fn()
+    const onSubmit = vi.fn()
     render(<HelperForm onSubmit={onSubmit} />, { wrapper })
 
     const combobox = screen.getByRole('combobox')
@@ -76,7 +77,7 @@ describe('CustomerInput', () => {
   })
 
   it('should be possible to create and select a new customer', async () => {
-    const onSubmit = jest.fn()
+    const onSubmit = vi.fn()
     render(<HelperForm onSubmit={onSubmit} />, { wrapper })
 
     const combobox = screen.getByRole('combobox')

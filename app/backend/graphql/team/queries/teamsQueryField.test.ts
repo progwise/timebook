@@ -1,7 +1,6 @@
 import { PrismaClient, Team } from '@prisma/client'
 import { getTestServer } from '../../../getTestServer'
-
-const prisma = new PrismaClient()
+import '../../../prisma/prismaVitestEnvironment'
 
 const teamsQuery = `
   query teams ($includeArchived: Boolean) {
@@ -19,6 +18,11 @@ const teamsQuery = `
 `
 
 describe('teamsQueryField', () => {
+  let prisma: PrismaClient
+  beforeAll(() => {
+    prisma = new PrismaClient()
+  })
+
   beforeAll(async () => {
     await prisma.user.create({
       data: {
