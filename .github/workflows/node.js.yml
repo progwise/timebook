@@ -5,8 +5,6 @@ name: Node.js CI
 
 on:
   push:
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -80,3 +78,66 @@ jobs:
       - run: npm ci
       - run: npm run graphql:generate
       - run: node .ci/check-graphql-generator
+
+  e2e-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    env:
+      DATABASE_URL: postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=public
+      SECRET: secr3t
+      NEXTAUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Start postgres docker image
+        run: docker-compose up -d
+      - name: Migrate database
+        run: npx prisma migrate deploy
+      - name: Run Playwright tests
+        run: npm run e2e-tests
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  deploy:
+    needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    name: Deploy App
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: DigitalOcean App Platform deployment
+        uses: digitalocean/app_action@main
+        with:
+          app_name: timebook-app
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+  migrate:
+    name: Migrate Database
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Database migration
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -73,7 +73,12 @@ export const getFormattedWorkHours = (workHours: number): string => {
   return `${hours}:${pad(minutes)}`
 }
 
-export const HourInput = (props: { workHours: number; onChange: (workHours: number) => void }): JSX.Element => {
+export const HourInput = (props: {
+  workHours: number
+  onChange: (workHours: number) => void
+  className?: string
+  readOnly?: boolean
+}): JSX.Element => {
   const [workHours, setWorkHours] = useState(0)
   const [formattedValue, setFormattedValue] = useState('0:00')
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
@@ -98,17 +103,17 @@ export const HourInput = (props: { workHours: number; onChange: (workHours: numb
   }, [workHours])
 
   return (
-    <div className="w-full border">
-      <input
-        onFocus={(event) => event.target.select()}
-        className="w-full p-1 text-center"
-        type="text"
-        name="hours"
-        placeholder="0:00"
-        onBlur={handleOnBlur}
-        value={formattedValue}
-        onChange={handleOnChange}
-      />
-    </div>
+    <input
+      readOnly={props.readOnly}
+      onFocus={(event) => event.target.select()}
+      className={`rounded-md p-1 text-center dark:bg-slate-800 ${props.className ?? ''}`}
+      type="text"
+      size={5}
+      name="hours"
+      placeholder="0:00"
+      onBlur={handleOnBlur}
+      value={formattedValue}
+      onChange={handleOnChange}
+    />
   )
 }

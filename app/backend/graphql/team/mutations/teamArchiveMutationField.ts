@@ -1,5 +1,4 @@
 import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
 import { Team } from '../team'
 
 export const teamArchiveMutationField = mutationField('teamArchive', {
@@ -8,10 +7,27 @@ export const teamArchiveMutationField = mutationField('teamArchive', {
   args: {
     teamId: idArg({ description: 'id of the team' }),
   },
-  authorize: (_source, _arguments, context) => isTeamAdmin(context),
+  authorize: async (_source, { teamId }, context) => {
+    const userId = context.session?.user.id
+
+    if (!userId) {
+      return false
+    }
+
+    const teamMembership = await context.prisma.teamMembership.findFirst({
+      where: {
+        teamId,
+        userId,
+      },
+    })
+
+    return teamMembership?.role === 'ADMIN'
+  },
   resolve: (_source, { teamId }, context) => {
     return context.prisma.team.update({
-      where: { id: teamId },
+      where: {
+        id: teamId,
+      },
       data: {
         archivedAt: new Date(),
       },

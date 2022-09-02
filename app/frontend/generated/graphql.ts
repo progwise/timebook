@@ -24,7 +24,7 @@ export type Scalars = {
 }
 
 export type Customer = ModifyInterface & {
-  __typename?: 'Customer'
+  __typename: 'Customer'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   /** Identifier of the customer */
@@ -47,7 +47,7 @@ export type ModifyInterface = {
 }
 
 export type Mutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   /** Create a new customer for a team */
   customerCreate: Customer
   /** Delete a customer */
@@ -58,6 +58,10 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  /** Assign user to Project */
+  projectMembershipCreate: Project
+  /** Unassign user to Project */
+  projectMembershipDelete: Project
   /** Update a project */
   projectUpdate: Project
   /** Archive a task */
@@ -107,6 +111,16 @@ export type MutationProjectCreateArgs = {
 
 export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationProjectMembershipCreateArgs = {
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipDeleteArgs = {
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -171,7 +185,7 @@ export type MutationWorkHourUpdateArgs = {
 }
 
 export type Project = ModifyInterface & {
-  __typename?: 'Project'
+  __typename: 'Project'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   /** Customer of the project */
@@ -200,7 +214,7 @@ export type ProjectInput = {
 }
 
 export type Query = {
-  __typename?: 'Query'
+  __typename: 'Query'
   /** Returns a single customer */
   customer: Customer
   /** Returns a single project */
@@ -263,14 +277,14 @@ export type QueryWorkHoursArgs = {
 }
 
 export type Report = {
-  __typename?: 'Report'
+  __typename: 'Report'
   groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
   groupedByUser: Array<ReportGroupedByUser>
 }
 
 export type ReportGroupedByDate = {
-  __typename?: 'ReportGroupedByDate'
+  __typename: 'ReportGroupedByDate'
   /** Booking date of the work hour */
   date: Scalars['Date']
   /** Sum of the total duration of all the work hours for the specific date */
@@ -279,7 +293,7 @@ export type ReportGroupedByDate = {
 }
 
 export type ReportGroupedByTask = {
-  __typename?: 'ReportGroupedByTask'
+  __typename: 'ReportGroupedByTask'
   /** Sum of the total duration of all the work hours for the task */
   duration: Scalars['Int']
   task: Task
@@ -287,7 +301,7 @@ export type ReportGroupedByTask = {
 }
 
 export type ReportGroupedByUser = {
-  __typename?: 'ReportGroupedByUser'
+  __typename: 'ReportGroupedByUser'
   /** Sum of the total duration of all the work hours for a specific user */
   duration: Scalars['Int']
   user: User
@@ -301,7 +315,7 @@ export enum Role {
 }
 
 export type Task = ModifyInterface & {
-  __typename?: 'Task'
+  __typename: 'Task'
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
@@ -320,7 +334,7 @@ export type TaskInput = {
 }
 
 export type Team = ModifyInterface & {
-  __typename?: 'Team'
+  __typename: 'Team'
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
@@ -362,7 +376,7 @@ export enum Theme {
 }
 
 export type User = {
-  __typename?: 'User'
+  __typename: 'User'
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -373,8 +387,7 @@ export type User = {
 }
 
 export type WorkHour = {
-  __typename?: 'WorkHour'
-  comment?: Maybe<Scalars['String']>
+  __typename: 'WorkHour'
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -388,7 +401,6 @@ export type WorkHour = {
 }
 
 export type WorkHourInput = {
-  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -400,73 +412,89 @@ export type ProjectQueryVariables = Exact<{
 }>
 
 export type ProjectQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   project: {
-    __typename?: 'Project'
+    __typename: 'Project'
     canModify: boolean
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
     tasks: Array<{
-      __typename?: 'Task'
+      __typename: 'Task'
       canModify: boolean
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }>
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
 export type TaskFragment = {
-  __typename?: 'Task'
+  __typename: 'Task'
   id: string
   title: string
   hasWorkHours: boolean
-  project: { __typename?: 'Project'; id: string; title: string }
+  project: { __typename: 'Project'; id: string; title: string }
 }
 
 export type ProjectsWithTasksQueryVariables = Exact<{ [key: string]: never }>
 
 export type ProjectsWithTasksQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   projects: Array<{
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
     tasks: Array<{
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }>
   }>
 }
 
+export type TeamProjectsQueryVariables = Exact<{ [key: string]: never }>
+
+export type TeamProjectsQuery = {
+  __typename: 'Query'
+  projects: Array<{
+    __typename: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
+  }>
+}
+
 export type ProjectFragment = {
-  __typename?: 'Project'
+  __typename: 'Project'
   id: string
   title: string
   startDate?: string | null
   endDate?: string | null
+  customer?: { __typename: 'Customer'; id: string } | null
 }
 
 export type ProjectWithTasksFragment = {
-  __typename?: 'Project'
+  __typename: 'Project'
   id: string
   title: string
   startDate?: string | null
   endDate?: string | null
   tasks: Array<{
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }>
 }
 
@@ -475,13 +503,14 @@ export type ProjectCreateMutationVariables = Exact<{
 }>
 
 export type ProjectCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectCreate: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -490,13 +519,14 @@ export type ProjectDeleteMutationVariables = Exact<{
 }>
 
 export type ProjectDeleteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectDelete: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -506,13 +536,14 @@ export type ProjectUpdateMutationVariables = Exact<{
 }>
 
 export type ProjectUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   projectUpdate: {
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -521,13 +552,13 @@ export type TaskCreateMutationVariables = Exact<{
 }>
 
 export type TaskCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskCreate: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -537,20 +568,20 @@ export type TaskDeleteMutationVariables = Exact<{
 }>
 
 export type TaskDeleteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskDelete?: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
   taskArchive?: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -560,22 +591,22 @@ export type TaskUpdateMutationVariables = Exact<{
 }>
 
 export type TaskUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   taskUpdate: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
 export type TeamQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   team: {
-    __typename?: 'Team'
+    __typename: 'Team'
     canModify: boolean
     id: string
     title: string
@@ -584,17 +615,17 @@ export type TeamQuery = {
     inviteKey: string
     archived: boolean
     members: Array<{
-      __typename?: 'User'
+      __typename: 'User'
       id: string
       name?: string | null
       image?: string | null
-      projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+      projects: Array<{ __typename: 'Project'; id: string; title: string }>
     }>
   }
 }
 
 export type TeamFragment = {
-  __typename?: 'Team'
+  __typename: 'Team'
   id: string
   title: string
   slug: string
@@ -608,9 +639,9 @@ export type TeamCreateMutationVariables = Exact<{
 }>
 
 export type TeamCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamCreate: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -626,9 +657,9 @@ export type TeamUpdateMutationVariables = Exact<{
 }>
 
 export type TeamUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamUpdate: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -641,9 +672,9 @@ export type TeamUpdateMutation = {
 export type TeamsQueryVariables = Exact<{ [key: string]: never }>
 
 export type TeamsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   teams: Array<{
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -658,9 +689,9 @@ export type TeamsWithProjectsQueryVariables = Exact<{
 }>
 
 export type TeamsWithProjectsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   teams: Array<{
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -668,17 +699,18 @@ export type TeamsWithProjectsQuery = {
     inviteKey: string
     archived: boolean
     projects: Array<{
-      __typename?: 'Project'
+      __typename: 'Project'
       id: string
       title: string
       startDate?: string | null
       endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
     }>
   }>
 }
 
 export type TeamWithProjectsFragment = {
-  __typename?: 'Team'
+  __typename: 'Team'
   id: string
   title: string
   slug: string
@@ -686,11 +718,12 @@ export type TeamWithProjectsFragment = {
   inviteKey: string
   archived: boolean
   projects: Array<{
-    __typename?: 'Project'
+    __typename: 'Project'
     id: string
     title: string
     startDate?: string | null
     endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
   }>
 }
 
@@ -700,8 +733,8 @@ export type UserRoleUpdateMutationVariables = Exact<{
 }>
 
 export type UserRoleUpdateMutation = {
-  __typename?: 'Mutation'
-  userRoleUpdate: { __typename?: 'User'; id: string; role: Role }
+  __typename: 'Mutation'
+  userRoleUpdate: { __typename: 'User'; id: string; role: Role }
 }
 
 export type WorkHourCreateMutationVariables = Exact<{
@@ -709,21 +742,27 @@ export type WorkHourCreateMutationVariables = Exact<{
 }>
 
 export type WorkHourCreateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   workHourCreate: {
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
+    project: {
+      __typename: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
+    }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }
 }
@@ -732,10 +771,7 @@ export type WorkHourDeleteMutationVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type WorkHourDeleteMutation = {
-  __typename?: 'Mutation'
-  workHourDelete: { __typename?: 'WorkHour'; id: string }
-}
+export type WorkHourDeleteMutation = { __typename: 'Mutation'; workHourDelete: { __typename: 'WorkHour'; id: string } }
 
 export type WorkHourUpdateMutationVariables = Exact<{
   id: Scalars['ID']
@@ -743,21 +779,27 @@ export type WorkHourUpdateMutationVariables = Exact<{
 }>
 
 export type WorkHourUpdateMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   workHourUpdate: {
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
+    project: {
+      __typename: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
+    }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }
 }
@@ -769,39 +811,51 @@ export type WorkHoursQueryVariables = Exact<{
 }>
 
 export type WorkHoursQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   workHours: Array<{
-    __typename?: 'WorkHour'
+    __typename: 'WorkHour'
     id: string
     date: string
-    comment?: string | null
     duration: number
-    user: { __typename?: 'User'; id: string; name?: string | null }
-    project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+    user: { __typename: 'User'; id: string; name?: string | null }
+    project: {
+      __typename: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
+    }
     task: {
-      __typename?: 'Task'
+      __typename: 'Task'
       id: string
       title: string
       hasWorkHours: boolean
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename: 'Project'; id: string; title: string }
     }
   }>
 }
 
 export type WorkHourFragment = {
-  __typename?: 'WorkHour'
+  __typename: 'WorkHour'
   id: string
   date: string
-  comment?: string | null
   duration: number
-  user: { __typename?: 'User'; id: string; name?: string | null }
-  project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+  user: { __typename: 'User'; id: string; name?: string | null }
+  project: {
+    __typename: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    customer?: { __typename: 'Customer'; id: string } | null
+  }
   task: {
-    __typename?: 'Task'
+    __typename: 'Task'
     id: string
     title: string
     hasWorkHours: boolean
-    project: { __typename?: 'Project'; id: string; title: string }
+    project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
@@ -809,25 +863,22 @@ export type CustomerQueryVariables = Exact<{
   customerId: Scalars['ID']
 }>
 
-export type CustomerQuery = { __typename?: 'Query'; customer: { __typename?: 'Customer'; id: string; title: string } }
+export type CustomerQuery = { __typename: 'Query'; customer: { __typename: 'Customer'; id: string; title: string } }
 
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
 }>
 
 export type CustomerCreateMutation = {
-  __typename?: 'Mutation'
-  customerCreate: { __typename?: 'Customer'; id: string; title: string }
+  __typename: 'Mutation'
+  customerCreate: { __typename: 'Customer'; id: string; title: string }
 }
 
 export type CustomerDeleteMutationVariables = Exact<{
   customerId: Scalars['ID']
 }>
 
-export type CustomerDeleteMutation = {
-  __typename?: 'Mutation'
-  customerDelete: { __typename?: 'Customer'; id: string }
-}
+export type CustomerDeleteMutation = { __typename: 'Mutation'; customerDelete: { __typename: 'Customer'; id: string } }
 
 export type CustomerUpdateMutationVariables = Exact<{
   customerId: Scalars['ID']
@@ -835,37 +886,35 @@ export type CustomerUpdateMutationVariables = Exact<{
 }>
 
 export type CustomerUpdateMutation = {
-  __typename?: 'Mutation'
-  customerUpdate: { __typename?: 'Customer'; id: string; title: string }
+  __typename: 'Mutation'
+  customerUpdate: { __typename: 'Customer'; id: string; title: string }
 }
 
-export type CustomersQueryVariables = Exact<{
-  slug: Scalars['String']
-}>
+export type CustomersQueryVariables = Exact<{ [key: string]: never }>
 
 export type CustomersQuery = {
-  __typename?: 'Query'
-  teamBySlug: {
-    __typename?: 'Team'
+  __typename: 'Query'
+  team: {
+    __typename: 'Team'
     id: string
     title: string
-    customers: Array<{ __typename?: 'Customer'; id: string; title: string }>
+    customers: Array<{ __typename: 'Customer'; id: string; title: string }>
   }
 }
 
-export type CustomerFragment = { __typename?: 'Customer'; id: string; title: string }
+export type CustomerFragment = { __typename: 'Customer'; id: string; title: string }
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
 export type MeQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   user: {
-    __typename?: 'User'
+    __typename: 'User'
     id: string
     image?: string | null
     name?: string | null
     role: Role
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+    projects: Array<{ __typename: 'Project'; id: string; title: string }>
   }
 }
 
@@ -876,42 +925,41 @@ export type ReportQueryVariables = Exact<{
 }>
 
 export type ReportQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   report: {
-    __typename?: 'Report'
+    __typename: 'Report'
     groupedByDate: Array<{
-      __typename?: 'ReportGroupedByDate'
+      __typename: 'ReportGroupedByDate'
       date: string
       duration: number
       workHours: Array<{
-        __typename?: 'WorkHour'
+        __typename: 'WorkHour'
         id: string
-        comment?: string | null
         date: string
         duration: number
-        user: { __typename?: 'User'; id: string; name?: string | null; image?: string | null }
+        user: { __typename: 'User'; id: string; name?: string | null; image?: string | null }
         task: {
-          __typename?: 'Task'
+          __typename: 'Task'
           id: string
           title: string
-          project: { __typename?: 'Project'; id: string; title: string }
+          project: { __typename: 'Project'; id: string; title: string }
         }
       }>
     }>
     groupedByTask: Array<{
-      __typename?: 'ReportGroupedByTask'
+      __typename: 'ReportGroupedByTask'
       duration: number
-      task: { __typename?: 'Task'; id: string; title: string }
+      task: { __typename: 'Task'; id: string; title: string }
     }>
     groupedByUser: Array<{
-      __typename?: 'ReportGroupedByUser'
+      __typename: 'ReportGroupedByUser'
       duration: number
-      user: { __typename?: 'User'; id: string; name?: string | null }
+      user: { __typename: 'User'; id: string; name?: string | null }
       workHours: Array<{
-        __typename?: 'WorkHour'
+        __typename: 'WorkHour'
         id: string
         duration: number
-        task: { __typename?: 'Task'; title: string }
+        task: { __typename: 'Task'; title: string }
       }>
     }>
   }
@@ -922,16 +970,40 @@ export type TeamAcceptInviteMutationVariables = Exact<{
 }>
 
 export type TeamAcceptInviteMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamAcceptInvite: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
     theme: Theme
     inviteKey: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null }>
+    members: Array<{ __typename: 'User'; id: string; name?: string | null }>
   }
+}
+
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  userID: Scalars['ID']
+  projectID: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename: 'Mutation'
+  projectMembershipCreate: {
+    __typename: 'Project'
+    title: string
+    members: Array<{ __typename: 'User'; name?: string | null }>
+  }
+}
+
+export type ProjectMembershipDeleteMutationVariables = Exact<{
+  userID: Scalars['ID']
+  projectID: Scalars['ID']
+}>
+
+export type ProjectMembershipDeleteMutation = {
+  __typename: 'Mutation'
+  projectMembershipDelete: { __typename: 'Project'; title: string; members: Array<{ __typename: 'User'; id: string }> }
 }
 
 export type TeamArchiveMutationVariables = Exact<{
@@ -939,9 +1011,9 @@ export type TeamArchiveMutationVariables = Exact<{
 }>
 
 export type TeamArchiveMutation = {
-  __typename?: 'Mutation'
+  __typename: 'Mutation'
   teamArchive: {
-    __typename?: 'Team'
+    __typename: 'Team'
     id: string
     title: string
     slug: string
@@ -956,14 +1028,14 @@ export type UserQueryVariables = Exact<{
 }>
 
 export type UserQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   user: {
-    __typename?: 'User'
+    __typename: 'User'
     id: string
     name?: string | null
     image?: string | null
     role: Role
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+    projects: Array<{ __typename: 'Project'; id: string; title: string }>
   }
 }
 
@@ -1006,6 +1078,9 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
+    customer {
+      id
+    }
   }
 `
 export const TeamWithProjectsFragmentDoc = gql`
@@ -1022,7 +1097,6 @@ export const WorkHourFragmentDoc = gql`
   fragment WorkHour on WorkHour {
     id
     date
-    comment
     duration
     user {
       id
@@ -1060,7 +1134,7 @@ export const ProjectDocument = gql`
 `
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
-  return Urql.useQuery<ProjectQuery>({ query: ProjectDocument, ...options })
+  return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
   query projectsWithTasks {
@@ -1072,7 +1146,22 @@ export const ProjectsWithTasksDocument = gql`
 `
 
 export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
-  return Urql.useQuery<ProjectsWithTasksQuery>({ query: ProjectsWithTasksDocument, ...options })
+  return Urql.useQuery<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>({
+    query: ProjectsWithTasksDocument,
+    ...options,
+  })
+}
+export const TeamProjectsDocument = gql`
+  query teamProjects {
+    projects {
+      ...Project
+    }
+  }
+  ${ProjectFragmentDoc}
+`
+
+export function useTeamProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
+  return Urql.useQuery<TeamProjectsQuery, TeamProjectsQueryVariables>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
   mutation projectCreate($data: ProjectInput!) {
@@ -1169,7 +1258,7 @@ export const TeamDocument = gql`
 `
 
 export function useTeamQuery(options?: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamQuery>({ query: TeamDocument, ...options })
+  return Urql.useQuery<TeamQuery, TeamQueryVariables>({ query: TeamDocument, ...options })
 }
 export const TeamCreateDocument = gql`
   mutation teamCreate($data: TeamInput!) {
@@ -1205,7 +1294,7 @@ export const TeamsDocument = gql`
 `
 
 export function useTeamsQuery(options?: Omit<Urql.UseQueryArgs<TeamsQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamsQuery>({ query: TeamsDocument, ...options })
+  return Urql.useQuery<TeamsQuery, TeamsQueryVariables>({ query: TeamsDocument, ...options })
 }
 export const TeamsWithProjectsDocument = gql`
   query teamsWithProjects($includeArchived: Boolean) {
@@ -1217,7 +1306,10 @@ export const TeamsWithProjectsDocument = gql`
 `
 
 export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamsWithProjectsQueryVariables>, 'query'>) {
-  return Urql.useQuery<TeamsWithProjectsQuery>({ query: TeamsWithProjectsDocument, ...options })
+  return Urql.useQuery<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>({
+    query: TeamsWithProjectsDocument,
+    ...options,
+  })
 }
 export const UserRoleUpdateDocument = gql`
   mutation userRoleUpdate($userId: ID!, $role: Role!) {
@@ -1276,7 +1368,7 @@ export const WorkHoursDocument = gql`
 `
 
 export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'>) {
-  return Urql.useQuery<WorkHoursQuery>({ query: WorkHoursDocument, ...options })
+  return Urql.useQuery<WorkHoursQuery, WorkHoursQueryVariables>({ query: WorkHoursDocument, ...options })
 }
 export const CustomerDocument = gql`
   query customer($customerId: ID!) {
@@ -1288,7 +1380,7 @@ export const CustomerDocument = gql`
 `
 
 export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomerQuery>({ query: CustomerDocument, ...options })
+  return Urql.useQuery<CustomerQuery, CustomerQueryVariables>({ query: CustomerDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
   mutation customerCreate($data: CustomerInput!) {
@@ -1326,8 +1418,8 @@ export function useCustomerUpdateMutation() {
   return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
-  query customers($slug: String!) {
-    teamBySlug(slug: $slug) {
+  query customers {
+    team {
       id
       title
       customers {
@@ -1338,8 +1430,8 @@ export const CustomersDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomersQuery>({ query: CustomersDocument, ...options })
+export function useCustomersQuery(options?: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
+  return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
   query me {
@@ -1357,7 +1449,7 @@ export const MeDocument = gql`
 `
 
 export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
-  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options })
+  return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
   query report($projectId: ID!, $from: Date!, $to: Date!) {
@@ -1367,7 +1459,6 @@ export const ReportDocument = gql`
         duration
         workHours {
           id
-          comment
           date
           duration
           user {
@@ -1411,7 +1502,7 @@ export const ReportDocument = gql`
 `
 
 export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
-  return Urql.useQuery<ReportQuery>({ query: ReportDocument, ...options })
+  return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
 }
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {
@@ -1431,6 +1522,38 @@ export const TeamAcceptInviteDocument = gql`
 
 export function useTeamAcceptInviteMutation() {
   return Urql.useMutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>(TeamAcceptInviteDocument)
+}
+export const ProjectMembershipCreateDocument = gql`
+  mutation projectMembershipCreate($userID: ID!, $projectID: ID!) {
+    projectMembershipCreate(userId: $userID, projectId: $projectID) {
+      title
+      members {
+        name
+      }
+    }
+  }
+`
+
+export function useProjectMembershipCreateMutation() {
+  return Urql.useMutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    ProjectMembershipCreateDocument,
+  )
+}
+export const ProjectMembershipDeleteDocument = gql`
+  mutation projectMembershipDelete($userID: ID!, $projectID: ID!) {
+    projectMembershipDelete(userId: $userID, projectId: $projectID) {
+      title
+      members {
+        id
+      }
+    }
+  }
+`
+
+export function useProjectMembershipDeleteMutation() {
+  return Urql.useMutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    ProjectMembershipDeleteDocument,
+  )
 }
 export const TeamArchiveDocument = gql`
   mutation teamArchive($teamId: ID!) {
@@ -1460,7 +1583,7 @@ export const UserDocument = gql`
 `
 
 export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
-  return Urql.useQuery<UserQuery>({ query: UserDocument, ...options })
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options })
 }
 
 /**
@@ -1495,6 +1618,20 @@ export const mockProjectsWithTasksQuery = (
     any
   >,
 ) => graphql.query<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>('projectsWithTasks', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockTeamProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TeamProjectsQueryVariables>, GraphQLContext<TeamProjectsQuery>, any>,
+) => graphql.query<TeamProjectsQuery, TeamProjectsQueryVariables>('teamProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1843,9 +1980,8 @@ export const mockCustomerUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomersQuery((req, res, ctx) => {
- *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ teamBySlug })
+ *     ctx.data({ team })
  *   )
  * })
  */
@@ -1900,6 +2036,52 @@ export const mockTeamAcceptInviteMutation = (
     any
   >,
 ) => graphql.mutation<TeamAcceptInviteMutation, TeamAcceptInviteMutationVariables>('teamAcceptInvite', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipCreateMutation((req, res, ctx) => {
+ *   const { userID, projectID } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    'projectMembershipCreate',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipDeleteMutation((req, res, ctx) => {
+ *   const { userID, projectID } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipDelete })
+ *   )
+ * })
+ */
+export const mockProjectMembershipDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipDeleteMutationVariables>,
+    GraphQLContext<ProjectMembershipDeleteMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    'projectMembershipDelete',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

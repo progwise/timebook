@@ -39,6 +39,8 @@ import {
   customerUpdateMutationField,
 } from './customer'
 import { reportQueryField } from './report'
+import { projectMembershipCreateMutationField } from './projectMembership/mutations/projectMembershipCreateMutationField'
+import { projectMembershipDeleteMutationField } from './projectMembership/mutations/projectMembershipDeleteMutationField'
 
 export const schema = makeSchema({
   types: [
@@ -53,6 +55,8 @@ export const schema = makeSchema({
     projectCreateMutationField,
     projectDeleteMutationField,
     projectUpdateMutationField,
+    projectMembershipCreateMutationField,
+    projectMembershipDeleteMutationField,
     taskQueryField,
     taskArchiveMutationField,
     taskCreateMutationField,

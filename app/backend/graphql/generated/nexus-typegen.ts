@@ -61,7 +61,6 @@ export interface NexusGenInputs {
   }
   WorkHourInput: {
     // input type
-    comment?: string | null // String
     date: NexusGenScalars['Date'] // Date!
     duration: number // Int!
     taskId: string // ID!
@@ -151,6 +150,8 @@ export interface NexusGenFieldTypes {
     customerUpdate: NexusGenRootTypes['Customer'] // Customer!
     projectCreate: NexusGenRootTypes['Project'] // Project!
     projectDelete: NexusGenRootTypes['Project'] // Project!
+    projectMembershipCreate: NexusGenRootTypes['Project'] // Project!
+    projectMembershipDelete: NexusGenRootTypes['Project'] // Project!
     projectUpdate: NexusGenRootTypes['Project'] // Project!
     taskArchive: NexusGenRootTypes['Task'] // Task!
     taskCreate: NexusGenRootTypes['Task'] // Task!
@@ -249,7 +250,6 @@ export interface NexusGenFieldTypes {
   }
   WorkHour: {
     // field return type
-    comment: string | null // String
     date: NexusGenScalars['Date'] // Date!
     duration: number // Int!
     id: string // ID!
@@ -278,6 +278,8 @@ export interface NexusGenFieldTypeNames {
     customerUpdate: 'Customer'
     projectCreate: 'Project'
     projectDelete: 'Project'
+    projectMembershipCreate: 'Project'
+    projectMembershipDelete: 'Project'
     projectUpdate: 'Project'
     taskArchive: 'Task'
     taskCreate: 'Task'
@@ -376,7 +378,6 @@ export interface NexusGenFieldTypeNames {
   }
   WorkHour: {
     // field return type name
-    comment: 'String'
     date: 'Date'
     duration: 'Int'
     id: 'ID'
@@ -412,6 +413,16 @@ export interface NexusGenArgTypes {
     projectDelete: {
       // args
       id: string // ID!
+    }
+    projectMembershipCreate: {
+      // args
+      projectId: string // ID!
+      userId: string // ID!
+    }
+    projectMembershipDelete: {
+      // args
+      projectId: string // ID!
+      userId: string // ID!
     }
     projectUpdate: {
       // args

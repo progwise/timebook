@@ -7,6 +7,7 @@ export const projectsQueryField = queryField('projects', {
   authorize: (_source, _arguments, context) => !!context.session?.user.id,
   resolve: (_source, _arguments, context) =>
     context.prisma.project.findMany({
+      orderBy: [{ title: 'asc' }],
       where: {
         team: { slug: context.teamSlug },
         OR: [

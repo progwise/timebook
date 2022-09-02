@@ -9,7 +9,7 @@ const MyLink = (props: { [x: string]: unknown; href: string; children: ReactNode
 
   return (
     <Link href={href} passHref>
-      <span className="delay-25 my-1 mx-1 py-1 px-1 text-blue-400 duration-300 hover:translate-x-1 hover:text-indigo-500">
+      <span className="delay-25 my-1 mx-1 py-1 px-1 text-blue-400 duration-300 hover:translate-x-1  hover:text-indigo-500">
         {children}
       </span>
     </Link>
@@ -31,7 +31,7 @@ export const TeamSelect = () => {
       <Menu.Button className="font-semibold">
         {teamData ? <span className="w-9">{teamData.team.title} </span> : 'Your Teams'}
       </Menu.Button>
-      <Menu.Items className="absolute left-0 mx-3 flex w-64 flex-col rounded-md bg-white p-4 px-1 shadow">
+      <Menu.Items className="absolute left-0 mx-3 flex w-64 flex-col rounded-md bg-white p-4 px-1 shadow dark:text-white">
         {teamsData?.teams.map((team) => {
           return (
             <Menu.Item key={team.id}>

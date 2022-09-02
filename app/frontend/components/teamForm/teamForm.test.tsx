@@ -30,9 +30,9 @@ describe('TeamForm', () => {
     const slugField = screen.getByRole('textbox', { name: 'Slug' })
     const saveButton = screen.getByRole('button', { name: 'Save' })
 
-    userEvent.type(teamNameField, 'Apple')
-    userEvent.type(slugField, 'apple')
-    userEvent.click(saveButton)
+    await userEvent.type(teamNameField, 'Apple')
+    await userEvent.type(slugField, 'apple')
+    await userEvent.click(saveButton)
 
     await waitFor(() => expect(routerPush).toHaveBeenNthCalledWith(1, '/apple/team'))
   })
@@ -45,6 +45,7 @@ describe('TeamForm', () => {
       theme: Theme.Blue,
       title: 'Google',
       archived: false,
+      __typename: 'Team',
     }
 
     render(<TeamForm team={team} />, { wrapper })
@@ -58,12 +59,12 @@ describe('TeamForm', () => {
     expect(slugField).toHaveValue('google')
     expect(invitationLink).toHaveValue('http://localhost:3000/google/team/invite/ckyh7z75t000609lb5vkvhmxq')
 
-    userEvent.clear(teamNameField)
-    userEvent.type(teamNameField, 'Alphabet')
-    userEvent.clear(slugField)
-    userEvent.type(slugField, 'alphabet')
+    await userEvent.clear(teamNameField)
+    await userEvent.type(teamNameField, 'Alphabet')
+    await userEvent.clear(slugField)
+    await userEvent.type(slugField, 'alphabet')
 
-    userEvent.click(saveButton)
+    await userEvent.click(saveButton)
 
     await waitFor(() => expect(routerPush).toHaveBeenNthCalledWith(1, '/alphabet/team'))
   })

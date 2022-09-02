@@ -45,7 +45,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       const result = await taskCreate({
         data: {
           projectId: project.id,
-
           title: taskData.title,
         },
       })
@@ -58,7 +57,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
 
   return (
     <section className={className}>
-      <Table className="min-w-full">
+      <Table className="min-w-full  dark:bg-slate-800">
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
@@ -113,7 +112,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <div className="flex flex-col">
                     <label>
-                      <InputField variant="primary" placeholder="Enter Taskname" {...register('title')} />
+                      <InputField
+                        variant="primary"
+                        placeholder="Enter Taskname"
+                        className=" dark:bg-slate-800 dark:text-white "
+                        {...register('title')}
+                      />
                     </label>
                     <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
                   </div>
