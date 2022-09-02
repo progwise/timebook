@@ -108,7 +108,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-75 opacity-0"
         >
-          <Popover.Panel className=" absolute z-10">
+          <Popover.Panel className="absolute top-8 right-0 z-10">
             {({ close }) => (
               <section
                 className="relative w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
