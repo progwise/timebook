@@ -60,83 +60,81 @@ const WeekPage = () => {
   const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
 
   return (
-    <>
-      <div>
-        <Table>
-          <TableHead>
-            <TableHeadRow>
-              <TableHeadCell />
-              {eachDayOfInterval(interval).map((day) => (
-                <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                  {format(day, 'EEE')}
-                  <br />
-                  {format(day, 'dd. MMM')}
-                </TableHeadCell>
-              ))}
-              <TableHeadCell />
-            </TableHeadRow>
-          </TableHead>
-          <TableBody>
-            {tableData.map((row) => (
-              <TableRow key={row.task.id}>
-                <TableCell>
-                  {row.project.title}
-                  <br />
-                  {row.task.title}
-                </TableCell>
-                {eachDayOfInterval(interval).map((day, dayIndex) => (
-                  <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                    {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-                    <HourInput readOnly onChange={() => {}} workHours={row.durations[dayIndex] / 60} />
-                  </TableCell>
-                ))}
-                <TableCell>
-                  <FormattedDuration
-                    title=""
-                    minutes={row.durations.reduce((previousValue, currentValue) => previousValue + currentValue)}
-                  />
-                </TableCell>
-              </TableRow>
+    <div>
+      <Table>
+        <TableHead>
+          <TableHeadRow>
+            <TableHeadCell />
+            {eachDayOfInterval(interval).map((day) => (
+              <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                {format(day, 'EEE')}
+                <br />
+                {format(day, 'dd. MMM')}
+              </TableHeadCell>
             ))}
-            <TableRow>
-              <TableCell />
+            <TableHeadCell />
+          </TableHeadRow>
+        </TableHead>
+        <TableBody>
+          {tableData.map((row) => (
+            <TableRow key={row.task.id}>
+              <TableCell>
+                {row.project.title}
+                <br />
+                {row.task.title}
+              </TableCell>
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                  <FormattedDuration
-                    title=""
-                    minutes={tableData
-                      .map((row) => row.durations[dayIndex])
-                      .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
-                  />
+                  {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+                  <HourInput readOnly onChange={() => {}} workHours={row.durations[dayIndex] / 60} />
                 </TableCell>
               ))}
               <TableCell>
                 <FormattedDuration
                   title=""
-                  minutes={tableData
-                    .flatMap((row) => row.durations)
-                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+                  minutes={row.durations.reduce((previousValue, currentValue) => previousValue + currentValue)}
                 />
               </TableCell>
             </TableRow>
-          </TableBody>
-        </Table>
-        <Button ariaLabel="add row" variant="primary" onClick={() => setIsAddTaskRowModalOpen(true)}>
-          <BiPlus className="text-3xl" />
-        </Button>
-        <DayWeekSwitch selectedButton="week" />
-        {isAddtaskRowModalOpen && (
-          <AddTaskRowModal
-            workHourItem={{
-              date: fromDate,
-              taskId: '',
-              projectId: '',
-            }}
-            onClose={() => setIsAddTaskRowModalOpen(false)}
-          />
-        )}
-      </div>
-    </>
+          ))}
+          <TableRow>
+            <TableCell />
+            {eachDayOfInterval(interval).map((day, dayIndex) => (
+              <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
+                <FormattedDuration
+                  title=""
+                  minutes={tableData
+                    .map((row) => row.durations[dayIndex])
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+                />
+              </TableCell>
+            ))}
+            <TableCell>
+              <FormattedDuration
+                title=""
+                minutes={tableData
+                  .flatMap((row) => row.durations)
+                  .reduce((previousValue, currentValue) => previousValue + currentValue, 0)}
+              />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Button ariaLabel="add row" variant="primary" onClick={() => setIsAddTaskRowModalOpen(true)}>
+        <BiPlus className="text-3xl" />
+      </Button>
+      <DayWeekSwitch selectedButton="week" />
+      {isAddtaskRowModalOpen && (
+        <AddTaskRowModal
+          workHourItem={{
+            date: fromDate,
+            taskId: '',
+            projectId: '',
+          }}
+          onClose={() => setIsAddTaskRowModalOpen(false)}
+        />
+      )}
+    </div>
   )
 }
 export default WeekPage
