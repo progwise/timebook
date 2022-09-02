@@ -1,12 +1,6 @@
 import { format } from 'date-fns'
-import { Controller, useForm } from 'react-hook-form'
-import {
-  useWorkHourCreateMutation,
-  useWorkHourUpdateMutation,
-  useProjectsWithTasksQuery,
-  useWorkHourDeleteMutation,
-  useTaskCreateMutation,
-} from '../generated/graphql'
+import { useForm } from 'react-hook-form'
+import { useWorkHourCreateMutation, useProjectsWithTasksQuery, useTaskCreateMutation } from '../generated/graphql'
 import { Button } from './button/button'
 import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
@@ -21,12 +15,9 @@ interface AddTaskRowModalProps {
 }
 
 export interface WorkHourItem {
-  workHourId?: string
   date: Date
-  duration: number
   projectId: string
   taskId: string
-  comment?: string
   taskTitle?: string
 }
 
@@ -35,14 +26,8 @@ const CREATE_NEW_TASK = 'CREATE-NEW-TASK'
 const addTaskRowSchema: yup.SchemaOf<WorkHourItem> = yup.object({
   workHourId: yup.string(),
   date: yup.date().required(),
-  duration: yup
-    .number()
-    .required()
-    .max(24 * 60)
-    .positive(),
   projectId: yup.string().required('Project is required'),
   taskId: yup.string().required('Task is required'),
-  comment: yup.string().trim().max(200),
   taskTitle: yup
     .string()
     .trim()
@@ -70,8 +55,6 @@ export const AddTaskRowModal = (props: AddTaskRowModalProps): JSX.Element => {
     resolver: yupResolver(addTaskRowSchema),
   })
   const [, createWorkHour] = useWorkHourCreateMutation()
-  const [, updateWorkHour] = useWorkHourUpdateMutation()
-  const [, deleteWorkHour] = useWorkHourDeleteMutation()
   const [, taskCreate] = useTaskCreateMutation()
 
   const handleSubmitHelper = async (data: WorkHourItem) => {
@@ -97,19 +80,12 @@ export const AddTaskRowModal = (props: AddTaskRowModalProps): JSX.Element => {
     }
 
     const workHourInput = {
-      duration: data.duration,
       taskId,
+      duration: 0,
       date: format(data.date, 'yyyy-MM-dd'),
-      comment: data.comment,
     }
 
-    const result = await (!data.workHourId
-      ? createWorkHour({ data: workHourInput })
-      : updateWorkHour({
-          id: data.workHourId,
-          data: workHourInput,
-        }))
-
+    const result = await createWorkHour({ data: workHourInput })
     if (!result.error) {
       onClose()
     }
@@ -130,17 +106,9 @@ export const AddTaskRowModal = (props: AddTaskRowModalProps): JSX.Element => {
     return <div>Loading...</div>
   }
 
-  const handleDelete = async () => {
-    if (!workHourItem.workHourId) {
-      throw new Error('No workHour item id')
-    }
-    await deleteWorkHour({ id: workHourItem.workHourId })
-    onClose()
-  }
-
   return (
     <Modal
-      title={workHourItem.workHourId ? 'Edit booked hours' : 'Book hours'}
+      title="Add Row"
       actions={
         <>
           <Button className="w-full" variant="primary" form="book-work-hour" type="submit" disabled={isSubmitting}>
@@ -149,18 +117,12 @@ export const AddTaskRowModal = (props: AddTaskRowModalProps): JSX.Element => {
           <Button className="w-full" variant="secondary" disabled={isSubmitting} onClick={onClose}>
             Cancel
           </Button>
-          {workHourItem.workHourId && (
-            <Button className="w-full" variant="tertiary" disabled={isSubmitting} onClick={handleDelete}>
-              Delete
-            </Button>
-          )}
         </>
       }
       variant="twoColumns"
     >
       <form className="w-full" id="book-work-hour" onSubmit={handleSubmit(handleSubmitHelper)}>
         <input type="hidden" {...register('date')} />
-        <input type="hidden" {...register('workHourId')} />
         <div className="mb-4 flex flex-col">
           <select
             aria-label="Project"
@@ -211,10 +173,6 @@ export const AddTaskRowModal = (props: AddTaskRowModalProps): JSX.Element => {
               <ErrorMessage errors={errors} name="taskTitle" as={<span className="text-red-700" />} />
             </div>
           )}
-
-          <ErrorMessage errors={errors} name="duration" as={<span className="text-red-700" />} />
-
-          <ErrorMessage errors={errors} name="comment" as={<span className="text-red-700" />} />
         </div>
       </form>
     </Modal>
