@@ -42,15 +42,10 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
       userId: context.session.user.id,
     }
 
-    const oldRecord = await context.prisma.workHour.findUnique({ where: { date_userId_taskId: workHourKey } })
-
-    if (oldRecord) {
-      return context.prisma.workHour.update({
-        where: { date_userId_taskId: workHourKey },
-        data: { duration: oldRecord.duration + arguments_.data.duration },
-      })
-    }
-
-    return context.prisma.workHour.create({ data: { ...workHourKey, duration: arguments_.data.duration } })
+    return context.prisma.workHour.upsert({
+      where: { date_userId_taskId: workHourKey },
+      create: { ...workHourKey, duration: arguments_.data.duration },
+      update: {duration: {increment: arguments_.data.duration}}
+    })
   },
 })
