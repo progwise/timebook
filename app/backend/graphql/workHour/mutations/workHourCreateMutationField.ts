@@ -31,18 +31,21 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
     return !!projectMember
   },
 
-  resolve: (_source, arguments_, context) => {
+  resolve: async (_source, arguments_, context) => {
     if (!context.session) {
       throw new Error('unauthenticated')
     }
 
-    return context.prisma.workHour.create({
-      data: {
-        date: arguments_.data.date,
-        duration: arguments_.data.duration,
-        taskId: arguments_.data.taskId,
-        userId: context.session.user.id,
-      },
+    const workHourKey = {
+      date: arguments_.data.date,
+      taskId: arguments_.data.taskId,
+      userId: context.session.user.id,
+    }
+
+    return context.prisma.workHour.upsert({
+      where: { date_userId_taskId: workHourKey },
+      create: { ...workHourKey, duration: arguments_.data.duration },
+      update: { duration: { increment: arguments_.data.duration } },
     })
   },
 })
