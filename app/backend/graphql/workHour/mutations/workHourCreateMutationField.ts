@@ -45,7 +45,7 @@ export const workHourCreateMutationField = mutationField('workHourCreate', {
     return context.prisma.workHour.upsert({
       where: { date_userId_taskId: workHourKey },
       create: { ...workHourKey, duration: arguments_.data.duration },
-      update: {duration: {increment: arguments_.data.duration}}
+      update: { duration: { increment: arguments_.data.duration } },
     })
   },
 })
