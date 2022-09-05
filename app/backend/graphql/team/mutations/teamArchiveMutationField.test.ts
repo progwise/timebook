@@ -6,6 +6,8 @@ import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
 
+const prisma = new PrismaClient()
+
 const teamArchiveMutation = `
   mutation teamArchiveMutation($teamId: ID!) {
     teamArchive(teamId: $teamId) {
@@ -17,11 +19,6 @@ const teamArchiveMutation = `
 `
 
 describe('teamArchiveMutationField', () => {
-  let prisma: PrismaClient
-  beforeAll(() => {
-    prisma = new PrismaClient()
-  })
-
   beforeAll(async () => {
     await prisma.user.create({
       data: {

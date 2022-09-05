@@ -6,6 +6,8 @@ import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
 
+const prisma = new PrismaClient()
+
 const userRoleUpdateMutation = `
   mutation userRoleUpdate($userId: ID!, $role: Role!) {
     userRoleUpdate(userId: $userId, role: $role) {
@@ -16,11 +18,6 @@ const userRoleUpdateMutation = `
 `
 
 describe('userRoleUpdateMutationField', () => {
-  let prisma: PrismaClient
-  beforeAll(() => {
-    prisma = new PrismaClient()
-  })
-
   beforeEach(async () => {
     await prisma.user.deleteMany()
     await prisma.team.deleteMany()

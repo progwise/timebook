@@ -6,6 +6,8 @@ import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
 
+const prisma = new PrismaClient()
+
 const teamQuery = `
   query team {
     team {
@@ -22,11 +24,7 @@ const teamQuery = `
 `
 
 describe('teamQueryField', () => {
-  let prisma: PrismaClient
-
   beforeAll(async () => {
-    prisma = new PrismaClient()
-
     await prisma.user.create({
       data: {
         id: '1',
