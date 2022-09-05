@@ -18,7 +18,7 @@ class PrismaTestEnvironment extends NodeEnvironment {
     this.schema = `test_${nanoid()}`
 
     // Generate the pg connection string for the test schema
-    this.connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${this.schema}`
+    this.connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${this.schema}&connect_timeout=15`
   }
 
   async setup() {
