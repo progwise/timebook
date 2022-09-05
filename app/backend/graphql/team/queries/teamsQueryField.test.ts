@@ -1,6 +1,9 @@
+/**
+ * @vitest-environment prisma-postgres
+ */
+
 import { PrismaClient, Team } from '@prisma/client'
 import { getTestServer } from '../../../getTestServer'
-import '../../../prisma/prismaVitestEnvironment'
 
 const teamsQuery = `
   query teams ($includeArchived: Boolean) {

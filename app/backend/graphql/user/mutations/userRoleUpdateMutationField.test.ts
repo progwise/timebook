@@ -1,7 +1,10 @@
+/**
+ * @vitest-environment prisma-postgres
+ */
+
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
 import { getTestServer } from '../../../getTestServer'
-import '../../../prisma/prismaVitestEnvironment'
 
 const userRoleUpdateMutation = `
   mutation userRoleUpdate($userId: ID!, $role: Role!) {

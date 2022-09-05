@@ -1,0 +1,8 @@
+{
+  "name": "vitest-environment-prisma-postgres",
+  "main": "src/index.ts",
+  "dependencies": {
+    "nanoid": "^4.0.0",
+    "pg": "^8.8.0"
+  }
+}
