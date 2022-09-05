@@ -16,7 +16,7 @@ export const PrismaVitestEnvironment: Environment = {
     const schema = `test_${nanoid()}`
 
     // Generate the pg connection string for the test schema
-    const connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${schema}`
+    const connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${schema}&connect_timeout=15`
 
     process.env.DATABASE_URL = connectionString
 

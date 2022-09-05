@@ -70,9 +70,17 @@ describe('workHourCreateMutationField', () => {
           create: {
             title: 'Project',
             tasks: {
-              create: {
-                id: '1',
-                title: 'Task',
+              createMany: {
+                data: [
+                  {
+                    id: '1',
+                    title: 'Task',
+                  },
+                  {
+                    id: '2',
+                    title: 'Task 2',
+                  },
+                ],
               },
             },
             projectMemberships: {
@@ -80,6 +88,15 @@ describe('workHourCreateMutationField', () => {
             },
           },
         },
+      },
+    })
+
+    await prisma.workHour.create({
+      data: {
+        date: new Date('2022-01-01'),
+        duration: 1,
+        taskId: '2',
+        userId: '1',
       },
     })
   })
@@ -155,6 +172,37 @@ describe('workHourCreateMutationField', () => {
         task: {
           id: '1',
           title: 'Task',
+        },
+        user: {
+          id: '1',
+          name: 'Test User 1',
+        },
+      },
+    })
+    expect(response.errors).toBeUndefined()
+  })
+
+  it('should add a work hours if already existed', async () => {
+    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const response = await testServer.executeOperation({
+      query: workHourCreateMutation,
+      variables: {
+        data: {
+          date: '2022-01-01',
+          duration: 120,
+          taskId: '2',
+        },
+      },
+    })
+
+    expect(response.data).toEqual({
+      workHourCreate: {
+        id: expect.any(String),
+        date: '2022-01-01',
+        duration: 121,
+        task: {
+          id: '2',
+          title: 'Task 2',
         },
         user: {
           id: '1',

@@ -1,5 +1,9 @@
 import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { BiPlus } from 'react-icons/bi'
+import { AddTaskRowModal } from '../../../frontend/components/addTaskRow'
+import { Button } from '../../../frontend/components/button/button'
 import { DayWeekSwitch } from '../../../frontend/components/dayWeekSwitchButton'
 import { FormattedDuration } from '../../../frontend/components/duration/formattedDuration'
 import { HourInput } from '../../../frontend/components/hourInput'
@@ -22,6 +26,7 @@ interface WorkHoursTableRow {
   durations: number[]
 }
 const WeekPage = () => {
+  const [isAddtaskRowModalOpen, setIsAddTaskRowModalOpen] = useState(false)
   const fromDate = new Date(2022, 7, 8)
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
@@ -80,7 +85,8 @@ const WeekPage = () => {
               </TableCell>
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
-                  <HourInput readOnly onChange={console.log} workHours={row.durations[dayIndex] / 60} />
+                  {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+                  <HourInput readOnly onChange={() => {}} workHours={row.durations[dayIndex] / 60} />
                 </TableCell>
               ))}
               <TableCell>
@@ -114,7 +120,20 @@ const WeekPage = () => {
           </TableRow>
         </TableBody>
       </Table>
+      <Button ariaLabel="add row" variant="primary" onClick={() => setIsAddTaskRowModalOpen(true)}>
+        <BiPlus className="text-3xl" />
+      </Button>
       <DayWeekSwitch selectedButton="week" />
+      {isAddtaskRowModalOpen && (
+        <AddTaskRowModal
+          workHourItem={{
+            date: fromDate,
+            taskId: '',
+            projectId: '',
+          }}
+          onClose={() => setIsAddTaskRowModalOpen(false)}
+        />
+      )}
     </div>
   )
 }
