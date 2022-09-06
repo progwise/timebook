@@ -182,6 +182,16 @@ type Mutation {
   ): Team!
 
   """
+  Unarchive a team
+  """
+  teamUnarchive(
+    """
+    Id of the team
+    """
+    teamId: ID!
+  ): Team!
+
+  """
   Update a new team
   """
   teamUpdate(

@@ -1,9 +1,8 @@
-/* eslint-disable unicorn/no-useless-undefined */
 import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { TeamFragment, useTeamQuery } from '../../../frontend/generated/graphql'
+import { TeamFragment, useTeamQuery, useTeamUnarchiveMutation } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import {
   Table,
@@ -21,6 +20,7 @@ const Team = (): JSX.Element => {
   const router = useRouter()
   const [{ data: teamData, fetching }] = useTeamQuery({ pause: !router.isReady })
   const [teamToBeArchived, setTeamToBeArchived] = useState<TeamFragment | undefined>()
+  const [teamToBeUnarchived, setTeamToBeUnarchived] = useTeamUnarchiveMutation()
 
   const slug = router.query.teamSlug?.toString() ?? ''
 
@@ -36,17 +36,31 @@ const Team = (): JSX.Element => {
     return <div>Team not found</div>
   }
 
+  const handleUnarchive = async () => {
+    try {
+      await setTeamToBeUnarchived(teamData.team)
+      await router.push('/teams')
+    } catch {}
+  }
+
   return (
     <>
       <ProtectedPage>
         <section>
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-xl font-medium text-gray-500">Team Details</h2>
-            {teamData.team.canModify && (
-              <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
-                Archive
-              </Button>
-            )}
+            {teamData.team.canModify &&
+              (!teamData.team.archived ? (
+                <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
+                  Archive
+                </Button>
+              ) : (
+                teamToBeUnarchived && (
+                  <Button variant="secondary" onClick={handleUnarchive} disabled={fetching}>
+                    Restore
+                  </Button>
+                )
+              ))}
           </div>
           <TeamForm key={teamData.team.id} team={teamData.team} />
         </section>
