@@ -125,7 +125,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   top: y ?? 0,
                   left: x ?? 0,
                 }}
-                className="absolute w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
+                className="w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
                 data-testid="calendar-popover"
               >
                 <header className="flex justify-between p-0 pb-2 font-bold">
