@@ -15,8 +15,7 @@ const NewProjectPage = (): JSX.Element => {
         throw new Error('graphql error')
       }
       await router.push(`/${router.query.teamSlug}/projects`)
-    } catch {
-    }
+    } catch {}
   }
 
   const handleCancel = async () => {

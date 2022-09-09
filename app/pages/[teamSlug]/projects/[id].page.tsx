@@ -45,7 +45,12 @@ const ProjectDetails = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} hasError={!!projectUpdateResult.error} />
+      <ProjectForm
+        project={selectedProject}
+        onCancel={handleCancel}
+        onSubmit={handleSubmit}
+        hasError={!!projectUpdateResult.error}
+      />
       <TaskList className="mt-10" project={selectedProject} tasks={selectedProject.tasks} />
     </ProtectedPage>
   )
