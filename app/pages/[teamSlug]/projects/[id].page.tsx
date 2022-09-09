@@ -16,7 +16,7 @@ const ProjectDetails = (): JSX.Element => {
   })
 
   const selectedProject = data?.project
-  const [, projectUpdate] = useProjectUpdateMutation()
+  const [projectUpdateResult, projectUpdate] = useProjectUpdateMutation()
 
   const handleSubmit = async (data: ProjectInput) => {
     try {
@@ -45,7 +45,7 @@ const ProjectDetails = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} hasError={false} />
+      <ProjectForm project={selectedProject} onCancel={handleCancel} onSubmit={handleSubmit} hasError={!!projectUpdateResult.error} />
       <TaskList className="mt-10" project={selectedProject} tasks={selectedProject.tasks} />
     </ProtectedPage>
   )

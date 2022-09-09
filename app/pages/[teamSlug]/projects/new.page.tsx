@@ -5,13 +5,10 @@ import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { ProjectInput, useProjectCreateMutation } from '../../../frontend/generated/graphql'
 
 const NewProjectPage = (): JSX.Element => {
-  const [, projectCreate] = useProjectCreateMutation()
+  const [projectCreateResult, projectCreate] = useProjectCreateMutation()
   const router = useRouter()
 
-  const [isError, setIsError] = useState(false)
-
   const handleSubmit = async (data: ProjectInput) => {
-    setIsError(false)
     try {
       const result = await projectCreate({ data })
       if (result.error) {
@@ -19,7 +16,6 @@ const NewProjectPage = (): JSX.Element => {
       }
       await router.push(`/${router.query.teamSlug}/projects`)
     } catch {
-      setIsError(true)
     }
   }
 
@@ -29,7 +25,7 @@ const NewProjectPage = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <ProjectForm onSubmit={handleSubmit} onCancel={handleCancel} hasError={isError} />
+      <ProjectForm onSubmit={handleSubmit} onCancel={handleCancel} hasError={!!projectCreateResult.error} />
     </ProtectedPage>
   )
 }
