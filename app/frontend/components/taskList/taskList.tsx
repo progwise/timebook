@@ -82,7 +82,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <span className="ml-2">{task.title}</span>
               </TableCell>
               <TableCell className="text-center">
-                <input type="checkbox" />
+                {task.hourlyRate ?? 'No'}
               </TableCell>
               <TableCell>
                 <Button
