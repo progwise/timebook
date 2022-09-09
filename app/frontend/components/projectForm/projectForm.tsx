@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { format, parse } from 'date-fns'
 import { useForm, Controller } from 'react-hook-form'
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
@@ -20,8 +21,8 @@ const isValidDateString = (dateString: string): boolean =>
 const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
   customerId: yup.string().nullable(),
   title: yup.string().trim().required().max(20),
-  start: yup.string(),
-  end: yup.string(),
+  start: yup.string().nullable(),
+  end: yup.string().nullable(),
 })
 
 interface ProjectFormProps {
@@ -37,8 +38,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
-      start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : '',
-      end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : '',
+      start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
+      end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
       customerId: project?.customer?.id,
     },
     resolver: yupResolver(projectInputSchema),
@@ -47,8 +48,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
       ...data,
-      end: data.end ?? undefined,
-      start: data.start ?? undefined,
+      end: data.end?.length ? data.end : null,
+      start: data.start?.length ? data.start : null,
     })
   }
 
