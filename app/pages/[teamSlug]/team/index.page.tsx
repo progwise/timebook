@@ -16,18 +16,18 @@ import { CustomerTable } from '../../../frontend/components/customerForm/custome
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
 import { useState } from 'react'
 
-const Team = (): JSX.Element => {
+const TeamPage = (): JSX.Element => {
   const router = useRouter()
-  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
+  const [{ data: teamData, fetching: teamFetching }] = useTeamQuery({ pause: !router.isReady })
   const [teamToBeArchived, setTeamToBeArchived] = useState<TeamFragment | undefined>()
   const slug = router.query.teamSlug?.toString() ?? ''
-  const [{ fetching }, teamUnarchive] = useTeamUnarchiveMutation()
+  const [{ fetching: unarchiveFetching }, teamUnarchive] = useTeamUnarchiveMutation()
 
   const handleUserDetails = async (userId: string) => {
     await router.push(`/${slug}/team/${userId}`)
   }
 
-  if (!router.isReady || fetching) {
+  if (!router.isReady || teamFetching) {
     return <div>Loading...</div>
   }
 
@@ -38,7 +38,6 @@ const Team = (): JSX.Element => {
   const handleUnarchiveTeam = async () => {
     try {
       await teamUnarchive({ id: teamData.team.id })
-      await router.push('/teams')
     } catch {}
   }
 
@@ -54,7 +53,7 @@ const Team = (): JSX.Element => {
                   Archive
                 </Button>
               ) : (
-                <Button variant="secondary" onClick={handleUnarchiveTeam} disabled={fetching}>
+                <Button variant="secondary" onClick={handleUnarchiveTeam} disabled={unarchiveFetching}>
                   Restore
                 </Button>
               ))}
@@ -104,4 +103,4 @@ const Team = (): JSX.Element => {
   )
 }
 
-export default Team
+export default TeamPage

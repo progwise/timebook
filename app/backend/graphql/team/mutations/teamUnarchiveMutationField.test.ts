@@ -98,11 +98,11 @@ describe('teamUnarchiveMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when admin from another team', async () => {
-    const testServer = getTestServer({ prisma, userId: '3', teamSlug: 'google' })
+  it('should throw error when admin is from another team', async () => {
+    const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: teamUnarchiveMutation,
-      variables: { id: 'Team 1' },
+      variables: { id: 'Team 2' },
     })
 
     expect(response.data).toBeNull()
