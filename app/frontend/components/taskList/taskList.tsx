@@ -81,9 +81,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 )}
                 <span className="ml-2">{task.title}</span>
               </TableCell>
-              <TableCell className="text-center">
-                {task.hourlyRate ?? 'No'}
-              </TableCell>
+              <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
               <TableCell>
                 <Button
                   variant="tertiary"
