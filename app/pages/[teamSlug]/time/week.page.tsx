@@ -10,7 +10,7 @@ const WeekPage = (): JSX.Element => {
 
   const currentDate = urlDate ? parse(urlDate, 'yyyy-MM-dd', new Date()) : new Date()
 
-  const startOfTheWeek = startOfWeek(currentDate, { weekStartsOn: 1 }) //startOfWeek in camel case doesn´t work, because of the following function: startOfWeek()
+  const startOfTheWeek = startOfWeek(currentDate, { weekStartsOn: 1 })
 
   const endOfTheWeek = endOfWeek(currentDate, { weekStartsOn: 1 })
 

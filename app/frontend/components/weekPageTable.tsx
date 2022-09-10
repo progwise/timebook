@@ -17,10 +17,10 @@ interface WorkHoursTableRow {
   durations: number[]
 }
 export const WeekPageTable = (props: WeekPageTableProps) => {
-  const router = useRouter()
-  const fromDate = props.startDate
+  const fromDate = new Date(2022, 7, 8)
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
+  const router = useRouter()
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
@@ -52,9 +52,6 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   return (
     <>
       <div>
-        <div className="pt-10 pb-5">
-          <DayWeekSwitch selectedButton="week" />
-        </div>
         <Table>
           <TableHead>
             <TableHeadRow>
@@ -113,6 +110,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
             </TableRow>
           </TableBody>
         </Table>
+        <DayWeekSwitch selectedButton="week" />
       </div>
     </>
   )
