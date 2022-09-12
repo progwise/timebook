@@ -77,50 +77,52 @@ export const ComboBox = <TOption extends { id: string }>({
       disabled={isCreating || disabled}
       onChange={handleChange}
     >
-      <div className="relative mt-1">
-        <div className="relative w-full cursor-default overflow-hidden rounded bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+      <div className="mt-1">
+        <div className="w-full border dark:border-white rounded flex justify-between cursor-default overflow-hidden rounded bg-transparent text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
           <HUCombobox.Input<'input', TOption | NoOption | NewOption>
-            className="w-full rounded py-2 pl-3 text-sm leading-5 focus:ring-0 dark:border-white dark:bg-slate-800 dark:text-white"
+            className="w-full text-sm leading-5 focus:ring-0 border-0 dark:text-white dark:bg-slate-800 "
             displayValue={generateLabel}
             onChange={(event) => setInputQuery(event.target.value)}
             onBlur={onBlur}
           />
-          <HUCombobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+          <HUCombobox.Button className="inset-y-0 right-0 flex items-center pr-2">
             <HiSelector className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </HUCombobox.Button>
         </div>
-        <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-          <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
-            {allOptions.map((option) => (
-              <HUCombobox.Option<'li', TOption | NewOption | NoOption>
-                key={typeof option === 'string' ? option : option.id}
-                value={option}
-                className={({ active }) =>
-                  `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                    active ? 'bg-indigo-600 text-white' : 'text-gray-900  dark:text-white'
-                  }`
-                }
-              >
-                {({ selected, active }) => (
-                  <>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {generateLabel(option)}
-                    </span>
-                    {selected ? (
-                      <span
-                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                          active ? 'text-white' : 'text-indigo-600'
-                        }`}
-                      >
-                        <HiCheck className="h-5 w-5" aria-hidden="true" />
+        <div className="relative">
+          <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+            <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
+              {allOptions.map((option) => (
+                <HUCombobox.Option<'li', TOption | NewOption | NoOption>
+                  key={typeof option === 'string' ? option : option.id}
+                  value={option}
+                  className={({ active }) =>
+                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                      active ? 'bg-indigo-600 text-white' : 'text-gray-900  dark:text-white'
+                    }`
+                  }
+                >
+                  {({ selected, active }) => (
+                    <>
+                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                        {generateLabel(option)}
                       </span>
-                    ) : undefined}
-                  </>
-                )}
-              </HUCombobox.Option>
-            ))}
-          </HUCombobox.Options>
-        </Transition>
+                      {selected ? (
+                        <span
+                          className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                            active ? 'text-white' : 'text-indigo-600'
+                          }`}
+                        >
+                          <HiCheck className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                      ) : undefined}
+                    </>
+                  )}
+                </HUCombobox.Option>
+              ))}
+            </HUCombobox.Options>
+          </Transition>
+        </div>
       </div>
     </HUCombobox>
   )
