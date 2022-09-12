@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { ProjectForm } from '../../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { ProjectInput, useProjectCreateMutation } from '../../../frontend/generated/graphql'
