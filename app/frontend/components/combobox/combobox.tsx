@@ -78,7 +78,7 @@ export const ComboBox = <TOption extends { id: string }>({
       onChange={handleChange}
     >
       <div className="mt-1">
-        <div className="flex w-full cursor-default justify-between overflow-hidden rounded rounded border bg-transparent text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 dark:border-white sm:text-sm">
+        <div className="flex w-full cursor-default justify-between overflow-hidden rounded border bg-transparent text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 dark:border-white sm:text-sm">
           <HUCombobox.Input<'input', TOption | NoOption | NewOption>
             className="w-full border-0 text-sm leading-5 focus:ring-0 dark:bg-slate-800 dark:text-white "
             displayValue={generateLabel}
