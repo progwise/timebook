@@ -53,6 +53,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   const handleCopyClick = () => {
     navigator.clipboard.writeText(`${process.env.NEXTAUTH_URL}/${team?.slug}/team/invite/${team?.inviteKey}`)
   }
+  
 
   return (
     <form className="flex flex-col gap-2 pt-4" onSubmit={handleSubmit(handleTeamSave)}>
@@ -101,8 +102,10 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         <Button variant="primary" type="submit">
           Save
         </Button>
-        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
       </div>
+
+      {(createTeamResult.error || updateTeamResult.error) &&
+      <div role="alert" className="text-center text-red-600">{createTeamResult.error?.message ?? updateTeamResult.error?.message ?? "Server error, try again later"}</div>}           
     </form>
   )
 }

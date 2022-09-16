@@ -4,7 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { TeamForm } from './teamForm'
 import { TeamFragment, Theme } from '../../generated/graphql'
 
+
 import '../../mocks/mockServer'
+import { requestedSlugs } from '../../mocks/handlers'
 
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 
@@ -18,6 +20,7 @@ const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 
 afterEach(() => {
+  requestedSlugs.slice(0, requestedSlugs.length)
   cleanup()
   jest.resetAllMocks()
 })
@@ -68,4 +71,30 @@ describe('TeamForm', () => {
 
     await waitFor(() => expect(routerPush).toHaveBeenNthCalledWith(1, '/alphabet/team'))
   })
+
+  it('should display error message', async () => {
+    render(<TeamForm />, { wrapper })
+
+    const teamNameField = screen.getByRole('textbox', { name: 'Team name' })
+    const slugField = screen.getByRole('textbox', { name: 'Slug' })
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+
+    await userEvent.type(teamNameField, 'Limom')
+    await userEvent.type(slugField, 'limom')
+    await userEvent.click(saveButton)
+
+    await waitFor(() => expect(routerPush).toHaveBeenNthCalledWith(1, '/limom/team'))
+    
+    await userEvent.clear(teamNameField)
+    await userEvent.clear(slugField)
+
+    await userEvent.type(teamNameField, 'Limom')
+    await userEvent.type(slugField, 'limom')
+    await userEvent.click(saveButton)
+
+    const alert = await screen.findByRole("alert")
+    
+    expect(alert).toBeVisible()
+  })
+
 })

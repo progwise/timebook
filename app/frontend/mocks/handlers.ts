@@ -1,8 +1,42 @@
+import { response } from 'msw'
 import { mockTeamCreateMutation, mockTeamUpdateMutation, Theme } from '../generated/graphql'
+export const requestedSlugs: Array<string> = []
 
 export const handlers = [
-  mockTeamCreateMutation((request, response, context) =>
-    response(
+  mockTeamCreateMutation((request, response, context) => 
+  {
+    const requestedSlug = request.variables.data.slug    
+    
+    if (requestedSlugs.includes(requestedSlug))      
+      return response(
+        context.errors([
+          {
+            
+              "message": "Team slug already taken",
+              "locations": [
+                {
+                  "line": 2,
+                  "column": 3
+                }
+              ],
+              "path": [
+                "teamCreate"
+              ],
+              "extensions": {
+                "code": "INTERNAL_SERVER_ERROR",
+                "exception": {
+                  "stacktrace": [
+                    "Error: Team slug already taken",
+                    "    at resolve (webpack-internal:///(api)/./backend/graphql/team/mutations/teamCreateMutationField.ts:43:19)"
+                  ]
+                }
+              }
+          },          
+        ]))    
+
+    requestedSlugs.push(requestedSlug)
+    
+    return response(
       context.data({
         __typename: 'Mutation',
         teamCreate: {
@@ -15,7 +49,8 @@ export const handlers = [
           archived: false,
         },
       }),
-    ),
+    )
+  }
   ),
   mockTeamUpdateMutation((request, response, context) =>
     response(
