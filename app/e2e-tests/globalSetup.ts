@@ -13,6 +13,10 @@ export const users = {
     email: 'e2e-new@progwise.net',
     storageStatePath: './e2e-tests/.storage-states/newStorageState.json',
   },
+  existingUser: {
+    email: 'e2e@progwise.net',
+    storageStatePath: './e2e-tests/.storage-states/existingUserStorageState.json',
+  },
 }
 
 const prisma = new PrismaClient()
@@ -44,9 +48,32 @@ const globalSetup = async () => {
   const browser = await chromium.launch()
 
   await createUserSession({ browser, user: users.newUser })
+  await createUserSession({ browser, user: users.existingUser })
 
   // Delete all teams:
-  await prisma.team.deleteMany({ where: { teamMemberships: { some: { user: { email: users.newUser.email } } } } })
+  await prisma.project.deleteMany({
+    where: {
+      team: {
+        slug: 'test-team',
+      },
+    },
+  })
+  await prisma.team.deleteMany({
+    where: { teamMemberships: { some: { user: { email: { in: [users.newUser.email, users.existingUser.email] } } } } },
+  })
+
+  await prisma.team.create({
+    data: {
+      title: 'Test Team',
+      slug: 'test-team',
+      teamMemberships: {
+        create: {
+          user: { connect: { email: users.existingUser.email } },
+          role: 'ADMIN',
+        },
+      },
+    },
+  })
 
   await browser.close()
 }
