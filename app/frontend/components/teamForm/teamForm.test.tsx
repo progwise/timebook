@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { TeamForm } from './teamForm'
 import { TeamFragment, Theme } from '../../generated/graphql'
 
-
 import '../../mocks/mockServer'
 import { requestedSlugs } from '../../mocks/handlers'
 
@@ -84,7 +83,7 @@ describe('TeamForm', () => {
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(routerPush).toHaveBeenNthCalledWith(1, '/limom/team'))
-    
+
     await userEvent.clear(teamNameField)
     await userEvent.clear(slugField)
 
@@ -92,9 +91,8 @@ describe('TeamForm', () => {
     await userEvent.type(slugField, 'limom')
     await userEvent.click(saveButton)
 
-    const alert = await screen.findByRole("alert")
-    
+    const alert = await screen.findByRole('alert')
+
     expect(alert).toBeVisible()
   })
-
 })
