@@ -80,8 +80,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
       </label>
-      <label className="flex flex-col">
-        <span className="w-full text-sm text-gray-700 dark:text-white">Start</span>
+      <div className="flex flex-col">
+        <label htmlFor="start" className="w-full text-sm text-gray-700 dark:text-white">
+          Start
+        </label>
         <Controller
           control={control}
           rules={{ validate: (value) => !value || isValidDateString(value) }}
@@ -110,9 +112,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           )}
         />
         {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
-      </label>
-      <label className="mb-6 flex flex-col">
-        <span className="w-full text-sm text-gray-700 dark:text-white">End</span>
+      </div>
+      <div className="mb-6 flex flex-col">
+        <label htmlFor="end" className="w-full text-sm text-gray-700 dark:text-white">
+          End
+        </label>
         <Controller
           control={control}
           rules={{ validate: (value) => !value || isValidDateString(value) }}
@@ -142,7 +146,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
 
         {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
-      </label>
+      </div>
       <label className="w-full">
         <h1>Customer</h1>
         <CustomerInput control={control} name="customerId" />
