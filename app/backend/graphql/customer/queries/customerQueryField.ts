@@ -9,9 +9,9 @@ export const customerQueryField = queryField('customer', {
     customerId: idArg({ description: 'Id of the customer' }),
   },
   authorize: async (_source, { customerId }, context) => {
-    const customer = await context.prisma.customer.findUnique({ where: { id: customerId }, rejectOnNotFound: true })
+    const customer = await context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } })
     return isTeamMember({ id: customer.teamId }, context)
   },
   resolve: (_source, { customerId }, context) =>
-    context.prisma.customer.findUnique({ where: { id: customerId }, rejectOnNotFound: true }),
+    context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } }),
 })

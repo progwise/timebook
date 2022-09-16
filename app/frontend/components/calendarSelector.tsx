@@ -5,6 +5,7 @@ import forwardIcon from '../assets/forwardIcon.svg'
 import home from '../assets/home.svg'
 import { useState } from 'react'
 import CalendarIcon from './calendarIcon'
+import { offset, shift, useFloating } from '@floating-ui/react-dom'
 import {
   addMonths,
   eachDayOfInterval,
@@ -88,10 +89,17 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthTitle = format(selectedDate, 'MMM yyyy')
 
+  const { x, y, reference, floating, strategy } = useFloating({
+    placement: 'bottom',
+    strategy: 'absolute',
+    middleware: [offset(10), shift({ crossAxis: true })],
+  })
+
   return (
     <section className={props.className}>
       <Popover className="flex justify-center">
         <Popover.Button
+          ref={reference}
           aria-label="select date"
           className="flex disabled:opacity-50"
           disabled={props.disabled ?? false}
@@ -108,9 +116,18 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-75 opacity-0"
         >
-          <Popover.Panel className=" absolute z-10">
+          <Popover.Panel className="absolute z-10">
             {({ close }) => (
-              <section className="relative w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white ">
+              <section
+                ref={floating}
+                style={{
+                  position: strategy,
+                  top: y ?? 0,
+                  left: x ?? 0,
+                }}
+                className="w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
+                data-testid="calendar-popover"
+              >
                 <header className="flex justify-between p-0 pb-2 font-bold">
                   <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
                   <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>

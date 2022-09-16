@@ -15,6 +15,9 @@ fragment Project on Project {
   title
   startDate
   endDate
+  customer {
+    id
+  }
 }
 
 fragment ProjectWithTasks on Project {

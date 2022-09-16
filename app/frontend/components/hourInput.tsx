@@ -77,6 +77,7 @@ export const HourInput = (props: {
   workHours: number
   onChange: (workHours: number) => void
   className?: string
+  readOnly?: boolean
 }): JSX.Element => {
   const [workHours, setWorkHours] = useState(0)
   const [formattedValue, setFormattedValue] = useState('0:00')
@@ -103,6 +104,7 @@ export const HourInput = (props: {
 
   return (
     <input
+      readOnly={props.readOnly}
       onFocus={(event) => event.target.select()}
       className={`rounded-md p-1 text-center dark:bg-slate-800 ${props.className ?? ''}`}
       type="text"
