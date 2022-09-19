@@ -71,8 +71,7 @@ export const ComboBox = <TOption extends { id: string }>({
   }
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <HUCombobox<any, TOption | NewOption | NoOption>
+    <HUCombobox<TOption | NewOption | NoOption>
       value={value ?? 'noOption'}
       disabled={isCreating || disabled}
       onChange={handleChange}
