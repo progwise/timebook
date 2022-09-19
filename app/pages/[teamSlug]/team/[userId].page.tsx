@@ -21,13 +21,12 @@ const UserDetailsPage = (): JSX.Element => {
 
   const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
   const teamSlug = router.query.teamSlug
-  const [{ data: userData }] = useMeQuery()
+  const [{ data: meData }] = useMeQuery()
   const [{ data: allProjects }] = useTeamProjectsQuery()
   const [{ data }] = useUserQuery({
     pause: !router.isReady,
     variables: { userId },
   })
-  const [{ data: meData }] = useMeQuery()
   const isAdmin = meData?.user.role === Role.Admin
   const [, createProjectMembership] = useProjectMembershipCreateMutation()
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
@@ -48,60 +47,76 @@ const UserDetailsPage = (): JSX.Element => {
           <div className="flex justify-start pt-10">
             <span className="pr-8 ">
               {data?.user.image ? (
-                <Image width={40} height={40} src={data?.user.image} alt={data?.user.id} />
+                <Image width={100} height={80} src={data?.user.image} alt={data?.user.id} />
               ) : undefined}
             </span>
-            <h1 className="text-4xl text-blue-400">{data?.user.name}</h1>
-          </div>
-          <h1 className="text-xl font-semibold text-gray-400"> Assigned Projects:</h1>
-          <ul>
-            {data?.user.projects.map((project) => (
-              <li key={project.id}> {project.title}</li>
-            ))}
-          </ul>
-          <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
+            <div className="w-full">
+              <h1 className="text-4xl dark:text-blue-400">{data?.user.name}</h1>
 
-          <ul>
-            {allProjects?.projects.map((project) => (
-              <li key={project.id} className="p-3">
-                <span className=" inline-block w-32"> {project.title} </span>
-                <Toggle
-                  disabled={!isAdmin}
-                  checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
-                  onChange={(newValue) => {
-                    if (!data?.user) {
-                      return
-                    }
-                    if (newValue === false) {
-                      deleteProjectMembership({ projectID: project.id, userID: data?.user.id })
-                    } else {
-                      createProjectMembership({ projectID: project.id, userID: data?.user.id })
-                    }
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-        </article>
-        {userData?.user.role === 'ADMIN' && (
-          <div className="flex justify-between pt-20">
-            <div className="flex justify-center">
-              {data?.user.role === 'MEMBER' && (
-                <Button className="mx-4" variant="primary" onClick={handleUpgradeClick}>
-                  Upgrade
-                </Button>
-              )}
-              {data?.user.role === 'ADMIN' && (
-                <Button variant="secondary" onClick={handleDowngradeClick}>
-                  Downgrade
-                </Button>
-              )}
-            </div>
-            <div>
-              <Button variant="danger">Kick from Team</Button>
+              <div className="border-gray-400  dark:border-blue-400 border my-1 " />
+
+              <div className='flex justify-between'>
+                <h1 className="text-xl font-semibold text-gray-400">Team member</h1>
+
+                <div className="flex">
+                  {
+                    isAdmin &&
+                    <>
+                      {
+                        data?.user.role === Role.Member ?
+                          <Button className="mr-4" variant="secondary" onClick={handleUpgradeClick}>
+                            Promote to admin
+                          </Button>
+                        :
+                          <Button className="mr-4" variant="secondary" onClick={handleDowngradeClick}>
+                            Demote to member
+                          </Button>
+                      }
+                    </>
+                  }
+
+                  <Button variant="danger">Remove from team</Button>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+          {
+            isAdmin ?
+              <>
+                <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
+                <ul>
+                  {allProjects?.projects.map((project) => (
+                    <li key={project.id} className="p-3">
+                      <span className=" inline-block w-32"> {project.title} </span>
+                      <Toggle
+                        disabled={!isAdmin}
+                        checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
+                        onChange={(newValue) => {
+                          if (!data?.user) {
+                            return
+                          }
+                          if (newValue === false) {
+                            deleteProjectMembership({ projectID: project.id, userID: data?.user.id })
+                          } else {
+                            createProjectMembership({ projectID: project.id, userID: data?.user.id })
+                          }
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </>
+              :
+              <>
+                <h1 className="text-xl font-semibold text-gray-400"> Assigned Projects:</h1>
+                <ul>
+                  {data?.user.projects.map((project) => (
+                    <li key={project.id}> {project.title}</li>
+                  ))}
+                </ul>
+              </>
+          }
+        </article>
         {fetching && <span>Loading...</span>}
         {error && <span className="text-red-600">{error.message}!</span>}
       </ProtectedPage>
