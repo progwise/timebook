@@ -18,7 +18,6 @@ const WeekPage = (): JSX.Element => {
   const nextWeekString = format(nextWeek, 'yyyy-MM-dd')
   return (
     <>
-      <WeekPageTable startDate={startOfTheWeek} />
       <span className="text-center text-xs">
         <Link href={`/${teamSlug}/time/week?date=${previousWeekString}`}>
           <a className={`k w-10 rounded-l-lg bg-gray-400 px-2 py-1`}>Last</a>
@@ -27,6 +26,7 @@ const WeekPage = (): JSX.Element => {
           <a className={` w-10 rounded-r-lg bg-gray-400 px-2 py-1`}>Next</a>
         </Link>
       </span>
+      <WeekPageTable startDate={startOfTheWeek} />
     </>
   )
 }
