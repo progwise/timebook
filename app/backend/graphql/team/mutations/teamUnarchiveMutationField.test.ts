@@ -41,7 +41,7 @@ describe('teamUnarchiveMutationField', () => {
         id: 'Team 1',
         slug: 'progwise',
         title: 'Progwise',
-        archivedAt: '2022-05-05',
+        archivedAt: new Date('2022-01-01'),
         teamMemberships: {
           createMany: {
             data: [
@@ -66,7 +66,7 @@ describe('teamUnarchiveMutationField', () => {
         id: 'Team 2',
         slug: 'google',
         title: 'Google',
-        archivedAt: '2022-05-06',
+        archivedAt: new Date('2022-01-01'),
         teamMemberships: {
           create: {
             id: '3',
