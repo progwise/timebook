@@ -94,5 +94,6 @@ describe('TeamForm', () => {
     const alert = await screen.findByRole('alert')
 
     expect(alert).toBeVisible()
+    expect(routerPush).not.toHaveBeenCalledTimes(2)
   })
 })
