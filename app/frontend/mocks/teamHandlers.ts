@@ -1,4 +1,12 @@
-import { mockTeamQuery, mockTeamsQuery, mockTeamsWithProjectsQuery, TeamFragment, Theme } from '../generated/graphql'
+import {
+  mockTeamQuery,
+  mockTeamsQuery,
+  mockTeamsWithProjectsQuery,
+  mockTeamArchiveMutation,
+  TeamFragment,
+  Theme,
+  mockTeamUnarchiveMutation,
+} from '../generated/graphql'
 import { testProject1, testProject2 } from './testData'
 
 const testTeam1: TeamFragment = {
@@ -44,6 +52,26 @@ export const teamHandlers = [
       context.data({
         __typename: 'Query',
         teams: [{ ...testTeam1, projects: [testProject1, testProject2] }],
+      }),
+    )
+    return result
+  }),
+  mockTeamArchiveMutation((request, response, context) => {
+    testTeam1.archived = true
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        teamArchive: testTeam1,
+      }),
+    )
+    return result
+  }),
+  mockTeamUnarchiveMutation((request, response, context) => {
+    testTeam1.archived = false
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        teamUnarchive: testTeam1,
       }),
     )
     return result

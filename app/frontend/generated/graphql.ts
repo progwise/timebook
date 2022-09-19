@@ -80,6 +80,8 @@ export type Mutation = {
   teamCreate: Team
   /** Delete a new team */
   teamDelete: Team
+  /** Unarchive a team */
+  teamUnarchive: Team
   /** Update a new team */
   teamUpdate: Team
   /** Update a user role */
@@ -159,6 +161,10 @@ export type MutationTeamCreateArgs = {
 
 export type MutationTeamDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationTeamUnarchiveArgs = {
+  teamId: Scalars['ID']
 }
 
 export type MutationTeamUpdateArgs = {
@@ -1023,6 +1029,23 @@ export type TeamArchiveMutation = {
   }
 }
 
+export type TeamUnarchiveMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type TeamUnarchiveMutation = {
+  __typename: 'Mutation'
+  teamUnarchive: {
+    __typename: 'Team'
+    id: string
+    title: string
+    slug: string
+    theme: Theme
+    inviteKey: string
+    archived: boolean
+  }
+}
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID']
 }>
@@ -1567,6 +1590,18 @@ export const TeamArchiveDocument = gql`
 export function useTeamArchiveMutation() {
   return Urql.useMutation<TeamArchiveMutation, TeamArchiveMutationVariables>(TeamArchiveDocument)
 }
+export const TeamUnarchiveDocument = gql`
+  mutation teamUnarchive($id: ID!) {
+    teamUnarchive(teamId: $id) {
+      ...Team
+    }
+  }
+  ${TeamFragmentDoc}
+`
+
+export function useTeamUnarchiveMutation() {
+  return Urql.useMutation<TeamUnarchiveMutation, TeamUnarchiveMutationVariables>(TeamUnarchiveDocument)
+}
 export const UserDocument = gql`
   query user($userId: ID!) {
     user(userId: $userId) {
@@ -2097,6 +2132,25 @@ export const mockProjectMembershipDeleteMutation = (
 export const mockTeamArchiveMutation = (
   resolver: ResponseResolver<GraphQLRequest<TeamArchiveMutationVariables>, GraphQLContext<TeamArchiveMutation>, any>,
 ) => graphql.mutation<TeamArchiveMutation, TeamArchiveMutationVariables>('teamArchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTeamUnarchiveMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ teamUnarchive })
+ *   )
+ * })
+ */
+export const mockTeamUnarchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TeamUnarchiveMutationVariables>,
+    GraphQLContext<TeamUnarchiveMutation>,
+    any
+  >,
+) => graphql.mutation<TeamUnarchiveMutation, TeamUnarchiveMutationVariables>('teamUnarchive', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
