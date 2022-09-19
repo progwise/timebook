@@ -39,5 +39,7 @@ describe('TeamPage', () => {
     expect(restoreButton).toBeInTheDocument()
 
     await userEvent.click(restoreButton)
+
+    expect(archiveButton).toBeInTheDocument()
   })
 })

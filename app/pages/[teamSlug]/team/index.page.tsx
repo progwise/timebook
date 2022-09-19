@@ -36,9 +36,7 @@ const TeamPage = (): JSX.Element => {
   }
 
   const handleUnarchiveTeam = async () => {
-    try {
-      await teamUnarchive({ id: teamData.team.id })
-    } catch {}
+    await teamUnarchive({ id: teamData.team.id })
   }
 
   return (

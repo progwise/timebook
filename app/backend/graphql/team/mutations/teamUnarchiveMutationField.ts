@@ -1,7 +1,8 @@
 import { idArg, mutationField } from 'nexus'
+import { Team } from '../team'
 
 export const teamUnarchiveMutationField = mutationField('teamUnarchive', {
-  type: 'Team',
+  type: Team,
   description: 'Unarchive a team',
   args: {
     teamId: idArg({ description: 'Id of the team' }),
