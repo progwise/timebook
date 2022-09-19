@@ -28,7 +28,13 @@ class PrismaTestEnvironment extends NodeEnvironment {
     this.global.process.env.DATABASE_URL = this.connectionString
 
     // Run the migrations to ensure our schema has the required structure
-    await exec(`${prismaBinary} migrate deploy`)
+    try {
+      await exec(`${prismaBinary} migrate deploy`)
+    } catch {
+      // eslint-disable-next-line no-console
+      console.warn('migrate error for 1st try')
+      await exec(`${prismaBinary} migrate deploy`)
+    }
 
     return super.setup()
   }
