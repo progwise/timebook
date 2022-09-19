@@ -35,7 +35,7 @@ describe('BookWorkHourModal', () => {
     render(<BookWorkHourModal workHourItem={testItem} onClose={onCloseMock} />, { wrapper })
     const projectsCombo = screen.getByRole('combobox', { name: /project/i })
     const projectOption = await screen.findByRole('option', { name: /project 1/i })
-    userEvent.selectOptions(projectsCombo, ['project1'])
+    await userEvent.selectOptions(projectsCombo, ['project1'])
     expect((projectOption as HTMLOptionElement).selected).toBe(true)
     const taskOption = await screen.findByRole('option', { name: /task 1/i })
     expect(taskOption).toBeInTheDocument()

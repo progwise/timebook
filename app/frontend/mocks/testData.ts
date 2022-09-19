@@ -26,15 +26,25 @@ export const testTask: TaskFragment = {
     title: testProject1.title,
   },
 }
+export const testTask2: TaskFragment = {
+  __typename: 'Task',
+  hasWorkHours: true,
+  id: 'task2',
+  title: 'Task 2',
+  project: {
+    __typename: 'Project',
+    id: testProject1.id,
+    title: testProject1.title,
+  },
+}
 
-testProject1.tasks = [testTask]
+testProject1.tasks = [testTask, testTask2]
 
 export const testWorkHour: WorkHourFragment = {
   __typename: 'WorkHour',
   id: '123',
   date: format(new Date(), 'yyyy-MM-dd'),
   duration: 123,
-  comment: 'Test WorkHour',
   project: testProject1,
   user: {
     __typename: 'User',
@@ -46,11 +56,10 @@ export const testWorkHour: WorkHourFragment = {
     title: testTask.title,
     id: testTask.id,
     hasWorkHours: true,
-    canModify: true,
     project: {
       __typename: 'Project',
       id: testProject1.id,
       title: testProject1.title,
     },
   },
-} as WorkHourFragment
+}

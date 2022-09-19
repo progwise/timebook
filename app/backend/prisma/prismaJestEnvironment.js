@@ -18,7 +18,7 @@ class PrismaTestEnvironment extends NodeEnvironment {
     this.schema = `test_${nanoid()}`
 
     // Generate the pg connection string for the test schema
-    this.connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${this.schema}`
+    this.connectionString = `postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=${this.schema}&connect_timeout=15`
   }
 
   async setup() {
@@ -28,7 +28,13 @@ class PrismaTestEnvironment extends NodeEnvironment {
     this.global.process.env.DATABASE_URL = this.connectionString
 
     // Run the migrations to ensure our schema has the required structure
-    await exec(`${prismaBinary} migrate deploy`)
+    try {
+      await exec(`${prismaBinary} migrate deploy`)
+    } catch {
+      // eslint-disable-next-line no-console
+      console.warn('migrate error for 1st try')
+      await exec(`${prismaBinary} migrate deploy`)
+    }
 
     return super.setup()
   }

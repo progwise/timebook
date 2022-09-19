@@ -7,7 +7,6 @@ query workHours($teamSlug: String!, $from: Date!, $to: Date) {
 fragment WorkHour on WorkHour {
   id
   date
-  comment
   duration
   user {
     id

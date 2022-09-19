@@ -67,7 +67,6 @@ model WorkHour {
   start    DateTime? @db.Time
   end      DateTime? @db.Time
   duration Int
-  comment  String?
   taskId   String
   userId   String
 
@@ -76,6 +75,8 @@ model WorkHour {
 
   task Task @relation(fields: [taskId], references: [id])
   user User @relation(fields: [userId], references: [id])
+
+  @@unique([date, userId, taskId])
 }
 
 model Account {

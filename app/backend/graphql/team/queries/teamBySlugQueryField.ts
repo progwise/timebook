@@ -10,8 +10,7 @@ export const teamBySlugQueryField = queryField('teamBySlug', {
   },
   authorize: (_source, { slug }, context) => isTeamMember({ slug }, context),
   resolve: (_source, { slug }, context) =>
-    context.prisma.team.findUnique({
+    context.prisma.team.findUniqueOrThrow({
       where: { slug },
-      rejectOnNotFound: true,
     }),
 })

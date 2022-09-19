@@ -5,7 +5,6 @@ query report($projectId: ID!, $from: Date!, $to: Date!) {
       duration
       workHours {
         id
-        comment
         date
         duration
         user {

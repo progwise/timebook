@@ -18,8 +18,10 @@ const tasks: (TaskFragment & { canModify: boolean })[] = [
     project: {
       id: '1',
       title: 'Project 1',
+      __typename: 'Project',
     },
     canModify: true,
+    __typename: 'Task',
   },
 ]
 
@@ -28,6 +30,7 @@ const project: ProjectWithTasksFragment & { canModify: boolean } = {
   title: 'Project 1',
   tasks: [],
   canModify: true,
+  __typename: 'Project',
 }
 
 describe('TaskList', () => {
@@ -43,10 +46,10 @@ describe('TaskList', () => {
 
     const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
     expect(deleteButton).toBeInTheDocument()
-    userEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
-    userEvent.click(confirmDeleteButton)
+    await userEvent.click(confirmDeleteButton)
 
     await waitForElementToBeRemoved(confirmDeleteButton)
   })
@@ -58,8 +61,8 @@ describe('TaskList', () => {
       const submitButton = screen.getByRole('button', { name: 'Add task' })
       const titleInput = screen.getByPlaceholderText('Enter Taskname')
 
-      userEvent.type(titleInput, 'abc')
-      userEvent.click(submitButton)
+      await userEvent.type(titleInput, 'abc')
+      await userEvent.click(submitButton)
 
       const errorMessage = await screen.findByText('title must be at least 4 characters')
       expect(errorMessage).toBeInTheDocument()
@@ -71,8 +74,8 @@ describe('TaskList', () => {
       const submitButton = screen.getByRole('button', { name: 'Add task' })
       const titleInput = screen.getByPlaceholderText('Enter Taskname')
 
-      userEvent.type(titleInput, 'New Task')
-      userEvent.click(submitButton)
+      await userEvent.type(titleInput, 'New Task')
+      await userEvent.click(submitButton)
 
       await waitFor(() => expect(titleInput).toHaveValue(''))
     })
