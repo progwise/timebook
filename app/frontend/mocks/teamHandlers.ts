@@ -1,4 +1,6 @@
 import {
+  mockTeamArchiveMutation,
+  mockTeamUnarchiveMutation,
   mockMeQuery,
   mockTeamProjectsQuery,
   mockTeamQuery,
@@ -110,6 +112,26 @@ export const teamHandlers = [
           id: '123123-asd-12323',
           role: Role.Admin,
         },
+      }),
+    )
+    return result
+  }),
+  mockTeamArchiveMutation((request, response, context) => {
+    testTeam1.archived = true
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        teamArchive: testTeam1,
+      }),
+    )
+    return result
+  }),
+  mockTeamUnarchiveMutation((request, response, context) => {
+    testTeam1.archived = false
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        teamUnarchive: testTeam1,
       }),
     )
     return result
