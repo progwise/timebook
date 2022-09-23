@@ -202,6 +202,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
           {currentTaskId === CREATE_NEW_TASK && (
             <div className="mb-4 flex flex-col">
               <InputField
+                errorMessage={errors.taskTitle?.message}
                 variant="primary"
                 className="dark:bg-slate-800 dark:text-white"
                 placeholder="Enter task name"

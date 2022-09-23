@@ -69,10 +69,8 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
     >
       <form className="w-full" onSubmit={handleSubmit(handleSubmitTask)} id="task-details">
         <div className="mt-4 flex flex-col gap-5">
-          <label>
-            <span className="mr-2 whitespace-nowrap">Task Title</span>
-            <InputField variant="primary" {...register('title', { required: true })} />
-          </label>
+          <InputField label="Task Title" variant="primary" {...register('title', { required: true })} />
+
           <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
         </div>
       </form>

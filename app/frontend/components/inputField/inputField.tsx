@@ -11,11 +11,26 @@ interface InputProps {
   readOnly?: boolean
   size?: number
   className?: string
+  label?: string
+  errorMessage?: string
 }
 
 export const InputField = React.forwardRef(
   (
-    { placeholder, variant, disabled, onChange, onBlur, value, name, readOnly, size, className }: InputProps,
+    {
+      placeholder,
+      variant,
+      disabled,
+      onChange,
+      onBlur,
+      value,
+      name,
+      readOnly,
+      size,
+      className,
+      label,
+      errorMessage,
+    }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -25,19 +40,28 @@ export const InputField = React.forwardRef(
     }[variant]
 
     return (
-      <input
-        className={`rounded-md text-black ${variantClassName} ${className}`}
-        type="text"
-        placeholder={placeholder}
-        disabled={disabled}
-        readOnly={readOnly}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={value}
-        ref={ref}
-        name={name}
-        size={size}
-      />
+      <>
+        <div className="pt-4">
+          {label && <span className="dark: text-sm font-semibold text-white text-gray-600 ">{label}</span>}
+          <div>
+            <input
+              className={`rounded-md  text-black ${variantClassName} ${className}`}
+              type="text"
+              placeholder={placeholder}
+              disabled={disabled}
+              readOnly={readOnly}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              ref={ref}
+              name={name}
+              size={size}
+            />
+          </div>
+
+          {errorMessage && <span className="text-xs text-red-500"></span>}
+        </div>
+      </>
     )
   },
 )

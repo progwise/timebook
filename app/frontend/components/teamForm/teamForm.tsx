@@ -57,8 +57,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   return (
     <form className="flex flex-col gap-2 pt-4" onSubmit={handleSubmit(handleTeamSave)}>
       <FormField>
-        <span className=" text-sm font-semibold text-gray-500">Team name</span>
         <InputField
+          label="Team Name"
           className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
           variant="primary"
           placeholder="Please enter the team name"
@@ -68,8 +68,8 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       </FormField>
 
       <FormField>
-        <span className="text-sm font-semibold text-gray-500">Slug</span>
         <InputField
+          label="Slug"
           variant="primary"
           className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
           placeholder="This team is accessible on https://tb.com/[slug]"
@@ -81,9 +81,9 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       {team && (
         <>
           <FormField>
-            <span className=" text-sm font-semibold text-gray-500">Invitation link</span>
             <div className=" flex w-full flex-row items-center gap-2">
               <InputField
+                label="Invitation Link"
                 className="flex-1"
                 readOnly
                 variant="primary"

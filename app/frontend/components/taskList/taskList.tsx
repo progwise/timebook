@@ -111,15 +111,13 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               <TableCell>
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <div className="flex flex-col">
-                    <label>
-                      <InputField
-                        variant="primary"
-                        placeholder="Enter Taskname"
-                        className=" dark:bg-slate-800 dark:text-white "
-                        {...register('title')}
-                      />
-                    </label>
-                    <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
+                    <InputField
+                      errorMessage={errors.title?.message}
+                      variant="primary"
+                      placeholder="Enter Taskname"
+                      className=" dark:bg-slate-800 dark:text-white "
+                      {...register('title')}
+                    />
                   </div>
 
                   <Button variant="secondary" type="submit" disabled={isSubmitting}>

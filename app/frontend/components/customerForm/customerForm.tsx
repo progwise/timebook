@@ -49,14 +49,14 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
     <>
       <article>
         <form onSubmit={handleSubmit(handleSave)}>
-          <label className="text-gray-500 ">
-            <InputField
-              variant="primary"
-              className=" dark:border-white dark:bg-slate-800 dark:text-white "
-              placeholder="Name"
-              {...register('title')}
-            />
-          </label>
+          <InputField
+            label="Customer Name"
+            variant="primary"
+            className=" dark:border-white dark:bg-slate-800 dark:text-white "
+            placeholder="Name"
+            {...register('title')}
+          />
+
           <div>
             <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
           </div>

@@ -67,8 +67,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </h2>
       )}
       <label className="flex flex-1 flex-col">
-        <span className="w-full text-sm text-gray-700 dark:text-white">Name</span>
         <InputField
+          label="Name"
           variant="primary"
           disabled={formState.isSubmitting}
           readOnly={isProjectFormReadOnly}
@@ -143,7 +143,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
       </label>
       <label className="w-full">
-        <h1>Customer</h1>
+        <span className="dark: text-sm font-semibold text-white text-gray-600 ">Customer</span>
         <CustomerInput control={control} name="customerId" />
       </label>
       <div className="mt-8 flex w-full justify-center gap-2">
