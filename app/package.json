@@ -48,7 +48,7 @@
     "@graphql-codegen/typescript": "2.5.1",
     "@graphql-codegen/typescript-msw": "^1.0.12",
     "@graphql-codegen/typescript-operations": "2.3.2",
-    "@graphql-codegen/typescript-urql": "^3.6.4",
+    "@graphql-codegen/typescript-urql": "^3.7.0",
     "@next/eslint-plugin-next": "^12.0.9",
     "@playwright/test": "^1.22.2",
     "@testing-library/dom": "^8.11.3",
