@@ -1,4 +1,16 @@
-import { mockTeamQuery, mockTeamsQuery, mockTeamsWithProjectsQuery, TeamFragment, Theme } from '../generated/graphql'
+import {
+  mockMeQuery,
+  mockTeamProjectsQuery,
+  mockTeamQuery,
+  mockTeamsQuery,
+  mockTeamsWithProjectsQuery,
+  mockUserQuery,
+  mockUserRoleUpdateMutation,
+  Role,
+  TeamFragment,
+  Theme,
+} from '../generated/graphql'
+import { assignedProjects } from './projectHandlers'
 import { testProject1, testProject2 } from './testData'
 
 const testTeam1: TeamFragment = {
@@ -44,6 +56,60 @@ export const teamHandlers = [
       context.data({
         __typename: 'Query',
         teams: [{ ...testTeam1, projects: [testProject1, testProject2] }],
+      }),
+    )
+    return result
+  }),
+  mockTeamProjectsQuery((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        projects: [testProject1, testProject2],
+      }),
+    )
+    return result
+  }),
+  mockMeQuery((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        user: {
+          __typename: 'User',
+          id: '',
+          image: undefined,
+          name: 'Admin',
+          role: Role.Admin,
+          projects: assignedProjects,
+        },
+      }),
+    )
+    return result
+  }),
+  mockUserQuery((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        user: {
+          __typename: 'User',
+          id: '23182391283',
+          name: 'Test Member',
+          image: undefined,
+          role: Role.Admin,
+          projects: assignedProjects,
+        },
+      }),
+    )
+    return result
+  }),
+  mockUserRoleUpdateMutation((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        userRoleUpdate: {
+          __typename: 'User',
+          id: '123123-asd-12323',
+          role: Role.Admin,
+        },
       }),
     )
     return result
