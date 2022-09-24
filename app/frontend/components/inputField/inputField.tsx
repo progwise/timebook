@@ -42,7 +42,12 @@ export const InputField = React.forwardRef(
     return (
       <>
         <div className="pt-4">
-          {label && <span className="dark: text-sm font-semibold text-white text-gray-600 ">{label}</span>}
+          {label && (
+            <label htmlFor={name} className="dark: text-sm font-semibold text-white text-gray-600">
+              {label}
+            </label>
+          )}
+
           <div>
             <input
               className={`rounded-md  text-black ${variantClassName} ${className}`}
@@ -59,7 +64,7 @@ export const InputField = React.forwardRef(
             />
           </div>
 
-          {errorMessage && <span className="text-xs text-red-500"></span>}
+          {errorMessage && <span className="text-xs text-red-500" />}
         </div>
       </>
     )
