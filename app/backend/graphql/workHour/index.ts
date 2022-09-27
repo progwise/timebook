@@ -1,3 +1,4 @@
-export * from './workHour'
-export * from './queries'
-export * from './mutations'
+import './queries'
+import './mutations'
+
+export { WorkHour } from './workHour'

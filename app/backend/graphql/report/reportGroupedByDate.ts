@@ -1,13 +1,11 @@
-import { objectType } from 'nexus'
+import { builder } from '../builder'
+import { DateScalar } from '../scalars'
 import { WorkHour } from '../workHour'
 
-export const ReportGroupedByDate = objectType({
-  name: 'ReportGroupedByDate',
-  definition: (t) => {
-    t.date('date', { description: 'Booking date of the work hour' })
-    t.list.field('workHours', {
-      type: WorkHour,
-    })
-    t.int('duration', { description: 'Sum of the total duration of all the work hours for the specific date' })
-  },
+export const ReportGroupedByDate = builder.simpleObject('ReportGroupedByDate', {
+  fields: (t) => ({
+    date: t.field({ type: DateScalar, description: 'Booking date of the work hour' }),
+    workHours: t.field({ type: [WorkHour] }),
+    duration: t.int({ description: 'Sum of the total duration of all the work hours for the specific date' }),
+  }),
 })

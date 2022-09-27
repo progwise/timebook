@@ -12,6 +12,10 @@ generator client {
   previewFeatures = []
 }
 
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
 model Project {
   id         String    @id @default(cuid())
   title      String    @db.VarChar(255)

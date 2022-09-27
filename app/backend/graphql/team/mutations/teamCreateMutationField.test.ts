@@ -29,7 +29,7 @@ describe('teamCreateMutationField', () => {
   })
 
   it('should throw error when user is unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {
@@ -52,7 +52,7 @@ describe('teamCreateMutationField', () => {
       },
     })
 
-    const testServer = getTestServer({ prisma })
+    const testServer = getTestServer({})
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {
@@ -79,7 +79,7 @@ describe('teamCreateMutationField', () => {
       })
     }
 
-    const testServer = getTestServer({ prisma })
+    const testServer = getTestServer({})
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {
@@ -96,7 +96,7 @@ describe('teamCreateMutationField', () => {
   })
 
   it('should create a team and become admin of the team', async () => {
-    const testServer = getTestServer({ prisma, userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {

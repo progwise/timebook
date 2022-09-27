@@ -1,46 +1,45 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { Project } from '../../project/project'
+import { ForbiddenError } from 'apollo-server-core'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const projectMembershipCreateMutationField = mutationField('projectMembershipCreate', {
-  type: Project,
-  description: 'Assign user to Project',
-  args: {
-    userId: idArg(),
-    projectId: idArg(),
-  },
+builder.mutationField('projectMembershipCreate', (t) =>
+  t.withAuth({ isTeamAdmin: true }).prismaField({
+    type: 'Project',
+    description: 'Assign user to Project',
+    args: {
+      userId: t.arg.id(),
+      projectId: t.arg.id(),
+    },
+    authScopes: async (_source, { projectId, userId }, context) => {
+      await builder.runAuthScopes(context, { isTeamAdmin: true }, () => new ForbiddenError('Not authorized'))
 
-  authorize: async (_source, _arguments, context) => {
-    if (!context.teamSlug) return false
-    const isAdmin = await isTeamAdmin(context)
-    if (!isAdmin) {
-      return false
-    }
-    const project = await context.prisma.project.findUnique({
-      where: { id: _arguments.projectId },
-      include: { team: true },
-    })
-    if (context.teamSlug !== project?.team.slug) return false
-    const teamMembership = await context.prisma.teamMembership.findUnique({
-      where: { userId_teamId: { userId: _arguments.userId, teamId: project.teamId } },
-    })
-    if (!teamMembership) {
-      return false
-    }
-    return true
-  },
-  resolve: async (_source, _arguments, context) => {
-    const projectMembership = await context.prisma.projectMembership.findUnique({
-      where: { userId_projectId: { projectId: _arguments.projectId, userId: _arguments.userId } },
-      include: { project: true },
-    })
-    if (projectMembership !== null) {
-      return projectMembership.project
-    }
-    const projectMembershipNew = await context.prisma.projectMembership.create({
-      data: { projectId: _arguments.projectId, userId: _arguments.userId },
-      include: { project: true },
-    })
-    return projectMembershipNew.project
-  },
-})
+      const project = await prisma.project.findUniqueOrThrow({
+        where: { id: projectId.toString() },
+        select: { team: { select: { id: true, slug: true } } },
+      })
+      if (context.teamSlug !== project.team.slug) return false
+      const teamMembership = await prisma.teamMembership.findUnique({
+        select: { id: true },
+        where: { userId_teamId: { userId: userId.toString(), teamId: project.team.id } },
+      })
+      if (!teamMembership) {
+        return false
+      }
+      return true
+    },
+    resolve: async (query, _source, { userId, projectId }, context) => {
+      const projectMembership = await prisma.projectMembership.findUnique({
+        where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
+        select: { project: query },
+      })
+      if (projectMembership !== null) {
+        return projectMembership.project
+      }
+      const projectMembershipNew = await prisma.projectMembership.create({
+        data: { projectId: projectId.toString(), userId: userId.toString() },
+        select: { project: query },
+      })
+      return projectMembershipNew.project
+    },
+  }),
+)

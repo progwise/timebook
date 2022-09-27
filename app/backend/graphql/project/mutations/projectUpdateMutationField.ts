@@ -1,49 +1,47 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { Project } from '../project'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { ProjectInput } from '../projectInput'
 
-export const projectUpdateMutationField = mutationField('projectUpdate', {
-  type: Project,
-  description: 'Update a project',
-  args: {
-    id: idArg({ description: 'id of the project' }),
-    data: ProjectInput,
-  },
-  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
-  // eslint-disable-next-line unicorn/no-null
-  resolve: async (_source, { id, data: { title, start, end, customerId = null } }, context) => {
-    if (!context.session?.user.id || !context.teamSlug) {
-      throw new Error('not authenticated')
-    }
+builder.mutationField('projectUpdate', (t) =>
+  t.withAuth({ isTeamAdmin: true }).prismaField({
+    type: 'Project',
+    description: 'Update a project',
+    args: {
+      id: t.arg.id({ description: 'id of the project' }),
+      data: t.arg({ type: ProjectInput }),
+    },
 
-    const team = await context.prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
+    resolve: async (query, _source, { id, data: { title, start, end, customerId } }, context) => {
+      const team = await prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
 
-    const project = await context.prisma.project.findUniqueOrThrow({
-      where: { id },
-    })
+      const project = await prisma.project.findUniqueOrThrow({
+        where: { id: id.toString() },
+      })
 
-    if (project.teamId !== team.id) {
-      // Project is from different team
-      throw new Error('not authenticated')
-    }
-
-    if (customerId) {
-      const newCustomer = await context.prisma.customer.findFirst({ where: { id: customerId } })
-
-      if (!newCustomer || newCustomer.teamId !== team.id) {
-        throw new Error('Customer not found')
+      if (project.teamId !== team.id) {
+        // Project is from different team
+        throw new Error('not authenticated')
       }
-    }
 
-    return context.prisma.project.update({
-      where: { id },
-      data: {
-        title,
-        startDate: start,
-        endDate: end,
-        customerId,
-      },
-    })
-  },
-})
+      if (customerId) {
+        const newCustomer = await prisma.customer.findFirst({ where: { id: customerId.toString() } })
+
+        if (!newCustomer || newCustomer.teamId !== team.id) {
+          throw new Error('Customer not found')
+        }
+      }
+
+      return prisma.project.update({
+        ...query,
+        where: { id: id.toString() },
+        data: {
+          title,
+          startDate: start,
+          endDate: end,
+          // eslint-disable-next-line unicorn/no-null
+          customerId: customerId?.toString() ?? null,
+        },
+      })
+    },
+  }),
+)

@@ -1,37 +1,33 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { WorkHour } from '../workHour'
+import { ForbiddenError } from 'apollo-server-core'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const workHourDeleteMutationField = mutationField('workHourDelete', {
-  type: WorkHour,
-  description: 'Delete a work hour entry',
-  args: {
-    id: idArg({ description: 'id of the workHour item' }),
-  },
-  authorize: async (_source, { id }, context) => {
-    if (!context.session || !context.teamSlug) {
-      return false
-    }
+builder.mutationField('workHourDelete', (t) =>
+  t.withAuth({ isTeamMember: true }).prismaField({
+    type: 'WorkHour',
+    description: 'Delete a work hour entry',
+    args: {
+      id: t.arg.id({ description: 'id of the workHour item' }),
+    },
+    authScopes: async (_source, { id }, context) => {
+      await builder.runAuthScopes(context, { isTeamMember: true }, () => new ForbiddenError('Not authorized'))
+      const workHour = await prisma.workHour.findFirst({
+        select: { id: true, userId: true },
+        where: {
+          id: id.toString(),
+          task: { project: { team: { slug: context.teamSlug } } },
+        },
+      })
 
-    const workHour = await context.prisma.workHour.findFirst({
-      where: {
-        id,
-        task: { project: { team: { slug: context.teamSlug } } },
-      },
-    })
+      if (!workHour) {
+        return false
+      }
 
-    if (!workHour) {
-      return false
-    }
-
-    if (await isTeamAdmin(context)) {
-      return true
-    }
-
-    return context.session.user.id === workHour.userId
-  },
-
-  resolve: async (_source, { id }, context) => {
-    return await context.prisma.workHour.delete({ where: { id } })
-  },
-})
+      return {
+        isTeamAdmin: true,
+        hasUserId: workHour.userId,
+      }
+    },
+    resolve: (query, _source, { id }) => prisma.workHour.delete({ ...query, where: { id: id.toString() } }),
+  }),
+)

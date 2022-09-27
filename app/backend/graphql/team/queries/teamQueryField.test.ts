@@ -45,7 +45,7 @@ describe('teamQueryField', () => {
   })
 
   it('should return error when no teamSlug provided', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: undefined })
+    const testServer = getTestServer({ teamSlug: undefined })
     const response = await testServer.executeOperation({ query: teamQuery })
 
     expect(response.data).toBeNull()
@@ -53,7 +53,7 @@ describe('teamQueryField', () => {
   })
 
   it('should return error when teamSlug does not exists', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'unknownSlug' })
+    const testServer = getTestServer({ teamSlug: 'unknownSlug' })
     const response = await testServer.executeOperation({ query: teamQuery })
 
     expect(response.data).toBeNull()
@@ -61,7 +61,7 @@ describe('teamQueryField', () => {
   })
 
   it('should return error when user is not team member', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'emptyTeam' })
+    const testServer = getTestServer({ teamSlug: 'emptyTeam' })
     const response = await testServer.executeOperation({ query: teamQuery })
 
     expect(response.data).toBeNull()
@@ -69,7 +69,7 @@ describe('teamQueryField', () => {
   })
 
   it('should return team when user is member of', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
     const response = await testServer.executeOperation({ query: teamQuery })
 
     expect(response.data).toEqual({

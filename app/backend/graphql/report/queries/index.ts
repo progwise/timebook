@@ -1,1 +1,1 @@
-export * from './reportQueryField'
+import './reportQueryField'

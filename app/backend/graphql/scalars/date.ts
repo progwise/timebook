@@ -1,4 +1,4 @@
-import { DateResolver } from 'graphql-scalars'
-import { asNexusMethod } from 'nexus'
+import { GraphQLDate } from 'graphql-scalars'
+import { builder } from '../builder'
 
-export const DateScalar = asNexusMethod(DateResolver, 'date')
+export const DateScalar = builder.addScalarType('Date', GraphQLDate, {})
