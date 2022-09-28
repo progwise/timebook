@@ -47,7 +47,7 @@ const UserDetailsPage = (): JSX.Element => {
           <div className="flex justify-start pt-10">
             <span className="pr-8 ">
               {data?.user.image ? (
-                <Image width={100} height={80} src={data?.user.image} alt={data?.user.id} />
+                <Image width={40} height={40} src={data?.user.image} alt={data?.user.id} />
               ) : undefined}
             </span>
             <div className="w-full">
