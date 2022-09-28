@@ -20,14 +20,14 @@ export const projectHandlers = [
     return result
   }),
   mockProjectMembershipDeleteMutation((request, response, context) => {
-    assignedProjects = assignedProjects.filter((ap) => ap.id !== request.variables.projectID)
+    assignedProjects = assignedProjects.filter((project) => project.id !== request.variables.projectID)
 
     const result = response(
       context.data({
         __typename: 'Mutation',
         projectMembershipDelete: {
           __typename: 'Project',
-          title: assignedProjects.find((ap) => ap.id === request.variables.projectID)?.title ?? '',
+          title: assignedProjects.find((project) => project.id === request.variables.projectID)?.title ?? '',
           members: [],
         },
       }),
@@ -35,7 +35,7 @@ export const projectHandlers = [
     return result
   }),
   mockProjectMembershipCreateMutation((request, response, context) => {
-    const addProject = allProjects.find((p) => p.id === request.variables.projectID)
+    const addProject = allProjects.find((project) => project.id === request.variables.projectID)
 
     if (addProject) assignedProjects.push(addProject)
 
@@ -44,7 +44,7 @@ export const projectHandlers = [
         __typename: 'Mutation',
         projectMembershipCreate: {
           __typename: 'Project',
-          title: assignedProjects.find((ap) => ap.id === request.variables.projectID)?.title ?? '',
+          title: assignedProjects.find((project) => project.id === request.variables.projectID)?.title ?? '',
           members: [{ __typename: 'User', name: 'Team Member' }],
         },
       }),
