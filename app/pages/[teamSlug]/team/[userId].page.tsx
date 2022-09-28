@@ -86,7 +86,6 @@ const UserDetailsPage = (): JSX.Element => {
                   <li key={project.id} className="p-3">
                     <span className=" inline-block w-32"> {project.title} </span>
                     <Toggle
-                      disabled={!isAdmin}
                       checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
                       onChange={(newValue) => {
                         if (!data?.user) {
