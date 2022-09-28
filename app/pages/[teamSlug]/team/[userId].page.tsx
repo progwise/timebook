@@ -4,14 +4,30 @@ import {
   useProjectMembershipCreateMutation,
   useProjectMembershipDeleteMutation,
   useTeamProjectsQuery,
+  useUserCapacityUpdateMutation,
   useUserQuery,
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
-import { Button } from '../../../frontend/components/button/button'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { Toggle } from '../../../frontend/components/toggle/toggle'
+import { useForm } from 'react-hook-form'
+import { InputField } from '../../../frontend/components/inputField/inputField'
+import { Button } from '../../../frontend/components/button/button'
+
+const CAPASITY_HOURS_FIELD = 'capacityHours'
+
+function validateCapacityField(input: string): string | undefined {
+  const onlyNummber = /^[0-9]*$/
+  const negativeNummber = /-[0-9]*/
+
+  if (!input) return "Capacity hours can't be empty"
+  else if (negativeNummber.test(input)) return "Hours can't be negative"
+  else if (!onlyNummber.test(input)) return 'Capacity hours should be numer'
+
+  return
+}
 
 const UserDetailsPage = (): JSX.Element => {
   const router = useRouter()
@@ -30,6 +46,11 @@ const UserDetailsPage = (): JSX.Element => {
   const isAdmin = meData?.user.role === Role.Admin
   const [, createProjectMembership] = useProjectMembershipCreateMutation()
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
+  const [, updateUserCapacity] = useUserCapacityUpdateMutation()
+
+  const submitHandler = (data: { [id: string]: string }) => {
+    updateUserCapacity({ capacityHours: +data[CAPASITY_HOURS_FIELD], userId })
+  }
 
   const handleUpgradeClick = () => {
     userRoleUpdate({ role: Role.Admin, userId })
@@ -39,6 +60,13 @@ const UserDetailsPage = (): JSX.Element => {
   const handleDowngradeClick = () => {
     userRoleUpdate({ role: Role.Member, userId })
   }
+  const {
+    register,
+    formState: { errors: fieldsErrors },
+    handleSubmit,
+  } = useForm({
+    mode: 'onChange',
+  })
 
   return (
     <>
@@ -79,29 +107,45 @@ const UserDetailsPage = (): JSX.Element => {
             </div>
           </div>
           {isAdmin ? (
-            <>
-              <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
-              <ul>
-                {allProjects?.projects.map((project) => (
-                  <li key={project.id} className="p-3">
-                    <span className=" inline-block w-32"> {project.title} </span>
-                    <Toggle
-                      checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
-                      onChange={(newValue) => {
-                        if (!data?.user) {
-                          return
-                        }
-                        if (newValue === false) {
-                          deleteProjectMembership({ projectID: project.id, userID: data?.user.id })
-                        } else {
-                          createProjectMembership({ projectID: project.id, userID: data?.user.id })
-                        }
-                      }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </>
+            <div className="flex justify-between">
+              <div>
+                <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
+                <ul>
+                  {allProjects?.projects.map((project) => (
+                    <li key={project.id} className="p-3">
+                      <span className=" inline-block w-32"> {project.title} </span>
+                      <Toggle
+                        checked={data?.user.projects.some((userProject) => userProject.id === project.id) ?? false}
+                        onChange={(newValue) => {
+                          if (!data?.user) {
+                            return
+                          }
+                          if (newValue === false) {
+                            deleteProjectMembership({ projectID: project.id, userID: data?.user.id })
+                          } else {
+                            createProjectMembership({ projectID: project.id, userID: data?.user.id })
+                          }
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-1 w-[250px]">
+                <h1 className="text-start text-xl font-semibold text-gray-400">Capacity hours/week</h1>
+                <InputField
+                  variant="primary"
+                  className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
+                  placeholder="Hours"
+                  {...register(CAPASITY_HOURS_FIELD, { validate: validateCapacityField })}
+                  onBlur={handleSubmit(submitHandler)}
+                />
+                {fieldsErrors[CAPASITY_HOURS_FIELD] && (
+                  <div className="text-red-600">{fieldsErrors[CAPASITY_HOURS_FIELD].message}</div>
+                )}
+              </div>
+            </div>
           ) : (
             <>
               <h1 className="text-xl font-semibold text-gray-400"> Assigned Projects:</h1>
@@ -114,7 +158,7 @@ const UserDetailsPage = (): JSX.Element => {
           )}
         </article>
         {fetching && <span>Loading...</span>}
-        {error && <span className="text-red-600">{error.message}!</span>}
+        {error && <div className="text-center text-red-600">{error.message}!</div>}
       </ProtectedPage>
     </>
   )
