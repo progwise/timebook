@@ -9,6 +9,7 @@ export const User = objectType({
     t.id('id')
     t.nullable.string('name')
     t.nullable.string('image')
+    t.nullable.float('capacityHours')
     t.list.field('projects', {
       type: Project,
       description: 'Returns the list of projects where the user is a member',

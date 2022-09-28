@@ -115,6 +115,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  capacityHours Float     @default(0)
 
   accounts Account[]
   sessions Session[]

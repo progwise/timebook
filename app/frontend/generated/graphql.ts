@@ -84,6 +84,8 @@ export type Mutation = {
   teamUnarchive: Team
   /** Update a new team */
   teamUpdate: Team
+  /** Updated a user capacity hours */
+  userCapacityUpdate: User
   /** Update a user role */
   userRoleUpdate: User
   /** Create a new WorkHour */
@@ -170,6 +172,11 @@ export type MutationTeamUnarchiveArgs = {
 export type MutationTeamUpdateArgs = {
   data: TeamInput
   id: Scalars['ID']
+}
+
+export type MutationUserCapacityUpdateArgs = {
+  capacityHours: Scalars['Float']
+  userId: Scalars['ID']
 }
 
 export type MutationUserRoleUpdateArgs = {
@@ -383,6 +390,7 @@ export enum Theme {
 
 export type User = {
   __typename: 'User'
+  capacityHours?: Maybe<Scalars['Float']>
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -731,6 +739,16 @@ export type TeamWithProjectsFragment = {
     endDate?: string | null
     customer?: { __typename: 'Customer'; id: string } | null
   }>
+}
+
+export type UserCapacityUpdateMutationVariables = Exact<{
+  userId: Scalars['ID']
+  capacityHours: Scalars['Float']
+}>
+
+export type UserCapacityUpdateMutation = {
+  __typename: 'Mutation'
+  userCapacityUpdate: { __typename: 'User'; id: string; capacityHours?: number | null }
 }
 
 export type UserRoleUpdateMutationVariables = Exact<{
@@ -1334,6 +1352,18 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
     ...options,
   })
 }
+export const UserCapacityUpdateDocument = gql`
+  mutation userCapacityUpdate($userId: ID!, $capacityHours: Float!) {
+    userCapacityUpdate(userId: $userId, capacityHours: $capacityHours) {
+      id
+      capacityHours
+    }
+  }
+`
+
+export function useUserCapacityUpdateMutation() {
+  return Urql.useMutation<UserCapacityUpdateMutation, UserCapacityUpdateMutationVariables>(UserCapacityUpdateDocument)
+}
 export const UserRoleUpdateDocument = gql`
   mutation userRoleUpdate($userId: ID!, $role: Role!) {
     userRoleUpdate(userId: $userId, role: $role) {
@@ -1846,6 +1876,25 @@ export const mockTeamsWithProjectsQuery = (
     any
   >,
 ) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserCapacityUpdateMutation((req, res, ctx) => {
+ *   const { userId, capacityHours } = req.variables;
+ *   return res(
+ *     ctx.data({ userCapacityUpdate })
+ *   )
+ * })
+ */
+export const mockUserCapacityUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UserCapacityUpdateMutationVariables>,
+    GraphQLContext<UserCapacityUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<UserCapacityUpdateMutation, UserCapacityUpdateMutationVariables>('userCapacityUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

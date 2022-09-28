@@ -114,6 +114,7 @@ export interface NexusGenObjects {
   Team: prisma.Team
   User: {
     // root type
+    capacityHours?: number | null // Float
     id: string // ID!
     image?: string | null // String
     name?: string | null // String
@@ -163,6 +164,7 @@ export interface NexusGenFieldTypes {
     teamDelete: NexusGenRootTypes['Team'] // Team!
     teamUnarchive: NexusGenRootTypes['Team'] // Team!
     teamUpdate: NexusGenRootTypes['Team'] // Team!
+    userCapacityUpdate: NexusGenRootTypes['User'] // User!
     userRoleUpdate: NexusGenRootTypes['User'] // User!
     workHourCreate: NexusGenRootTypes['WorkHour'] // WorkHour!
     workHourDelete: NexusGenRootTypes['WorkHour'] // WorkHour!
@@ -243,6 +245,7 @@ export interface NexusGenFieldTypes {
   }
   User: {
     // field return type
+    capacityHours: number | null // Float
     id: string // ID!
     image: string | null // String
     name: string | null // String
@@ -292,6 +295,7 @@ export interface NexusGenFieldTypeNames {
     teamDelete: 'Team'
     teamUnarchive: 'Team'
     teamUpdate: 'Team'
+    userCapacityUpdate: 'User'
     userRoleUpdate: 'User'
     workHourCreate: 'WorkHour'
     workHourDelete: 'WorkHour'
@@ -372,6 +376,7 @@ export interface NexusGenFieldTypeNames {
   }
   User: {
     // field return type name
+    capacityHours: 'Float'
     id: 'ID'
     image: 'String'
     name: 'String'
@@ -472,6 +477,11 @@ export interface NexusGenArgTypes {
       // args
       data: NexusGenInputs['TeamInput'] // TeamInput!
       id: string // ID!
+    }
+    userCapacityUpdate: {
+      // args
+      capacityHours: number // Float!
+      userId: string // ID!
     }
     userRoleUpdate: {
       // args
