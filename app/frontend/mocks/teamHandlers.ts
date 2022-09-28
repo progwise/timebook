@@ -11,6 +11,7 @@ import {
   Role,
   TeamFragment,
   Theme,
+  mockUserCapacityUpdateMutation,
 } from '../generated/graphql'
 import { assignedProjects } from './projectHandlers'
 import { testProject1, testProject2 } from './testData'
@@ -132,6 +133,20 @@ export const teamHandlers = [
       context.data({
         __typename: 'Mutation',
         teamUnarchive: testTeam1,
+      }),
+    )
+    return result
+  }),
+  mockUserCapacityUpdateMutation((request, response, context) => {
+    testTeam1.archived = false
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        userCapacityUpdate: {
+          __typename: 'User',
+          id: '123123',
+          capacityHours: 1231,
+        },
       }),
     )
     return result

@@ -48,8 +48,10 @@ const UserDetailsPage = (): JSX.Element => {
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
   const [, updateUserCapacity] = useUserCapacityUpdateMutation()
 
-  const submitHandler = (data: { [id: string]: string }) => {
-    updateUserCapacity({ capacityHours: +data[CAPASITY_HOURS_FIELD], userId })
+  const submitHandler = async (data: { [id: string]: string }) => {
+    const response = await updateUserCapacity({ capacityHours: +data[CAPASITY_HOURS_FIELD], userId })
+
+    if (response.error) setError(CAPASITY_HOURS_FIELD, { message: response.error.message })
   }
 
   const handleUpgradeClick = () => {
@@ -63,6 +65,7 @@ const UserDetailsPage = (): JSX.Element => {
   const {
     register,
     formState: { errors: fieldsErrors },
+    setError,
     handleSubmit,
   } = useForm({
     mode: 'onChange',
@@ -142,7 +145,9 @@ const UserDetailsPage = (): JSX.Element => {
                   onBlur={handleSubmit(submitHandler)}
                 />
                 {fieldsErrors[CAPASITY_HOURS_FIELD] && (
-                  <div className="text-red-600">{fieldsErrors[CAPASITY_HOURS_FIELD].message}</div>
+                  <div aria-label="error field" className="text-red-600">
+                    {fieldsErrors[CAPASITY_HOURS_FIELD].message}
+                  </div>
                 )}
               </div>
             </div>
