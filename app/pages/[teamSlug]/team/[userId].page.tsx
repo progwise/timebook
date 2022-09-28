@@ -19,8 +19,8 @@ import { Button } from '../../../frontend/components/button/button'
 const CAPASITY_HOURS_FIELD = 'capacityHours'
 
 function validateCapacityField(input: string): string | undefined {
-  const onlyNummber = /^[0-9]*$/
-  const negativeNummber = /-[0-9]*/
+  const onlyNummber = /^\d*\.?\d+$/
+  const negativeNummber = /^-\d*\.?\d+$/
 
   if (!input) return "Capacity hours can't be empty"
   else if (negativeNummber.test(input)) return "Hours can't be negative"
