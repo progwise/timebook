@@ -1,9 +1,8 @@
-/* eslint-disable unicorn/no-useless-undefined */
 import { useRouter } from 'next/router'
 import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { TeamFragment, useTeamQuery } from '../../../frontend/generated/graphql'
+import { TeamFragment, useTeamQuery, useTeamUnarchiveMutation } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
 import {
   Table,
@@ -17,23 +16,27 @@ import { CustomerTable } from '../../../frontend/components/customerForm/custome
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
 import { useState } from 'react'
 
-const Team = (): JSX.Element => {
+const TeamPage = (): JSX.Element => {
   const router = useRouter()
-  const [{ data: teamData, fetching }] = useTeamQuery({ pause: !router.isReady })
+  const [{ data: teamData, fetching: teamFetching }] = useTeamQuery({ pause: !router.isReady })
   const [teamToBeArchived, setTeamToBeArchived] = useState<TeamFragment | undefined>()
-
   const slug = router.query.teamSlug?.toString() ?? ''
+  const [{ fetching: unarchiveFetching }, teamUnarchive] = useTeamUnarchiveMutation()
 
   const handleUserDetails = async (userId: string) => {
     await router.push(`/${slug}/team/${userId}`)
   }
 
-  if (!router.isReady || fetching) {
+  if (!router.isReady || teamFetching) {
     return <div>Loading...</div>
   }
 
   if (!teamData?.team) {
     return <div>Team not found</div>
+  }
+
+  const handleUnarchiveTeam = async () => {
+    await teamUnarchive({ id: teamData.team.id })
   }
 
   return (
@@ -42,11 +45,16 @@ const Team = (): JSX.Element => {
         <section>
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-xl font-medium text-gray-500">Team Details</h2>
-            {teamData.team.canModify && (
-              <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
-                Archive
-              </Button>
-            )}
+            {teamData.team.canModify &&
+              (!teamData.team.archived ? (
+                <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
+                  Archive
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={handleUnarchiveTeam} disabled={unarchiveFetching}>
+                  Restore
+                </Button>
+              ))}
           </div>
           <TeamForm key={teamData.team.id} team={teamData.team} />
         </section>
@@ -93,4 +101,4 @@ const Team = (): JSX.Element => {
   )
 }
 
-export default Team
+export default TeamPage

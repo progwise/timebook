@@ -1,13 +1,7 @@
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { CalendarSelector } from './calendarSelector'
-
-const waitForPopupToBeClosedAndOpenItAgain = async () => {
-  const calendarPopover = screen.getByTestId('calendar-popover')
-  await waitForElementToBeRemoved(calendarPopover)
-  await userEvent.click(screen.getByRole('button', { name: /select date/i }))
-}
 
 describe('the custom calendar should ...', () => {
   beforeEach(() => {
@@ -54,7 +48,7 @@ describe('the custom calendar should ...', () => {
     describe('...and select the 15th of the current month', () => {
       beforeEach(async () => {
         await userEvent.click(screen.getByText(/^15$/))
-        await waitForPopupToBeClosedAndOpenItAgain()
+        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
       })
 
       it('...the 15th is selected', () => {
@@ -66,7 +60,7 @@ describe('the custom calendar should ...', () => {
 
       it('...and select the 14th of the current month', async () => {
         await userEvent.click(screen.getByText(/^14$/))
-        await waitForPopupToBeClosedAndOpenItAgain()
+        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
         const selectedDayElement = screen.getByTitle(/^selected day/i)
         expect(selectedDayElement).toHaveTextContent(/14/)
         const valueElement = screen.getByTitle(/display value/i)
@@ -75,7 +69,7 @@ describe('the custom calendar should ...', () => {
 
       it('...and click the goto today button', async () => {
         await userEvent.click(screen.getByText(/^16$/))
-        await waitForPopupToBeClosedAndOpenItAgain()
+        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
         let selectedDayElement = screen.getByTitle(/^selected day/i)
         expect(selectedDayElement).toHaveTextContent(/16/)
         await userEvent.click(screen.getByTitle(/Goto today/))
