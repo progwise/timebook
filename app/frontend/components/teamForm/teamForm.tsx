@@ -83,7 +83,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           <FormField>
             <div className=" flex w-full flex-row items-center gap-2">
               <InputField
-                label="Invitation Link"
+                label="Invitation link"
                 className="flex-1"
                 readOnly
                 variant="primary"
