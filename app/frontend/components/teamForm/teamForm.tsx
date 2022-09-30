@@ -58,7 +58,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     <form className="flex flex-col gap-2 pt-4" onSubmit={handleSubmit(handleTeamSave)}>
       <FormField>
         <InputField
-          label="Team Name"
+          label="Team name"
           className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
           variant="primary"
           placeholder="Please enter the team name"
