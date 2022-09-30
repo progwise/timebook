@@ -391,7 +391,7 @@ export enum Theme {
 export type User = {
   __typename: 'User'
   /** Capacity hours of the use in team */
-  capacityMinutes?: Maybe<Scalars['Float']>
+  capacityMinutes?: Maybe<Scalars['Int']>
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
