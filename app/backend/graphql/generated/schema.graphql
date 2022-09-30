@@ -208,9 +208,9 @@ type Mutation {
   """
   userCapacityUpdate(
     """
-    Capacity of hours
+    Capacity of minutes
     """
-    capacityHours: Float!
+    capacityMinutes: Float!
 
     """
     Id of the user
@@ -553,7 +553,10 @@ A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format o
 scalar Time
 
 type User {
-  capacityHours: Float
+  """
+  Capacity hours of the use in team
+  """
+  capacityMinutes: Int
   id: ID!
   image: String
   name: String

@@ -7,21 +7,24 @@ export const userCapacityUpdateMutationField = mutationField('userCapacityUpdate
   description: 'Updated a user capacity hours',
   args: {
     userId: idArg({ description: 'Id of the user' }),
-    capacityHours: floatArg({ description: 'Capacity of hours' }),
+    capacityMinutes: floatArg({ description: 'Capacity of minutes' }),
   },
   authorize: async (_source, {}, context) => isTeamAdmin(context),
-  resolve: async (_source, { userId, capacityHours }, context) => {
+  resolve: async (_source, { userId, capacityMinutes }, context) => {
     const team = await context.prisma.team.findUniqueOrThrow({
       where: { slug: context.teamSlug },
     })
 
-    const teamMembership = await context.prisma.teamMembership.findFirst({
-      where: { userId: userId, teamId: team.id },
-      include: { user: true },
-    })
+    try {
+      const teamMembership = await context.prisma.teamMembership.update({
+        where: { userId_teamId: { teamId: team.id, userId: userId } },
+        data: { capacityMinutes },
+        include: { user: true },
+      })
 
-    if (teamMembership) return await context.prisma.user.update({ data: { capacityHours }, where: { id: userId } })
-
-    throw new Error('user not found in team')
+      return teamMembership.user
+    } catch {
+      throw new Error('user not found in team')
+    }
   },
 })

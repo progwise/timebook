@@ -16,15 +16,15 @@ import { useForm } from 'react-hook-form'
 import { InputField } from '../../../frontend/components/inputField/inputField'
 import { Button } from '../../../frontend/components/button/button'
 
-const CAPASITY_HOURS_FIELD = 'capacityHours'
+const CAPASITY_MINUTES_FIELD = 'capacityMinutes'
 
 function validateCapacityField(input: string): string | undefined {
-  const onlyNummber = /^\d*\.?\d+$/
-  const negativeNummber = /^-\d*\.?\d+$/
+  const onlyNummber = /^\d+$/
+  const negativeNummber = /^-\d+$/
 
-  if (!input) return "Capacity hours can't be empty"
-  else if (negativeNummber.test(input)) return "Hours can't be negative"
-  else if (!onlyNummber.test(input)) return 'Capacity hours should be numer'
+  if (!input) return "Capacity minutes can't be empty"
+  else if (negativeNummber.test(input)) return "Minutes can't be negative"
+  else if (!onlyNummber.test(input)) return 'Capacity minutes should be number'
 
   return
 }
@@ -49,9 +49,9 @@ const UserDetailsPage = (): JSX.Element => {
   const [, updateUserCapacity] = useUserCapacityUpdateMutation()
 
   const submitHandler = async (data: { [id: string]: string }) => {
-    const response = await updateUserCapacity({ capacityHours: +data[CAPASITY_HOURS_FIELD], userId })
+    const response = await updateUserCapacity({ capacityMinutes: +data[CAPASITY_MINUTES_FIELD], userId })
 
-    if (response.error) setError(CAPASITY_HOURS_FIELD, { message: response.error.message })
+    if (response.error) setError(CAPASITY_MINUTES_FIELD, { message: response.error.message })
   }
 
   const handleUpgradeClick = () => {
@@ -136,17 +136,17 @@ const UserDetailsPage = (): JSX.Element => {
               </div>
 
               <div className="mt-1 w-[250px]">
-                <h1 className="text-start text-xl font-semibold text-gray-400">Capacity hours/week</h1>
+                <h1 className="text-start text-xl font-semibold text-gray-400">Capacity minutes/week</h1>
                 <InputField
                   variant="primary"
                   className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
                   placeholder="Hours"
-                  {...register(CAPASITY_HOURS_FIELD, { validate: validateCapacityField })}
+                  {...register(CAPASITY_MINUTES_FIELD, { validate: validateCapacityField })}
                   onBlur={handleSubmit(submitHandler)}
                 />
-                {fieldsErrors[CAPASITY_HOURS_FIELD] && (
+                {fieldsErrors[CAPASITY_MINUTES_FIELD] && (
                   <div aria-label="error field" className="text-red-600">
-                    {fieldsErrors[CAPASITY_HOURS_FIELD].message}
+                    {fieldsErrors[CAPASITY_MINUTES_FIELD].message}
                   </div>
                 )}
               </div>

@@ -114,30 +114,30 @@ describe('UserIdPage (Admin)', () => {
     await waitFor(() => expect(switchButtons[1]).toBeChecked())
   })
 
-  it('should get validation errors capacityHours', async () => {
+  it('should get validation errors capacityMinutes', async () => {
     render(<UserDetailsPage />, { wrapper })
 
-    const capacityHoursField = await screen.findByRole('textbox')
+    const capacityMinutesField = await screen.findByRole('textbox')
 
-    await userEvent.type(capacityHoursField, 'wrong data')
-    const capasityNotNumber = await screen.findByText('Capacity hours should be numer')
+    await userEvent.type(capacityMinutesField, 'wrong data')
+    const capasityNotNumber = await screen.findByText('Capacity minutes should be number')
     expect(capasityNotNumber).toBeInTheDocument()
 
-    await userEvent.clear(capacityHoursField)
-    const emptyCapacity = await screen.findByText("Capacity hours can't be empty")
+    await userEvent.clear(capacityMinutesField)
+    const emptyCapacity = await screen.findByText("Capacity minutes can't be empty")
     expect(emptyCapacity).toBeInTheDocument()
 
-    await userEvent.type(capacityHoursField, '-1234')
-    const capasityNegativeNumber = await screen.findByText("Hours can't be negative")
+    await userEvent.type(capacityMinutesField, '-1234')
+    const capasityNegativeNumber = await screen.findByText("Minutes can't be negative")
     expect(capasityNegativeNumber).toBeInTheDocument()
   })
 
-  it('should change capacityHours', async () => {
+  it('should change capacityMinutes', async () => {
     render(<UserDetailsPage />, { wrapper })
 
-    const capacityHoursField = await screen.findByRole('textbox')
+    const capacityMinutesField = await screen.findByRole('textbox')
 
-    await userEvent.type(capacityHoursField, '123')
+    await userEvent.type(capacityMinutesField, '123')
     await userEvent.click(document.body)
 
     const errorField = screen.queryByLabelText('error field')

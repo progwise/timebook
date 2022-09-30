@@ -1,6 +1,6 @@
-mutation userCapacityUpdate($userId: ID!, $capacityHours: Float!) {
-  userCapacityUpdate(userId: $userId, capacityHours: $capacityHours) {
+mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
+  userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
     id
-    capacityHours
+    capacityMinutes
   }
 }

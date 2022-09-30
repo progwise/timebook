@@ -114,7 +114,6 @@ export interface NexusGenObjects {
   Team: prisma.Team
   User: {
     // root type
-    capacityHours?: number | null // Float
     id: string // ID!
     image?: string | null // String
     name?: string | null // String
@@ -245,7 +244,7 @@ export interface NexusGenFieldTypes {
   }
   User: {
     // field return type
-    capacityHours: number | null // Float
+    capacityMinutes: number | null // Int
     id: string // ID!
     image: string | null // String
     name: string | null // String
@@ -376,7 +375,7 @@ export interface NexusGenFieldTypeNames {
   }
   User: {
     // field return type name
-    capacityHours: 'Float'
+    capacityMinutes: 'Int'
     id: 'ID'
     image: 'String'
     name: 'String'
@@ -480,7 +479,7 @@ export interface NexusGenArgTypes {
     }
     userCapacityUpdate: {
       // args
-      capacityHours: number // Float!
+      capacityMinutes: number // Float!
       userId: string // ID!
     }
     userRoleUpdate: {

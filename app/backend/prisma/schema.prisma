@@ -1,80 +1,64 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "debian-openssl-1.1.x"]
-  previewFeatures = []
-}
-
 model Project {
-  id         String    @id @default(cuid())
-  title      String    @db.VarChar(255)
-  startDate  DateTime? @db.Date
-  endDate    DateTime? @db.Date
-  customerId String?
-  teamId     String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id                 String              @id @default(cuid())
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  title              String              @db.VarChar(255)
+  endDate            DateTime?           @db.Date
+  startDate          DateTime?           @db.Date
+  customerId         String?
+  teamId             String
   customer           Customer?           @relation(fields: [customerId], references: [id], onDelete: Cascade)
   team               Team                @relation(fields: [teamId], references: [id])
   projectMemberships ProjectMembership[]
   tasks              Task[]
 }
 
-enum Role {
-  ADMIN
-  MEMBER
-}
-
 model ProjectMembership {
-  userId    String
-  projectId String
-
   invitedAt        DateTime? @default(now())
   inviteAcceptedAt DateTime?
+  projectId        String
   updatedAt        DateTime  @updatedAt
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId           String
+  project          Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, projectId])
 }
 
 model Task {
-  id        String @id @default(cuid())
-  title     String @db.VarChar(255)
-  projectId String
-
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         String     @id @default(cuid())
+  title      String     @db.VarChar(255)
+  projectId  String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
   archivedAt DateTime?
-
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  workHours WorkHour[]
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workHours  WorkHour[]
 }
 
 model WorkHour {
-  id       String    @id @default(cuid())
-  date     DateTime  @db.Date
-  start    DateTime? @db.Time
-  end      DateTime? @db.Time
-  duration Int
-  taskId   String
-  userId   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  task Task @relation(fields: [taskId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  id        String    @id @default(cuid())
+  date      DateTime  @db.Date
+  userId    String
+  taskId    String
+  createdAt DateTime  @default(now())
+  duration  Int
+  end       DateTime? @db.Time(6)
+  start     DateTime? @db.Time(6)
+  updatedAt DateTime  @updatedAt
+  task      Task      @relation(fields: [taskId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 
   @@unique([date, userId, taskId])
 }
@@ -94,8 +78,7 @@ model Account {
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -105,25 +88,20 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  capacityHours Float     @default(0)
-
-  accounts Account[]
-  sessions Session[]
-
-  // Relations outside of next-auth:
-  workhours          WorkHour[]
-  teamMemberships    TeamMembership[]
+  id                 String              @id @default(cuid())
+  email              String?             @unique
+  name               String?
+  emailVerified      DateTime?
+  image              String?
+  accounts           Account[]
   projectMemberships ProjectMembership[]
+  sessions           Session[]
+  teamMemberships    TeamMembership[]
+  workhours          WorkHour[]
 }
 
 model VerificationToken {
@@ -135,18 +113,45 @@ model VerificationToken {
 }
 
 model Team {
-  id         String    @id @default(cuid())
-  title      String
-  slug       String    @unique
-  theme      Theme     @default(BLUE)
-  inviteKey  String    @unique @default(cuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  archivedAt DateTime?
-
-  teamMemberships TeamMembership[]
+  id              String           @id @default(cuid())
+  title           String
+  slug            String           @unique
+  theme           Theme            @default(BLUE)
+  inviteKey       String           @unique @default(cuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  archivedAt      DateTime?
   customers       Customer[]
   projects        Project[]
+  teamMemberships TeamMembership[]
+}
+
+model TeamMembership {
+  id              String   @id @default(cuid())
+  memberSince     DateTime @default(now())
+  userId          String
+  teamId          String
+  role            Role     @default(MEMBER)
+  capacityMinutes Int?
+  team            Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  teamId    String
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  projects  Project[]
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
 
 enum Theme {
@@ -158,28 +163,4 @@ enum Theme {
   INDIGO
   PURPLE
   PINK
-}
-
-model TeamMembership {
-  id          String   @id @default(cuid())
-  memberSince DateTime @default(now())
-  userId      String
-  teamId      String
-  role        Role     @default(MEMBER)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, teamId])
-}
-
-model Customer {
-  id        String   @id @default(cuid())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  teamId    String
-
-  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  projects Project[]
 }

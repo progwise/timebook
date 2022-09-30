@@ -5,10 +5,10 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const userCapacityUpdateMutation = `
-mutation userCapacityUpdate($userId: ID!, $capacityHours: Float!) {
-    userCapacityUpdate(userId: $userId, capacityHours: $capacityHours) {
+mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
+    userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
     id
-    capacityHours
+    capacityMinutes
   }
 }
 `
@@ -31,7 +31,7 @@ describe('userCapatityUpdate', () => {
       query: userCapacityUpdateMutation,
       variables: {
         userId: '1',
-        capacityHours: 1,
+        capacityMinutes: 1,
       },
     })
 
@@ -51,11 +51,11 @@ describe('userCapatityUpdate', () => {
       query: userCapacityUpdateMutation,
       variables: {
         userId: '2',
-        capacityHours: 3,
+        capacityMinutes: 3,
       },
     })
 
-    expect(response.data).toEqual({ userCapacityUpdate: { id: '2', capacityHours: 3 } })
+    expect(response.data).toEqual({ userCapacityUpdate: { id: '2', capacityMinutes: 3 } })
     expect(response.errors).toBeUndefined()
   })
 
@@ -70,7 +70,7 @@ describe('userCapatityUpdate', () => {
       query: userCapacityUpdateMutation,
       variables: {
         userId: '2',
-        capacityHours: 3,
+        capacityMinutes: 3,
       },
     })
 

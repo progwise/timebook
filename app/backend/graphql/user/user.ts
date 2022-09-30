@@ -9,26 +9,45 @@ export const User = objectType({
     t.id('id')
     t.nullable.string('name')
     t.nullable.string('image')
-    t.nullable.float('capacityHours')
-    t.list.field('projects', {
-      type: Project,
-      description: 'Returns the list of projects where the user is a member',
-      resolve: (user, _arguments, context) => {
-        if (!context.teamSlug) {
-          return []
+    t.nullable.field('capacityMinutes', {
+      type: 'Int',
+      description: 'Capacity hours of the use in team',
+      resolve: async (user, _arguments, context) => {
+        const slug = context.teamSlug
+
+        if (!slug) {
+          throw new GraphQLError('Team slug is missing.')
         }
-        return context.prisma.project.findMany({
+
+        const membership = await context.prisma.teamMembership.findFirstOrThrow({
           where: {
-            team: {
-              slug: context.teamSlug,
-            },
-            projectMemberships: {
-              some: { userId: user.id },
-            },
+            userId: user.id,
+            team: { slug },
           },
         })
+
+        return membership.capacityMinutes
       },
-    })
+    }),
+      t.list.field('projects', {
+        type: Project,
+        description: 'Returns the list of projects where the user is a member',
+        resolve: (user, _arguments, context) => {
+          if (!context.teamSlug) {
+            return []
+          }
+          return context.prisma.project.findMany({
+            where: {
+              team: {
+                slug: context.teamSlug,
+              },
+              projectMemberships: {
+                some: { userId: user.id },
+              },
+            },
+          })
+        },
+      })
     t.field('role', {
       type: Role,
       description: 'Role of the user in the current team',
