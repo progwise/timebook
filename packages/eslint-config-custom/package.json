@@ -4,11 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "eslint": "^7.23.0",
-    "eslint-config-next": "^12.0.8",
-    "eslint-config-prettier": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "eslint": "^8.6.0",
+    "eslint-config-next": "^12.0.9",
+    "eslint-config-turbo": "^0.0.4",
+    "eslint-plugin-jest": "^27.1.0",
+    "eslint-plugin-jest-dom": "^4.0.2",
     "eslint-plugin-react": "7.31.8",
-    "eslint-config-turbo": "latest"
+    "eslint-plugin-testing-library": "^5.7.2",
+    "eslint-plugin-unicorn": "^44.0.0"
   },
   "devDependencies": {
     "typescript": "^4.7.4"
