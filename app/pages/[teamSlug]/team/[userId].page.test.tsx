@@ -2,14 +2,15 @@ import { render, screen, waitFor } from '@testing-library/react'
 import '../../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
 import UserDetailsPage from './[userId].page'
-import { mockMeQuery, mockUserQuery, Role } from '../../../frontend/generated/graphql'
+import { mockMeQuery, mockUserQuery, mockUserRoleUpdateMutation, Role } from '../../../frontend/generated/graphql'
 import { mockServer } from '../../../frontend/mocks/mockServer'
 import userEvent from '@testing-library/user-event'
 import { assignedProjects } from '../../../frontend/mocks/projectHandlers'
 
+let userRole: Role = Role.Admin
+
 const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
-let userRole: Role = Role.Member
 
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
@@ -63,21 +64,28 @@ beforeEach(() => {
       return result
     }),
   )
+
+  mockServer.use(
+    mockUserRoleUpdateMutation((request, response, context) => {
+      userRole = request.variables.role
+
+      const result = response(
+        context.data({
+          __typename: 'Mutation',
+          userRoleUpdate: {
+            __typename: 'User',
+            id: '123123-asd-12323',
+            role: userRole,
+          },
+        }),
+      )
+      return result
+    }),
+  )
 })
 
 describe('UserIdPage (Admin)', () => {
-  it('should promote to admin', async () => {
-    render(<UserDetailsPage />, { wrapper })
-
-    const promoteButton = await screen.findByRole('button', {
-      name: /promote to admin/i,
-    })
-
-    await userEvent.click(promoteButton)
-    const loading = await screen.findByText('Loading...')
-    expect(loading).toBeVisible()
-    await waitFor(() => expect(loading).not.toBeInTheDocument())
-
+  beforeAll(() => {
     userRole = Role.Admin
   })
 
@@ -89,7 +97,16 @@ describe('UserIdPage (Admin)', () => {
     })
 
     await userEvent.click(demoteButton)
-    const loading = await screen.findByText('Loading...')
+    let loading = await screen.findByText('Loading...')
+    expect(loading).toBeVisible()
+    await waitFor(() => expect(loading).not.toBeInTheDocument())
+
+    const promoteButton = await screen.findByRole('button', {
+      name: /promote to admin/i,
+    })
+
+    await userEvent.click(promoteButton)
+    loading = await screen.findByText('Loading...')
     expect(loading).toBeVisible()
     await waitFor(() => expect(loading).not.toBeInTheDocument())
   })
