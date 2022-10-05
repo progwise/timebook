@@ -1,0 +1,14 @@
+module.exports = {
+  root: true,
+  extends: ['custom'],
+  overrides: [
+    {
+      files: ['e2e-tests/**/*.ts'],
+      extends: [
+        'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+        'plugin:unicorn/recommended',
+        'plugin:playwright/playwright-test',
+      ],
+    },
+  ],
+}
