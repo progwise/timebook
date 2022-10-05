@@ -96,7 +96,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         </>
       )}
 
-      <div className="start mt-4 flex flex-row justify-end gap-2">
+      <div className="start mt-4 flex flex-row justify-between gap-2 sm:justify-end">
         <Button variant="secondary">Dismiss</Button>
         <Button variant="primary" type="submit">
           Save
