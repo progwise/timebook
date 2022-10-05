@@ -4,8 +4,10 @@ import { ProtectedPage } from '../../frontend/components/protectedPage'
 const NewTeam = (): JSX.Element => {
   return (
     <ProtectedPage>
-      <h2>Create new team</h2>
-      <TeamForm />
+      <div className="mx-auto max-w-3xl sm:mt-11">
+        <h2>Create new team</h2>
+        <TeamForm />
+      </div>
     </ProtectedPage>
   )
 }
