@@ -30,6 +30,7 @@ import {
   teamDeleteMutationField,
   teamQueryField,
   teamsQueryField,
+  teamUnarchiveMutationField,
   teamUpdateMutationField,
 } from './team'
 import {
@@ -70,6 +71,7 @@ export const schema = makeSchema({
     teamBySlugQueryField,
     teamAcceptInviteMutationField,
     teamArchiveMutationField,
+    teamUnarchiveMutationField,
     teamCreateMutationField,
     teamUpdateMutationField,
     teamDeleteMutationField,

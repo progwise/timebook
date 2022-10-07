@@ -161,6 +161,7 @@ export interface NexusGenFieldTypes {
     teamArchive: NexusGenRootTypes['Team'] // Team!
     teamCreate: NexusGenRootTypes['Team'] // Team!
     teamDelete: NexusGenRootTypes['Team'] // Team!
+    teamUnarchive: NexusGenRootTypes['Team'] // Team!
     teamUpdate: NexusGenRootTypes['Team'] // Team!
     userRoleUpdate: NexusGenRootTypes['User'] // User!
     workHourCreate: NexusGenRootTypes['WorkHour'] // WorkHour!
@@ -290,6 +291,7 @@ export interface NexusGenFieldTypeNames {
     teamArchive: 'Team'
     teamCreate: 'Team'
     teamDelete: 'Team'
+    teamUnarchive: 'Team'
     teamUpdate: 'Team'
     userRoleUpdate: 'User'
     workHourCreate: 'WorkHour'
@@ -463,6 +465,10 @@ export interface NexusGenArgTypes {
     teamDelete: {
       // args
       id: string // ID!
+    }
+    teamUnarchive: {
+      // args
+      teamId: string // ID!
     }
     teamUpdate: {
       // args

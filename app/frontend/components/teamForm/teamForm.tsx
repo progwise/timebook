@@ -96,13 +96,18 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         </>
       )}
 
-      <div className="start mt-4 flex flex-row justify-end gap-2">
+      <div className="start mt-4 flex flex-row justify-between gap-2 sm:justify-end">
         <Button variant="secondary">Dismiss</Button>
         <Button variant="primary" type="submit">
           Save
         </Button>
-        {(createTeamResult.error || updateTeamResult.error) && <span className="text-red-600">Fehler !!! </span>}
       </div>
+
+      {(createTeamResult.error || updateTeamResult.error) && (
+        <div role="alert" className="text-center text-red-600">
+          {createTeamResult.error?.message ?? updateTeamResult.error?.message ?? 'Server error, try again later'}
+        </div>
+      )}
     </form>
   )
 }

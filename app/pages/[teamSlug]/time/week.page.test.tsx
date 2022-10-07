@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { configure, render, screen } from '@testing-library/react'
 import '../../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
 import WeekPage from './week.page'
@@ -15,6 +15,8 @@ jest.mock('next/router', () => ({
     }
   },
 }))
+
+configure({ asyncUtilTimeout: 10_000 })
 
 const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
