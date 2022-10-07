@@ -11,8 +11,8 @@ test.describe('project page', () => {
     await page.click('text=Add')
 
     await page.fill('[placeholder="Enter project name"]', projectName)
-    await page.fill('text=StartCalendar icon >> input[type="text"]', '2022-01-01')
-    await page.fill('text=EndCalendar icon >> input[type="text"]', '2023-01-01')
+    await page.fill('text="Start"', '2022-01-01')
+    await page.fill('text="End"', '2023-01-01')
 
     await page.click('text=Save')
 
