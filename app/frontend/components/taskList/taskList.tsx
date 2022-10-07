@@ -7,7 +7,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
+import { taskInputSchema } from '../../../frontend/components/taskDetailsModal'
 import {
   Table,
   TableBody,
@@ -19,6 +19,7 @@ import {
   TableRow,
   TableFootRow,
 } from '../table/table'
+import { TaskRow } from './taskRow'
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
@@ -38,7 +39,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
-  const [taskToBeUpdated, setTaskToBeUpdated] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskFormData) => {
     try {
@@ -62,7 +62,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
             <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
-            <TableHeadCell>Details page</TableHeadCell>
           </TableHeadRow>
         </TableHead>
         <TableBody>
@@ -79,27 +78,13 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     <BiTrash />
                   </Button>
                 )}
-                <span className="ml-2">{task.title}</span>
+                <TaskRow task={task} />
               </TableCell>
               <TableCell className="text-center">
                 <input type="checkbox" />
               </TableCell>
-              <TableCell>
-                <Button
-                  variant="tertiary"
-                  onClick={() => {
-                    setTaskToBeUpdated(task)
-                  }}
-                >
-                  Details
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
-          {taskToBeUpdated ? (
-            // eslint-disable-next-line unicorn/no-useless-undefined
-            <TaskDetailsModal task={taskToBeUpdated} onClose={() => setTaskToBeUpdated(undefined)} />
-          ) : undefined}
           {taskToBeDeleted ? (
             // eslint-disable-next-line unicorn/no-useless-undefined
             <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
