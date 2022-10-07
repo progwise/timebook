@@ -11,7 +11,7 @@ export const Task = objectType({
     t.string('title', { description: 'The user can identify the task in the UI' })
     t.nullable.float('hourlyRate', {
       description: 'For calculating the money spent',
-          // eslint-disable-next-line unicorn/no-null
+      // eslint-disable-next-line unicorn/no-null
       resolve: (task) => task.hourlyRate?.toNumber() ?? null,
     })
     t.boolean('archived', { resolve: (task) => !!task.archivedAt })
