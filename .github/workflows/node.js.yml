@@ -24,9 +24,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -43,9 +40,6 @@ jobs:
 
   eslint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -61,9 +55,6 @@ jobs:
 
   prettier:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -79,9 +70,6 @@ jobs:
 
   graphqlCodeGenerator:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -95,9 +83,6 @@ jobs:
   e2e-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     env:
       DATABASE_URL: postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=public
       SECRET: secr3t
@@ -142,9 +127,6 @@ jobs:
     name: Migrate Database
     needs: [deploy]
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
