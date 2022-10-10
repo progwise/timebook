@@ -17,7 +17,6 @@ jobs:
           node-version: '16.x'
       - uses: pnpm/action-setup@v2.0.1
         name: Install pnpm
-        id: pnpm-install
         with:
           version: 7
           run_install: true
@@ -34,9 +33,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-      - run: npm ci
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: true
       - run: docker-compose up -d
-      - run: npm test
+      - run: pnpm run test
 
   eslint:
     runs-on: ubuntu-latest
@@ -49,8 +52,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npm run lint
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: true
+      - run: pnpm run lint
 
   prettier:
     runs-on: ubuntu-latest
@@ -63,8 +70,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npm run format:check
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: true
+      - run: pnpm run format:check
 
   graphqlCodeGenerator:
     runs-on: ubuntu-latest
