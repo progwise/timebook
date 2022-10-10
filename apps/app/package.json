@@ -14,7 +14,8 @@
     "graphql:generate": "graphql-codegen",
     "typecheck": "tsc --noEmit",
     "e2e-tests": "playwright test",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "migrate-db": "prisma migrate deploy"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^1.0.0",
@@ -52,7 +53,7 @@
     "@graphql-codegen/typescript-msw": "^1.0.12",
     "@graphql-codegen/typescript-operations": "2.3.2",
     "@graphql-codegen/typescript-urql": "^3.6.4",
-    "@playwright/test": "^1.22.2",
+    "@playwright/test": "^1.27.0",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",

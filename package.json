@@ -11,7 +11,9 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "e2e-tests": "turbo run e2e-tests",
     "typecheck": "turbo run typecheck",
+    "migrate-db": "turbo run migrate-db",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
