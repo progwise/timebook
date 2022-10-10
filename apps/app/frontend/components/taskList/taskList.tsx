@@ -1,7 +1,5 @@
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { Button } from '../button/button'
 import { BiTrash } from 'react-icons/bi'
-import { InputField } from '../inputField/inputField'
 import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
@@ -9,6 +7,8 @@ import { useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
 import {
+  Button,
+  InputField,
   Table,
   TableBody,
   TableCell,
@@ -18,7 +18,7 @@ import {
   TableHeadRow,
   TableRow,
   TableFootRow,
-} from '../table/table'
+} from 'ui'
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]

@@ -3,11 +3,19 @@ import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToda
 import { useRouter } from 'next/router'
 import { BiPlus } from 'react-icons/bi'
 import { AddTaskRowModal } from './addTaskRow'
-import { Button } from './button/button'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
-import { FormattedDuration } from './duration/formattedDuration'
 import { HourInput } from './hourInput'
-import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableHeadRow, TableRow } from './table/table'
+import {
+  Button,
+  FormattedDuration,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+} from 'ui'
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 
 const NUMBER_OF_DAYS = 7

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Button } from '../../../../frontend/components/button/button'
+import { Button } from 'ui'
 import { ProtectedPage } from '../../../../frontend/components/protectedPage'
 import { useTeamAcceptInviteMutation } from '../../../../frontend/generated/graphql'
 

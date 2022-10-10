@@ -12,8 +12,7 @@ import {
   useCustomerCreateMutation,
   useCustomerUpdateMutation,
 } from '../../generated/graphql'
-import { Button } from '../button/button'
-import { InputField } from '../inputField/inputField'
+import { Button, InputField } from 'ui'
 
 interface CustomerFormProps {
   customer?: CustomerFragment

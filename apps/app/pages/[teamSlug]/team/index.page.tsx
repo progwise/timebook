@@ -1,17 +1,9 @@
 import { useRouter } from 'next/router'
-import { Button } from '../../../frontend/components/button/button'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
 import { TeamFragment, useTeamQuery, useTeamUnarchiveMutation } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeadCell,
-  TableHeadRow,
-  TableRow,
-} from '../../../frontend/components/table/table'
+import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from 'ui'
 import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
 import { useState } from 'react'

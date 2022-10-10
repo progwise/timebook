@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { TeamFragment, useTeamArchiveMutation } from '../generated/graphql'
-import { Button } from './button/button'
+import { Button } from 'ui'
 import { Modal } from './modal'
 
 export interface TeamArchiveModalProps {

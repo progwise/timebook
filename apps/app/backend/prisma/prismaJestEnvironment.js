@@ -2,7 +2,7 @@
 /* eslint-disable unicorn/prefer-module */
 
 const { Client } = require('pg')
-const NodeEnvironment = require('jest-environment-node')
+const NodeEnvironment = require('jest-environment-node').TestEnvironment
 const { nanoid } = require('nanoid')
 const { promisify } = require('util')
 const path = require('path')

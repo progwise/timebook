@@ -12,4 +12,7 @@ module.exports = {
   images: {
     domains: ['avatars.githubusercontent.com'],
   },
+  experimental: {
+    externalDir: true,
+  },
 }

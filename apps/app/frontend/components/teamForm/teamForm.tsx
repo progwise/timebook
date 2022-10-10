@@ -1,5 +1,4 @@
-import { Button } from '../button/button'
-import { InputField } from '../inputField/inputField'
+import { Button, InputField } from 'ui'
 import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'

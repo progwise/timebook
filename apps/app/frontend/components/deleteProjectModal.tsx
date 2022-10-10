@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { ProjectFragment, useProjectDeleteMutation } from '../generated/graphql'
-import { Button } from './button/button'
+import { Button } from 'ui'
 import { Modal } from './modal'
 
 interface DeleteProjectModalProps {

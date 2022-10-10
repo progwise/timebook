@@ -6,17 +6,13 @@ const path = require('path')
 module.exports = {
   projects: [
     {
-      globals: {
-        'ts-jest': {
-          tsconfig: 'tsconfig.jest.json',
-        },
-      },
       verbose: true,
       preset: 'ts-jest',
       testEnvironment: 'jsdom',
       setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
       transform: {
         '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+        '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
       },
       displayName: { name: 'frontend', color: 'cyanBright' },
       roots: ['<rootDir>/frontend/', '<rootDir>/pages/'],

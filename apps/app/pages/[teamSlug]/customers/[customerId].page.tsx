@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 
-import { Button } from '../../../frontend/components/button/button'
+import { Button } from 'ui'
 import { CustomerForm } from '../../../frontend/components/customerForm/customerForm'
 
 import { Modal } from '../../../frontend/components/modal'

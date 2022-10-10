@@ -7,8 +7,7 @@ import {
   useWorkHourDeleteMutation,
   useTaskCreateMutation,
 } from '../generated/graphql'
-import { Button } from './button/button'
-import { InputField } from './inputField/inputField'
+import { Button, InputField } from 'ui'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 import { HourInput } from './hourInput'

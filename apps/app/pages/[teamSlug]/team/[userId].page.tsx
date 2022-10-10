@@ -8,7 +8,7 @@ import {
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
-import { Button } from '../../../frontend/components/button/button'
+import { Button } from 'ui'
 import { useRouter } from 'next/router'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { Toggle } from '../../../frontend/components/toggle/toggle'

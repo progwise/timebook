@@ -1,7 +1,7 @@
 import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { Button } from '../frontend/components/button/button'
+import { Button } from 'ui'
 import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 import { TimebookPage } from '../frontend/components/timebookPage'
 

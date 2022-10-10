@@ -4,11 +4,11 @@ import '../frontend/styles/globals.css'
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import { createClient, Provider } from 'urql'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 
 interface MyAppProps {
-  Component: new (props: unknown) => React.Component
+  Component: (props: unknown) => JSX.Element
   pageProps: {
     session: Session
     [key: string]: unknown

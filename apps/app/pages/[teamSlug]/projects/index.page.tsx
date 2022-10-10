@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { useProjectsWithTasksQuery, useTeamQuery } from '../../../frontend/generated/graphql'
 import { ProjectTable } from '../../../frontend/components/projectTable'
-import { Button } from '../../../frontend/components/button/button'
+import { Button } from 'ui'
 import { ProjectList } from '../../../frontend/components/projectList/projectList'
 
 const Projects = (): JSX.Element => {

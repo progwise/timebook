@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useCustomersQuery } from '../../generated/graphql'
-import { Button } from '../button/button'
 import { ProtectedPage } from '../protectedPage'
-import { Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '../table/table'
+import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from 'ui'
 import { MdPersonAddAlt1 } from 'react-icons/md'
 export const CustomerTable = (): JSX.Element => {
   const router = useRouter()
