@@ -1,4 +1,0 @@
-schema: backend/graphql/generated/schema.graphql
-documents:
-  - frontend/**/*.graphql
-  - pages/**/*.graphql

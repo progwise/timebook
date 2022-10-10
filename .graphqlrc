@@ -1,0 +1,4 @@
+schema: apps/app/backend/graphql/generated/schema.graphql
+documents:
+  - apps/app/frontend/**/*.graphql
+  - apps/app/pages/**/*.graphql
