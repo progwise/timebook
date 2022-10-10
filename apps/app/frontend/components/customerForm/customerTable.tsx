@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useCustomersQuery } from '../../generated/graphql'
 import { ProtectedPage } from '../protectedPage'
-import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from 'ui'
+import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '@progwise/timebook-ui'
 import { MdPersonAddAlt1 } from 'react-icons/md'
 export const CustomerTable = (): JSX.Element => {
   const router = useRouter()

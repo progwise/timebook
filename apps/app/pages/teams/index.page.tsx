@@ -1,6 +1,6 @@
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { TeamChoiceForm } from '../../frontend/components/teamChoice/teamChoiceForm'
-import { Button } from 'ui'
+import { Button } from '@progwise/timebook-ui'
 import { useRouter } from 'next/router'
 
 const Teams = (): JSX.Element => {

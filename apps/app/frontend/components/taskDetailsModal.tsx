@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { TaskFragment, TaskInput, useTaskUpdateMutation } from '../generated/graphql'
-import { Button, InputField } from 'ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 import { Modal } from './modal'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'

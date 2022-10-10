@@ -1,6 +1,15 @@
 import { useRouter } from 'next/router'
 import { ProjectFragment } from '../generated/graphql'
-import { Button, Table, TableHead, TableRow, TableHeadCell, TableBody, TableCell, TableHeadRow } from 'ui'
+import {
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeadCell,
+  TableBody,
+  TableCell,
+  TableHeadRow,
+} from '@progwise/timebook-ui'
 
 interface ProjectTableProps {
   projects: Array<ProjectFragment>

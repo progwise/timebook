@@ -1,5 +1,5 @@
 import { TaskFragment, useTaskDeleteMutation } from '../generated/graphql'
-import { Button } from 'ui'
+import { Button } from '@progwise/timebook-ui'
 import { Modal } from './modal'
 
 export interface DeleteTaskModalProps {

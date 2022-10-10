@@ -18,7 +18,7 @@ import {
   TableHeadRow,
   TableRow,
   TableFootRow,
-} from 'ui'
+} from '@progwise/timebook-ui'
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]

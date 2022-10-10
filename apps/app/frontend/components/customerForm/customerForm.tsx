@@ -12,7 +12,7 @@ import {
   useCustomerCreateMutation,
   useCustomerUpdateMutation,
 } from '../../generated/graphql'
-import { Button, InputField } from 'ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 
 interface CustomerFormProps {
   customer?: CustomerFragment

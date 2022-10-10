@@ -7,7 +7,7 @@ import {
   useWorkHourDeleteMutation,
   useTaskCreateMutation,
 } from '../generated/graphql'
-import { Button, InputField } from 'ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 import { HourInput } from './hourInput'

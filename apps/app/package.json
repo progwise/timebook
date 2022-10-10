@@ -1,5 +1,5 @@
 {
-  "name": "timebook-nextjs",
+  "name": "@progwise/timebook-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -24,6 +24,7 @@
     "@hookform/resolvers": "^2.9.8",
     "@next-auth/prisma-adapter": "^1.0.1",
     "@prisma/client": "^4.2.1",
+    "@progwise/timebook-ui": "workspace:*",
     "@tailwindcss/forms": "^0.5.2",
     "apollo-server-core": "^3.10.2",
     "apollo-server-micro": "^3.6.7",
@@ -41,7 +42,6 @@
     "react-hook-form": "^7.25.1",
     "react-icons": "^4.4.0",
     "react-input-mask": "^3.0.0-alpha.2",
-    "ui": "workspace:*",
     "urql": "^3.0.3",
     "yup": "^0.32.11"
   },

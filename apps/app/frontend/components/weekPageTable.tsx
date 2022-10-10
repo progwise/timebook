@@ -15,7 +15,7 @@ import {
   TableHeadCell,
   TableHeadRow,
   TableRow,
-} from 'ui'
+} from '@progwise/timebook-ui'
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 
 const NUMBER_OF_DAYS = 7

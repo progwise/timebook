@@ -1,4 +1,4 @@
-import { Button, InputField } from 'ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'

@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import { useWorkHourCreateMutation, useProjectsWithTasksQuery, useTaskCreateMutation } from '../generated/graphql'
-import { Button, InputField } from 'ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 import { Modal } from './modal'
 import { ErrorMessage } from '@hookform/error-message'
 import * as yup from 'yup'
