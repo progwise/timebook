@@ -13,7 +13,8 @@
     "seed": "prisma db seed",
     "graphql:generate": "graphql-codegen",
     "typecheck": "tsc --noEmit",
-    "e2e-tests": "playwright test"
+    "e2e-tests": "playwright test",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^1.0.0",
