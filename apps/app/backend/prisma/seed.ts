@@ -62,11 +62,15 @@ async function main() {
   })
 }
 
-try {
-  await main()
-} catch (error) {
-  console.error(error)
-  process.exit(1)
-} finally {
-  await prisma.$disconnect()
+const run = async () => {
+  try {
+    await main()
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
+  } finally {
+    await prisma.$disconnect()
+  }
 }
+
+run()
