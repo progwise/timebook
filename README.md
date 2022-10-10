@@ -1,73 +1,74 @@
-# Turborepo starter
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This is an official pnpm starter turborepo.
+# Getting Started
 
-## What's inside?
+The main application is located in the app folder as next.js app including backend and frontend.
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run build
+```bash
+cd app
 ```
 
-### Develop
+## Start the database server
 
-To develop all apps and packages, run the following command:
+The database server has to be started prior to make the backend work.
 
-```
-cd my-turborepo
-pnpm run dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-pnpm dlx turbo login
+```bash
+docker-compose up
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+This app is developed using prisma.io. You can start the prisma studio to view/modify data by using:
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-pnpm dlx turbo link
+```bash
+npx prisma studio
 ```
 
-## Useful Links
+## Migrate the database
 
-Learn more about the power of Turborepo:
+This is needed, if the database schema has changed since the last migration run.
 
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+```bash
+npm run migrate:dev
+```
+
+For more information see [prisma getting started](https://www.prisma.io/docs/concepts/components/prisma-migrate)
+
+## Starting the app
+
+This nextjs app starts react frontend and graphql backend with a single command:
+
+```bash
+npm run dev
+```
+
+For more information how next.js apps are build see [NextJS basics](https://nextjs.org/learn/basics/navigate-between-pages)
+
+# Running the app
+
+- http://localhost:3000 frontend
+- http://localhost:4000 graphql backend
+-
+
+...
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
