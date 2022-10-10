@@ -76,9 +76,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npm run graphql:generate
-      - run: node .ci/check-graphql-generator
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: true
+      - run: pnpm run graphql:generate
+      - run: node apps/app/.ci/check-graphql-generator
 
   e2e-tests:
     timeout-minutes: 60
