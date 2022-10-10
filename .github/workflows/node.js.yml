@@ -35,7 +35,7 @@ jobs:
         with:
           version: 7
           run_install: true
-      - run: docker-compose up -d
+      - run: docker-compose -f apps/app/docker-compose.yml up -d
       - run: pnpm run test
 
   eslint:
@@ -97,7 +97,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Start postgres docker image
-        run: docker-compose up -d
+        run: docker-compose -f apps/app/docker-compose.yml up -d
       - name: Migrate database
         run: npx prisma migrate deploy
       - name: Run Playwright tests
