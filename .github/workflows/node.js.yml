@@ -137,9 +137,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm ci
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        with:
+          version: 7
+          run_install: true
       - name: Database migration
-        run: npx prisma migrate deploy
+        run: pnpm run migrate-db
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
