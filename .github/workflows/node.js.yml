@@ -126,6 +126,7 @@ jobs:
         with:
           command: up
           stack-name: dev
+          work-dir: ./app/pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN_YOHANNES }}
