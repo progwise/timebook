@@ -111,6 +111,25 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  pulumi:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/pulumi
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - run: npm install
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: dev
+        env:
+          # PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN_YOHANNES }}
+
   deploy:
     needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
