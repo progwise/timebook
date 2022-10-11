@@ -26,7 +26,7 @@ export const timebook = new digitalocean.App("timebook", {
             envs: [
                 { key: "NEXTAUTH_URL", value: "timebook.pascalhelbig.de" },
                 { key: "NEXTAUTH_SECRET", value: process.env.NEXTAUTH_SECRET, type: "SECRET" },
-                { key: "GITHUB_CLIENT_ID", value: "3b6bc09f7f39df1dfd4b" },
+                { key: "GITHUB_CLIENT_ID", value: process.env.GITHUB_CLIENT_ID },
                 { key: "GITHUB_CLIENT_SECRET", value: process.env.GITHUB_CLIENT_SECRET, type: "SECRET" },
                 { key: "DATABASE_URL", value: "${db.DATABASE_URL}" },
             ]
