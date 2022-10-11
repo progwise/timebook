@@ -85,7 +85,7 @@ export const schema = makeSchema({
     typegen: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'nexus-typegen.ts'),
     schema: path.join(process.env.ROOT ?? '', '/backend/graphql/generated', 'schema.graphql'),
   },
-  prettierConfig: path.join(process.env.ROOT ?? '', './.prettierrc.js'),
+  prettierConfig: path.join(process.env.ROOT ?? '', '../../.prettierrc.js'),
   contextType: {
     module: path.join(process.env.ROOT ?? '', '/backend/graphql', 'context.ts'),
     export: 'Context',
