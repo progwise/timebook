@@ -20,10 +20,10 @@ const WeekPage = (): JSX.Element => {
     <>
       <span className="text-center text-xs">
         <Link href={`/${teamSlug}/time/week?date=${previousWeekString}`}>
-          <a className={`k w-10 rounded-l-lg bg-gray-400 px-2 py-1`}>Last</a>
+          <a className="k w-10 rounded-l-lg bg-gray-400 px-2 py-1">Last</a>
         </Link>
         <Link href={`/${teamSlug}/time/week?date=${nextWeekString}`}>
-          <a className={` w-10 rounded-r-lg bg-gray-400 px-2 py-1`}>Next</a>
+          <a className="w-10 rounded-r-lg bg-gray-400 px-2 py-1">Next</a>
         </Link>
       </span>
       <WeekPageTable startDate={startOfTheWeek} />

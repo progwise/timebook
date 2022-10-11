@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
           <Component {...pageProps} />
         </main>
         <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
-          <Link href={'/impress'}>
+          <Link href="/impress">
             <a className=" hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Impress</a>
           </Link>
           <Link href="/privacy">

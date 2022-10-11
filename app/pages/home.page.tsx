@@ -29,7 +29,7 @@ export default function Home(): JSX.Element {
             </Button>
           </>
         ) : (
-          <Button onClick={() => signIn('github')} variant={'primary'}>
+          <Button onClick={() => signIn('github')} variant="primary">
             Sign in
           </Button>
         )}

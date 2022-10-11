@@ -1,4 +1,3 @@
-import { response } from 'msw'
 import { mockTeamCreateMutation, mockTeamUpdateMutation, Theme } from '../generated/graphql'
 export const requestedSlugs: Array<string> = []
 
