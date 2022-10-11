@@ -5,7 +5,7 @@ dotenv.config({ path: '../.env' })
 
 export const timebook = new digitalocean.App('timebook', {
   spec: {
-    domainNames: [{ name: 'timebook.pascalhelbig.de' }, { name: 'timebook2.progwise.net' }],
+    domainNames: [{ name: 'timebook.progwise.net' }],
     name: 'timebook',
     region: 'fra1',
     services: [
@@ -22,7 +22,7 @@ export const timebook = new digitalocean.App('timebook', {
         buildCommand: 'npm install && npm run build',
         runCommand: 'npm run start',
         envs: [
-          { key: 'NEXTAUTH_URL', value: 'timebook.pascalhelbig.de' },
+          { key: 'NEXTAUTH_URL', value: '${_self.PUBLIC_URL}' },
           { key: 'NEXTAUTH_SECRET', value: process.env.NEXTAUTH_SECRET, type: 'SECRET' },
           { key: 'GITHUB_CLIENT_ID', value: process.env.GITHUB_CLIENT_ID },
           { key: 'GITHUB_CLIENT_SECRET', value: process.env.GITHUB_CLIENT_SECRET, type: 'SECRET' },
