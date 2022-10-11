@@ -114,7 +114,7 @@ jobs:
   pulumi:
     needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: ./app/pulumi
