@@ -5,12 +5,12 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const userCapacityUpdateMutation = `
-mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
-    userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
-    id
-    capacityMinutes
+  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
+      userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
+      id
+      capacityMinutes
+    }
   }
-}
 `
 
 describe('userCapatityUpdate', () => {
@@ -39,7 +39,7 @@ describe('userCapatityUpdate', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should be update capacity hours', async () => {
+  it('should throw an error when the user is not an admin', async () => {
     await prisma.team.create({ data: { slug: 'progwise', id: '1', title: 'Progwise' } })
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
@@ -59,7 +59,7 @@ describe('userCapatityUpdate', () => {
     expect(response.errors).toBeUndefined()
   })
 
-  it('should throw error if user is not teamMember', async () => {
+  it('should throw error if user is not team member', async () => {
     await prisma.team.create({ data: { slug: 'progwise', id: '1', title: 'Progwise' } })
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })

@@ -4,7 +4,7 @@ import { isTeamAdmin } from '../../isTeamAdmin'
 
 export const userCapacityUpdateMutationField = mutationField('userCapacityUpdate', {
   type: User,
-  description: 'Updated a user capacity hours',
+  description: 'Updates the user capacity hours',
   args: {
     userId: idArg({ description: 'Id of the user' }),
     capacityMinutes: intArg({ description: 'Capacity of minutes' }),
