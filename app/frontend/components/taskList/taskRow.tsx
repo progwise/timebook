@@ -1,16 +1,14 @@
 import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { TaskFragment, TaskInput, useTaskUpdateMutation } from '../../generated/graphql'
+import { TaskFragment, useTaskUpdateMutation } from '../../generated/graphql'
 import { InputField } from '../inputField/inputField'
-import { taskInputSchema } from '../taskDetailsModal'
 import { CgSpinner } from 'react-icons/cg'
+import { TaskFormData, taskInputSchema } from './taskList'
 
 interface TaskRowProps {
   task: TaskFragment
 }
-
-type TaskRowFormData = Pick<TaskInput, 'title'>
 
 export const TaskRow = ({ task }: TaskRowProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
@@ -18,7 +16,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TaskRowFormData>({
+  } = useForm<TaskFormData>({
     mode: 'onChange',
     defaultValues: {
       title: task.title,
@@ -26,7 +24,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
     resolver: yupResolver(taskInputSchema),
   })
 
-  const handleSubmitTask = async (taskData: TaskRowFormData) => {
+  const handleSubmitTask = async (taskData: TaskFormData) => {
     try {
       const result = await taskUpdate({
         id: task.id,

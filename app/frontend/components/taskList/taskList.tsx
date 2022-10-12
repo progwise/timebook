@@ -7,7 +7,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { taskInputSchema } from '../../../frontend/components/taskDetailsModal'
+import * as yup from 'yup'
 import {
   Table,
   TableBody,
@@ -21,13 +21,17 @@ import {
 } from '../table/table'
 import { TaskRow } from './taskRow'
 
+export type TaskFormData = Pick<TaskInput, 'title'>
+
+export const taskInputSchema: yup.SchemaOf<TaskFormData> = yup.object({
+  title: yup.string().trim().required().min(4).max(50),
+})
+
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
   project: ProjectFragment & { canModify: boolean }
   className?: string
 }
-
-type TaskFormData = Pick<TaskInput, 'title'>
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, project, className } = props
