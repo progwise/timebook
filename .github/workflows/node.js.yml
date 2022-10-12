@@ -127,7 +127,8 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: up
-          stack-name: dev
+          stack-name: prod
+          upsert: true
           work-dir: ./app/pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
