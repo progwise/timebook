@@ -45,7 +45,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
   }
 
   return (
-    <div className="flex w-[500px]">
+    <div className="flex min-w-[500px]">
       <InputField
         variant="primary"
         className="font-small dark:placeholder-grey ml-2 rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
