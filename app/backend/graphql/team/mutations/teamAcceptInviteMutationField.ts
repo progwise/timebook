@@ -26,6 +26,7 @@ builder.mutationField('teamAcceptInvite', (t) =>
 
       // Create new membership
       return prisma.team.update({
+        ...query,
         where: { inviteKey },
         data: {
           teamMemberships: {

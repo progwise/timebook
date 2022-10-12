@@ -16,7 +16,6 @@ export const Project = builder.prismaObject('Project', {
       select: { tasks: { select: { workHours: { select: { id: true } } } } },
       resolve: (project) => project.tasks.flatMap((task) => task.workHours),
     }),
-    // TODO: add workHours
     tasks: t.relation('tasks', {
       args: {
         showArchived: t.arg.boolean({ defaultValue: false }),

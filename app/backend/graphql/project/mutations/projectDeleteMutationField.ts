@@ -11,7 +11,7 @@ builder.mutationField('projectDelete', (t) =>
     resolve: async (query, _source, { id }, context) => {
       const project = await prisma.project.findUniqueOrThrow({
         where: { id: id.toString() },
-        include: { team: true },
+        select: { team: { select: { slug: true } } },
       })
 
       if (project.team.slug !== context.teamSlug) {
@@ -19,7 +19,7 @@ builder.mutationField('projectDelete', (t) =>
         throw new Error('not authenticated')
       }
 
-      return prisma.project.delete({ where: { id: id.toString() } })
+      return prisma.project.delete({ ...query, where: { id: id.toString() } })
     },
   }),
 )

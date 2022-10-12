@@ -27,7 +27,7 @@ builder.mutationField('projectMembershipCreate', (t) =>
       }
       return true
     },
-    resolve: async (query, _source, { userId, projectId }, context) => {
+    resolve: async (query, _source, { userId, projectId }) => {
       const projectMembership = await prisma.projectMembership.findUnique({
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
         select: { project: query },
