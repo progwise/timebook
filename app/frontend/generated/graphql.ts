@@ -175,7 +175,7 @@ export type MutationTeamUpdateArgs = {
 }
 
 export type MutationUserCapacityUpdateArgs = {
-  capacityMinutes: Scalars['Float']
+  capacityMinutes: Scalars['Int']
   userId: Scalars['ID']
 }
 
@@ -744,7 +744,7 @@ export type TeamWithProjectsFragment = {
 
 export type UserCapacityUpdateMutationVariables = Exact<{
   userId: Scalars['ID']
-  capacityMinutes: Scalars['Float']
+  capacityMinutes: Scalars['Int']
 }>
 
 export type UserCapacityUpdateMutation = {
@@ -1354,7 +1354,7 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
   })
 }
 export const UserCapacityUpdateDocument = gql`
-  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
+  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Int!) {
     userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
       id
       capacityMinutes

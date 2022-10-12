@@ -5,7 +5,7 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const userCapacityUpdateMutation = `
-  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Float!) {
+  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Int!) {
       userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
       id
       capacityMinutes
