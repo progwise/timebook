@@ -16,7 +16,6 @@ export const TaskRow = ({ task }: TaskRowProps) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<TaskRowFormData>({
     mode: 'onChange',
@@ -38,7 +37,6 @@ export const TaskRow = ({ task }: TaskRowProps) => {
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }
-      reset()
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error)
