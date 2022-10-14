@@ -13,6 +13,7 @@ fragment Task on Task {
   id
   title
   hasWorkHours
+  hourlyRate
   project {
     id
     title

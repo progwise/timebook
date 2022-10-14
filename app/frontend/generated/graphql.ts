@@ -322,6 +322,8 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
+  /** For calculating the money spent */
+  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
   project: Project
@@ -428,6 +430,7 @@ export type ProjectQuery = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
     customer?: { __typename: 'Customer'; id: string } | null
@@ -439,6 +442,7 @@ export type TaskFragment = {
   id: string
   title: string
   hasWorkHours: boolean
+  hourlyRate?: number | null
   project: { __typename: 'Project'; id: string; title: string }
 }
 
@@ -457,6 +461,7 @@ export type ProjectsWithTasksQuery = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
   }>
@@ -496,6 +501,7 @@ export type ProjectWithTasksFragment = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }>
 }
@@ -560,6 +566,7 @@ export type TaskCreateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -576,6 +583,7 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
   taskArchive?: {
@@ -583,6 +591,7 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -599,6 +608,7 @@ export type TaskUpdateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -764,6 +774,7 @@ export type WorkHourCreateMutation = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }
@@ -801,6 +812,7 @@ export type WorkHourUpdateMutation = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }
@@ -833,6 +845,7 @@ export type WorkHoursQuery = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }>
@@ -857,6 +870,7 @@ export type WorkHourFragment = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -1063,6 +1077,7 @@ export const TaskFragmentDoc = gql`
     id
     title
     hasWorkHours
+    hourlyRate
     project {
       id
       title
