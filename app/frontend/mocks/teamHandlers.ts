@@ -66,7 +66,10 @@ export const teamHandlers = [
     const result = response(
       context.data({
         __typename: 'Query',
-        projects: [testProject1, testProject2],
+        teamBySlug: {
+          __typename: 'Team',
+          projects: [testProject1, testProject2],
+        },
       }),
     )
     return result

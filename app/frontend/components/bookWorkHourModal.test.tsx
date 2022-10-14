@@ -4,6 +4,14 @@ import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
 import '../mocks/mockServer'
 import userEvent from '@testing-library/user-event'
 
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    query: {
+      teamSlug: 'progwise',
+    },
+  }),
+}))
+
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 

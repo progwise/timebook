@@ -299,11 +299,6 @@ type Query {
   ): Project!
 
   """
-  Returns a list of all projects
-  """
-  projects: [Project!]!
-
-  """
   Returns a monthly project report
   """
   report(

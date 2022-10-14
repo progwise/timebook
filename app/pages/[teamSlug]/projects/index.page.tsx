@@ -8,8 +8,9 @@ import { ProjectList } from '../../../frontend/components/projectList/projectLis
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
-  const [{ data, error, fetching: projectsLoading }] = useProjectsWithTasksQuery({ context })
   const router = useRouter()
+  const slug = router.query.teamSlug?.toString() ?? ''
+  const [{ data, error, fetching: projectsLoading }] = useProjectsWithTasksQuery({ context, variables: { slug } })
 
   const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
   const handleAddProject = async () => {
@@ -32,14 +33,14 @@ const Projects = (): JSX.Element => {
 
         {error && <span>{error.message}</span>}
         {projectsLoading && <div>...loading</div>}
-        {data?.projects && (
+        {data && (
           <>
-            {data.projects.length === 0 ? (
+            {data.teamBySlug.projects.length === 0 ? (
               <div>No projects in team {teamData?.team.title}</div>
             ) : (
               <>
-                <ProjectList className="mb-6 " projects={data.projects} />
-                <ProjectTable projects={data.projects} />
+                <ProjectList className="mb-6 " projects={data.teamBySlug.projects} />
+                <ProjectTable projects={data.teamBySlug.projects} />
               </>
             )}
           </>

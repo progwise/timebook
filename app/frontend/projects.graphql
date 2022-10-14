@@ -1,12 +1,16 @@
-query projectsWithTasks {
-  projects {
-    ...ProjectWithTasks
+query projectsWithTasks($slug: String!) {
+  teamBySlug(slug: $slug) {
+    projects {
+      ...ProjectWithTasks
+    }
   }
 }
 
-query teamProjects {
-  projects {
-    ...Project
+query teamProjects($slug: String!) {
+  teamBySlug(slug: $slug) {
+    projects {
+      ...Project
+    }
   }
 }
 

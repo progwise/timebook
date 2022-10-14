@@ -15,6 +15,7 @@ import { HourInput } from './hourInput'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 interface BookWorkHourModalProps {
   workHourItem: WorkHourItem
@@ -56,7 +57,9 @@ const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
   const { onClose, workHourItem } = props
-  const [{ data }] = useProjectsWithTasksQuery()
+  const router = useRouter()
+  const slug = router.query.teamSlug?.toString() ?? ''
+  const [{ data }] = useProjectsWithTasksQuery({ variables: { slug } })
   const {
     register,
     handleSubmit,
@@ -115,7 +118,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   }
 
   const [currentProjectId, currentTaskId] = watch(['projectId', 'taskId'])
-  const selectedProject = data?.projects.find((project) => project.id === currentProjectId)
+  const selectedProject = data?.teamBySlug.projects.find((project) => project.id === currentProjectId)
 
   useEffect(() => {
     const isTaskFromSelectedProject = selectedProject?.tasks.some((task) => task.id === currentTaskId)
@@ -125,7 +128,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     }
   }, [currentProjectId, selectedProject])
 
-  if (!data?.projects) {
+  if (!data) {
     return <div>Loading...</div>
   }
 
@@ -170,7 +173,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             <option value="" disabled>
               Please Select
             </option>
-            {data?.projects.map((project) => {
+            {data.teamBySlug.projects.map((project) => {
               return (
                 <option value={project.id} key={project.id}>
                   {project.title}

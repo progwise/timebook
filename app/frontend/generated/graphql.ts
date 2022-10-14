@@ -223,8 +223,6 @@ export type Query = {
   customer: Customer
   /** Returns a single project */
   project: Project
-  /** Returns a list of all projects */
-  projects: Array<Project>
   /** Returns a monthly project report */
   report: Report
   /** Returns a single task */
@@ -446,39 +444,49 @@ export type TaskFragment = {
   project: { __typename: 'Project'; id: string; title: string }
 }
 
-export type ProjectsWithTasksQueryVariables = Exact<{ [key: string]: never }>
+export type ProjectsWithTasksQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type ProjectsWithTasksQuery = {
   __typename: 'Query'
-  projects: Array<{
-    __typename: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    tasks: Array<{
-      __typename: 'Task'
+  teamBySlug: {
+    __typename: 'Team'
+    projects: Array<{
+      __typename: 'Project'
       id: string
       title: string
-      hasWorkHours: boolean
-      hourlyRate?: number | null
-      project: { __typename: 'Project'; id: string; title: string }
+      startDate?: string | null
+      endDate?: string | null
+      tasks: Array<{
+        __typename: 'Task'
+        id: string
+        title: string
+        hasWorkHours: boolean
+        hourlyRate?: number | null
+        project: { __typename: 'Project'; id: string; title: string }
+      }>
     }>
-  }>
+  }
 }
 
-export type TeamProjectsQueryVariables = Exact<{ [key: string]: never }>
+export type TeamProjectsQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type TeamProjectsQuery = {
   __typename: 'Query'
-  projects: Array<{
-    __typename: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
-  }>
+  teamBySlug: {
+    __typename: 'Team'
+    projects: Array<{
+      __typename: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
+    }>
+  }
 }
 
 export type ProjectFragment = {
@@ -1171,30 +1179,34 @@ export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVari
   return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
-  query projectsWithTasks {
-    projects {
-      ...ProjectWithTasks
+  query projectsWithTasks($slug: String!) {
+    teamBySlug(slug: $slug) {
+      projects {
+        ...ProjectWithTasks
+      }
     }
   }
   ${ProjectWithTasksFragmentDoc}
 `
 
-export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
+export function useProjectsWithTasksQuery(options: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>({
     query: ProjectsWithTasksDocument,
     ...options,
   })
 }
 export const TeamProjectsDocument = gql`
-  query teamProjects {
-    projects {
-      ...Project
+  query teamProjects($slug: String!) {
+    teamBySlug(slug: $slug) {
+      projects {
+        ...Project
+      }
     }
   }
   ${ProjectFragmentDoc}
 `
 
-export function useTeamProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
+export function useTeamProjectsQuery(options: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamProjectsQuery, TeamProjectsQueryVariables>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
@@ -1652,8 +1664,9 @@ export const mockProjectQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectsWithTasksQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ projects })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -1670,8 +1683,9 @@ export const mockProjectsWithTasksQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTeamProjectsQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ projects })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */

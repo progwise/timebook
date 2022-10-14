@@ -18,11 +18,12 @@ const UserDetailsPage = (): JSX.Element => {
 
   const { userId: queryUserId } = router.query
   const userId = queryUserId?.toString() ?? '' // hack: better solution?
+  const slug = router.query.teamSlug?.toString() ?? ''
 
   const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
   const teamSlug = router.query.teamSlug
   const [{ data: meData }] = useMeQuery()
-  const [{ data: allProjects }] = useTeamProjectsQuery()
+  const [{ data: allProjects }] = useTeamProjectsQuery({ variables: { slug } })
   const [{ data }] = useUserQuery({
     pause: !router.isReady,
     variables: { userId },
@@ -82,7 +83,7 @@ const UserDetailsPage = (): JSX.Element => {
             <>
               <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
               <ul>
-                {allProjects?.projects.map((project) => (
+                {allProjects?.teamBySlug.projects.map((project) => (
                   <li key={project.id} className="p-3">
                     <span className=" inline-block w-32"> {project.title} </span>
                     <Toggle
