@@ -916,11 +916,13 @@ export type CustomerUpdateMutation = {
   customerUpdate: { __typename: 'Customer'; id: string; title: string }
 }
 
-export type CustomersQueryVariables = Exact<{ [key: string]: never }>
+export type CustomersQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type CustomersQuery = {
   __typename: 'Query'
-  team: {
+  teamBySlug: {
     __typename: 'Team'
     id: string
     title: string
@@ -1466,8 +1468,8 @@ export function useCustomerUpdateMutation() {
   return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
-  query customers {
-    team {
+  query customers($slug: String!) {
+    teamBySlug(slug: $slug) {
       id
       title
       customers {
@@ -1478,7 +1480,7 @@ export const CustomersDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomersQuery(options?: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
+export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
   return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
@@ -2042,8 +2044,9 @@ export const mockCustomerUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomersQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ team })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */

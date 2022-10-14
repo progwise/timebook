@@ -14,10 +14,12 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   name,
 }: CustomerInputProps<TFieldValues>) => {
   const router = useRouter()
+  const slug = router.query.teamSlug?.toString()
   const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
   const [{ data: customersData }] = useCustomersQuery({
     pause: !router.isReady,
     context,
+    variables: { slug: slug ?? '' },
   })
   const [{ fetching: createCustomerFetching }, createCustomer] = useCustomerCreateMutation()
 
@@ -41,7 +43,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
     return createdCustomer
   }
 
-  const selectedCustomer = customersData?.team.customers.find((customer) => customer.id === value)
+  const selectedCustomer = customersData?.teamBySlug.customers.find((customer) => customer.id === value)
 
   return (
     <div className="flex flex-col">
@@ -52,7 +54,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
           onChange={onChange}
           displayValue={(customer) => customer.title}
           onBlur={onBlur}
-          options={customersData?.team.customers ?? []}
+          options={customersData?.teamBySlug.customers ?? []}
           noOptionLabel="No Customer"
           onCreateNew={handleCreateCustomer}
           isCreating={createCustomerFetching}
