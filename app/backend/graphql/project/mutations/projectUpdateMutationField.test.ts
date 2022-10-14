@@ -127,11 +127,11 @@ describe('Error', () => {
   })
 
   it('should throw error when user is not a team member', async () => {
-    const testServer = getTestServer({ teamSlug: 'apple', userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
-        id: '1',
+        id: '2',
         data: {
           title: 'Test Project',
           customerId: '1',
@@ -144,7 +144,7 @@ describe('Error', () => {
   })
 
   it('should throw error when a member tries to update a project', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -160,24 +160,8 @@ describe('Error', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when the project is from a different team', async () => {
-    const testServer = getTestServer({ teamSlug: 'apple', userId: '3' })
-    const response = await testServer.executeOperation({
-      query: projectUpdateMutation,
-      variables: {
-        id: '1',
-        data: {
-          title: 'Test Project 1',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('not authenticated')])
-  })
-
   it('should throw error when customer does not exist', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -194,7 +178,7 @@ describe('Error', () => {
   })
 
   it('should throw error when customer is from a different team', async () => {
-    const testServer = getTestServer({ teamSlug: 'apple', userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -212,7 +196,7 @@ describe('Error', () => {
 
   describe('Success', () => {
     it('should update any project when user is admin of the same team', async () => {
-      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {
@@ -235,7 +219,7 @@ describe('Error', () => {
     })
 
     it('should be possible to remove a customer from a project', async () => {
-      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {
@@ -258,7 +242,7 @@ describe('Error', () => {
     })
 
     it('should be possible to change a customer', async () => {
-      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {

@@ -3,30 +3,31 @@ import { prisma } from '../../prisma'
 import { ProjectInput } from '../projectInput'
 
 builder.mutationField('projectUpdate', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Project',
     description: 'Update a project',
     args: {
       id: t.arg.id({ description: 'id of the project' }),
       data: t.arg({ type: ProjectInput }),
     },
+    authScopes: async (_source, { id }) => {
+      const project = await prisma.project.findUniqueOrThrow({ select: { teamId: true }, where: { id: id.toString() } })
+      return { isTeamAdminByTeamId: project.teamId }
+    },
 
-    resolve: async (query, _source, { id, data: { title, start, end, customerId } }, context) => {
-      const team = await prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
-
+    resolve: async (query, _source, { id, data: { title, start, end, customerId } }) => {
       const project = await prisma.project.findUniqueOrThrow({
+        select: { teamId: true },
         where: { id: id.toString() },
       })
 
-      if (project.teamId !== team.id) {
-        // Project is from different team
-        throw new Error('not authenticated')
-      }
-
       if (customerId) {
-        const newCustomer = await prisma.customer.findFirst({ where: { id: customerId.toString() } })
+        const newCustomer = await prisma.customer.findFirst({
+          select: { teamId: true },
+          where: { id: customerId.toString() },
+        })
 
-        if (!newCustomer || newCustomer.teamId !== team.id) {
+        if (!newCustomer || newCustomer.teamId !== project.teamId) {
           throw new Error('Customer not found')
         }
       }
