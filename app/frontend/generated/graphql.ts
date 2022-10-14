@@ -19,8 +19,6 @@ export type Scalars = {
   Float: number
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
-  /** A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  Time: string
 }
 
 export type Customer = ModifyInterface & {
@@ -78,11 +76,11 @@ export type Mutation = {
   teamArchive: Team
   /** Create a new team */
   teamCreate: Team
-  /** Delete a new team */
+  /** Delete a team */
   teamDelete: Team
   /** Unarchive a team */
   teamUnarchive: Team
-  /** Update a new team */
+  /** Update a team */
   teamUpdate: Team
   /** Update a user role */
   userRoleUpdate: User
@@ -239,8 +237,6 @@ export type Query = {
   teams: Array<Team>
   /** Returns a single user */
   user: User
-  /** @deprecated Use members field on team type instead */
-  users: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -277,7 +273,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
-  teamSlug: Scalars['String']
+  teamSlug?: InputMaybe<Scalars['String']>
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }

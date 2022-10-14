@@ -98,7 +98,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
+    const testServer = getTestServer({ noSession: true, teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -115,7 +115,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should throw error when task belongs to a different team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'google' })
+    const testServer = getTestServer({ teamSlug: 'google' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -132,7 +132,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should throw an error when user is not project member', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ teamSlug: 'progwise', userId: '2' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -148,7 +148,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should create a new work hour', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -179,7 +179,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should add a work hours if already existed', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {

@@ -1,16 +1,24 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamMember } from '../../team/utils'
-import { Customer } from '../customer'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const customerDeleteMutationField = mutationField('customerDelete', {
-  type: Customer,
-  description: 'Delete a customer',
-  args: {
-    customerId: idArg({ description: 'Id of the customer' }),
-  },
-  authorize: async (_source, { customerId }, context) => {
-    const customer = await context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } })
-    return isTeamMember({ id: customer.teamId }, context)
-  },
-  resolve: (_source, { customerId }, context) => context.prisma.customer.delete({ where: { id: customerId } }),
-})
+builder.mutationField('customerDelete', (t) =>
+  t.withAuth({ isTeamAdmin: true }).prismaField({
+    type: 'Customer',
+    description: 'Delete a customer',
+    args: {
+      customerId: t.arg.id({ description: 'Id of the customer ' }),
+    },
+    resolve: async (query, _source, { customerId }, context) => {
+      const customer = await prisma.customer.findUniqueOrThrow({
+        select: { id: true, team: { select: { slug: true } } },
+        where: { id: customerId.toString() },
+      })
+
+      if (customer.team.slug !== context.teamSlug) {
+        throw new Error('Customer not found')
+      }
+
+      return prisma.customer.delete({ ...query, where: { id: customer.id } })
+    },
+  }),
+)

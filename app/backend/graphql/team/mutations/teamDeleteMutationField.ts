@@ -1,19 +1,18 @@
-import { idArg, mutationField } from 'nexus'
-import { Team } from '../team'
-import { isTeamMember } from '../utils'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const teamDeleteMutationField = mutationField('teamDelete', {
-  type: Team,
-  description: 'Delete a new team',
-  args: {
-    id: idArg({ description: 'Id of the team' }),
-  },
-  authorize: (_source, { id }, context) => isTeamMember({ id }, context),
-  resolve: (_source, { id }, context) => {
-    if (!context.session?.user) {
-      throw new Error('not authenticated')
-    }
-
-    return context.prisma.team.delete({ where: { id } })
-  },
-})
+builder.mutationField('teamDelete', (t) =>
+  t.prismaField({
+    type: 'Team',
+    description: 'Delete a team',
+    args: {
+      id: t.arg.id({ description: 'Id of the team' }),
+    },
+    authScopes: (_source, { id }) => ({ isTeamAdminByTeamId: id.toString() }),
+    resolve: async (query, _source, { id }) =>
+      prisma.team.delete({
+        ...query,
+        where: { id: id.toString() },
+      }),
+  }),
+)

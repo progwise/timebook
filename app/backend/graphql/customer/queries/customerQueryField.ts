@@ -1,17 +1,20 @@
-import { idArg, queryField } from 'nexus'
-import { isTeamMember } from '../../team/utils'
-import { Customer } from '../customer'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const customerQueryField = queryField('customer', {
-  type: Customer,
-  description: 'Returns a single customer',
-  args: {
-    customerId: idArg({ description: 'Id of the customer' }),
-  },
-  authorize: async (_source, { customerId }, context) => {
-    const customer = await context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } })
-    return isTeamMember({ id: customer.teamId }, context)
-  },
-  resolve: (_source, { customerId }, context) =>
-    context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } }),
-})
+builder.queryField('customer', (t) =>
+  t.withAuth({ isTeamMember: true }).prismaField({
+    type: 'Customer',
+    description: 'Returns a single customer',
+    args: {
+      customerId: t.arg.id({ description: 'Id of the customer' }),
+    },
+    resolve: (query, _source, { customerId }, context) =>
+      prisma.customer.findFirstOrThrow({
+        ...query,
+        where: {
+          id: customerId.toString(),
+          team: { slug: context.teamSlug },
+        },
+      }),
+  }),
+)

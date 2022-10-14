@@ -1,39 +1,27 @@
-import { list, objectType } from 'nexus'
-import { Project } from '../project'
-import { WorkHour } from '../workHour'
+import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 
-export const Task = objectType({
-  name: 'Task',
-  definition: (t) => {
-    t.implements(ModifyInterface)
-    t.id('id', { description: 'Identifies the task' })
-    t.string('title', { description: 'The user can identify the task in the UI' })
-    t.nullable.float('hourlyRate', {
+export const Task = builder.prismaObject('Task', {
+  select: {},
+  interfaces: [ModifyInterface],
+  fields: (t) => ({
+    id: t.exposeID('id', { description: 'Identifies the task' }),
+    title: t.exposeString('title', { description: 'The user can identify the task in the UI' }),
+    hourlyRate: t.float({
+      nullable: true,
       description: 'For calculating the money spent',
-      // eslint-disable-next-line unicorn/no-null
-      resolve: (task) => task.hourlyRate?.toNumber() ?? null,
-    })
-    t.boolean('archived', { resolve: (task) => !!task.archivedAt })
-    t.boolean('hasWorkHours', {
-      resolve: async (task, _arguments, context) => {
-        const count = await context.prisma.workHour.count({ where: { taskId: task.id } })
-        return count > 0
-      },
-    })
-    t.field('project', {
-      type: Project,
-      resolve: async (task, _arguments, context) =>
-        context.prisma.project.findUniqueOrThrow({
-          where: { id: task.projectId },
-        }),
-    })
-    t.field('workhours', {
-      type: list(WorkHour),
-      resolve: async (task, _arguments, context) =>
-        context.prisma.workHour.findMany({
-          where: { taskId: task.id },
-        }),
-    })
-  },
+      select: { hourlyRate: true },
+      resolve: (task) => task.hourlyRate?.toNumber(),
+    }),
+    archived: t.boolean({
+      select: { archivedAt: true },
+      resolve: (task) => !!task.archivedAt,
+    }),
+    hasWorkHours: t.boolean({
+      select: { _count: { select: { workHours: true } } },
+      resolve: (task) => task._count.workHours > 0,
+    }),
+    project: t.relation('project'),
+    workhours: t.relation('workHours'),
+  }),
 })
