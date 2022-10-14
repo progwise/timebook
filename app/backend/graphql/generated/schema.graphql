@@ -72,7 +72,14 @@ type Mutation {
   """
   Create a new project
   """
-  projectCreate(data: ProjectInput!): Project!
+  projectCreate(
+    data: ProjectInput!
+
+    """
+    slug of the team
+    """
+    teamSlug: String!
+  ): Project!
 
   """
   Delete a project

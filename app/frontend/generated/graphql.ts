@@ -107,6 +107,7 @@ export type MutationCustomerUpdateArgs = {
 
 export type MutationProjectCreateArgs = {
   data: ProjectInput
+  teamSlug: Scalars['String']
 }
 
 export type MutationProjectDeleteArgs = {
@@ -516,6 +517,7 @@ export type ProjectWithTasksFragment = {
 
 export type ProjectCreateMutationVariables = Exact<{
   data: ProjectInput
+  teamSlug: Scalars['String']
 }>
 
 export type ProjectCreateMutation = {
@@ -1210,8 +1212,8 @@ export function useTeamProjectsQuery(options: Omit<Urql.UseQueryArgs<TeamProject
   return Urql.useQuery<TeamProjectsQuery, TeamProjectsQueryVariables>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
-  mutation projectCreate($data: ProjectInput!) {
-    projectCreate(data: $data) {
+  mutation projectCreate($data: ProjectInput!, $teamSlug: String!) {
+    projectCreate(data: $data, teamSlug: $teamSlug) {
       ...Project
     }
   }
@@ -1698,7 +1700,7 @@ export const mockTeamProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectCreateMutation((req, res, ctx) => {
- *   const { data } = req.variables;
+ *   const { data, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ projectCreate })
  *   )

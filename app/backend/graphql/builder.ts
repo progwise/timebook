@@ -18,6 +18,7 @@ export const builder = new SchemaBuilder<{
     isTeamAdmin: boolean
     isTeamMemberByTeamSlug: string
     isTeamAdminByTeamId: string
+    isTeamAdminByTeamSlug: string
     isProjectMember: string
   }
   AuthContexts: {
@@ -27,6 +28,7 @@ export const builder = new SchemaBuilder<{
     isTeamAdmin: LoggedInInSlugContext
     isTeamMemberByTeamSlug: LoggedInInSlugContext
     isTeamAdminByTeamId: LoggedInInSlugContext
+    isTeamAdminByTeamSlug: LoggedInInSlugContext
     isProjectMember: LoggedInInSlugContext
   }
   Scalars: {
@@ -88,6 +90,20 @@ export const builder = new SchemaBuilder<{
 
       const teamMembership = await prisma.teamMembership.findUnique({
         where: { userId_teamId: { teamId, userId: context.session.user.id } },
+      })
+
+      return teamMembership?.role === 'ADMIN'
+    },
+    isTeamAdminByTeamSlug: async (teamSlug) => {
+      if (!context.session) {
+        return false
+      }
+
+      const teamMembership = await prisma.teamMembership.findFirst({
+        where: {
+          userId: context.session.user.id,
+          team: { slug: teamSlug },
+        },
       })
 
       return teamMembership?.role === 'ADMIN'

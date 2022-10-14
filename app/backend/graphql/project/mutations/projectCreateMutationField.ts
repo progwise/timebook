@@ -3,25 +3,27 @@ import { prisma } from '../../prisma'
 import { ProjectInput } from '../projectInput'
 
 builder.mutationField('projectCreate', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Project',
     description: 'Create a new project',
     args: {
       data: t.arg({ type: ProjectInput }),
+      teamSlug: t.arg.string({ description: 'slug of the team' }),
     },
-    resolve: async (query, _source, { data: { title, start, end, customerId } }, context) => {
+    authScopes: (_source, { teamSlug }) => ({ isTeamAdminByTeamSlug: teamSlug }),
+    resolve: async (query, _source, { data: { title, start, end, customerId }, teamSlug }, context) => {
       const now = new Date()
 
       const customer = customerId
         ? await prisma.customer.findFirstOrThrow({
             where: {
               id: customerId.toString(),
-              team: { slug: context.teamSlug },
+              team: { slug: teamSlug },
             },
           })
         : undefined
 
-      const team = await prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
+      const team = await prisma.team.findUniqueOrThrow({ where: { slug: teamSlug } })
 
       return prisma.project.create({
         ...query,
