@@ -9,6 +9,11 @@ export const Task = objectType({
     t.implements(ModifyInterface)
     t.id('id', { description: 'Identifies the task' })
     t.string('title', { description: 'The user can identify the task in the UI' })
+    t.nullable.float('hourlyRate', {
+      description: 'For calculating the money spent',
+      // eslint-disable-next-line unicorn/no-null
+      resolve: (task) => task.hourlyRate?.toNumber() ?? null,
+    })
     t.boolean('archived', { resolve: (task) => !!task.archivedAt })
     t.boolean('hasWorkHours', {
       resolve: async (task, _arguments, context) => {
