@@ -2,24 +2,16 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.mutationField('projectDelete', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Project',
     description: 'Delete a project',
+    authScopes: async (_source, { id }) => {
+      const project = await prisma.project.findUniqueOrThrow({ select: { teamId: true }, where: { id: id.toString() } })
+      return { isTeamAdminByTeamId: project.teamId }
+    },
     args: {
       id: t.arg.id({ description: 'id of the project' }),
     },
-    resolve: async (query, _source, { id }, context) => {
-      const project = await prisma.project.findUniqueOrThrow({
-        where: { id: id.toString() },
-        select: { team: { select: { slug: true } } },
-      })
-
-      if (project.team.slug !== context.teamSlug) {
-        // We can not delete a project from a different team
-        throw new Error('not authenticated')
-      }
-
-      return prisma.project.delete({ ...query, where: { id: id.toString() } })
-    },
+    resolve: async (query, _source, { id }) => prisma.project.delete({ ...query, where: { id: id.toString() } }),
   }),
 )
