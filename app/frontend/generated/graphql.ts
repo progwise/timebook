@@ -175,7 +175,7 @@ export type MutationTeamUpdateArgs = {
 }
 
 export type MutationUserCapacityUpdateArgs = {
-  capacityMinutes: Scalars['Int']
+  availableMinutesPerWeek: Scalars['Int']
   userId: Scalars['ID']
 }
 
@@ -391,7 +391,7 @@ export enum Theme {
 export type User = {
   __typename: 'User'
   /** Capacity hours of the use in team */
-  capacityMinutes?: Maybe<Scalars['Int']>
+  availableMinutesPerWeek?: Maybe<Scalars['Int']>
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -744,12 +744,12 @@ export type TeamWithProjectsFragment = {
 
 export type UserCapacityUpdateMutationVariables = Exact<{
   userId: Scalars['ID']
-  capacityMinutes: Scalars['Int']
+  availableMinutesPerWeek: Scalars['Int']
 }>
 
 export type UserCapacityUpdateMutation = {
   __typename: 'Mutation'
-  userCapacityUpdate: { __typename: 'User'; id: string; capacityMinutes?: number | null }
+  userCapacityUpdate: { __typename: 'User'; id: string; availableMinutesPerWeek?: number | null }
 }
 
 export type UserRoleUpdateMutationVariables = Exact<{
@@ -1354,10 +1354,10 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
   })
 }
 export const UserCapacityUpdateDocument = gql`
-  mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Int!) {
-    userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
+  mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int!) {
+    userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek) {
       id
-      capacityMinutes
+      availableMinutesPerWeek
     }
   }
 `
@@ -1883,7 +1883,7 @@ export const mockTeamsWithProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockUserCapacityUpdateMutation((req, res, ctx) => {
- *   const { userId, capacityMinutes } = req.variables;
+ *   const { userId, availableMinutesPerWeek } = req.variables;
  *   return res(
  *     ctx.data({ userCapacityUpdate })
  *   )

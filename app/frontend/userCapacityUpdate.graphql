@@ -1,6 +1,6 @@
-mutation userCapacityUpdate($userId: ID!, $capacityMinutes: Int!) {
-  userCapacityUpdate(userId: $userId, capacityMinutes: $capacityMinutes) {
+mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int!) {
+  userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek) {
     id
-    capacityMinutes
+    availableMinutesPerWeek
   }
 }

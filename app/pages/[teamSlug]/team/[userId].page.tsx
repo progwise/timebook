@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form'
 import { InputField } from '../../../frontend/components/inputField/inputField'
 import { Button } from '../../../frontend/components/button/button'
 
-const CAPASITY_MINUTES_FIELD = 'capacityMinutes'
+const CAPASITY_MINUTES_FIELD = 'availableMinutesPerWeek'
 
 function validateCapacityField(input: string): string | undefined {
   const onlyNummber = /^\d+$/
@@ -49,7 +49,7 @@ const UserDetailsPage = (): JSX.Element => {
   const [, updateUserCapacity] = useUserCapacityUpdateMutation()
 
   const submitHandler = async (data: { [id: string]: string }) => {
-    const response = await updateUserCapacity({ capacityMinutes: +data[CAPASITY_MINUTES_FIELD], userId })
+    const response = await updateUserCapacity({ availableMinutesPerWeek: +data[CAPASITY_MINUTES_FIELD], userId })
 
     if (response.error) setError(CAPASITY_MINUTES_FIELD, { message: response.error.message })
   }

@@ -9,7 +9,7 @@ export const User = objectType({
     t.id('id')
     t.nullable.string('name')
     t.nullable.string('image')
-    t.nullable.field('capacityMinutes', {
+    t.nullable.field('availableMinutesPerWeek', {
       type: 'Int',
       description: 'Capacity hours of the use in team',
       resolve: async (user, _arguments, context) => {
@@ -26,7 +26,7 @@ export const User = objectType({
           },
         })
 
-        return membership.capacityMinutes
+        return membership.availableMinutesPerWeek
       },
     }),
       t.list.field('projects', {

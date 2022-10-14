@@ -244,7 +244,7 @@ export interface NexusGenFieldTypes {
   }
   User: {
     // field return type
-    capacityMinutes: number | null // Int
+    availableMinutesPerWeek: number | null // Int
     id: string // ID!
     image: string | null // String
     name: string | null // String
@@ -375,7 +375,7 @@ export interface NexusGenFieldTypeNames {
   }
   User: {
     // field return type name
-    capacityMinutes: 'Int'
+    availableMinutesPerWeek: 'Int'
     id: 'ID'
     image: 'String'
     name: 'String'
@@ -479,7 +479,7 @@ export interface NexusGenArgTypes {
     }
     userCapacityUpdate: {
       // args
-      capacityMinutes: number // Float!
+      availableMinutesPerWeek: number // Float!
       userId: string // ID!
     }
     userRoleUpdate: {

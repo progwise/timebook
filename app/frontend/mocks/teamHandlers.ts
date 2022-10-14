@@ -145,7 +145,7 @@ export const teamHandlers = [
         userCapacityUpdate: {
           __typename: 'User',
           id: '123123',
-          capacityMinutes: 1231,
+          availableMinutesPerWeek: 1231,
         },
       }),
     )

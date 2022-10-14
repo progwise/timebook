@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "TeamMembership" ADD COLUMN     "capacityMinutes" INTEGER;
+ALTER TABLE "TeamMembership" ADD COLUMN     "availableMinutesPerWeek" INTEGER;
