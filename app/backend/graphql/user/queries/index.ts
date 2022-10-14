@@ -1,2 +1,1 @@
-export * from './userQueryField'
-export * from './usersQueryField'
+import './userQueryField'

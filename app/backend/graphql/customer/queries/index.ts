@@ -1,1 +1,1 @@
-export * from './customerQueryField'
+import './customerQueryField'

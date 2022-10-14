@@ -1,1 +1,3 @@
-export * from './queries'
+import './queries'
+
+export { Report } from './report'

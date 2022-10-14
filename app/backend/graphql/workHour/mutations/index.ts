@@ -1,3 +1,3 @@
-export * from './workHourCreateMutationField'
-export * from './workHourDeleteMutationField'
-export * from './workHourUpdateMutationField'
+import './workHourCreateMutationField'
+import './workHourDeleteMutationField'
+import './workHourUpdateMutationField'

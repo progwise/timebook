@@ -1,8 +1,7 @@
-import { inputObjectType } from 'nexus'
+import { builder } from '../builder'
 
-export const CustomerInput = inputObjectType({
-  name: 'CustomerInput',
-  definition: (t) => {
-    t.string('title', { description: 'Title of the customer' })
-  },
+export const CustomerInput = builder.inputType('CustomerInput', {
+  fields: (t) => ({
+    title: t.string({ description: 'Title of the customer' }),
+  }),
 })

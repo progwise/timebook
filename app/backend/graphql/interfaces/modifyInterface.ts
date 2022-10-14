@@ -1,23 +1,16 @@
-import { AuthenticationError } from 'apollo-server-core'
-import { GraphQLError } from 'graphql'
-import { interfaceType } from 'nexus'
+import { builder } from '../builder'
+import { prisma } from '../prisma'
 
-export const ModifyInterface = interfaceType({
+class ModifyInterfaceHelper {}
+
+export const ModifyInterface = builder.interfaceType(ModifyInterfaceHelper, {
   name: 'ModifyInterface',
   description: 'Adds the information whether the user can edit the entity',
-  definition: (t) => {
-    t.boolean('canModify', {
+  fields: (t) => ({
+    canModify: t.withAuth({ isTeamMember: true }).boolean({
       description: 'Can the user modify the entity',
-      resolve: async (source, _arguments, context) => {
-        if (!context.session) {
-          throw new AuthenticationError('not authorized')
-        }
-
-        if (!context.teamSlug) {
-          throw new GraphQLError('team slug not found', {})
-        }
-
-        const membership = await context.prisma.teamMembership.findFirstOrThrow({
+      resolve: async (_source, _arguments, context) => {
+        const membership = await prisma.teamMembership.findFirstOrThrow({
           where: {
             userId: context.session.user.id,
             team: { slug: context.teamSlug },
@@ -26,8 +19,6 @@ export const ModifyInterface = interfaceType({
 
         return membership.role === 'ADMIN'
       },
-    })
-  },
-  // eslint-disable-next-line unicorn/no-null
-  resolveType: () => null,
+    }),
+  }),
 })

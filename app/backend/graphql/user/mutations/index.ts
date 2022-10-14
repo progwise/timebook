@@ -1,1 +1,1 @@
-export * from './userRoleUpdateMutationField'
+import './userRoleUpdateMutationField'

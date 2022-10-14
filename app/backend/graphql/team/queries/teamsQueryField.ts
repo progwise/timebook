@@ -1,28 +1,25 @@
-import { booleanArg, list, queryField } from 'nexus'
-import { Team } from '../team'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const teamsQueryField = queryField('teams', {
-  type: list(Team),
-  description: 'Return all teams',
-  args: {
-    includeArchived: booleanArg({
-      default: false,
-      description: 'Show archived teams',
-    }),
-  },
-  authorize: (_source, _arguments, context) => !!context.session?.user.id,
-  resolve: async (_source, { includeArchived }, context) => {
-    if (!context.session?.user) {
-      throw new Error('User not authenticated')
-    }
-
-    return context.prisma.team.findMany({
-      where: {
-        teamMemberships: { some: { userId: context.session.user.id } },
-        // eslint-disable-next-line unicorn/no-null
-        archivedAt: includeArchived ? undefined : null,
-      },
-      orderBy: [{ archivedAt: 'desc' }, { title: 'asc' }],
-    })
-  },
-})
+builder.queryField('teams', (t) =>
+  t.withAuth({ isLoggedIn: true }).prismaField({
+    type: ['Team'],
+    description: 'Return all teams',
+    args: {
+      includeArchived: t.arg.boolean({
+        defaultValue: false,
+        description: 'Show archived teams',
+      }),
+    },
+    resolve: (query, _root, { includeArchived }, context) =>
+      prisma.team.findMany({
+        ...query,
+        where: {
+          teamMemberships: { some: { userId: context.session.user.id } },
+          // eslint-disable-next-line unicorn/no-null
+          archivedAt: includeArchived ? undefined : null,
+        },
+        orderBy: [{ archivedAt: 'desc' }, { title: 'asc' }],
+      }),
+  }),
+)

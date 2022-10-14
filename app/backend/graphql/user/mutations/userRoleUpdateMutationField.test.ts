@@ -20,7 +20,7 @@ describe('userRoleUpdateMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
+    const testServer = getTestServer({ noSession: true, teamSlug: 'progwise' })
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
@@ -39,7 +39,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
@@ -58,7 +58,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
@@ -79,7 +79,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '2' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '2' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
@@ -98,7 +98,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
     await prisma.user.create({ data: { id: '2' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer({ teamSlug: 'progwise' })
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {

@@ -1,54 +1,45 @@
-import { mutationField } from 'nexus'
-import { Project } from '../project'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { ProjectInput } from '../projectInput'
 
-export const projectCreateMutationField = mutationField('projectCreate', {
-  type: Project,
-  description: 'Create a new project',
-  args: {
-    data: ProjectInput,
-  },
-  authorize: (_source, _arguments, context) => !!context.session?.user.id,
-  resolve: async (_source, { data: { title, start, end, customerId } }, context) => {
-    if (!context.session?.user.id || !context.teamSlug) {
-      throw new Error('not authenticated')
-    }
+builder.mutationField('projectCreate', (t) =>
+  t.withAuth({ isTeamAdmin: true }).prismaField({
+    type: 'Project',
+    description: 'Create a new project',
+    args: {
+      data: t.arg({ type: ProjectInput }),
+    },
+    resolve: async (query, _source, { data: { title, start, end, customerId } }, context) => {
+      const now = new Date()
 
-    const now = new Date()
+      const customer = customerId
+        ? await prisma.customer.findFirstOrThrow({
+            where: {
+              id: customerId.toString(),
+              team: { slug: context.teamSlug },
+            },
+          })
+        : undefined
 
-    const customer = customerId
-      ? await context.prisma.customer.findFirstOrThrow({
-          where: {
-            id: customerId,
-            team: {
-              slug: context.teamSlug,
-              teamMemberships: {
-                some: {
-                  userId: context.session.user.id,
-                },
-              },
+      const team = await prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
+
+      return prisma.project.create({
+        ...query,
+        data: {
+          title,
+          startDate: start,
+          endDate: end,
+          customerId: customer?.id,
+          teamId: team.id,
+          projectMemberships: {
+            create: {
+              inviteAcceptedAt: now,
+              invitedAt: now,
+              userId: context.session.user.id,
             },
           },
-        })
-      : undefined
-
-    const team = await context.prisma.team.findUniqueOrThrow({ where: { slug: context.teamSlug } })
-
-    return context.prisma.project.create({
-      data: {
-        title,
-        startDate: start,
-        endDate: end,
-        customerId: customer?.id,
-        teamId: team.id,
-        projectMemberships: {
-          create: {
-            inviteAcceptedAt: now,
-            invitedAt: now,
-            userId: context.session.user.id,
-          },
         },
-      },
-    })
-  },
-})
+      })
+    },
+  }),
+)

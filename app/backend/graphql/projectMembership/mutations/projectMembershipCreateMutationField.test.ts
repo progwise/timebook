@@ -51,7 +51,7 @@ afterEach(async () => {
 })
 
 it('should throw error when user is unauthorized', async () => {
-  const testServer = getTestServer({ prisma, noSession: true })
+  const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
@@ -64,7 +64,7 @@ it('should throw error when user is unauthorized', async () => {
 })
 
 it('should create projectMembership', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa' })
+  const testServer = getTestServer({ teamSlug: 'Papa' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
@@ -77,7 +77,7 @@ it('should create projectMembership', async () => {
 })
 
 it('normal user can not add someone to the project', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '2' })
+  const testServer = getTestServer({ teamSlug: 'Papa', userId: '2' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
@@ -90,7 +90,7 @@ it('normal user can not add someone to the project', async () => {
 })
 
 it('user can not change project memberships of another team', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ teamSlug: 'Papa', userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
@@ -103,7 +103,7 @@ it('user can not change project memberships of another team', async () => {
 })
 
 it('user must be team member', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ teamSlug: 'Papa', userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
@@ -119,7 +119,7 @@ it('user is already project member', async () => {
   await prisma.projectMembership.create({
     data: { userId: '2', projectId: 'project1' },
   })
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ teamSlug: 'Papa', userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {

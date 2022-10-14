@@ -1,9 +1,8 @@
-import { inputObjectType } from 'nexus'
+import { builder } from '../builder'
 
-export const TaskInput = inputObjectType({
-  name: 'TaskInput',
-  definition: (t) => {
-    t.string('title')
-    t.id('projectId')
-  },
+export const TaskInput = builder.inputType('TaskInput', {
+  fields: (t) => ({
+    title: t.string(),
+    projectId: t.id(),
+  }),
 })

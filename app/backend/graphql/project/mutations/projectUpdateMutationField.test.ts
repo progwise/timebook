@@ -110,7 +110,7 @@ describe('Error', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -127,7 +127,7 @@ describe('Error', () => {
   })
 
   it('should throw error when user is not a team member', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '1' })
+    const testServer = getTestServer({ teamSlug: 'apple', userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -144,7 +144,7 @@ describe('Error', () => {
   })
 
   it('should throw error when a member tries to update a project', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ teamSlug: 'progwise', userId: '2' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -161,7 +161,7 @@ describe('Error', () => {
   })
 
   it('should throw error when the project is from a different team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '3' })
+    const testServer = getTestServer({ teamSlug: 'apple', userId: '3' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -177,7 +177,7 @@ describe('Error', () => {
   })
 
   it('should throw error when customer does not exist', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+    const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -194,7 +194,7 @@ describe('Error', () => {
   })
 
   it('should throw error when customer is from a different team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'apple', userId: '1' })
+    const testServer = getTestServer({ teamSlug: 'apple', userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
       variables: {
@@ -212,7 +212,7 @@ describe('Error', () => {
 
   describe('Success', () => {
     it('should update any project when user is admin of the same team', async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {
@@ -235,7 +235,7 @@ describe('Error', () => {
     })
 
     it('should be possible to remove a customer from a project', async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {
@@ -258,7 +258,7 @@ describe('Error', () => {
     })
 
     it('should be possible to change a customer', async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+      const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
       const response = await testServer.executeOperation({
         query: projectUpdateMutation,
         variables: {
