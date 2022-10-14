@@ -223,6 +223,7 @@ export interface NexusGenFieldTypes {
     archived: boolean // Boolean!
     canModify: boolean // Boolean!
     hasWorkHours: boolean // Boolean!
+    hourlyRate: number | null // Float
     id: string // ID!
     project: NexusGenRootTypes['Project'] // Project!
     title: string // String!
@@ -352,6 +353,7 @@ export interface NexusGenFieldTypeNames {
     archived: 'Boolean'
     canModify: 'Boolean'
     hasWorkHours: 'Boolean'
+    hourlyRate: 'Float'
     id: 'ID'
     project: 'Project'
     title: 'String'
