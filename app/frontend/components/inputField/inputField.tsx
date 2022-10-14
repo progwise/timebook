@@ -26,7 +26,7 @@ export const InputField = React.forwardRef(
 
     return (
       <input
-        className={`rounded-md text-black ${variantClassName} ${className}`}
+        className={`dark:placeholder-grey rounded-md  text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${className}`}
         type="text"
         placeholder={placeholder}
         disabled={disabled}
