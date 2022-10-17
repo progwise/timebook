@@ -3,7 +3,7 @@ import { CustomerInput } from '../customerInput'
 import { prisma } from '../../prisma'
 
 builder.mutationField('customerUpdate', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Customer',
     description: 'Update a customer',
     args: {

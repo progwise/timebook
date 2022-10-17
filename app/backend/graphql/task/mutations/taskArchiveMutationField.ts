@@ -2,7 +2,7 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.mutationField('taskArchive', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Task',
     description: 'Archive a task',
     args: {

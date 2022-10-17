@@ -2,7 +2,7 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.mutationField('projectDelete', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Project',
     description: 'Delete a project',
     authScopes: async (_source, { id }) => {
