@@ -22,15 +22,16 @@ export const User = builder.prismaObject('User', {
           },
         }),
     }),
-    role: t.withAuth({ isLoggedIn: true }).field({
+    role: t.field({
       type: RoleEnum,
       args: { teamSlug: t.arg.string() },
+      select: { id: true },
       authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
       description: 'Role of the user in a team',
-      resolve: async (user, { teamSlug }, context) => {
+      resolve: async (user, { teamSlug }) => {
         const teamMembership = await prisma.teamMembership.findFirstOrThrow({
           where: {
-            userId: context.session.user.id,
+            userId: user.id,
             team: { slug: teamSlug },
           },
         })
