@@ -16,6 +16,7 @@ export const builder = new SchemaBuilder<{
     hasUserId: string
     isTeamMember: boolean
     isTeamAdmin: boolean
+    isTeamMemberByTeamId: string
     isTeamMemberByTeamSlug: string
     isTeamAdminByTeamId: string
     isTeamAdminByTeamSlug: string
@@ -26,6 +27,7 @@ export const builder = new SchemaBuilder<{
     hasUserId: LoggedInContext
     isTeamMember: LoggedInInSlugContext
     isTeamAdmin: LoggedInInSlugContext
+    isTeamMemberByTeamId: LoggedInInSlugContext
     isTeamMemberByTeamSlug: LoggedInInSlugContext
     isTeamAdminByTeamId: LoggedInInSlugContext
     isTeamAdminByTeamSlug: LoggedInInSlugContext
@@ -107,6 +109,22 @@ export const builder = new SchemaBuilder<{
       })
 
       return teamMembership?.role === 'ADMIN'
+    },
+    isTeamMemberByTeamId: async (teamId: string) => {
+      if (!context.session) {
+        return false
+      }
+
+      const teamMembership = await prisma.teamMembership.findUnique({
+        where: {
+          userId_teamId: {
+            userId: context.session.user.id,
+            teamId,
+          },
+        },
+      })
+
+      return !!teamMembership
     },
     isTeamMemberByTeamSlug: async (teamSlug: string) => {
       if (!context.session) {
