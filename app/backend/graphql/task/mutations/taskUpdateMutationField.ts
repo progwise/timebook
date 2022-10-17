@@ -4,7 +4,7 @@ import { prisma } from '../../prisma'
 import { TaskInput } from '../taskInput'
 
 builder.mutationField('taskUpdate', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Task',
     description: 'Update a task',
     args: {

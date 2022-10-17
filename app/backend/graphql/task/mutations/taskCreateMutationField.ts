@@ -3,7 +3,7 @@ import { TaskInput } from '../taskInput'
 import { prisma } from '../../prisma'
 
 builder.mutationField('taskCreate', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Task',
     description: 'Create a new Task',
     args: {
