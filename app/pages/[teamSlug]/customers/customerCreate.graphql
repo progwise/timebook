@@ -1,5 +1,5 @@
-mutation customerCreate($data: CustomerInput!) {
-  customerCreate(data: $data) {
+mutation customerCreate($data: CustomerInput!, $teamSlug: String!) {
+  customerCreate(data: $data, teamSlug: $teamSlug) {
     ...Customer
   }
 }

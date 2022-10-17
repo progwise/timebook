@@ -27,7 +27,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
   const [, updateCustomer] = useCustomerUpdateMutation()
   const [, createCustomer] = useCustomerCreateMutation()
   const router = useRouter()
-  const { teamSlug } = router.query
+  const teamSlug = router.query.teamSlug?.toString() ?? ''
   const {
     register,
     handleSubmit,
@@ -40,7 +40,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
   }
 
   const handleSave = async (data: CustomerInput) => {
-    await (customer ? updateCustomer({ customerId: customer.id, data }) : createCustomer({ data }))
+    await (customer ? updateCustomer({ customerId: customer.id, data }) : createCustomer({ data, teamSlug }))
 
     await router.push(`/${teamSlug}/team`)
   }

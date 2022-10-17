@@ -94,6 +94,7 @@ export type Mutation = {
 
 export type MutationCustomerCreateArgs = {
   data: CustomerInput
+  teamSlug: Scalars['String']
 }
 
 export type MutationCustomerDeleteArgs = {
@@ -893,6 +894,7 @@ export type CustomerQuery = { __typename: 'Query'; customer: { __typename: 'Cust
 
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
+  teamSlug: Scalars['String']
 }>
 
 export type CustomerCreateMutation = {
@@ -1433,8 +1435,8 @@ export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVa
   return Urql.useQuery<CustomerQuery, CustomerQueryVariables>({ query: CustomerDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
-  mutation customerCreate($data: CustomerInput!) {
-    customerCreate(data: $data) {
+  mutation customerCreate($data: CustomerInput!, $teamSlug: String!) {
+    customerCreate(data: $data, teamSlug: $teamSlug) {
       ...Customer
     }
   }
@@ -1987,7 +1989,7 @@ export const mockCustomerQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomerCreateMutation((req, res, ctx) => {
- *   const { data } = req.variables;
+ *   const { data, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ customerCreate })
  *   )

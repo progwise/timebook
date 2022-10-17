@@ -14,12 +14,12 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   name,
 }: CustomerInputProps<TFieldValues>) => {
   const router = useRouter()
-  const slug = router.query.teamSlug?.toString()
+  const slug = router.query.teamSlug?.toString() ?? ''
   const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
   const [{ data: customersData }] = useCustomersQuery({
     pause: !router.isReady,
     context,
-    variables: { slug: slug ?? '' },
+    variables: { slug: slug },
   })
   const [{ fetching: createCustomerFetching }, createCustomer] = useCustomerCreateMutation()
 
@@ -32,7 +32,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   })
 
   const handleCreateCustomer = async (title: string): Promise<CustomerFragment> => {
-    const result = await createCustomer({ data: { title } })
+    const result = await createCustomer({ data: { title }, teamSlug: slug })
 
     if (!result.data) {
       throw new Error('Customer creation failed')

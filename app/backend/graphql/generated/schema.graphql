@@ -46,7 +46,14 @@ type Mutation {
   """
   Create a new customer for a team
   """
-  customerCreate(data: CustomerInput!): Customer!
+  customerCreate(
+    data: CustomerInput!
+
+    """
+    slug of the team
+    """
+    teamSlug: String!
+  ): Customer!
 
   """
   Delete a customer
