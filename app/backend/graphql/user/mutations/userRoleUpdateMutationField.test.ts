@@ -40,7 +40,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
@@ -60,7 +60,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
@@ -82,7 +82,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '2' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '2' } })
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
@@ -102,7 +102,7 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
     await prisma.user.create({ data: { id: '2' } })
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {

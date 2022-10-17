@@ -83,7 +83,7 @@ describe('workHourDeleteMutationField', () => {
 
   describe("user's role is admin", () => {
     it('should delete when user is team admin', async () => {
-      const testServer = getTestServer({})
+      const testServer = getTestServer()
       const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '2' } })
 
       expect(response.data).toEqual({ workHourDelete: { id: '2' } })

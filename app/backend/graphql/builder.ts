@@ -4,7 +4,7 @@ import PrismaTypes from '@pothos/plugin-prisma/generated'
 import PrismaPlugin from '@pothos/plugin-prisma'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
-import { Context, LoggedInContext, LoggedInInSlugContext } from './context'
+import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
 
 export const builder = new SchemaBuilder<{
@@ -23,11 +23,11 @@ export const builder = new SchemaBuilder<{
   AuthContexts: {
     isLoggedIn: LoggedInContext
     hasUserId: LoggedInContext
-    isTeamMemberByTeamId: LoggedInInSlugContext
-    isTeamMemberByTeamSlug: LoggedInInSlugContext
-    isTeamAdminByTeamId: LoggedInInSlugContext
-    isTeamAdminByTeamSlug: LoggedInInSlugContext
-    isProjectMember: LoggedInInSlugContext
+    isTeamMemberByTeamId: LoggedInContext
+    isTeamMemberByTeamSlug: LoggedInContext
+    isTeamAdminByTeamId: LoggedInContext
+    isTeamAdminByTeamSlug: LoggedInContext
+    isProjectMember: LoggedInContext
   }
   Scalars: {
     Date: {
