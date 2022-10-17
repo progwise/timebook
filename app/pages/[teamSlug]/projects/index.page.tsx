@@ -12,7 +12,7 @@ const Projects = (): JSX.Element => {
   const slug = router.query.teamSlug?.toString() ?? ''
   const [{ data, error, fetching: projectsLoading }] = useProjectsWithTasksQuery({ context, variables: { slug } })
 
-  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady })
+  const [{ data: teamData }] = useTeamQuery({ pause: !router.isReady, variables: { teamSlug: slug } })
   const handleAddProject = async () => {
     await router.push(`/${router.query.teamSlug}/projects/new`)
   }
@@ -22,9 +22,9 @@ const Projects = (): JSX.Element => {
       <article className="timebook">
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold text-gray-400 dark:text-white">
-            Team projects for {teamData?.team.title}
+            Team projects for {teamData?.teamBySlug.title}
           </h2>
-          {teamData?.team.canModify && (
+          {teamData?.teamBySlug.canModify && (
             <Button variant="primary" onClick={handleAddProject}>
               Add
             </Button>
@@ -36,7 +36,7 @@ const Projects = (): JSX.Element => {
         {data && (
           <>
             {data.teamBySlug.projects.length === 0 ? (
-              <div>No projects in team {teamData?.team.title}</div>
+              <div>No projects in team {teamData?.teamBySlug.title}</div>
             ) : (
               <>
                 <ProjectList className="mb-6 " projects={data.teamBySlug.projects} />

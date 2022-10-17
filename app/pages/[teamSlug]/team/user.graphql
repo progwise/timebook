@@ -1,10 +1,10 @@
-query user($userId: ID!) {
+query user($userId: ID!, $teamSlug: String!) {
   user(userId: $userId) {
     id
     name
     image
-    role
-    projects {
+    role(teamSlug: $teamSlug)
+    projects(teamSlug: $teamSlug) {
       id
       title
     }

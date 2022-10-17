@@ -221,6 +221,11 @@ type Mutation {
     role: Role!
 
     """
+    slug of the team
+    """
+    teamSlug: String!
+
+    """
     Id of the user
     """
     userId: ID!
@@ -550,12 +555,12 @@ type User {
   """
   Returns the list of projects where the user is a member
   """
-  projects: [Project!]!
+  projects(teamSlug: String!): [Project!]!
 
   """
-  Role of the user in the current team
+  Role of the user in a team
   """
-  role: Role!
+  role(teamSlug: String!): Role!
 }
 
 type WorkHour {

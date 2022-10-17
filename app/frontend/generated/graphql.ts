@@ -174,6 +174,7 @@ export type MutationTeamUpdateArgs = {
 
 export type MutationUserRoleUpdateArgs = {
   role: Role
+  teamSlug: Scalars['String']
   userId: Scalars['ID']
 }
 
@@ -386,8 +387,16 @@ export type User = {
   name?: Maybe<Scalars['String']>
   /** Returns the list of projects where the user is a member */
   projects: Array<Project>
-  /** Role of the user in the current team */
+  /** Role of the user in a team */
   role: Role
+}
+
+export type UserProjectsArgs = {
+  teamSlug: Scalars['String']
+}
+
+export type UserRoleArgs = {
+  teamSlug: Scalars['String']
 }
 
 export type WorkHour = {
@@ -624,11 +633,13 @@ export type TaskUpdateMutation = {
   }
 }
 
-export type TeamQueryVariables = Exact<{ [key: string]: never }>
+export type TeamQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
 export type TeamQuery = {
   __typename: 'Query'
-  team: {
+  teamBySlug: {
     __typename: 'Team'
     canModify: boolean
     id: string
@@ -753,6 +764,7 @@ export type TeamWithProjectsFragment = {
 export type UserRoleUpdateMutationVariables = Exact<{
   userId: Scalars['ID']
   role: Role
+  teamSlug: Scalars['String']
 }>
 
 export type UserRoleUpdateMutation = {
@@ -934,7 +946,9 @@ export type CustomersQuery = {
 
 export type CustomerFragment = { __typename: 'Customer'; id: string; title: string }
 
-export type MeQueryVariables = Exact<{ [key: string]: never }>
+export type MeQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
 export type MeQuery = {
   __typename: 'Query'
@@ -1072,6 +1086,7 @@ export type TeamUnarchiveMutation = {
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID']
+  teamSlug: Scalars['String']
 }>
 
 export type UserQuery = {
@@ -1291,15 +1306,15 @@ export function useTaskUpdateMutation() {
   return Urql.useMutation<TaskUpdateMutation, TaskUpdateMutationVariables>(TaskUpdateDocument)
 }
 export const TeamDocument = gql`
-  query team {
-    team {
+  query team($teamSlug: String!) {
+    teamBySlug(slug: $teamSlug) {
       ...Team
       canModify
       members {
         id
         name
         image
-        projects {
+        projects(teamSlug: $teamSlug) {
           id
           title
         }
@@ -1309,7 +1324,7 @@ export const TeamDocument = gql`
   ${TeamFragmentDoc}
 `
 
-export function useTeamQuery(options?: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
+export function useTeamQuery(options: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamQuery, TeamQueryVariables>({ query: TeamDocument, ...options })
 }
 export const TeamCreateDocument = gql`
@@ -1364,10 +1379,10 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
   })
 }
 export const UserRoleUpdateDocument = gql`
-  mutation userRoleUpdate($userId: ID!, $role: Role!) {
-    userRoleUpdate(userId: $userId, role: $role) {
+  mutation userRoleUpdate($userId: ID!, $role: Role!, $teamSlug: String!) {
+    userRoleUpdate(userId: $userId, role: $role, teamSlug: $teamSlug) {
       id
-      role
+      role(teamSlug: $teamSlug)
     }
   }
 `
@@ -1486,13 +1501,13 @@ export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQuery
   return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
-  query me {
+  query me($teamSlug: String!) {
     user {
       id
       image
       name
-      role
-      projects {
+      role(teamSlug: $teamSlug)
+      projects(teamSlug: $teamSlug) {
         id
         title
       }
@@ -1500,7 +1515,7 @@ export const MeDocument = gql`
   }
 `
 
-export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
@@ -1632,13 +1647,13 @@ export function useTeamUnarchiveMutation() {
   return Urql.useMutation<TeamUnarchiveMutation, TeamUnarchiveMutationVariables>(TeamUnarchiveDocument)
 }
 export const UserDocument = gql`
-  query user($userId: ID!) {
+  query user($userId: ID!, $teamSlug: String!) {
     user(userId: $userId) {
       id
       name
       image
-      role
-      projects {
+      role(teamSlug: $teamSlug)
+      projects(teamSlug: $teamSlug) {
         id
         title
       }
@@ -1806,8 +1821,9 @@ export const mockTaskUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTeamQuery((req, res, ctx) => {
+ *   const { teamSlug } = req.variables;
  *   return res(
- *     ctx.data({ team })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -1883,7 +1899,7 @@ export const mockTeamsWithProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockUserRoleUpdateMutation((req, res, ctx) => {
- *   const { userId, role } = req.variables;
+ *   const { userId, role, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ userRoleUpdate })
  *   )
@@ -2061,6 +2077,7 @@ export const mockCustomersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockMeQuery((req, res, ctx) => {
+ *   const { teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ user })
  *   )
@@ -2189,7 +2206,7 @@ export const mockTeamUnarchiveMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockUserQuery((req, res, ctx) => {
- *   const { userId } = req.variables;
+ *   const { userId, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ user })
  *   )

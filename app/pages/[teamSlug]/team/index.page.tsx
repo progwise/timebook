@@ -18,9 +18,12 @@ import { useState } from 'react'
 
 const TeamPage = (): JSX.Element => {
   const router = useRouter()
-  const [{ data: teamData, fetching: teamFetching }] = useTeamQuery({ pause: !router.isReady })
+  const slug = router.query.teamBySlugSlug?.toString() ?? ''
+  const [{ data: teamData, fetching: teamFetching }] = useTeamQuery({
+    pause: !router.isReady,
+    variables: { teamSlug: slug },
+  })
   const [teamToBeArchived, setTeamToBeArchived] = useState<TeamFragment | undefined>()
-  const slug = router.query.teamSlug?.toString() ?? ''
   const [{ fetching: unarchiveFetching }, teamUnarchive] = useTeamUnarchiveMutation()
 
   const handleUserDetails = async (userId: string) => {
@@ -31,12 +34,12 @@ const TeamPage = (): JSX.Element => {
     return <div>Loading...</div>
   }
 
-  if (!teamData?.team) {
+  if (!teamData?.teamBySlug) {
     return <div>Team not found</div>
   }
 
   const handleUnarchiveTeam = async () => {
-    await teamUnarchive({ id: teamData.team.id })
+    await teamUnarchive({ id: teamData.teamBySlug.id })
   }
 
   return (
@@ -45,9 +48,9 @@ const TeamPage = (): JSX.Element => {
         <section>
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-xl font-medium text-gray-500">Team Details</h2>
-            {teamData.team.canModify &&
-              (!teamData.team.archived ? (
-                <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.team)}>
+            {teamData.teamBySlug.canModify &&
+              (!teamData.teamBySlug.archived ? (
+                <Button variant="secondary" onClick={() => setTeamToBeArchived(teamData.teamBySlug)}>
                   Archive
                 </Button>
               ) : (
@@ -56,7 +59,7 @@ const TeamPage = (): JSX.Element => {
                 </Button>
               ))}
           </div>
-          <TeamForm key={teamData.team.id} team={teamData.team} />
+          <TeamForm key={teamData.teamBySlug.id} team={teamData.teamBySlug} />
         </section>
         <section>
           <h2 className="text-xl font-medium text-gray-500">
@@ -69,7 +72,7 @@ const TeamPage = (): JSX.Element => {
               <TableHeadCell />
             </TableHeadRow>
             <TableBody>
-              {teamData?.team.members.map((user) => (
+              {teamData?.teamBySlug.members.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     {user.image ? (

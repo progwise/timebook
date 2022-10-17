@@ -48,7 +48,7 @@ export const teamHandlers = [
     const result = response(
       context.data({
         __typename: 'Query',
-        team: { ...testTeam1, members: [], canModify: true },
+        teamBySlug: { ...testTeam1, members: [], canModify: true },
       }),
     )
     return result
