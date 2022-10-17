@@ -2,7 +2,7 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.queryField('task', (t) =>
-  t.withAuth({ isTeamMember: true }).prismaField({
+  t.prismaField({
     type: 'Task',
     description: 'Returns a single task',
     args: {

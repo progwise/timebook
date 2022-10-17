@@ -8,7 +8,7 @@ export const User = builder.prismaObject('User', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: true }),
     image: t.exposeString('image', { nullable: true }),
-    projects: t.withAuth({ isTeamMember: true }).prismaField({
+    projects: t.prismaField({
       type: ['Project'],
       description: 'Returns the list of projects where the user is a member',
       args: { teamSlug: t.arg.string() },
@@ -22,7 +22,7 @@ export const User = builder.prismaObject('User', {
           },
         }),
     }),
-    role: t.withAuth({ isTeamMember: true }).field({
+    role: t.withAuth({ isLoggedIn: true }).field({
       type: RoleEnum,
       args: { teamSlug: t.arg.string() },
       authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),

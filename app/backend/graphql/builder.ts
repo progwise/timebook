@@ -14,8 +14,6 @@ export const builder = new SchemaBuilder<{
   AuthScopes: {
     isLoggedIn: boolean
     hasUserId: string
-    isTeamMember: boolean
-    isTeamAdmin: boolean
     isTeamMemberByTeamId: string
     isTeamMemberByTeamSlug: string
     isTeamAdminByTeamId: string
@@ -25,8 +23,6 @@ export const builder = new SchemaBuilder<{
   AuthContexts: {
     isLoggedIn: LoggedInContext
     hasUserId: LoggedInContext
-    isTeamMember: LoggedInInSlugContext
-    isTeamAdmin: LoggedInInSlugContext
     isTeamMemberByTeamId: LoggedInInSlugContext
     isTeamMemberByTeamSlug: LoggedInInSlugContext
     isTeamAdminByTeamId: LoggedInInSlugContext
@@ -57,34 +53,6 @@ export const builder = new SchemaBuilder<{
   authScopes: (context) => ({
     isLoggedIn: !!context.session,
     hasUserId: (userId: string) => context.session?.user.id === userId,
-    isTeamMember: async () => {
-      if (!context.session || !context.teamSlug) {
-        return false
-      }
-
-      const teamMembership = await prisma.teamMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          team: { slug: context.teamSlug },
-        },
-      })
-
-      return !!teamMembership
-    },
-    isTeamAdmin: async () => {
-      if (!context.session || !context.teamSlug) {
-        return false
-      }
-
-      const teamMembership = await prisma.teamMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          team: { slug: context.teamSlug },
-        },
-      })
-
-      return teamMembership?.role === 'ADMIN'
-    },
     isTeamAdminByTeamId: async (teamId) => {
       if (!context.session) {
         return false
@@ -141,18 +109,15 @@ export const builder = new SchemaBuilder<{
       return !!teamMembership
     },
     isProjectMember: async (projectId) => {
-      if (!context.session || !context.teamSlug) {
+      if (!context.session) {
         return false
       }
 
-      const projectMemberShip = await prisma.projectMembership.findFirst({
+      const projectMemberShip = await prisma.projectMembership.findUnique({
         where: {
-          userId: context.session.user.id,
-          project: {
-            id: projectId,
-            team: {
-              slug: context.teamSlug,
-            },
+          userId_projectId: {
+            userId: context.session.user.id,
+            projectId,
           },
         },
       })
