@@ -2,23 +2,20 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.mutationField('customerDelete', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Customer',
     description: 'Delete a customer',
     args: {
       customerId: t.arg.id({ description: 'Id of the customer ' }),
     },
-    resolve: async (query, _source, { customerId }, context) => {
+    authScopes: async (_source, { customerId }) => {
       const customer = await prisma.customer.findUniqueOrThrow({
-        select: { id: true, team: { select: { slug: true } } },
+        select: { teamId: true },
         where: { id: customerId.toString() },
       })
-
-      if (customer.team.slug !== context.teamSlug) {
-        throw new Error('Customer not found')
-      }
-
-      return prisma.customer.delete({ ...query, where: { id: customer.id } })
+      return { isTeamAdminByTeamId: customer.teamId }
     },
+    resolve: (query, _source, { customerId }) =>
+      prisma.customer.delete({ ...query, where: { id: customerId.toString() } }),
   }),
 )
