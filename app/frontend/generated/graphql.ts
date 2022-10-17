@@ -230,8 +230,6 @@ export type Query = {
   report: Report
   /** Returns a single task */
   task: Task
-  /** Return team by slug provided in the api route (/api/[teamSlug]/graphql) */
-  team: Team
   /** Return a team by a slug */
   teamBySlug: Team
   /** Return all teams */
