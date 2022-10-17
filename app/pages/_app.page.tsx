@@ -3,7 +3,6 @@ import { SessionProvider } from 'next-auth/react'
 import '../frontend/styles/globals.css'
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import { createClient, Provider } from 'urql'
-import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import Link from 'next/link'
 
@@ -16,11 +15,7 @@ interface MyAppProps {
 }
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps): JSX.Element {
-  const router = useRouter()
-  const teamSlug = router.query.teamSlug?.toString()
-  const apiRoute = teamSlug ? `/api/${teamSlug}/graphql` : '/api/graphql'
-
-  const client = useMemo(() => createClient({ url: apiRoute }), [apiRoute])
+  const client = useMemo(() => createClient({ url: '/api/graphql' }), [])
 
   return (
     <SessionProvider session={session}>
