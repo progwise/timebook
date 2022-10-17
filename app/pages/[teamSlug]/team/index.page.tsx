@@ -18,7 +18,7 @@ import { useState } from 'react'
 
 const TeamPage = (): JSX.Element => {
   const router = useRouter()
-  const slug = router.query.teamBySlugSlug?.toString() ?? ''
+  const slug = router.query.teamSlug?.toString() ?? ''
   const [{ data: teamData, fetching: teamFetching }] = useTeamQuery({
     pause: !router.isReady,
     variables: { teamSlug: slug },
