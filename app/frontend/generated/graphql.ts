@@ -274,7 +274,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
-  teamSlug?: InputMaybe<Scalars['String']>
+  teamSlug: Scalars['String']
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }

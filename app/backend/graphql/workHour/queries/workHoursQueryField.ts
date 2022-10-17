@@ -3,11 +3,11 @@ import { prisma } from '../../prisma'
 import { DateScalar } from '../../scalars'
 
 builder.queryField('workHours', (t) =>
-  t.withAuth({ isTeamMember: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: ['WorkHour'],
     description: 'Returns a list of work hours for a given time period and a list of users',
     args: {
-      teamSlug: t.arg.string({ required: false, deprecationReason: 'This query uses the team slug from the url' }),
+      teamSlug: t.arg.string(),
       from: t.arg({ type: DateScalar, description: 'Start of the time period' }),
       to: t.arg({
         type: DateScalar,
@@ -19,14 +19,15 @@ builder.queryField('workHours', (t) =>
         description: 'List of user ids. If not provided only the work hours of the current users are returned.',
       }),
     },
-    resolve: (query, _source, { from, to, userIds }, context) =>
+    authScopes: (_source, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+    resolve: (query, _source, { from, to, userIds, teamSlug }, context) =>
       prisma.workHour.findMany({
         ...query,
         where: {
           task: {
             project: {
               team: {
-                slug: context.teamSlug,
+                slug: teamSlug,
               },
             },
           },

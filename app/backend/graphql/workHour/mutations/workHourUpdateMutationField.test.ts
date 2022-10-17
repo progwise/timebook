@@ -156,24 +156,6 @@ describe('workHourUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when user is not team member', async () => {
-    const testServer = getTestServer({ teamSlug: 'google' })
-    const response = await testServer.executeOperation({
-      query: workHourUpdateMutation,
-      variables: {
-        id: '1',
-        data: {
-          date: '2022-01-01',
-          duration: 120,
-          taskId: '1',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
   it('should update any work hour when user is admin of the same team', async () => {
     const testServer = getTestServer({ teamSlug: 'progwise', userId: '1' })
     const response = await testServer.executeOperation({
