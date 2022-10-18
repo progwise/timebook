@@ -98,24 +98,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ noSession: true, teamSlug: 'progwise' })
-    const response = await testServer.executeOperation({
-      query: workHourCreateMutation,
-      variables: {
-        data: {
-          date: '2022-01-01',
-          duration: 120,
-          taskId: '1',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
-  it('should throw error when task belongs to a different team', async () => {
-    const testServer = getTestServer({ teamSlug: 'google' })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -132,7 +115,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should throw an error when user is not project member', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -148,7 +131,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should create a new work hour', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {
@@ -179,7 +162,7 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should add a work hours if already existed', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
       variables: {

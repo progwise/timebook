@@ -2,24 +2,24 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.queryField('project', (t) =>
-  t.withAuth({ isTeamMember: true }).prismaField({
+  t.prismaField({
     type: 'Project',
     description: 'Returns a single project',
     args: {
       projectId: t.arg.id({ description: 'Identifier for the project' }),
     },
-    resolve: (query, _source, { projectId }, context) =>
-      prisma.project.findFirstOrThrow({
+    authScopes: async (_source, { projectId }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        select: { id: true, teamId: true },
+        where: { id: projectId.toString() },
+      })
+
+      return { isTeamAdminByTeamId: project.teamId, isProjectMember: project.id }
+    },
+    resolve: (query, _source, { projectId }) =>
+      prisma.project.findUniqueOrThrow({
         ...query,
-        orderBy: [{ title: 'asc' }],
-        where: {
-          id: projectId.toString(),
-          team: { slug: context.teamSlug },
-          OR: [
-            { projectMemberships: { some: { userId: context.session.user.id } } },
-            { team: { teamMemberships: { some: { userId: context.session.user.id, role: 'ADMIN' } } } },
-          ],
-        },
+        where: { id: projectId.toString() },
       }),
   }),
 )

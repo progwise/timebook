@@ -4,22 +4,22 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const teamQuery = `
-  query team {
-    team {
+const teamBySlugQuery = `
+  query teamBySlug($teamSlug: String!) {
+    teamBySlug(slug: $teamSlug) {
       id
       title
       canModify
       members {
         id
         name
-        role
+        role(teamSlug: $teamSlug)
       }
     }
   }
 `
 
-describe('teamQueryField', () => {
+describe('teamBySlugQueryField', () => {
   beforeAll(async () => {
     await prisma.user.create({
       data: {
@@ -44,36 +44,31 @@ describe('teamQueryField', () => {
     })
   })
 
-  it('should return error when no teamSlug provided', async () => {
-    const testServer = getTestServer({ teamSlug: undefined })
-    const response = await testServer.executeOperation({ query: teamQuery })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
   it('should return error when teamSlug does not exists', async () => {
-    const testServer = getTestServer({ teamSlug: 'unknownSlug' })
-    const response = await testServer.executeOperation({ query: teamQuery })
+    const testServer = getTestServer()
+    const response = await testServer.executeOperation({
+      query: teamBySlugQuery,
+      variables: { teamSlug: 'unknownSlug' },
+    })
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
   it('should return error when user is not team member', async () => {
-    const testServer = getTestServer({ teamSlug: 'emptyTeam' })
-    const response = await testServer.executeOperation({ query: teamQuery })
+    const testServer = getTestServer()
+    const response = await testServer.executeOperation({ query: teamBySlugQuery, variables: { teamSlug: 'emptyTeam' } })
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
   it('should return team when user is member of', async () => {
-    const testServer = getTestServer({ teamSlug: 'progwise' })
-    const response = await testServer.executeOperation({ query: teamQuery })
+    const testServer = getTestServer()
+    const response = await testServer.executeOperation({ query: teamBySlugQuery, variables: { teamSlug: 'progwise' } })
 
     expect(response.data).toEqual({
-      team: {
+      teamBySlug: {
         id: '1',
         title: 'Progwise',
         canModify: true,

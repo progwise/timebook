@@ -9,7 +9,7 @@ export const CustomerTable = (): JSX.Element => {
   const router = useRouter()
   const slug = router.query.teamSlug?.toString() ?? ''
   const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
-  const [{ data }] = useCustomersQuery({ pause: !router.isReady, context })
+  const [{ data }] = useCustomersQuery({ pause: !router.isReady, context, variables: { slug } })
 
   const handleAddCustomer = async () => {
     await router.push(`/${slug}/customers/add`)
@@ -28,7 +28,7 @@ export const CustomerTable = (): JSX.Element => {
             <TableHeadCell />
           </TableHeadRow>
           <TableBody>
-            {data?.team.customers.map((customer) => (
+            {data?.teamBySlug.customers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.title}</TableCell>
                 <TableCell>{customer.id}</TableCell>

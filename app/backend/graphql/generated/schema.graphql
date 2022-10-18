@@ -46,7 +46,14 @@ type Mutation {
   """
   Create a new customer for a team
   """
-  customerCreate(data: CustomerInput!): Customer!
+  customerCreate(
+    data: CustomerInput!
+
+    """
+    slug of the team
+    """
+    teamSlug: String!
+  ): Customer!
 
   """
   Delete a customer
@@ -72,7 +79,14 @@ type Mutation {
   """
   Create a new project
   """
-  projectCreate(data: ProjectInput!): Project!
+  projectCreate(
+    data: ProjectInput!
+
+    """
+    slug of the team
+    """
+    teamSlug: String!
+  ): Project!
 
   """
   Delete a project
@@ -207,6 +221,11 @@ type Mutation {
     role: Role!
 
     """
+    slug of the team
+    """
+    teamSlug: String!
+
+    """
     Id of the user
     """
     userId: ID!
@@ -299,11 +318,6 @@ type Query {
   ): Project!
 
   """
-  Returns a list of all projects
-  """
-  projects: [Project!]!
-
-  """
   Returns a monthly project report
   """
   report(
@@ -325,11 +339,6 @@ type Query {
     """
     taskId: ID!
   ): Task!
-
-  """
-  Return team by slug provided in the api route (/api/[teamSlug]/graphql)
-  """
-  team: Team!
 
   """
   Return a team by a slug
@@ -369,7 +378,7 @@ type Query {
     Start of the time period
     """
     from: Date!
-    teamSlug: String @deprecated(reason: "This query uses the team slug from the url")
+    teamSlug: String!
 
     """
     End of the time period. If not provided the from arg is used as the end.
@@ -541,12 +550,12 @@ type User {
   """
   Returns the list of projects where the user is a member
   """
-  projects: [Project!]!
+  projects(teamSlug: String!): [Project!]!
 
   """
-  Role of the user in the current team
+  Role of the user in a team
   """
-  role: Role!
+  role(teamSlug: String!): Role!
 }
 
 type WorkHour {

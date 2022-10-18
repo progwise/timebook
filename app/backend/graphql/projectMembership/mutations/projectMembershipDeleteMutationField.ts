@@ -1,31 +1,29 @@
-import { ForbiddenError } from 'apollo-server-core'
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
 builder.mutationField('projectMembershipDelete', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.prismaField({
     type: 'Project',
     description: 'Unassign user to Project',
     args: {
       userId: t.arg.id(),
       projectId: t.arg.id(),
     },
-    authScopes: async (_source, { projectId, userId }, context) => {
-      await builder.runAuthScopes(context, { isTeamAdmin: true }, () => new ForbiddenError('Not authorized'))
-
-      const project = await prisma.project.findUniqueOrThrow({
+    authScopes: async (_source, { projectId, userId }) => {
+      const project = await prisma.project.findUnique({
         where: { id: projectId.toString() },
-        select: { team: { select: { id: true, slug: true } } },
+        select: { teamId: true },
       })
-      if (context.teamSlug !== project.team.slug) return false
-      const teamMembership = await prisma.teamMembership.findUnique({
-        select: { id: true },
-        where: { userId_teamId: { userId: userId.toString(), teamId: project.team.id } },
-      })
-      if (!teamMembership) {
+
+      if (!project) {
         return false
       }
-      return true
+
+      const teamMembership = await prisma.teamMembership.findUnique({
+        select: { id: true },
+        where: { userId_teamId: { userId: userId.toString(), teamId: project.teamId } },
+      })
+      return teamMembership ? { isTeamAdminByTeamId: project.teamId } : false
     },
     resolve: async (query, _source, { userId, projectId }) => {
       const projectMembership = await prisma.projectMembership.findUnique({

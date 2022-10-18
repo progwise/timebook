@@ -8,6 +8,9 @@ import '../../mocks/mockServer'
 jest.mock('next/router', () => ({
   useRouter: () => ({
     isReady: true,
+    query: {
+      teamSlug: 'progwise',
+    },
   }),
 }))
 

@@ -2,6 +2,7 @@ import { builder } from '../builder'
 import { Theme } from './theme'
 import { User } from '../user/user'
 import { ModifyInterface } from '../interfaces/modifyInterface'
+import { prisma } from '../prisma'
 
 export const Team = builder.prismaObject('Team', {
   select: {},
@@ -36,6 +37,22 @@ export const Team = builder.prismaObject('Team', {
           },
         },
       }),
+    }),
+    canModify: t.withAuth({ isLoggedIn: true }).boolean({
+      description: 'Can the user modify the entity',
+      select: { id: true },
+      resolve: async (team, _arguments, context) => {
+        const teamMembership = await prisma.teamMembership.findUnique({
+          select: { role: true },
+          where: {
+            userId_teamId: {
+              teamId: team.id,
+              userId: context.session.user.id,
+            },
+          },
+        })
+        return teamMembership?.role === 'ADMIN'
+      },
     }),
   }),
 })

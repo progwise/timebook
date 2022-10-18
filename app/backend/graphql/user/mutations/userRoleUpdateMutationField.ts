@@ -3,20 +3,22 @@ import { prisma } from '../../prisma'
 import { RoleEnum } from '../role'
 
 builder.mutationField('userRoleUpdate', (t) =>
-  t.withAuth({ isTeamAdmin: true }).prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'User',
     description: 'Update a user role',
     args: {
       userId: t.arg.id({ description: 'Id of the user' }),
       role: t.arg({ type: RoleEnum }),
+      teamSlug: t.arg.string({ description: 'slug of the team' }),
     },
-    resolve: async (query, _source, { role, userId }, context) => {
+    authScopes: (_source, { teamSlug }) => ({ isTeamAdminByTeamSlug: teamSlug }),
+    resolve: async (query, _source, { role, userId, teamSlug }, context) => {
       if (userId === context.session.user.id) {
         throw new Error('cant update own role')
       }
 
       const team = await prisma.team.findUniqueOrThrow({
-        where: { slug: context.teamSlug },
+        where: { slug: teamSlug },
         select: { id: true },
       })
 
