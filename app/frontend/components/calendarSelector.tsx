@@ -1,11 +1,5 @@
-import { Popover, Transition } from '@headlessui/react'
-import { AiOutlineCalendar } from 'react-icons/ai'
-import backIcon from '../assets/backIcon.svg'
-import forwardIcon from '../assets/forwardIcon.svg'
-import home from '../assets/home.svg'
-import { useState } from 'react'
-import CalendarIcon from './calendarIcon'
 import { offset, shift, useFloating } from '@floating-ui/react-dom'
+import { Popover, Transition } from '@headlessui/react'
 import {
   addMonths,
   eachDayOfInterval,
@@ -20,6 +14,13 @@ import {
   startOfWeek,
   subMonths,
 } from 'date-fns'
+import { useState } from 'react'
+import { AiOutlineCalendar } from 'react-icons/ai'
+
+import backIcon from '../assets/backIcon.svg'
+import forwardIcon from '../assets/forwardIcon.svg'
+import home from '../assets/home.svg'
+import CalendarIcon from './calendarIcon'
 
 interface DayItemProps {
   day: Date

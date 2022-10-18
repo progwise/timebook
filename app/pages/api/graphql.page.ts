@@ -1,4 +1,5 @@
 import { NextApiHandler } from 'next'
+
 import { server } from '../../backend/server'
 
 const startPromise = server.start()

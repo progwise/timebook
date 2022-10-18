@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
-import { CustomerInput } from '../customerInput'
 import { prisma } from '../../prisma'
+import { CustomerInput } from '../customerInput'
 
 builder.mutationField('customerCreate', (t) =>
   t.prismaField({

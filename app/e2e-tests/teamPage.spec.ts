@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { PrismaClient } from '@prisma/client'
+
 import { users } from './globalSetup'
 
 const prisma = new PrismaClient()

@@ -1,9 +1,9 @@
 import { builder } from '../builder'
 import { prisma } from '../prisma'
+import { ReportGroupedByDate } from './reportGroupedByDate'
 import './reportGroupedByTask'
 import { ReportGroupedByTask } from './reportGroupedByTask'
 import { ReportGroupedByUser } from './reportGroupedByUser'
-import { ReportGroupedByDate } from './reportGroupedByDate'
 
 export const Report = builder.objectType('Report', {
   fields: (t) => ({

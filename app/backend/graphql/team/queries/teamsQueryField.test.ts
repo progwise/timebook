@@ -1,4 +1,5 @@
 import { PrismaClient, Team } from '@prisma/client'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()

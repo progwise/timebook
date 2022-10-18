@@ -1,7 +1,8 @@
-import { ApolloServer } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { schema } from './graphql/schema'
+import { ApolloServer } from 'apollo-server-micro'
+
 import { context } from './graphql/context'
+import { schema } from './graphql/schema'
 
 export const server = new ApolloServer({
   schema,

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+
 import { TeamWithProjectsFragment } from '../../generated/graphql'
 
 export interface TeamTileProps {

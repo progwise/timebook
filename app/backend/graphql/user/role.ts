@@ -1,4 +1,5 @@
 import { Role } from '@prisma/client'
+
 import { builder } from '../builder'
 
 export const RoleEnum = builder.enumType(Role, {
