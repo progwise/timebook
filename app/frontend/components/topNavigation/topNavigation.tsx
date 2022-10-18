@@ -1,9 +1,10 @@
 import { signIn, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import { TopNavigationLink } from './topNavigationLink'
-import { ProfileMenu } from './profileMenu'
-import { AiOutlineFieldTime } from 'react-icons/ai'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { AiOutlineFieldTime } from 'react-icons/ai'
+
+import { ProfileMenu } from './profileMenu'
+import { TopNavigationLink } from './topNavigationLink'
 
 export const TopNavigation = (): JSX.Element => {
   const router = useRouter()

@@ -1,10 +1,11 @@
 import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
-import '../frontend/styles/globals.css'
-import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
-import { createClient, Provider } from 'urql'
-import { useMemo } from 'react'
 import Link from 'next/link'
+import { useMemo } from 'react'
+import { createClient, Provider } from 'urql'
+
+import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
+import '../frontend/styles/globals.css'
 
 interface MyAppProps {
   Component: new (props: unknown) => React.Component

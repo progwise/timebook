@@ -1,8 +1,8 @@
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
+import { prisma } from '../prisma'
 import { User } from '../user'
 import { WorkHour } from '../workHour'
-import { prisma } from '../prisma'
 
 export const Project = builder.prismaObject('Project', {
   select: {},

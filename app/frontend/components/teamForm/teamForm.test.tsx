@@ -1,11 +1,11 @@
-import { Client, Provider } from 'urql'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { TeamForm } from './teamForm'
-import { TeamFragment, Theme } from '../../generated/graphql'
+import { Client, Provider } from 'urql'
 
-import '../../mocks/mockServer'
+import { TeamFragment, Theme } from '../../generated/graphql'
 import { requestedSlugs } from '../../mocks/handlers'
+import '../../mocks/mockServer'
+import { TeamForm } from './teamForm'
 
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 

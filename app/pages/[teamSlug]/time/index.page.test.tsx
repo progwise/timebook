@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
-import MaintainWorkHoursPage from './index.page'
-import '../../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
+
+import '../../../frontend/mocks/mockServer'
+import MaintainWorkHoursPage from './index.page'
 
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
