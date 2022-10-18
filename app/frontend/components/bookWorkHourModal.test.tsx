@@ -1,8 +1,9 @@
 import { render, screen, within } from '@testing-library/react'
-import { Client, Provider } from 'urql'
-import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
-import '../mocks/mockServer'
 import userEvent from '@testing-library/user-event'
+import { Client, Provider } from 'urql'
+
+import '../mocks/mockServer'
+import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({

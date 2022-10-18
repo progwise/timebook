@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
+
 import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
 import { Button } from '../../../frontend/components/button/button'
 import { CalendarSelector } from '../../../frontend/components/calendarSelector'

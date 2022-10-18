@@ -1,13 +1,14 @@
-import { Button } from '../button/button'
-import { InputField } from '../inputField/inputField'
-import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
-import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
+import { useForm } from 'react-hook-form'
 import { FiCopy } from 'react-icons/fi'
+import * as yup from 'yup'
+
+import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
+import { Button } from '../button/button'
+import { InputField } from '../inputField/inputField'
 
 interface TeamFormProps {
   team?: TeamFragment

@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
-import { DateScalar } from '../../scalars'
 import { prisma } from '../../prisma'
+import { DateScalar } from '../../scalars'
 
 builder.queryField('report', (t) =>
   t.field({

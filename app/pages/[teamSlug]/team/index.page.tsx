@@ -1,9 +1,10 @@
-import { useRouter } from 'next/router'
-import { Button } from '../../../frontend/components/button/button'
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
-import { TeamFragment, useTeamQuery, useTeamUnarchiveMutation } from '../../../frontend/generated/graphql'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+
+import { Button } from '../../../frontend/components/button/button'
+import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import {
   Table,
   TableBody,
@@ -12,9 +13,9 @@ import {
   TableHeadRow,
   TableRow,
 } from '../../../frontend/components/table/table'
-import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
-import { useState } from 'react'
+import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
+import { TeamFragment, useTeamQuery, useTeamUnarchiveMutation } from '../../../frontend/generated/graphql'
 
 const TeamPage = (): JSX.Element => {
   const router = useRouter()

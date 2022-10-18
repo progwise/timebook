@@ -1,9 +1,10 @@
-import { ForbiddenError } from 'apollo-server-core'
 import SchemaBuilder from '@pothos/core'
-import PrismaTypes from '@pothos/plugin-prisma/generated'
 import PrismaPlugin from '@pothos/plugin-prisma'
+import PrismaTypes from '@pothos/plugin-prisma/generated'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
+import { ForbiddenError } from 'apollo-server-core'
+
 import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
 

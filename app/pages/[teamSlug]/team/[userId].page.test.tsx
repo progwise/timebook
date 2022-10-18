@@ -1,11 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import '../../../frontend/mocks/mockServer'
-import { Client, Provider } from 'urql'
-import UserDetailsPage from './[userId].page'
-import { mockMeQuery, mockUserQuery, mockUserRoleUpdateMutation, Role } from '../../../frontend/generated/graphql'
-import { mockServer } from '../../../frontend/mocks/mockServer'
 import userEvent from '@testing-library/user-event'
+import { Client, Provider } from 'urql'
+
+import { mockMeQuery, mockUserQuery, mockUserRoleUpdateMutation, Role } from '../../../frontend/generated/graphql'
+import '../../../frontend/mocks/mockServer'
+import { mockServer } from '../../../frontend/mocks/mockServer'
 import { assignedProjects } from '../../../frontend/mocks/projectHandlers'
+import UserDetailsPage from './[userId].page'
 
 let userRole: Role = Role.Admin
 

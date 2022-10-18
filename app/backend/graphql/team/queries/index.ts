@@ -1,2 +1,2 @@
-import './teamsQueryField'
 import './teamBySlugQueryField'
+import './teamsQueryField'

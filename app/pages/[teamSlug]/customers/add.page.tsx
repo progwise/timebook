@@ -1,5 +1,5 @@
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { CustomerForm } from '../../../frontend/components/customerForm/customerForm'
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
 
 const ReportsPage = (): JSX.Element => {
   return (

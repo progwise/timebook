@@ -1,13 +1,14 @@
+import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { BiTrash } from 'react-icons/bi'
+
+import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
-import { BiTrash } from 'react-icons/bi'
-import { InputField } from '../inputField/inputField'
-import { useForm } from 'react-hook-form'
-import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
-import { useState } from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
+import { InputField } from '../inputField/inputField'
 import {
   Table,
   TableBody,

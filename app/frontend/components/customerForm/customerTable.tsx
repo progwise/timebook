@@ -1,10 +1,12 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { MdPersonAddAlt1 } from 'react-icons/md'
+
 import { useCustomersQuery } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { ProtectedPage } from '../protectedPage'
 import { Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '../table/table'
-import { MdPersonAddAlt1 } from 'react-icons/md'
+
 export const CustomerTable = (): JSX.Element => {
   const router = useRouter()
   const slug = router.query.teamSlug?.toString() ?? ''

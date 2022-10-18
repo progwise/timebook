@@ -1,3 +1,9 @@
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+
+import { Button } from '../../../frontend/components/button/button'
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
+import { Toggle } from '../../../frontend/components/toggle/toggle'
 import {
   Role,
   useMeQuery,
@@ -7,11 +13,6 @@ import {
   useUserQuery,
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
-import Image from 'next/image'
-import { Button } from '../../../frontend/components/button/button'
-import { useRouter } from 'next/router'
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { Toggle } from '../../../frontend/components/toggle/toggle'
 
 const UserDetailsPage = (): JSX.Element => {
   const router = useRouter()

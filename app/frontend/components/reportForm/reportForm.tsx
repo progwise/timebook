@@ -1,9 +1,10 @@
+import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
+
 import { ProjectFragment, useProjectsWithTasksQuery, useReportQuery } from '../../generated/graphql'
-import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
-import { FormattedDuration } from '../duration/formattedDuration'
 import { ComboBox } from '../combobox/combobox'
+import { FormattedDuration } from '../duration/formattedDuration'
 
 export const ReportForm = () => {
   const router = useRouter()

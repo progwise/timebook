@@ -1,8 +1,9 @@
 import { configure, render, screen } from '@testing-library/react'
-import '../../../frontend/mocks/mockServer'
-import { Client, Provider } from 'urql'
-import WeekPage from './week.page'
 import userEvent from '@testing-library/user-event'
+import { Client, Provider } from 'urql'
+
+import '../../../frontend/mocks/mockServer'
+import WeekPage from './week.page'
 
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
