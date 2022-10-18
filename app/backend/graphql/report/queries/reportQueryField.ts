@@ -1,11 +1,19 @@
 import { builder } from '../../builder'
 import { DateScalar } from '../../scalars'
+import { prisma } from '../../prisma'
 
 builder.queryField('report', (t) =>
-  t.withAuth({ isTeamMember: true }).field({
+  t.field({
     type: 'Report',
     description: 'Returns a monthly project report',
-    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString(), isTeamAdmin: true }),
+    authScopes: async (_source, { projectId }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        select: { teamId: true },
+        where: { id: projectId.toString() },
+      })
+
+      return { isProjectMember: projectId.toString(), isTeamAdminByTeamId: project.teamId }
+    },
     args: {
       projectId: t.arg.id({ description: 'Project identifier' }),
       from: t.arg({ type: DateScalar }),

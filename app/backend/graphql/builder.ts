@@ -4,7 +4,7 @@ import PrismaTypes from '@pothos/plugin-prisma/generated'
 import PrismaPlugin from '@pothos/plugin-prisma'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
-import { Context, LoggedInContext, LoggedInInSlugContext } from './context'
+import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
 
 export const builder = new SchemaBuilder<{
@@ -14,20 +14,20 @@ export const builder = new SchemaBuilder<{
   AuthScopes: {
     isLoggedIn: boolean
     hasUserId: string
-    isTeamMember: boolean
-    isTeamAdmin: boolean
+    isTeamMemberByTeamId: string
     isTeamMemberByTeamSlug: string
     isTeamAdminByTeamId: string
+    isTeamAdminByTeamSlug: string
     isProjectMember: string
   }
   AuthContexts: {
     isLoggedIn: LoggedInContext
     hasUserId: LoggedInContext
-    isTeamMember: LoggedInInSlugContext
-    isTeamAdmin: LoggedInInSlugContext
-    isTeamMemberByTeamSlug: LoggedInInSlugContext
-    isTeamAdminByTeamId: LoggedInInSlugContext
-    isProjectMember: LoggedInInSlugContext
+    isTeamMemberByTeamId: LoggedInContext
+    isTeamMemberByTeamSlug: LoggedInContext
+    isTeamAdminByTeamId: LoggedInContext
+    isTeamAdminByTeamSlug: LoggedInContext
+    isProjectMember: LoggedInContext
   }
   Scalars: {
     Date: {
@@ -53,34 +53,6 @@ export const builder = new SchemaBuilder<{
   authScopes: (context) => ({
     isLoggedIn: !!context.session,
     hasUserId: (userId: string) => context.session?.user.id === userId,
-    isTeamMember: async () => {
-      if (!context.session || !context.teamSlug) {
-        return false
-      }
-
-      const teamMembership = await prisma.teamMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          team: { slug: context.teamSlug },
-        },
-      })
-
-      return !!teamMembership
-    },
-    isTeamAdmin: async () => {
-      if (!context.session || !context.teamSlug) {
-        return false
-      }
-
-      const teamMembership = await prisma.teamMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          team: { slug: context.teamSlug },
-        },
-      })
-
-      return teamMembership?.role === 'ADMIN'
-    },
     isTeamAdminByTeamId: async (teamId) => {
       if (!context.session) {
         return false
@@ -91,6 +63,36 @@ export const builder = new SchemaBuilder<{
       })
 
       return teamMembership?.role === 'ADMIN'
+    },
+    isTeamAdminByTeamSlug: async (teamSlug) => {
+      if (!context.session) {
+        return false
+      }
+
+      const teamMembership = await prisma.teamMembership.findFirst({
+        where: {
+          userId: context.session.user.id,
+          team: { slug: teamSlug },
+        },
+      })
+
+      return teamMembership?.role === 'ADMIN'
+    },
+    isTeamMemberByTeamId: async (teamId: string) => {
+      if (!context.session) {
+        return false
+      }
+
+      const teamMembership = await prisma.teamMembership.findUnique({
+        where: {
+          userId_teamId: {
+            userId: context.session.user.id,
+            teamId,
+          },
+        },
+      })
+
+      return !!teamMembership
     },
     isTeamMemberByTeamSlug: async (teamSlug: string) => {
       if (!context.session) {
@@ -107,18 +109,15 @@ export const builder = new SchemaBuilder<{
       return !!teamMembership
     },
     isProjectMember: async (projectId) => {
-      if (!context.session || !context.teamSlug) {
+      if (!context.session) {
         return false
       }
 
-      const projectMemberShip = await prisma.projectMembership.findFirst({
+      const projectMemberShip = await prisma.projectMembership.findUnique({
         where: {
-          userId: context.session.user.id,
-          project: {
-            id: projectId,
-            team: {
-              slug: context.teamSlug,
-            },
+          userId_projectId: {
+            userId: context.session.user.id,
+            projectId,
           },
         },
       })

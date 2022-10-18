@@ -1,12 +1,12 @@
-query team {
-  team {
+query team($teamSlug: String!) {
+  teamBySlug(slug: $teamSlug) {
     ...Team
     canModify
     members {
       id
       name
       image
-      projects {
+      projects(teamSlug: $teamSlug) {
         id
         title
       }

@@ -6,10 +6,11 @@ import { ProjectInput, useProjectCreateMutation } from '../../../frontend/genera
 const NewProjectPage = (): JSX.Element => {
   const [projectCreateResult, projectCreate] = useProjectCreateMutation()
   const router = useRouter()
+  const teamSlug = router.query.teamSlug?.toString() ?? ''
 
   const handleSubmit = async (data: ProjectInput) => {
     try {
-      const result = await projectCreate({ data })
+      const result = await projectCreate({ data, teamSlug })
       if (result.error) {
         throw new Error('graphql error')
       }

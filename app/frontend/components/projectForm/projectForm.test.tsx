@@ -7,6 +7,9 @@ import '../../../frontend/mocks/mockServer'
 jest.mock('next/router', () => ({
   useRouter: () => ({
     isReady: true,
+    query: {
+      teamSlug: 'progwise',
+    },
   }),
 }))
 const client = new Client({ url: '/api/team1/graphql' })

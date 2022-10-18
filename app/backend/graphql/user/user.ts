@@ -8,26 +8,31 @@ export const User = builder.prismaObject('User', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: true }),
     image: t.exposeString('image', { nullable: true }),
-    projects: t.withAuth({ isTeamMember: true }).prismaField({
+    projects: t.prismaField({
       type: ['Project'],
       description: 'Returns the list of projects where the user is a member',
-      resolve: (query, user, _arguments, context) =>
+      args: { teamSlug: t.arg.string() },
+      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+      resolve: (query, user, { teamSlug }) =>
         prisma.project.findMany({
           ...query,
           where: {
-            team: { slug: context.teamSlug },
+            team: { slug: teamSlug },
             projectMemberships: { some: { userId: user.id } },
           },
         }),
     }),
-    role: t.withAuth({ isTeamMember: true }).field({
+    role: t.field({
       type: RoleEnum,
-      description: 'Role of the user in the current team',
-      resolve: async (user, _arguments, context) => {
+      args: { teamSlug: t.arg.string() },
+      select: { id: true },
+      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+      description: 'Role of the user in a team',
+      resolve: async (user, { teamSlug }) => {
         const teamMembership = await prisma.teamMembership.findFirstOrThrow({
           where: {
-            userId: context.session.user.id,
-            team: { slug: context.teamSlug },
+            userId: user.id,
+            team: { slug: teamSlug },
           },
         })
         return teamMembership.role

@@ -52,7 +52,7 @@ describe('teamCreateMutationField', () => {
       },
     })
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {
@@ -79,7 +79,7 @@ describe('teamCreateMutationField', () => {
       })
     }
 
-    const testServer = getTestServer({})
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: teamCreateMutation,
       variables: {

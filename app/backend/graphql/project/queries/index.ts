@@ -1,2 +1,1 @@
-import './projectsQueryField'
 import './projectQueryField'
