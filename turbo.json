@@ -24,6 +24,9 @@
       "inputs": ["**/*.graphql"],
       "outputs": ["**/graphql.ts"]
     },
+    "typecheck": {
+      "outputs": []
+    },
     "fake": {
       "inputs": [],
       "outputs": []
