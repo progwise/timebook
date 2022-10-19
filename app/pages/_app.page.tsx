@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
 
-interface MyAppProps {
+interface TimebookProps {
   Component: new (props: unknown) => React.Component
   session: Session | undefined
   pageProps?: {
@@ -15,7 +15,7 @@ interface MyAppProps {
   }
 }
 
-const TimebookApp = ({ Component, session, pageProps }: MyAppProps): JSX.Element => (
+const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
     <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
       <TopNavigation />
