@@ -20,7 +20,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
     <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
       <TopNavigation />
     </header>
-    <main className="mb-10 mt-12 px-6 dark:bg-slate-800 dark:text-white">
+    <main className="mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white">
       <Component {...pageProps} />
     </main>
     <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
