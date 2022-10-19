@@ -1,16 +1,14 @@
-import { queryField, stringArg } from 'nexus'
-import { Team } from '../team'
-import { isTeamMember } from '../utils'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const teamBySlugQueryField = queryField('teamBySlug', {
-  type: Team,
-  description: 'Return a team by a slug',
-  args: {
-    slug: stringArg({ description: 'slug of the team' }),
-  },
-  authorize: (_source, { slug }, context) => isTeamMember({ slug }, context),
-  resolve: (_source, { slug }, context) =>
-    context.prisma.team.findUniqueOrThrow({
-      where: { slug },
-    }),
-})
+builder.queryField('teamBySlug', (t) =>
+  t.prismaField({
+    type: 'Team',
+    description: 'Return a team by a slug',
+    args: {
+      slug: t.arg.string({ description: 'slug of the team' }),
+    },
+    authScopes: (_source, { slug }) => ({ isTeamMemberByTeamSlug: slug }),
+    resolve: (query, _source, { slug }) => prisma.team.findUniqueOrThrow({ ...query, where: { slug } }),
+  }),
+)

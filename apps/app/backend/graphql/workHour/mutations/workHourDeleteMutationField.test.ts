@@ -1,6 +1,7 @@
-import { PrismaClient } from '.prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
+import { PrismaClient } from '.prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -74,15 +75,7 @@ describe('workHourDeleteMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
-    const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
-  it('should throw error when work hour is in a different team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'google' })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
 
     expect(response.data).toBeNull()
@@ -91,7 +84,7 @@ describe('workHourDeleteMutationField', () => {
 
   describe("user's role is admin", () => {
     it('should delete when user is team admin', async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+      const testServer = getTestServer()
       const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '2' } })
 
       expect(response.data).toEqual({ workHourDelete: { id: '2' } })
@@ -102,7 +95,7 @@ describe('workHourDeleteMutationField', () => {
 
   describe("user's role is member", () => {
     it("should throw error when work hour doesn't belong to the user", async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+      const testServer = getTestServer({ userId: '2' })
       const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
 
       expect(response.data).toBeNull()
@@ -110,7 +103,7 @@ describe('workHourDeleteMutationField', () => {
     })
 
     it('should delete when work hour belongs to the user', async () => {
-      const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+      const testServer = getTestServer({ userId: '2' })
       const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '2' } })
 
       expect(response.data).toEqual({ workHourDelete: { id: '2' } })

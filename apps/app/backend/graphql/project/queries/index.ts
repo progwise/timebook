@@ -1,2 +1,1 @@
-export * from './projectsQueryField'
-export * from './projectQueryField'
+import './projectQueryField'

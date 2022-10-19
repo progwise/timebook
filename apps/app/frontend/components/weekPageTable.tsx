@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { BiPlus } from 'react-icons/bi'
-import { AddTaskRowModal } from './addTaskRow'
-import { DayWeekSwitch } from './dayWeekSwitchButton'
-import { HourInput } from './hourInput'
+
 import {
   Button,
   FormattedDuration,
@@ -16,7 +14,11 @@ import {
   TableHeadRow,
   TableRow,
 } from '@progwise/timebook-ui'
+
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
+import { AddTaskRowModal } from './addTaskRow'
+import { DayWeekSwitch } from './dayWeekSwitchButton'
+import { HourInput } from './hourInput'
 
 const NUMBER_OF_DAYS = 7
 

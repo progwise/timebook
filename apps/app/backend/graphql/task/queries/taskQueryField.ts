@@ -1,31 +1,28 @@
-import { ForbiddenError } from 'apollo-server-core'
-import { idArg, queryField } from 'nexus'
-import { Task } from '../task'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const taskQueryField = queryField('task', {
-  type: Task,
-  description: 'Returns a single task',
-  args: {
-    taskId: idArg({ description: 'Identifier for the task' }),
-  },
-  authorize: (_source, _arguments, context) => !!context.session,
-  resolve: (_source, { taskId }, context) => {
-    if (!context.teamSlug) {
-      throw new ForbiddenError('team not found')
-    }
+builder.queryField('task', (t) =>
+  t.prismaField({
+    type: 'Task',
+    description: 'Returns a single task',
+    args: {
+      taskId: t.arg.id({ description: 'Identifier for the task' }),
+    },
+    authScopes: async (_source, { taskId }) => {
+      const task = await prisma.task.findUniqueOrThrow({
+        select: { project: { select: { id: true, teamId: true } } },
+        where: { id: taskId.toString() },
+      })
 
-    return context.prisma.task.findFirstOrThrow({
-      where: {
-        id: taskId,
-        project: {
-          team: { slug: context.teamSlug },
-          projectMemberships: {
-            some: {
-              userId: context.session?.user.id,
-            },
-          },
-        },
-      },
-    })
-  },
-})
+      return {
+        isTeamAdminByTeamId: task.project.teamId,
+        isProjectMember: task.project.id,
+      }
+    },
+    resolve: (query, _source, { taskId }) =>
+      prisma.task.findUniqueOrThrow({
+        ...query,
+        where: { id: taskId.toString() },
+      }),
+  }),
+)

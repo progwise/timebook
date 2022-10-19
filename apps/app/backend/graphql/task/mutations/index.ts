@@ -1,4 +1,4 @@
-export * from './taskArchiveMutationField'
-export * from './taskCreateMutationField'
-export * from './taskDeleteMutationField'
-export * from './taskUpdateMutationField'
+import './taskArchiveMutationField'
+import './taskCreateMutationField'
+import './taskDeleteMutationField'
+import './taskUpdateMutationField'

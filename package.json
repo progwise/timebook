@@ -19,6 +19,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
     "turbo": "latest"

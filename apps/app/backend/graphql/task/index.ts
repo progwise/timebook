@@ -1,4 +1,4 @@
-export * from './task'
-export * from './taskInput'
-export * from './mutations'
-export * from './queries'
+import './mutations'
+import './queries'
+
+export { Task } from './task'

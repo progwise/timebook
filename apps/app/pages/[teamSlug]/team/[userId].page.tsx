@@ -1,3 +1,10 @@
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+
+import { Button } from '@progwise/timebook-ui'
+
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
+import { Toggle } from '../../../frontend/components/toggle/toggle'
 import {
   Role,
   useMeQuery,
@@ -7,37 +14,32 @@ import {
   useUserQuery,
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
-import Image from 'next/image'
-import { Button } from '@progwise/timebook-ui'
-import { useRouter } from 'next/router'
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { Toggle } from '../../../frontend/components/toggle/toggle'
 
 const UserDetailsPage = (): JSX.Element => {
   const router = useRouter()
 
   const { userId: queryUserId } = router.query
   const userId = queryUserId?.toString() ?? '' // hack: better solution?
+  const teamSlug = router.query.teamSlug?.toString() ?? ''
 
   const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
-  const teamSlug = router.query.teamSlug
-  const [{ data: meData }] = useMeQuery()
-  const [{ data: allProjects }] = useTeamProjectsQuery()
+  const [{ data: meData }] = useMeQuery({ variables: { teamSlug } })
+  const [{ data: allProjects }] = useTeamProjectsQuery({ variables: { slug: teamSlug } })
   const [{ data }] = useUserQuery({
     pause: !router.isReady,
-    variables: { userId },
+    variables: { userId, teamSlug },
   })
   const isAdmin = meData?.user.role === Role.Admin
   const [, createProjectMembership] = useProjectMembershipCreateMutation()
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
 
   const handleUpgradeClick = () => {
-    userRoleUpdate({ role: Role.Admin, userId })
+    userRoleUpdate({ role: Role.Admin, userId, teamSlug })
     router.push(`/${teamSlug}/team/${userId}`)
   }
 
   const handleDowngradeClick = () => {
-    userRoleUpdate({ role: Role.Member, userId })
+    userRoleUpdate({ role: Role.Member, userId, teamSlug })
   }
 
   return (
@@ -82,7 +84,7 @@ const UserDetailsPage = (): JSX.Element => {
             <>
               <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
               <ul>
-                {allProjects?.projects.map((project) => (
+                {allProjects?.teamBySlug.projects.map((project) => (
                   <li key={project.id} className="p-3">
                     <span className=" inline-block w-32"> {project.title} </span>
                     <Toggle

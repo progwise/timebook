@@ -1,11 +1,11 @@
 import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
-import '../frontend/styles/globals.css'
-import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
-import { createClient, Provider } from 'urql'
-import { useRouter } from 'next/router'
-import React, { useMemo } from 'react'
 import Link from 'next/link'
+import { useMemo } from 'react'
+import { createClient, Provider } from 'urql'
+
+import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
+import '../frontend/styles/globals.css'
 
 interface MyAppProps {
   Component: (props: unknown) => JSX.Element
@@ -16,11 +16,7 @@ interface MyAppProps {
 }
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps): JSX.Element {
-  const router = useRouter()
-  const teamSlug = router.query.teamSlug?.toString()
-  const apiRoute = teamSlug ? `/api/${teamSlug}/graphql` : '/api/graphql'
-
-  const client = useMemo(() => createClient({ url: apiRoute }), [apiRoute])
+  const client = useMemo(() => createClient({ url: '/api/graphql' }), [])
 
   return (
     <SessionProvider session={session}>
@@ -32,7 +28,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps):
           <Component {...pageProps} />
         </main>
         <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
-          <Link href={'/impress'}>
+          <Link href="/impress">
             <a className=" hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Impress</a>
           </Link>
           <Link href="/privacy">

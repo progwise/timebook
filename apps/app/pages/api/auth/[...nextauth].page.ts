@@ -1,8 +1,9 @@
-import NextAuth from 'next-auth'
-import GitHubProvider from 'next-auth/providers/github'
-import EmailProvider from 'next-auth/providers/email'
-import { PrismaClient } from '.prisma/client'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import NextAuth from 'next-auth'
+import EmailProvider from 'next-auth/providers/email'
+import GitHubProvider from 'next-auth/providers/github'
+
+import { PrismaClient } from '.prisma/client'
 
 const prisma = new PrismaClient()
 

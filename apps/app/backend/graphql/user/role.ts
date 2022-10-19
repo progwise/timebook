@@ -1,7 +1,7 @@
-import { enumType } from 'nexus'
+import { builder } from '../builder'
+import { Role } from '.prisma/client'
 
-export const Role = enumType({
+export const RoleEnum = builder.enumType(Role, {
   name: 'Role',
   description: 'Roles a user can have in a team',
-  members: ['ADMIN', 'MEMBER'],
 })

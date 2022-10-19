@@ -1,3 +1,4 @@
-export * from './team'
-export * from './queries'
-export * from './mutations'
+import './mutations'
+import './queries'
+
+export { Team } from './team'

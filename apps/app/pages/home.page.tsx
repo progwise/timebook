@@ -1,7 +1,9 @@
 import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+
 import { Button } from '@progwise/timebook-ui'
+
 import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 import { TimebookPage } from '../frontend/components/timebookPage'
 
@@ -29,7 +31,7 @@ export default function Home(): JSX.Element {
             </Button>
           </>
         ) : (
-          <Button onClick={() => signIn('github')} variant={'primary'}>
+          <Button onClick={() => signIn('github')} variant="primary">
             Sign in
           </Button>
         )}

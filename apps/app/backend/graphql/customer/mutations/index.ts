@@ -1,3 +1,3 @@
-export * from './customerCreateMutationField'
-export * from './customerDeleteMutationField'
-export * from './customerUpdateMutationField'
+import './customerCreateMutationField'
+import './customerDeleteMutationField'
+import './customerUpdateMutationField'

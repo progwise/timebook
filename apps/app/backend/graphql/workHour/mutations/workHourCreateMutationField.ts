@@ -1,51 +1,35 @@
-import { mutationField } from 'nexus'
-import { WorkHour } from '../workHour'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { WorkHourInput } from '../workHourInput'
 
-export const workHourCreateMutationField = mutationField('workHourCreate', {
-  type: WorkHour,
-  description: 'Create a new WorkHour',
-  args: {
-    data: WorkHourInput,
-  },
-  authorize: async (_source, arguments_, context) => {
-    if (!context.session || !context.teamSlug) {
-      return false
-    }
+builder.mutationField('workHourCreate', (t) =>
+  t.withAuth({ isLoggedIn: true }).prismaField({
+    type: 'WorkHour',
+    description: 'Create a new WorkHour',
+    args: {
+      data: t.arg({ type: WorkHourInput }),
+    },
+    authScopes: async (_source, { data: { taskId } }) => {
+      const task = await prisma.task.findUniqueOrThrow({
+        select: { projectId: true },
+        where: { id: taskId.toString() },
+      })
 
-    const task = await context.prisma.task.findFirst({
-      where: {
-        id: arguments_.data.taskId,
-        project: { team: { slug: context.teamSlug } },
-      },
-    })
+      return { isProjectMember: task.projectId }
+    },
+    resolve: (query, _source, { data: { date, duration, taskId } }, context) => {
+      const workHourKey = {
+        date,
+        taskId: taskId.toString(),
+        userId: context.session.user.id,
+      }
 
-    if (!task) {
-      return false
-    }
-
-    const projectMember = await context.prisma.projectMembership.findUnique({
-      where: { userId_projectId: { userId: context.session.user.id, projectId: task.projectId } },
-    })
-
-    return !!projectMember
-  },
-
-  resolve: async (_source, arguments_, context) => {
-    if (!context.session) {
-      throw new Error('unauthenticated')
-    }
-
-    const workHourKey = {
-      date: arguments_.data.date,
-      taskId: arguments_.data.taskId,
-      userId: context.session.user.id,
-    }
-
-    return context.prisma.workHour.upsert({
-      where: { date_userId_taskId: workHourKey },
-      create: { ...workHourKey, duration: arguments_.data.duration },
-      update: { duration: { increment: arguments_.data.duration } },
-    })
-  },
-})
+      return prisma.workHour.upsert({
+        ...query,
+        where: { date_userId_taskId: workHourKey },
+        create: { ...workHourKey, duration },
+        update: { duration: { increment: duration } },
+      })
+    },
+  }),
+)

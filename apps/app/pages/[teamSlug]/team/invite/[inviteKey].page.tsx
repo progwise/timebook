@@ -1,6 +1,8 @@
-import React from 'react'
 import { useRouter } from 'next/router'
+import React from 'react'
+
 import { Button } from '@progwise/timebook-ui'
+
 import { ProtectedPage } from '../../../../frontend/components/protectedPage'
 import { useTeamAcceptInviteMutation } from '../../../../frontend/generated/graphql'
 

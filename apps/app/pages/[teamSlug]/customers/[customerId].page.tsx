@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 
 import { Button } from '@progwise/timebook-ui'
-import { CustomerForm } from '../../../frontend/components/customerForm/customerForm'
 
+import { CustomerForm } from '../../../frontend/components/customerForm/customerForm'
 import { Modal } from '../../../frontend/components/modal'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { useCustomerDeleteMutation, useCustomerQuery } from '../../../frontend/generated/graphql'

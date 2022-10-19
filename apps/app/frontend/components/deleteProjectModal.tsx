@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router'
-import { ProjectFragment, useProjectDeleteMutation } from '../generated/graphql'
+
 import { Button } from '@progwise/timebook-ui'
+
+import { ProjectFragment, useProjectDeleteMutation } from '../generated/graphql'
 import { Modal } from './modal'
 
 interface DeleteProjectModalProps {

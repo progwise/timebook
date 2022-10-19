@@ -1,6 +1,7 @@
-import { PrismaClient } from '.prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
+import { PrismaClient } from '.prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -89,7 +90,7 @@ describe('workHourUpdateMutationField', () => {
     })
   })
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
@@ -107,7 +108,7 @@ describe('workHourUpdateMutationField', () => {
   })
 
   it('should update own work hour', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
@@ -139,25 +140,7 @@ describe('workHourUpdateMutationField', () => {
   })
 
   it('should throw error when updating work hour from another user', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
-    const response = await testServer.executeOperation({
-      query: workHourUpdateMutation,
-      variables: {
-        id: '1',
-        data: {
-          date: '2022-01-01',
-          duration: 120,
-          taskId: '1',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
-  it('should throw error when user is not team member', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'google' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
@@ -175,7 +158,7 @@ describe('workHourUpdateMutationField', () => {
   })
 
   it('should update any work hour when user is admin of the same team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
@@ -207,7 +190,7 @@ describe('workHourUpdateMutationField', () => {
   })
 
   it('should throw error when user books on a different project without membership', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {

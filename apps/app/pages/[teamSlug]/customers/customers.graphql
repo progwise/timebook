@@ -1,5 +1,5 @@
-query customers {
-  team {
+query customers($slug: String!) {
+  teamBySlug(slug: $slug) {
     id
     title
     customers {

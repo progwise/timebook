@@ -48,7 +48,7 @@ export const teamHandlers = [
     const result = response(
       context.data({
         __typename: 'Query',
-        team: { ...testTeam1, members: [], canModify: true },
+        teamBySlug: { ...testTeam1, members: [], canModify: true },
       }),
     )
     return result
@@ -66,7 +66,10 @@ export const teamHandlers = [
     const result = response(
       context.data({
         __typename: 'Query',
-        projects: [testProject1, testProject2],
+        teamBySlug: {
+          __typename: 'Team',
+          projects: [testProject1, testProject2],
+        },
       }),
     )
     return result

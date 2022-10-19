@@ -1,6 +1,4 @@
-import { enumType } from 'nexus'
+import { builder } from '../builder'
+import { Theme as PrismaTheme } from '.prisma/client'
 
-export const Theme = enumType({
-  name: 'Theme',
-  members: ['GRAY', 'RED', 'YELLOW', 'GREEN', 'BLUE', 'INDIGO', 'PURPLE', 'PINK'],
-})
+export const Theme = builder.enumType(PrismaTheme, { name: 'Theme' })

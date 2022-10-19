@@ -1,14 +1,17 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { MdPersonAddAlt1 } from 'react-icons/md'
+
+import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '@progwise/timebook-ui'
+
 import { useCustomersQuery } from '../../generated/graphql'
 import { ProtectedPage } from '../protectedPage'
-import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '@progwise/timebook-ui'
-import { MdPersonAddAlt1 } from 'react-icons/md'
+
 export const CustomerTable = (): JSX.Element => {
   const router = useRouter()
   const slug = router.query.teamSlug?.toString() ?? ''
   const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
-  const [{ data }] = useCustomersQuery({ pause: !router.isReady, context })
+  const [{ data }] = useCustomersQuery({ pause: !router.isReady, context, variables: { slug } })
 
   const handleAddCustomer = async () => {
     await router.push(`/${slug}/customers/add`)
@@ -27,7 +30,7 @@ export const CustomerTable = (): JSX.Element => {
             <TableHeadCell />
           </TableHeadRow>
           <TableBody>
-            {data?.team.customers.map((customer) => (
+            {data?.teamBySlug.customers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.title}</TableCell>
                 <TableCell>{customer.id}</TableCell>

@@ -1,44 +1,18 @@
-import { objectType } from 'nexus'
-import { Project } from '../project'
-import { Task } from '../task'
-import { User } from '../user'
+import { builder } from '../builder'
+import { DateScalar } from '../scalars'
 
-export const WorkHour = objectType({
-  name: 'WorkHour',
-  definition: (t) => {
-    t.id('id', { description: 'Identifies the work hour' })
-    t.date('date', { resolve: (workHour) => workHour.date })
-    t.int('duration', {
-      resolve: (workHour) => workHour.duration,
-      description: 'Duration of the work hour in minutes',
-    })
-    t.field('user', {
-      type: User,
-      description: 'User who booked the work hours',
-      resolve: (workHour, _arguments, context) =>
-        context.prisma.user.findUniqueOrThrow({
-          where: {
-            id: workHour.userId,
-          },
-        }),
-    })
-    t.field('project', {
-      type: Project,
-      resolve: async (workHour, _arguments, context) => {
-        const { task } = await context.prisma.workHour.findUniqueOrThrow({
-          where: { id: workHour.id },
-          select: { task: { select: { project: true } } },
-        })
-        return task.project
-      },
-    })
-    t.field('task', {
-      type: Task,
-      description: 'Task for which the working hour was booked',
-      resolve: (workHour, _arguments, context) =>
-        context.prisma.task.findUniqueOrThrow({
-          where: { id: workHour.taskId },
-        }),
-    })
-  },
+export const WorkHour = builder.prismaObject('WorkHour', {
+  select: {},
+  fields: (t) => ({
+    id: t.exposeID('id', { description: 'Identifies the work hour' }),
+    date: t.expose('date', { type: DateScalar }),
+    duration: t.exposeInt('duration', { description: 'Duration of the work hour in minutes' }),
+    user: t.relation('user', { description: 'User who booked the work hours' }),
+    project: t.field({
+      type: 'Project',
+      select: { task: { select: { project: { select: { id: true } } } } },
+      resolve: (workHour) => workHour.task.project,
+    }),
+    task: t.relation('task', { description: 'Task for which the working hour was booked' }),
+  }),
 })

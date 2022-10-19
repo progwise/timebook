@@ -116,8 +116,34 @@ jobs:
           path: apps/app/playwright-report/
           retention-days: 30
 
-  deploy:
+  pulumi:
     needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: ./packages/pulumi
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - run: npm install
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: prod
+          upsert: true
+          work-dir: ./packages/pulumi
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.AUTH_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.AUTH_GITHUB_CLIENT_SECRET }}
+
+  deploy:
+    needs: [pulumi]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     name: Deploy App
@@ -127,7 +153,7 @@ jobs:
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@main
         with:
-          app_name: timebook-app
+          app_name: timebook
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
   migrate:

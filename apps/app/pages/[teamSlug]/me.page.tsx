@@ -1,8 +1,12 @@
-import { useMeQuery } from '../../frontend/generated/graphql'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+
+import { useMeQuery } from '../../frontend/generated/graphql'
 
 const MyProfilePage = (): JSX.Element => {
-  const [{ data: userData, fetching }] = useMeQuery()
+  const router = useRouter()
+  const teamSlug = router.query.teamSlug?.toString() ?? ''
+  const [{ data: userData, fetching }] = useMeQuery({ variables: { teamSlug }, pause: !router.isReady })
 
   if (fetching) {
     return <div>Loading...</div>

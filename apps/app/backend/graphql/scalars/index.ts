@@ -1,2 +1,1 @@
-export * from './date'
-export * from './time'
+export { DateScalar } from './date'

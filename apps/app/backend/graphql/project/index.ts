@@ -1,3 +1,4 @@
-export * from './project'
-export * from './queries'
-export * from './mutations'
+import './mutations'
+import './queries'
+
+export { Project } from './project'

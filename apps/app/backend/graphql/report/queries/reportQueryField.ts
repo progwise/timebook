@@ -1,55 +1,24 @@
-import { arg, idArg, queryField } from 'nexus'
-import { Report } from '../report'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
+import { DateScalar } from '../../scalars'
 
-export interface ReportSource {
-  projectId: string
-  from: Date
-  to: Date
-}
+builder.queryField('report', (t) =>
+  t.field({
+    type: 'Report',
+    description: 'Returns a monthly project report',
+    authScopes: async (_source, { projectId }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        select: { teamId: true },
+        where: { id: projectId.toString() },
+      })
 
-export const reportQueryField = queryField('report', {
-  type: Report,
-  description: 'Returns a monthly project report',
-  args: {
-    projectId: idArg({ description: 'Project identifier' }),
-    from: arg({ type: 'Date' }),
-    to: arg({ type: 'Date' }),
-  },
-  resolve: (_source, arguments_) => arguments_,
-  authorize: async (_source, arguments_, context) => {
-    if (!context.teamSlug) {
-      throw new Error('No team slug found')
-    }
-    if (!context.session) {
-      throw new Error('No session found')
-    }
-    const project = await context.prisma.project.findFirst({
-      where: {
-        id: arguments_.projectId,
-        team: { slug: context.teamSlug },
-      },
-    })
-    if (!project) {
-      throw new Error('No project found')
-    }
-    const projectMember = await context.prisma.projectMembership.findFirst({
-      where: {
-        projectId: arguments_.projectId,
-        userId: context.session.user.id,
-      },
-    })
-    const teamMember = await context.prisma.teamMembership.findFirst({
-      where: {
-        team: { slug: context.teamSlug },
-        userId: context.session.user.id,
-      },
-    })
-    const isTeamAdmin: boolean = teamMember?.role === 'ADMIN'
-
-    if (!projectMember && !isTeamAdmin) {
-      throw new Error('Not authorized')
-    }
-
-    return true
-  },
-})
+      return { isProjectMember: projectId.toString(), isTeamAdminByTeamId: project.teamId }
+    },
+    args: {
+      projectId: t.arg.id({ description: 'Project identifier' }),
+      from: t.arg({ type: DateScalar }),
+      to: t.arg({ type: DateScalar }),
+    },
+    resolve: (_source, { projectId, from, to }) => ({ projectId: projectId.toString(), from, to }),
+  }),
+)

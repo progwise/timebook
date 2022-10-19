@@ -1,52 +1,42 @@
-import { GraphQLError } from 'graphql'
-import { objectType } from 'nexus'
-import { Project } from '../project'
-import { Role } from './role'
+import { builder } from '../builder'
+import { prisma } from '../prisma'
+import { RoleEnum } from './role'
 
-export const User = objectType({
-  name: 'User',
-  definition: (t) => {
-    t.id('id')
-    t.nullable.string('name')
-    t.nullable.string('image')
-    t.list.field('projects', {
-      type: Project,
+export const User = builder.prismaObject('User', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    name: t.exposeString('name', { nullable: true }),
+    image: t.exposeString('image', { nullable: true }),
+    projects: t.prismaField({
+      type: ['Project'],
       description: 'Returns the list of projects where the user is a member',
-      resolve: (user, _arguments, context) => {
-        if (!context.teamSlug) {
-          return []
-        }
-        return context.prisma.project.findMany({
+      args: { teamSlug: t.arg.string() },
+      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+      resolve: (query, user, { teamSlug }) =>
+        prisma.project.findMany({
+          ...query,
           where: {
-            team: {
-              slug: context.teamSlug,
-            },
-            projectMemberships: {
-              some: { userId: user.id },
-            },
+            team: { slug: teamSlug },
+            projectMemberships: { some: { userId: user.id } },
           },
-        })
-      },
-    })
-    t.field('role', {
-      type: Role,
-      description: 'Role of the user in the current team',
-      resolve: async (user, _arguments, context) => {
-        const slug = context.teamSlug
-
-        if (!slug) {
-          throw new GraphQLError('Team slug is missing.')
-        }
-
-        const membership = await context.prisma.teamMembership.findFirstOrThrow({
+        }),
+    }),
+    role: t.field({
+      type: RoleEnum,
+      args: { teamSlug: t.arg.string() },
+      select: { id: true },
+      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+      description: 'Role of the user in a team',
+      resolve: async (user, { teamSlug }) => {
+        const teamMembership = await prisma.teamMembership.findFirstOrThrow({
           where: {
             userId: user.id,
-            team: { slug },
+            team: { slug: teamSlug },
           },
         })
-
-        return membership.role
+        return teamMembership.role
       },
-    })
-  },
+    }),
+  }),
 })

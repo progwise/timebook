@@ -1,5 +1,6 @@
-import { ReactNode } from 'react'
 import { signIn, useSession } from 'next-auth/react'
+import { ReactNode } from 'react'
+
 import { TimebookPage } from './timebookPage'
 
 interface ProtectedPageProps {

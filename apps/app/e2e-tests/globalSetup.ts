@@ -1,7 +1,8 @@
-import { createHash, randomBytes } from 'node:crypto'
 import { Browser, chromium } from '@playwright/test'
-import { PrismaClient } from '.prisma/client'
 import { addYears } from 'date-fns'
+import { createHash, randomBytes } from 'node:crypto'
+
+import { PrismaClient } from '.prisma/client'
 
 interface User {
   email: string

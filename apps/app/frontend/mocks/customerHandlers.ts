@@ -17,7 +17,7 @@ export const customerHandlers = [
   mockCustomersQuery((request, response, context) =>
     response(
       context.data({
-        team: {
+        teamBySlug: {
           id: 'team1',
           title: 'Progwise',
           customers,

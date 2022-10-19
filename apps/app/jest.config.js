@@ -25,4 +25,5 @@ module.exports = {
       verbose: true,
     },
   ],
+  collectCoverageFrom: ['**/*.{ts,tsx}', '!**/node_modules/**', '!**/.next/**', '!**/seed.ts'],
 }

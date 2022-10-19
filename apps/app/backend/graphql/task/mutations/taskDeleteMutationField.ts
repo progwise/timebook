@@ -1,19 +1,24 @@
-import { idArg, mutationField } from 'nexus'
-import { Task } from '../task'
-import { isTeamAdmin } from '../../isTeamAdmin'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const taskDeleteMutationField = mutationField('taskDelete', {
-  type: Task,
-  description: 'Delete a task',
-  args: {
-    id: idArg({ description: 'id of the task' }),
-  },
-  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
-  resolve: (_source, { id }, context) => {
-    if (!context.session?.user.id) {
-      throw new Error('not authenticated')
-    }
-
-    return context.prisma.task.delete({ where: { id: id } })
-  },
-})
+builder.mutationField('taskDelete', (t) =>
+  t.prismaField({
+    type: 'Task',
+    description: 'Delete a task',
+    args: {
+      id: t.arg.id({ description: 'id of the task' }),
+    },
+    authScopes: async (_source, { id }) => {
+      const task = await prisma.task.findUniqueOrThrow({
+        select: { project: { select: { teamId: true } } },
+        where: { id: id.toString() },
+      })
+      return { isTeamAdminByTeamId: task.project.teamId }
+    },
+    resolve: (query, _source, { id }) =>
+      prisma.task.delete({
+        ...query,
+        where: { id: id.toString() },
+      }),
+  }),
+)

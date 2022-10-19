@@ -1,11 +1,9 @@
-import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { BiTrash } from 'react-icons/bi'
-import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
-import { DeleteTaskModal } from '../deleteTaskModal'
-import { useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { BiTrash } from 'react-icons/bi'
+
 import {
   Button,
   InputField,
@@ -19,6 +17,10 @@ import {
   TableRow,
   TableFootRow,
 } from '@progwise/timebook-ui'
+
+import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
+import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
+import { DeleteTaskModal } from '../deleteTaskModal'
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
@@ -81,9 +83,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 )}
                 <span className="ml-2">{task.title}</span>
               </TableCell>
-              <TableCell className="text-center">
-                <input type="checkbox" />
-              </TableCell>
+              <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
               <TableCell>
                 <Button
                   variant="tertiary"

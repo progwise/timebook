@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { Control, FieldValues, Path, useController } from 'react-hook-form'
+
 import { CustomerFragment, useCustomerCreateMutation, useCustomersQuery } from '../../generated/graphql'
 import { ComboBox } from '../combobox/combobox'
 
@@ -14,10 +15,12 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   name,
 }: CustomerInputProps<TFieldValues>) => {
   const router = useRouter()
+  const slug = router.query.teamSlug?.toString() ?? ''
   const context = useMemo(() => ({ additionalTypenames: ['Customer'] }), [])
   const [{ data: customersData }] = useCustomersQuery({
     pause: !router.isReady,
     context,
+    variables: { slug: slug },
   })
   const [{ fetching: createCustomerFetching }, createCustomer] = useCustomerCreateMutation()
 
@@ -30,7 +33,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
   })
 
   const handleCreateCustomer = async (title: string): Promise<CustomerFragment> => {
-    const result = await createCustomer({ data: { title } })
+    const result = await createCustomer({ data: { title }, teamSlug: slug })
 
     if (!result.data) {
       throw new Error('Customer creation failed')
@@ -41,7 +44,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
     return createdCustomer
   }
 
-  const selectedCustomer = customersData?.team.customers.find((customer) => customer.id === value)
+  const selectedCustomer = customersData?.teamBySlug.customers.find((customer) => customer.id === value)
 
   return (
     <div className="flex flex-col">
@@ -52,7 +55,7 @@ export const CustomerInput = <TFieldValues extends FieldValues>({
           onChange={onChange}
           displayValue={(customer) => customer.title}
           onBlur={onBlur}
-          options={customersData?.team.customers ?? []}
+          options={customersData?.teamBySlug.customers ?? []}
           noOptionLabel="No Customer"
           onCreateNew={handleCreateCustomer}
           isCreating={createCustomerFetching}
