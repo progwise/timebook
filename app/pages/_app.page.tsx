@@ -1,46 +1,54 @@
+import { NextPageContext } from 'next'
 import { Session } from 'next-auth'
-import { SessionProvider } from 'next-auth/react'
+import { getSession, SessionProvider } from 'next-auth/react'
+import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
-import { useMemo } from 'react'
-import { createClient, Provider } from 'urql'
 
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
 
-interface MyAppProps {
+interface TimebookProps {
   Component: new (props: unknown) => React.Component
-  pageProps: {
-    session: Session
+  session: Session | undefined
+  pageProps?: {
     [key: string]: unknown
   }
 }
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: MyAppProps): JSX.Element {
-  const client = useMemo(() => createClient({ url: '/api/graphql' }), [])
+const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
+  <SessionProvider session={session}>
+    <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
+      <TopNavigation />
+    </header>
+    <main className="mb-10 mt-12 px-6 dark:bg-slate-800 dark:text-white">
+      <Component {...pageProps} />
+    </main>
+    <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
+      <Link href="/impress">
+        <a className=" hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Impress</a>
+      </Link>
+      <Link href="/privacy">
+        <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Privacy Policy</a>
+      </Link>
+      <Link href="/privacy">
+        <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
+      </Link>
+    </footer>
+  </SessionProvider>
+)
 
-  return (
-    <SessionProvider session={session}>
-      <Provider value={client}>
-        <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
-          <TopNavigation />
-        </header>
-        <main className="mb-10 mt-12 px-6 dark:bg-slate-800 dark:text-white">
-          <Component {...pageProps} />
-        </main>
-        <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
-          <Link href="/impress">
-            <a className=" hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Impress</a>
-          </Link>
-          <Link href="/privacy">
-            <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Privacy Policy</a>
-          </Link>
-          <Link href="/privacy">
-            <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
-          </Link>
-        </footer>
-      </Provider>
-    </SessionProvider>
-  )
-}
+TimebookApp.getInitialProps = async (context: NextPageContext) => ({
+  session: await getSession(context),
+})
 
-export default MyApp
+export default withUrqlClient(
+  (_ssrExchange, context) => ({
+    url: `${process.env.NEXTAUTH_URL}/api/graphql`,
+    fetchOptions: () => ({
+      headers: {
+        cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
+      },
+    }),
+  }),
+  { ssr: true },
+)(TimebookApp)
