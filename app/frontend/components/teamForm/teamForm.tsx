@@ -51,6 +51,11 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       router.push(`/${data.slug}/team`)
     }
   }
+
+  const handleDismiss = () => {
+    router.push(`/teams`)
+  }
+
   const handleCopyClick = () => {
     navigator.clipboard.writeText(`${process.env.NEXTAUTH_URL}/${team?.slug}/team/invite/${team?.inviteKey}`)
   }
@@ -98,7 +103,12 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       )}
 
       <div className="start mt-4 flex flex-row justify-between gap-2 sm:justify-end">
-        <Button variant="secondary">Dismiss</Button>
+        {/* Dismiss button available only during the creation of a new team */}
+        {!team?.slug ? (
+          <Button variant="secondary" onClick={handleDismiss}>
+            Dismiss
+          </Button>
+        ) : undefined}
         <Button variant="primary" type="submit">
           Save
         </Button>
