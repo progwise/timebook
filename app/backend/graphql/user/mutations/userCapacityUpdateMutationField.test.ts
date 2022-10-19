@@ -20,7 +20,7 @@ describe('userCapatityUpdate', () => {
     await prisma.teamMembership.deleteMany()
   })
 
-  it('should be error when update capacity hours', async () => {
+  it('should throw an error when the user is not an admin', async () => {
     await prisma.team.create({ data: { slug: 'progwise', id: '1', title: 'Progwise' } })
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '1' } })
@@ -39,7 +39,7 @@ describe('userCapatityUpdate', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw an error when the user is not an admin', async () => {
+  it('should update capacity hours if user is a team admin', async () => {
     await prisma.team.create({ data: { slug: 'progwise', id: '1', title: 'Progwise' } })
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })

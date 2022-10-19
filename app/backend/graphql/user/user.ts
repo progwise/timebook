@@ -11,7 +11,7 @@ export const User = objectType({
     t.nullable.string('image')
     t.nullable.field('availableMinutesPerWeek', {
       type: 'Int',
-      description: 'Capacity hours of the use in team',
+      description: 'Capacity of the user in the team',
       resolve: async (user, _arguments, context) => {
         const slug = context.teamSlug
 
