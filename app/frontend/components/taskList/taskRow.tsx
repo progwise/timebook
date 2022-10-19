@@ -25,21 +25,13 @@ export const TaskRow = ({ task }: TaskRowProps) => {
   })
 
   const handleSubmitTask = async (taskData: TaskFormData) => {
-    try {
-      const result = await taskUpdate({
-        id: task.id,
-        data: {
-          projectId: task.project.id,
-          title: taskData.title,
-        },
-      })
-      if (result.error) {
-        throw new Error(`GraphQL Error ${result.error}`)
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
+    await taskUpdate({
+      id: task.id,
+      data: {
+        projectId: task.project.id,
+        title: taskData.title,
+      },
+    })
   }
 
   return (
