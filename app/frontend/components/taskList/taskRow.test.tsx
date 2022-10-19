@@ -24,10 +24,10 @@ describe('test row', () => {
     const textBox = await screen.findByRole('textbox')
 
     await userEvent.clear(textBox)
-    expect(await screen.findByLabelText('error field')).toBeInTheDocument()
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
 
     await userEvent.type(textBox, '2')
-    expect(await screen.findByLabelText('error field')).toBeInTheDocument()
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
     render(<TaskRow task={testTask} />, { wrapper })

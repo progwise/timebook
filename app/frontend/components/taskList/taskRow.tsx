@@ -52,7 +52,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
       />
 
       {fetching && <CgSpinner className="ml-2 inline h-8 w-8 animate-spin dark:text-blue-600" />}
-      <ErrorMessage errors={errors} name="title" as={<span aria-label="error field" className="ml-2 text-red-700" />} />
+      <ErrorMessage errors={errors} name="title" as={<span role="alert" className="ml-2 text-red-700" />} />
     </div>
   )
 }
