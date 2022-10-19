@@ -1,11 +1,12 @@
+import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import { InputField } from './inputField/inputField'
+
 import { TaskFragment, TaskInput, useTaskUpdateMutation } from '../generated/graphql'
 import { Button } from './button/button'
+import { InputField } from './inputField/inputField'
 import { Modal } from './modal'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { ErrorMessage } from '@hookform/error-message'
 
 interface TaskDetailsModalProps {
   onClose: () => void

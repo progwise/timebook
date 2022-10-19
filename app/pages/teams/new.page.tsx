@@ -1,5 +1,5 @@
-import { TeamForm } from '../../frontend/components/teamForm/teamForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { TeamForm } from '../../frontend/components/teamForm/teamForm'
 
 const NewTeam = (): JSX.Element => {
   return (

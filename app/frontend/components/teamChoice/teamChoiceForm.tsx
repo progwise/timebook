@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+
 import { useTeamsWithProjectsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
 

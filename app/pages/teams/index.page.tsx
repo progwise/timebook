@@ -1,7 +1,8 @@
+import { useRouter } from 'next/router'
+
+import { Button } from '../../frontend/components/button/button'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { TeamChoiceForm } from '../../frontend/components/teamChoice/teamChoiceForm'
-import { Button } from '../../frontend/components/button/button'
-import { useRouter } from 'next/router'
 
 const Teams = (): JSX.Element => {
   const router = useRouter()

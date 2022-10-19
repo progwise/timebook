@@ -1,14 +1,15 @@
-import { useState } from 'react'
 import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+import { useMemo, useState } from 'react'
 import { BiPlus } from 'react-icons/bi'
+
+import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
 import { Button } from './button/button'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { FormattedDuration } from './duration/formattedDuration'
 import { HourInput } from './hourInput'
 import { Table, TableBody, TableCell, TableHead, TableHeadCell, TableHeadRow, TableRow } from './table/table'
-import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 
 const NUMBER_OF_DAYS = 7
 
@@ -26,12 +27,14 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const fromDate = props.startDate
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
+  const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
       from: formatISO(fromDate, { representation: 'date' }),
       to: formatISO(toDate, { representation: 'date' }),
     },
+    context,
   })
   const tableData: WorkHoursTableRow[] = []
   for (const workHour of data?.workHours ?? []) {

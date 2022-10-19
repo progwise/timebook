@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
-import { TaskInput } from '../taskInput'
 import { prisma } from '../../prisma'
+import { TaskInput } from '../taskInput'
 
 builder.mutationField('taskCreate', (t) =>
   t.prismaField({

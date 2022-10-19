@@ -1,10 +1,11 @@
 import { NextPageContext } from 'next'
 import { Session } from 'next-auth'
 import { getSession, SessionProvider } from 'next-auth/react'
-import '../frontend/styles/globals.css'
-import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
-import Link from 'next/link'
 import { withUrqlClient } from 'next-urql'
+import Link from 'next/link'
+
+import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
+import '../frontend/styles/globals.css'
 
 interface MyAppProps {
   Component: new (props: unknown) => React.Component

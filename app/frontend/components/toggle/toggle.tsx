@@ -1,4 +1,5 @@
 import { Switch } from '@headlessui/react'
+
 interface ToggleProps {
   onChange: (value: boolean) => void
   checked: boolean

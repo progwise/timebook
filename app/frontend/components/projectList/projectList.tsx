@@ -1,6 +1,8 @@
-import { ProjectFragment } from '../../generated/graphql'
-import { DiScrum } from 'react-icons/di'
 import { useRouter } from 'next/router'
+import { DiScrum } from 'react-icons/di'
+
+import { ProjectFragment } from '../../generated/graphql'
+
 export interface ProjectListProps {
   projects: Array<ProjectFragment>
   className?: string

@@ -1,8 +1,9 @@
 import { screen, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
-import TeamPage from './index.page'
+
 import '../../../frontend/mocks/mockServer'
+import TeamPage from './index.page'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({

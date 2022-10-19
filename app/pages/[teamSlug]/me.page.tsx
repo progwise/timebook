@@ -1,6 +1,7 @@
-import { useMeQuery } from '../../frontend/generated/graphql'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+
+import { useMeQuery } from '../../frontend/generated/graphql'
 
 const MyProfilePage = (): JSX.Element => {
   const router = useRouter()

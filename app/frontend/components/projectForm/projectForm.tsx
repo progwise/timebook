@@ -1,17 +1,18 @@
 /* eslint-disable unicorn/no-null */
+import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { format, parse } from 'date-fns'
+import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { ProjectFragment, ProjectInput } from '../../generated/graphql'
-import { CalendarSelector } from '../calendarSelector'
+import { BiTrash } from 'react-icons/bi'
 import InputMask from 'react-input-mask'
 import * as yup from 'yup'
+
+import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { Button } from '../button/button'
+import { CalendarSelector } from '../calendarSelector'
 import { DeleteProjectModal } from '../deleteProjectModal'
-import { useState } from 'react'
 import { InputField } from '../inputField/inputField'
-import { BiTrash } from 'react-icons/bi'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { ErrorMessage } from '@hookform/error-message'
 import { CustomerInput } from './customerInput'
 
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']

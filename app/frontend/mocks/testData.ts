@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+
 import { ProjectWithTasksFragment, TaskFragment, WorkHourFragment } from '../generated/graphql'
 
 export const testProject1: ProjectWithTasksFragment = {

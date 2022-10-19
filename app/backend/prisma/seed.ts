@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-process-exit */
-/* eslint-disable no-console */
 
+/* eslint-disable no-console */
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()

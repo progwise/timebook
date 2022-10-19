@@ -1,10 +1,11 @@
 import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
+
 import { DeleteCustomerModal } from '../../../pages/[teamSlug]/customers/[customerId].page'
 import {
   CustomerFragment,

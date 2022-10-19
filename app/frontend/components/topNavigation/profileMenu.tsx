@@ -1,8 +1,8 @@
 import { Menu } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
 
 import { TopNavigationLink } from './topNavigationLink'
-import Image from 'next/image'
 
 export interface ProfileMenuProps {
   className?: string
