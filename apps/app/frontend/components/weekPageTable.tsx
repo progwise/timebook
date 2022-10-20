@@ -1,6 +1,6 @@
 import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { BiPlus } from 'react-icons/bi'
 
 import {
@@ -36,12 +36,14 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const fromDate = props.startDate
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
+  const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
       from: formatISO(fromDate, { representation: 'date' }),
       to: formatISO(toDate, { representation: 'date' }),
     },
+    context,
   })
   const tableData: WorkHoursTableRow[] = []
   for (const workHour of data?.workHours ?? []) {
