@@ -2,7 +2,7 @@ import { Browser, chromium } from '@playwright/test'
 import { addYears } from 'date-fns'
 import { createHash, randomBytes } from 'node:crypto'
 
-import { PrismaClient } from '.prisma/client'
+import { PrismaClient } from '@progwise/timebook-prisma'
 
 interface User {
   email: string

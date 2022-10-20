@@ -1,5 +1,5 @@
 overwrite: true
-schema: backend/graphql/generated/schema.graphql
+schema: ../../packages/backend/src/graphql/generated/schema.graphql
 documents:
   - frontend/**/*.graphql
   - pages/**/*.graphql
@@ -9,7 +9,7 @@ generates:
       - add:
           content:
             - /* eslint-disable unicorn/prevent-abbreviations */
-            - /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+            - /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
             - /* eslint-disable @typescript-eslint/no-explicit-any */
       - typescript
       - typescript-operations

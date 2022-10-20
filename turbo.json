@@ -21,7 +21,7 @@
       "inputs": ["**/migration.sql"]
     },
     "graphql:generate": {
-      "inputs": ["**/*.graphql"],
+      "inputs": ["**/*.graphql", "../../packages/backend/**/schema.graphql"],
       "outputs": ["**/graphql.ts"]
     },
     "typecheck": {

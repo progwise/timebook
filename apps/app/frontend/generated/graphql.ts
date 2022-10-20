@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 
-/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from 'graphql-tag'
