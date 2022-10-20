@@ -1,8 +1,11 @@
 import { Browser, chromium } from '@playwright/test'
 import { addYears } from 'date-fns'
+import dotenv from 'dotenv'
 import { createHash, randomBytes } from 'node:crypto'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
+
+dotenv.config({ path: '../../apps/app/.env' })
 
 interface User {
   email: string
@@ -12,11 +15,11 @@ interface User {
 export const users = {
   newUser: {
     email: 'e2e-new@progwise.net',
-    storageStatePath: './e2e-tests/.storage-states/newStorageState.json',
+    storageStatePath: '.storage-states/newStorageState.json',
   },
   existingUser: {
     email: 'e2e@progwise.net',
-    storageStatePath: './e2e-tests/.storage-states/existingUserStorageState.json',
+    storageStatePath: '.storage-states/existingUserStorageState.json',
   },
 }
 
