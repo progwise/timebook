@@ -3,12 +3,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
+import * as yup from 'yup'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { InputField } from '../inputField/inputField'
-import * as yup from 'yup'
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import {
   TableRow,
   TableFootRow,
 } from '../table/table'
-import { TaskCell } from './taskCell'
+import { TaskRow } from './taskRow'
 
 export type TaskFormData = Pick<TaskInput, 'title'>
 
@@ -74,17 +74,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                {task.canModify && (
-                  <Button
-                    ariaLabel="Delete Task"
-                    variant="danger"
-                    tooltip="Delete Task"
-                    onClick={() => setTaskToBeDeleted(task)}
-                  >
-                    <BiTrash />
-                  </Button>
-                )}
-                <TaskCell task={task} />
+                <TaskRow canModify={task.canModify} task={task} onDelete={() => setTaskToBeDeleted(task)} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
               <TableCell>

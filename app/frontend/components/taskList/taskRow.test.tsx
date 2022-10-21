@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
+
 import { testTask } from '../../mocks/testData'
-import { TaskCell } from './taskCell'
+import { TaskRow } from './taskRow'
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
@@ -19,7 +20,7 @@ jest.mock('next/router', () => ({
 
 describe('test row', () => {
   it('should be validation errors', async () => {
-    render(<TaskCell task={testTask} />, { wrapper })
+    render(<TaskRow canModify task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -30,7 +31,7 @@ describe('test row', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
-    render(<TaskCell task={testTask} />, { wrapper })
+    render(<TaskRow canModify task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
