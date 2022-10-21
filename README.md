@@ -9,6 +9,7 @@ cd app
 ```
 
 ## Start the database server
+
 The database server has to be started prior to make the backend work.
 
 ```bash
@@ -22,6 +23,7 @@ npx prisma studio
 ```
 
 ## Migrate the database
+
 This is needed, if the database schema has changed since the last migration run.
 
 ```bash
@@ -42,8 +44,8 @@ For more information how next.js apps are build see [NextJS basics](https://next
 
 # Running the app
 
--   http://localhost:3000 frontend
--   http://localhost:4000 graphql backend
+- http://localhost:3000 frontend
+- http://localhost:4000 graphql backend
 -
 
 ...
@@ -60,8 +62,8 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 To learn more about Next.js, take a look at the following resources:
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
