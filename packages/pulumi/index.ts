@@ -18,7 +18,7 @@ export const timebook = new digitalocean.App('timebook', {
         instanceCount: 1,
         name: 'timebook',
         instanceSizeSlug: 'basic-xxs',
-        buildCommand: 'pnpm install && pnpm run build',
+        buildCommand: 'npm install -g pnpm && pnpm install && pnpm run build',
         runCommand: 'pnpm run start',
         envs: [
           { key: 'NEXTAUTH_URL', value: '${_self.PUBLIC_URL}' },
