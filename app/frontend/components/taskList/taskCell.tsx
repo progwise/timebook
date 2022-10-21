@@ -6,11 +6,11 @@ import { InputField } from '../inputField/inputField'
 import { CgSpinner } from 'react-icons/cg'
 import { TaskFormData, taskInputSchema } from './taskList'
 
-interface TaskRowProps {
+interface TaskCellProps {
   task: TaskFragment
 }
 
-export const TaskRow = ({ task }: TaskRowProps) => {
+export const TaskCell = ({ task }: TaskCellProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const {
     register,

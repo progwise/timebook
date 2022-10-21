@@ -20,7 +20,7 @@ import {
   TableRow,
   TableFootRow,
 } from '../table/table'
-import { TaskRow } from './taskRow'
+import { TaskCell } from './taskCell'
 
 export type TaskFormData = Pick<TaskInput, 'title'>
 
@@ -84,7 +84,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     <BiTrash />
                   </Button>
                 )}
-                <TaskRow task={task} />
+                <TaskCell task={task} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
               <TableCell>

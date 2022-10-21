@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 import { testTask } from '../../mocks/testData'
-import { TaskRow } from './taskRow'
+import { TaskCell } from './taskCell'
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
@@ -19,7 +19,7 @@ jest.mock('next/router', () => ({
 
 describe('test row', () => {
   it('should be validation errors', async () => {
-    render(<TaskRow task={testTask} />, { wrapper })
+    render(<TaskCell task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -30,7 +30,7 @@ describe('test row', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
-    render(<TaskRow task={testTask} />, { wrapper })
+    render(<TaskCell task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -38,6 +38,6 @@ describe('test row', () => {
     await userEvent.type(textBox, '2123123')
     await userEvent.click(document.body)
 
-    expect(screen.queryByLabelText('error field')).not.toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 })
