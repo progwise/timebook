@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
@@ -51,7 +52,7 @@ afterEach(async () => {
 })
 
 it('should throw error when user is unauthorized', async () => {
-  const testServer = getTestServer({ prisma, noSession: true })
+  const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {
@@ -64,7 +65,7 @@ it('should throw error when user is unauthorized', async () => {
 })
 
 it('should throw new errror when user is not admin', async () => {
-  const testServer = getTestServer({ prisma, userId: '2', teamSlug: 'Papa' })
+  const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {
@@ -77,7 +78,7 @@ it('should throw new errror when user is not admin', async () => {
 })
 
 it('should throw error if deleting a non existing membership', async () => {
-  const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'Papa' })
+  const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {
@@ -90,7 +91,7 @@ it('should throw error if deleting a non existing membership', async () => {
 })
 
 it('user must be team member', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {
@@ -103,7 +104,7 @@ it('user must be team member', async () => {
 })
 
 it('user can not change project memberships of another team', async () => {
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {
@@ -119,7 +120,7 @@ it('should delete an existing projectMembership', async () => {
   await prisma.projectMembership.create({
     data: { projectId: 'project1', userId: '2' },
   })
-  const testServer = getTestServer({ prisma, teamSlug: 'Papa', userId: '1' })
+  const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipDeleteMutation,
     variables: {

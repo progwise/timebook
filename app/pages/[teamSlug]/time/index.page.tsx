@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { BiEdit, BiPlus, BiTimer } from 'react-icons/bi'
+
 import { BookWorkHourModal, WorkHourItem } from '../../../frontend/components/bookWorkHourModal'
 import { Button } from '../../../frontend/components/button/button'
 import { CalendarSelector } from '../../../frontend/components/calendarSelector'
@@ -57,7 +58,7 @@ const MaintainWorkHoursPage = () => {
           <BiPlus className="text-3xl" />
         </Button>
       </nav>
-      <DayWeekSwitch selectedButton={'day'} />
+      <DayWeekSwitch selectedButton="day" />
       <section className="mt-5 grid grid-cols-4 gap-6 divide-y divide-solid">
         {data?.workHours.map((item) => (
           <article key={item.id} className="contents border-2 border-black">

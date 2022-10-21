@@ -2,12 +2,16 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useForm } from 'react-hook-form'
 import { Client, Provider } from 'urql'
-import { CustomerInput } from './customerInput'
+
 import '../../mocks/mockServer'
+import { CustomerInput } from './customerInput'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
     isReady: true,
+    query: {
+      teamSlug: 'progwise',
+    },
   }),
 }))
 

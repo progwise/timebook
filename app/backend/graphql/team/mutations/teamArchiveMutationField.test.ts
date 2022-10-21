@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
@@ -77,7 +78,7 @@ describe('teamArchiveMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toBeNull()
@@ -85,7 +86,7 @@ describe('teamArchiveMutationField', () => {
   })
 
   it('should throw error when user is not admin', async () => {
-    const testServer = getTestServer({ prisma, userId: '2', teamSlug: 'progwise' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toBeNull()
@@ -93,7 +94,7 @@ describe('teamArchiveMutationField', () => {
   })
 
   it('should throw error when admin from another team', async () => {
-    const testServer = getTestServer({ prisma, userId: '3', teamSlug: 'google' })
+    const testServer = getTestServer({ userId: '3' })
     const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toBeNull()
@@ -101,7 +102,7 @@ describe('teamArchiveMutationField', () => {
   })
 
   it('should archive team', async () => {
-    const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'progwise' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({ query: teamArchiveMutation, variables: { teamId: 'Team 1' } })
 
     expect(response.data).toEqual({

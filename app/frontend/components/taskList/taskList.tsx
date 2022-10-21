@@ -1,12 +1,13 @@
+import { ErrorMessage } from '@hookform/error-message'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { BiTrash } from 'react-icons/bi'
+
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { Button } from '../button/button'
-import { BiTrash } from 'react-icons/bi'
-import { InputField } from '../inputField/inputField'
-import { useForm } from 'react-hook-form'
-import { ErrorMessage } from '@hookform/error-message'
 import { DeleteTaskModal } from '../deleteTaskModal'
-import { useState } from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { InputField } from '../inputField/inputField'
 import * as yup from 'yup'
 import {
   Table,
@@ -43,6 +44,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
+  const [, setTaskToBeUpdated] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskFormData) => {
     try {
@@ -84,8 +86,16 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 )}
                 <TaskRow task={task} />
               </TableCell>
-              <TableCell className="text-center">
-                <input type="checkbox" />
+              <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
+              <TableCell>
+                <Button
+                  variant="tertiary"
+                  onClick={() => {
+                    setTaskToBeUpdated(task)
+                  }}
+                >
+                  Details
+                </Button>
               </TableCell>
             </TableRow>
           ))}

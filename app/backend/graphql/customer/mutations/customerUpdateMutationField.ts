@@ -1,22 +1,28 @@
-import { arg, idArg, mutationField } from 'nexus'
-import { isTeamMember } from '../../team/utils'
-import { Customer } from '../customer'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { CustomerInput } from '../customerInput'
 
-export const customerUpdateMutationField = mutationField('customerUpdate', {
-  type: Customer,
-  description: 'Update a customer',
-  args: {
-    customerId: idArg({ description: 'Id of the customer' }),
-    data: arg({ type: CustomerInput }),
-  },
-  authorize: async (_source, { customerId }, context) => {
-    const customer = await context.prisma.customer.findUniqueOrThrow({ where: { id: customerId } })
-    return isTeamMember({ id: customer.teamId }, context)
-  },
-  resolve: (_source, { customerId, data }, context) =>
-    context.prisma.customer.update({
-      where: { id: customerId },
-      data,
-    }),
-})
+builder.mutationField('customerUpdate', (t) =>
+  t.prismaField({
+    type: 'Customer',
+    description: 'Update a customer',
+    args: {
+      customerId: t.arg.id({ description: 'Id of the customer' }),
+      data: t.arg({ type: CustomerInput }),
+    },
+    authScopes: async (_source, { customerId }) => {
+      const customer = await prisma.customer.findUniqueOrThrow({
+        select: { teamId: true },
+        where: { id: customerId.toString() },
+      })
+
+      return { isTeamAdminByTeamId: customer.teamId }
+    },
+    resolve: (query, _source, { customerId, data }) =>
+      prisma.customer.update({
+        ...query,
+        where: { id: customerId.toString() },
+        data,
+      }),
+  }),
+)

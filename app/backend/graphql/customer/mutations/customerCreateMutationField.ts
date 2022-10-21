@@ -1,15 +1,20 @@
-import { arg, mutationField } from 'nexus'
-import { isTeamMember } from '../../team/utils'
-import { Customer } from '../customer'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { CustomerInput } from '../customerInput'
 
-export const customerCreateMutationField = mutationField('customerCreate', {
-  type: Customer,
-  description: 'Create a new customer for a team',
-  args: {
-    data: arg({ type: CustomerInput }),
-  },
-  authorize: (_source, {}, context) => !!context.teamSlug && isTeamMember({ slug: context.teamSlug }, context),
-  resolve: (_source, { data: { title } }, context) =>
-    context.prisma.customer.create({ data: { title, team: { connect: { slug: context.teamSlug } } } }),
-})
+builder.mutationField('customerCreate', (t) =>
+  t.prismaField({
+    type: 'Customer',
+    description: 'Create a new customer for a team',
+    authScopes: (_source, { teamSlug }) => ({ isTeamAdminByTeamSlug: teamSlug }),
+    args: {
+      data: t.arg({ type: CustomerInput }),
+      teamSlug: t.arg.string({ description: 'slug of the team' }),
+    },
+    resolve: (query, _source, { data: { title }, teamSlug }) =>
+      prisma.customer.create({
+        ...query,
+        data: { title, team: { connect: { slug: teamSlug } } },
+      }),
+  }),
+)

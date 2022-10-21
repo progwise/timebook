@@ -1,10 +1,11 @@
 import { setupServer } from 'msw/node'
+
+import { customerHandlers } from './customerHandlers'
 import { handlers } from './handlers'
-import { taskHandlers } from './taskHandlers'
 import { projectHandlers } from './projectHandlers'
+import { taskHandlers } from './taskHandlers'
 import { teamHandlers } from './teamHandlers'
 import { workhourHandlers } from './workhourHandlers'
-import { customerHandlers } from './customerHandlers'
 
 const allHandlers = [
   ...handlers,

@@ -1,20 +1,28 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { Task } from '../task'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const taskArchiveMutationField = mutationField('taskArchive', {
-  type: Task,
-  description: 'Archive a task',
-  args: {
-    taskId: idArg({ description: 'id of the task' }),
-  },
-  authorize: (_source, _arguments, context) => isTeamAdmin(context),
-  resolve: (_source, { taskId }, context) => {
-    return context.prisma.task.update({
-      where: { id: taskId },
-      data: {
-        archivedAt: new Date(),
-      },
-    })
-  },
-})
+builder.mutationField('taskArchive', (t) =>
+  t.prismaField({
+    type: 'Task',
+    description: 'Archive a task',
+    args: {
+      taskId: t.arg.id({ description: 'id of the task' }),
+    },
+    authScopes: async (_source, { taskId }) => {
+      const task = await prisma.task.findUniqueOrThrow({
+        select: { project: { select: { teamId: true } } },
+        where: { id: taskId.toString() },
+      })
+
+      return { isTeamAdminByTeamId: task.project.teamId }
+    },
+    resolve: (query, _source, { taskId }) =>
+      prisma.task.update({
+        ...query,
+        where: { id: taskId.toString() },
+        data: {
+          archivedAt: new Date(),
+        },
+      }),
+  }),
+)

@@ -1,26 +1,25 @@
-import { idArg, queryField } from 'nexus'
-import { Project } from '../project'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const projectQueryField = queryField('project', {
-  type: Project,
-  description: 'Returns a single project',
-  args: {
-    projectId: idArg({ description: 'Identifier for the project' }),
-  },
-  authorize: (_source, _arguments, context) => !!context.session?.user.id,
-  resolve: (_source, _arguments, context) => {
-    if (!context.session?.user.id) {
-      throw new Error('User not authenticated')
-    }
+builder.queryField('project', (t) =>
+  t.prismaField({
+    type: 'Project',
+    description: 'Returns a single project',
+    args: {
+      projectId: t.arg.id({ description: 'Identifier for the project' }),
+    },
+    authScopes: async (_source, { projectId }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        select: { id: true, teamId: true },
+        where: { id: projectId.toString() },
+      })
 
-    return context.prisma.project.findFirstOrThrow({
-      where: {
-        id: _arguments.projectId,
-        OR: [
-          { projectMemberships: { some: { userId: context.session.user.id } } },
-          { team: { teamMemberships: { some: { role: 'ADMIN', userId: context.session.user.id } } } },
-        ],
-      },
-    })
-  },
-})
+      return { isTeamAdminByTeamId: project.teamId, isProjectMember: project.id }
+    },
+    resolve: (query, _source, { projectId }) =>
+      prisma.project.findUniqueOrThrow({
+        ...query,
+        where: { id: projectId.toString() },
+      }),
+  }),
+)

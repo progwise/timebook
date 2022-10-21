@@ -12,6 +12,10 @@ generator client {
   previewFeatures = []
 }
 
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
 model Project {
   id         String    @id @default(cuid())
   title      String    @db.VarChar(255)
@@ -51,6 +55,7 @@ model ProjectMembership {
 model Task {
   id        String @id @default(cuid())
   title     String @db.VarChar(255)
+  hourlyRate Decimal? @db.Money
   projectId String
 
   createdAt  DateTime  @default(now())

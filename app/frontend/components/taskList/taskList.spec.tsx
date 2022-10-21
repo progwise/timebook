@@ -1,10 +1,10 @@
 import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
-import { ProjectWithTasksFragment, TaskFragment } from '../../generated/graphql'
-import { TaskList } from './taskList'
 
+import { ProjectWithTasksFragment, TaskFragment } from '../../generated/graphql'
 import '../../mocks/mockServer'
+import { TaskList } from './taskList'
 
 const client = new Client({ url: '/api/graphql' })
 

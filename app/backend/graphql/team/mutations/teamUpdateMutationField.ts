@@ -1,25 +1,25 @@
-import { idArg, mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { Team } from '../team'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { TeamInput } from '../teamInput'
 
-export const teamUpdateMutationField = mutationField('teamUpdate', {
-  type: Team,
-  description: 'Update a new team',
-  args: {
-    id: idArg({ description: 'Id of the team' }),
-    data: TeamInput,
-  },
-  authorize: (_source, _arguments, context) => isTeamAdmin(context),
-
-  resolve: async (_source, { id, data: { title, slug, theme } }, context) => {
-    return context.prisma.team.update({
-      where: { id },
-      data: {
-        title,
-        slug,
-        theme: theme ?? undefined,
-      },
-    })
-  },
-})
+builder.mutationField('teamUpdate', (t) =>
+  t.prismaField({
+    type: 'Team',
+    description: 'Update a team',
+    args: {
+      id: t.arg.id({ description: 'Id of the team' }),
+      data: t.arg({ type: TeamInput }),
+    },
+    authScopes: (_source, { id }) => ({ isTeamAdminByTeamId: id.toString() }),
+    resolve: async (query, _source, { id, data: { title, slug, theme } }) =>
+      prisma.team.update({
+        ...query,
+        where: { id: id.toString() },
+        data: {
+          title,
+          slug,
+          theme: theme ?? undefined,
+        },
+      }),
+  }),
+)

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
@@ -79,7 +80,7 @@ describe('teamUnarchiveMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: teamUnarchiveMutation,
       variables: { id: 'Team 1' },
@@ -90,7 +91,7 @@ describe('teamUnarchiveMutationField', () => {
   })
 
   it('should throw error when user is not admin', async () => {
-    const testServer = getTestServer({ prisma, userId: '2', teamSlug: 'progwise' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: teamUnarchiveMutation,
       variables: { id: 'Team 1' },
@@ -101,7 +102,7 @@ describe('teamUnarchiveMutationField', () => {
   })
 
   it('should throw error when admin is from another team', async () => {
-    const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'progwise' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: teamUnarchiveMutation,
       variables: { id: 'Team 2' },
@@ -112,7 +113,7 @@ describe('teamUnarchiveMutationField', () => {
   })
 
   it('should restore team', async () => {
-    const testServer = getTestServer({ prisma, userId: '1', teamSlug: 'progwise' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: teamUnarchiveMutation,
       variables: { id: 'Team 1' },

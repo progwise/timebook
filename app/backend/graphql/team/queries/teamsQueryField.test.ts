@@ -1,4 +1,5 @@
 import { PrismaClient, Team } from '@prisma/client'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
@@ -68,7 +69,7 @@ describe('teamsQueryField', () => {
   })
 
   it('should return teams where the user is member of', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: undefined })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({ query: teamsQuery })
     expect(response.data?.teams.length).toBe(2)
     expect(response.data?.teams[0].id).toBe('team1')
@@ -76,7 +77,7 @@ describe('teamsQueryField', () => {
   })
 
   it('should be able to query archived teams', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: undefined })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({ query: teamsQuery, variables: { includeArchived: true } })
 
     expect(response.data).toEqual({
@@ -108,7 +109,7 @@ describe('teamsQueryField', () => {
   })
 
   it('should not return error when teamSlug does not exists', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'unknownSlug' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({ query: teamsQuery })
 
     expect(response.data).not.toBeNull()
@@ -116,7 +117,7 @@ describe('teamsQueryField', () => {
   })
 
   it('should return projects the user can access', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: undefined })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({ query: teamsQuery })
 
     const team1 = response.data?.teams.find((team: Team) => team.id === 'team1')

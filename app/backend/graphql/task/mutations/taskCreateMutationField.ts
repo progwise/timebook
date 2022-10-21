@@ -1,25 +1,29 @@
-import { mutationField } from 'nexus'
-import { isTeamAdmin } from '../../isTeamAdmin'
-import { Task } from '../task'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { TaskInput } from '../taskInput'
 
-export const taskCreateMutationField = mutationField('taskCreate', {
-  type: Task,
-  description: 'Create a new Task',
-  args: {
-    data: TaskInput,
-  },
-  authorize: async (_source, _arguments, context) => isTeamAdmin(context),
-  resolve: (_source, { data: { title, projectId } }, context) => {
-    if (!context.session?.user.id) {
-      throw new Error('unauthenticated')
-    }
+builder.mutationField('taskCreate', (t) =>
+  t.prismaField({
+    type: 'Task',
+    description: 'Create a new Task',
+    args: {
+      data: t.arg({ type: TaskInput }),
+    },
+    authScopes: async (_source, { data: { projectId } }) => {
+      const project = await prisma.project.findUniqueOrThrow({
+        select: { teamId: true },
+        where: { id: projectId.toString() },
+      })
 
-    return context.prisma.task.create({
-      data: {
-        title: title,
-        projectId: projectId,
-      },
-    })
-  },
-})
+      return { isTeamAdminByTeamId: project.teamId }
+    },
+    resolve: (query, _source, { data: { title, projectId } }) =>
+      prisma.task.create({
+        ...query,
+        data: {
+          title,
+          projectId: projectId.toString(),
+        },
+      }),
+  }),
+)

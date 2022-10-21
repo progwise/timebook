@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
@@ -55,7 +56,7 @@ describe('teamUpdateMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
+    const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: teamUpdateMutation,
       variables: {
@@ -71,7 +72,7 @@ describe('teamUpdateMutationField', () => {
   })
 
   it('should throw error when user is not admin', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '2' })
+    const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: teamUpdateMutation,
       variables: {
@@ -88,7 +89,7 @@ describe('teamUpdateMutationField', () => {
   })
 
   it('should update team', async () => {
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise', userId: '1' })
+    const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: teamUpdateMutation,
       variables: {

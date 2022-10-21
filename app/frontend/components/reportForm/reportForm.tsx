@@ -1,13 +1,15 @@
+import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
+
 import { ProjectFragment, useProjectsWithTasksQuery, useReportQuery } from '../../generated/graphql'
-import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
-import { FormattedDuration } from '../duration/formattedDuration'
 import { ComboBox } from '../combobox/combobox'
+import { FormattedDuration } from '../duration/formattedDuration'
 
 export const ReportForm = () => {
   const router = useRouter()
-  const [{ data: projectsData }] = useProjectsWithTasksQuery({ pause: !router.isReady })
+  const slug = router.query.teamSlug?.toString() ?? ''
+  const [{ data: projectsData }] = useProjectsWithTasksQuery({ pause: !router.isReady, variables: { slug } })
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))
 
@@ -25,7 +27,7 @@ export const ReportForm = () => {
     pause: !router.isReady || !selectedProjectId,
   })
 
-  const selectedProject: ProjectFragment | undefined = projectsData?.projects.find(
+  const selectedProject: ProjectFragment | undefined = projectsData?.teamBySlug.projects.find(
     (project) => project.id === selectedProjectId,
   )
 
@@ -49,7 +51,7 @@ export const ReportForm = () => {
               displayValue={(project) => project.title}
               noOptionLabel="No Project"
               onChange={handleChange}
-              options={projectsData?.projects ?? []}
+              options={projectsData?.teamBySlug.projects ?? []}
             />
           </div>
           <div>

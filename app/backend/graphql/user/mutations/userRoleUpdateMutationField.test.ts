@@ -1,14 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLError } from 'graphql'
+
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
 const userRoleUpdateMutation = `
-  mutation userRoleUpdate($userId: ID!, $role: Role!) {
-    userRoleUpdate(userId: $userId, role: $role) {
+  mutation userRoleUpdate($userId: ID!, $role: Role!, $teamSlug: String!) {
+    userRoleUpdate(userId: $userId, role: $role, teamSlug: $teamSlug) {
       id
-      role
+      role(teamSlug: $teamSlug)
     }
   }
 `
@@ -20,13 +21,14 @@ describe('userRoleUpdateMutationField', () => {
   })
 
   it('should throw error when unauthorized', async () => {
-    const testServer = getTestServer({ prisma, noSession: true, teamSlug: 'progwise' })
+    const testServer = getTestServer({ noSession: true })
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
         role: 'ADMIN',
         userId: '1',
+        teamSlug: 'progwise',
       },
     })
 
@@ -39,13 +41,14 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer()
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
         role: 'ADMIN',
         userId: '1',
+        teamSlug: 'progwise',
       },
     })
 
@@ -58,13 +61,14 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '1' } })
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer()
 
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
         role: 'MEMBER',
         userId: '1',
+        teamSlug: 'progwise',
       },
     })
 
@@ -79,12 +83,13 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.user.create({ data: { id: '2' } })
     await prisma.teamMembership.create({ data: { role: 'MEMBER', teamId: '1', userId: '2' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
         role: 'ADMIN',
         userId: '2',
+        teamSlug: 'progwise',
       },
     })
 
@@ -98,12 +103,13 @@ describe('userRoleUpdateMutationField', () => {
     await prisma.teamMembership.create({ data: { role: 'ADMIN', teamId: '1', userId: '1' } })
     await prisma.user.create({ data: { id: '2' } })
 
-    const testServer = getTestServer({ prisma, teamSlug: 'progwise' })
+    const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: userRoleUpdateMutation,
       variables: {
         role: 'ADMIN',
         userId: '2',
+        teamSlug: 'progwise',
       },
     })
 

@@ -1,9 +1,12 @@
 /* eslint-disable unicorn/prevent-abbreviations */
+
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from 'graphql-tag'
-import * as Urql from 'urql'
 import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
+import * as Urql from 'urql'
+
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -19,8 +22,6 @@ export type Scalars = {
   Float: number
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
-  /** A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  Time: string
 }
 
 export type Customer = ModifyInterface & {
@@ -78,11 +79,11 @@ export type Mutation = {
   teamArchive: Team
   /** Create a new team */
   teamCreate: Team
-  /** Delete a new team */
+  /** Delete a team */
   teamDelete: Team
   /** Unarchive a team */
   teamUnarchive: Team
-  /** Update a new team */
+  /** Update a team */
   teamUpdate: Team
   /** Update a user role */
   userRoleUpdate: User
@@ -96,6 +97,7 @@ export type Mutation = {
 
 export type MutationCustomerCreateArgs = {
   data: CustomerInput
+  teamSlug: Scalars['String']
 }
 
 export type MutationCustomerDeleteArgs = {
@@ -109,6 +111,7 @@ export type MutationCustomerUpdateArgs = {
 
 export type MutationProjectCreateArgs = {
   data: ProjectInput
+  teamSlug: Scalars['String']
 }
 
 export type MutationProjectDeleteArgs = {
@@ -174,6 +177,7 @@ export type MutationTeamUpdateArgs = {
 
 export type MutationUserRoleUpdateArgs = {
   role: Role
+  teamSlug: Scalars['String']
   userId: Scalars['ID']
 }
 
@@ -225,22 +229,16 @@ export type Query = {
   customer: Customer
   /** Returns a single project */
   project: Project
-  /** Returns a list of all projects */
-  projects: Array<Project>
   /** Returns a monthly project report */
   report: Report
   /** Returns a single task */
   task: Task
-  /** Return team by slug provided in the api route (/api/[teamSlug]/graphql) */
-  team: Team
   /** Return a team by a slug */
   teamBySlug: Team
   /** Return all teams */
   teams: Array<Team>
   /** Returns a single user */
   user: User
-  /** @deprecated Use members field on team type instead */
-  users: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -326,6 +324,8 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
+  /** For calculating the money spent */
+  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
   project: Project
@@ -388,8 +388,16 @@ export type User = {
   name?: Maybe<Scalars['String']>
   /** Returns the list of projects where the user is a member */
   projects: Array<Project>
-  /** Role of the user in the current team */
+  /** Role of the user in a team */
   role: Role
+}
+
+export type UserProjectsArgs = {
+  teamSlug: Scalars['String']
+}
+
+export type UserRoleArgs = {
+  teamSlug: Scalars['String']
 }
 
 export type WorkHour = {
@@ -432,6 +440,7 @@ export type ProjectQuery = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
     customer?: { __typename: 'Customer'; id: string } | null
@@ -443,41 +452,53 @@ export type TaskFragment = {
   id: string
   title: string
   hasWorkHours: boolean
+  hourlyRate?: number | null
   project: { __typename: 'Project'; id: string; title: string }
 }
 
-export type ProjectsWithTasksQueryVariables = Exact<{ [key: string]: never }>
+export type ProjectsWithTasksQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type ProjectsWithTasksQuery = {
   __typename: 'Query'
-  projects: Array<{
-    __typename: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    tasks: Array<{
-      __typename: 'Task'
+  teamBySlug: {
+    __typename: 'Team'
+    projects: Array<{
+      __typename: 'Project'
       id: string
       title: string
-      hasWorkHours: boolean
-      project: { __typename: 'Project'; id: string; title: string }
+      startDate?: string | null
+      endDate?: string | null
+      tasks: Array<{
+        __typename: 'Task'
+        id: string
+        title: string
+        hasWorkHours: boolean
+        hourlyRate?: number | null
+        project: { __typename: 'Project'; id: string; title: string }
+      }>
     }>
-  }>
+  }
 }
 
-export type TeamProjectsQueryVariables = Exact<{ [key: string]: never }>
+export type TeamProjectsQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type TeamProjectsQuery = {
   __typename: 'Query'
-  projects: Array<{
-    __typename: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
-  }>
+  teamBySlug: {
+    __typename: 'Team'
+    projects: Array<{
+      __typename: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      customer?: { __typename: 'Customer'; id: string } | null
+    }>
+  }
 }
 
 export type ProjectFragment = {
@@ -500,12 +521,14 @@ export type ProjectWithTasksFragment = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }>
 }
 
 export type ProjectCreateMutationVariables = Exact<{
   data: ProjectInput
+  teamSlug: Scalars['String']
 }>
 
 export type ProjectCreateMutation = {
@@ -564,6 +587,7 @@ export type TaskCreateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -580,6 +604,7 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
   taskArchive?: {
@@ -587,6 +612,7 @@ export type TaskDeleteMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -603,15 +629,18 @@ export type TaskUpdateMutation = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
 
-export type TeamQueryVariables = Exact<{ [key: string]: never }>
+export type TeamQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
 export type TeamQuery = {
   __typename: 'Query'
-  team: {
+  teamBySlug: {
     __typename: 'Team'
     canModify: boolean
     id: string
@@ -736,6 +765,7 @@ export type TeamWithProjectsFragment = {
 export type UserRoleUpdateMutationVariables = Exact<{
   userId: Scalars['ID']
   role: Role
+  teamSlug: Scalars['String']
 }>
 
 export type UserRoleUpdateMutation = {
@@ -768,6 +798,7 @@ export type WorkHourCreateMutation = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }
@@ -805,6 +836,7 @@ export type WorkHourUpdateMutation = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }
@@ -837,6 +869,7 @@ export type WorkHoursQuery = {
       id: string
       title: string
       hasWorkHours: boolean
+      hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }
   }>
@@ -861,6 +894,7 @@ export type WorkHourFragment = {
     id: string
     title: string
     hasWorkHours: boolean
+    hourlyRate?: number | null
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
@@ -873,6 +907,7 @@ export type CustomerQuery = { __typename: 'Query'; customer: { __typename: 'Cust
 
 export type CustomerCreateMutationVariables = Exact<{
   data: CustomerInput
+  teamSlug: Scalars['String']
 }>
 
 export type CustomerCreateMutation = {
@@ -896,11 +931,13 @@ export type CustomerUpdateMutation = {
   customerUpdate: { __typename: 'Customer'; id: string; title: string }
 }
 
-export type CustomersQueryVariables = Exact<{ [key: string]: never }>
+export type CustomersQueryVariables = Exact<{
+  slug: Scalars['String']
+}>
 
 export type CustomersQuery = {
   __typename: 'Query'
-  team: {
+  teamBySlug: {
     __typename: 'Team'
     id: string
     title: string
@@ -910,7 +947,9 @@ export type CustomersQuery = {
 
 export type CustomerFragment = { __typename: 'Customer'; id: string; title: string }
 
-export type MeQueryVariables = Exact<{ [key: string]: never }>
+export type MeQueryVariables = Exact<{
+  teamSlug: Scalars['String']
+}>
 
 export type MeQuery = {
   __typename: 'Query'
@@ -1048,6 +1087,7 @@ export type TeamUnarchiveMutation = {
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['ID']
+  teamSlug: Scalars['String']
 }>
 
 export type UserQuery = {
@@ -1067,6 +1107,7 @@ export const TaskFragmentDoc = gql`
     id
     title
     hasWorkHours
+    hourlyRate
     project {
       id
       title
@@ -1160,35 +1201,39 @@ export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVari
   return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
-  query projectsWithTasks {
-    projects {
-      ...ProjectWithTasks
+  query projectsWithTasks($slug: String!) {
+    teamBySlug(slug: $slug) {
+      projects {
+        ...ProjectWithTasks
+      }
     }
   }
   ${ProjectWithTasksFragmentDoc}
 `
 
-export function useProjectsWithTasksQuery(options?: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
+export function useProjectsWithTasksQuery(options: Omit<Urql.UseQueryArgs<ProjectsWithTasksQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectsWithTasksQuery, ProjectsWithTasksQueryVariables>({
     query: ProjectsWithTasksDocument,
     ...options,
   })
 }
 export const TeamProjectsDocument = gql`
-  query teamProjects {
-    projects {
-      ...Project
+  query teamProjects($slug: String!) {
+    teamBySlug(slug: $slug) {
+      projects {
+        ...Project
+      }
     }
   }
   ${ProjectFragmentDoc}
 `
 
-export function useTeamProjectsQuery(options?: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
+export function useTeamProjectsQuery(options: Omit<Urql.UseQueryArgs<TeamProjectsQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamProjectsQuery, TeamProjectsQueryVariables>({ query: TeamProjectsDocument, ...options })
 }
 export const ProjectCreateDocument = gql`
-  mutation projectCreate($data: ProjectInput!) {
-    projectCreate(data: $data) {
+  mutation projectCreate($data: ProjectInput!, $teamSlug: String!) {
+    projectCreate(data: $data, teamSlug: $teamSlug) {
       ...Project
     }
   }
@@ -1262,15 +1307,15 @@ export function useTaskUpdateMutation() {
   return Urql.useMutation<TaskUpdateMutation, TaskUpdateMutationVariables>(TaskUpdateDocument)
 }
 export const TeamDocument = gql`
-  query team {
-    team {
+  query team($teamSlug: String!) {
+    teamBySlug(slug: $teamSlug) {
       ...Team
       canModify
       members {
         id
         name
         image
-        projects {
+        projects(teamSlug: $teamSlug) {
           id
           title
         }
@@ -1280,7 +1325,7 @@ export const TeamDocument = gql`
   ${TeamFragmentDoc}
 `
 
-export function useTeamQuery(options?: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
+export function useTeamQuery(options: Omit<Urql.UseQueryArgs<TeamQueryVariables>, 'query'>) {
   return Urql.useQuery<TeamQuery, TeamQueryVariables>({ query: TeamDocument, ...options })
 }
 export const TeamCreateDocument = gql`
@@ -1335,10 +1380,10 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
   })
 }
 export const UserRoleUpdateDocument = gql`
-  mutation userRoleUpdate($userId: ID!, $role: Role!) {
-    userRoleUpdate(userId: $userId, role: $role) {
+  mutation userRoleUpdate($userId: ID!, $role: Role!, $teamSlug: String!) {
+    userRoleUpdate(userId: $userId, role: $role, teamSlug: $teamSlug) {
       id
-      role
+      role(teamSlug: $teamSlug)
     }
   }
 `
@@ -1406,8 +1451,8 @@ export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVa
   return Urql.useQuery<CustomerQuery, CustomerQueryVariables>({ query: CustomerDocument, ...options })
 }
 export const CustomerCreateDocument = gql`
-  mutation customerCreate($data: CustomerInput!) {
-    customerCreate(data: $data) {
+  mutation customerCreate($data: CustomerInput!, $teamSlug: String!) {
+    customerCreate(data: $data, teamSlug: $teamSlug) {
       ...Customer
     }
   }
@@ -1441,8 +1486,8 @@ export function useCustomerUpdateMutation() {
   return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
 }
 export const CustomersDocument = gql`
-  query customers {
-    team {
+  query customers($slug: String!) {
+    teamBySlug(slug: $slug) {
       id
       title
       customers {
@@ -1453,17 +1498,17 @@ export const CustomersDocument = gql`
   ${CustomerFragmentDoc}
 `
 
-export function useCustomersQuery(options?: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
+export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
   return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
-  query me {
+  query me($teamSlug: String!) {
     user {
       id
       image
       name
-      role
-      projects {
+      role(teamSlug: $teamSlug)
+      projects(teamSlug: $teamSlug) {
         id
         title
       }
@@ -1471,7 +1516,7 @@ export const MeDocument = gql`
   }
 `
 
-export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options })
 }
 export const ReportDocument = gql`
@@ -1603,13 +1648,13 @@ export function useTeamUnarchiveMutation() {
   return Urql.useMutation<TeamUnarchiveMutation, TeamUnarchiveMutationVariables>(TeamUnarchiveDocument)
 }
 export const UserDocument = gql`
-  query user($userId: ID!) {
+  query user($userId: ID!, $teamSlug: String!) {
     user(userId: $userId) {
       id
       name
       image
-      role
-      projects {
+      role(teamSlug: $teamSlug)
+      projects(teamSlug: $teamSlug) {
         id
         title
       }
@@ -1641,8 +1686,9 @@ export const mockProjectQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectsWithTasksQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ projects })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -1659,8 +1705,9 @@ export const mockProjectsWithTasksQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTeamProjectsQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ projects })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -1673,7 +1720,7 @@ export const mockTeamProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectCreateMutation((req, res, ctx) => {
- *   const { data } = req.variables;
+ *   const { data, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ projectCreate })
  *   )
@@ -1775,8 +1822,9 @@ export const mockTaskUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTeamQuery((req, res, ctx) => {
+ *   const { teamSlug } = req.variables;
  *   return res(
- *     ctx.data({ team })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -1852,7 +1900,7 @@ export const mockTeamsWithProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockUserRoleUpdateMutation((req, res, ctx) => {
- *   const { userId, role } = req.variables;
+ *   const { userId, role, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ userRoleUpdate })
  *   )
@@ -1958,7 +2006,7 @@ export const mockCustomerQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomerCreateMutation((req, res, ctx) => {
- *   const { data } = req.variables;
+ *   const { data, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ customerCreate })
  *   )
@@ -2015,8 +2063,9 @@ export const mockCustomerUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCustomersQuery((req, res, ctx) => {
+ *   const { slug } = req.variables;
  *   return res(
- *     ctx.data({ team })
+ *     ctx.data({ teamBySlug })
  *   )
  * })
  */
@@ -2029,6 +2078,7 @@ export const mockCustomersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockMeQuery((req, res, ctx) => {
+ *   const { teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ user })
  *   )
@@ -2157,7 +2207,7 @@ export const mockTeamUnarchiveMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockUserQuery((req, res, ctx) => {
- *   const { userId } = req.variables;
+ *   const { userId, teamSlug } = req.variables;
  *   return res(
  *     ctx.data({ user })
  *   )

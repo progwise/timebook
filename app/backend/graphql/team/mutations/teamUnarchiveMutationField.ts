@@ -1,37 +1,24 @@
-import { idArg, mutationField } from 'nexus'
-import { Team } from '../team'
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 
-export const teamUnarchiveMutationField = mutationField('teamUnarchive', {
-  type: Team,
-  description: 'Unarchive a team',
-  args: {
-    teamId: idArg({ description: 'Id of the team' }),
-  },
-  authorize: async (_source, { teamId }, context) => {
-    const userId = context.session?.user.id
-
-    if (!userId) {
-      return false
-    }
-
-    const teamMembership = await context.prisma.teamMembership.findFirst({
-      where: {
-        teamId,
-        userId,
-      },
-    })
-
-    return teamMembership?.role === 'ADMIN'
-  },
-  resolve: (_source, { teamId }, context) => {
-    return context.prisma.team.update({
-      where: {
-        id: teamId,
-      },
-      data: {
-        // eslint-disable-next-line unicorn/no-null
-        archivedAt: null,
-      },
-    })
-  },
-})
+builder.mutationField('teamUnarchive', (t) =>
+  t.prismaField({
+    type: 'Team',
+    description: 'Unarchive a team',
+    args: {
+      teamId: t.arg.id({ description: 'Id of the team' }),
+    },
+    authScopes: (_source, { teamId }) => ({ isTeamAdminByTeamId: teamId.toString() }),
+    resolve: async (query, _source, { teamId }) =>
+      prisma.team.update({
+        ...query,
+        where: {
+          id: teamId.toString(),
+        },
+        data: {
+          // eslint-disable-next-line unicorn/no-null
+          archivedAt: null,
+        },
+      }),
+  }),
+)
