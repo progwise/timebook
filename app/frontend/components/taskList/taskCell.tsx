@@ -35,16 +35,15 @@ export const TaskCell = ({ task }: TaskCellProps) => {
   }
 
   return (
-    <div className="flex min-w-[500px]">
+    <div className="ml-2 flex min-w-[500px]">
       <InputField
         variant="primary"
-        className="ml-2"
         {...register('title', { required: true })}
         onBlur={handleSubmit(handleSubmitTask)}
       />
 
-      {fetching && <CgSpinner className="ml-2 inline h-8 w-8 animate-spin dark:text-blue-600" />}
-      <ErrorMessage errors={errors} name="title" as={<span role="alert" className="ml-2 text-red-700" />} />
+      {fetching && <CgSpinner className="inline h-8 w-8 animate-spin dark:text-blue-600" />}
+      <ErrorMessage errors={errors} name="title" as={<span role="alert" className="text-red-700" />} />
     </div>
   )
 }
