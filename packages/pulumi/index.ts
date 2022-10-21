@@ -1,7 +1,7 @@
 import * as digitalocean from '@pulumi/digitalocean'
 import * as dotenv from 'dotenv'
 
-dotenv.config({ path: '../../apps/app/.env' })
+dotenv.config({ path: '../../apps/web/.env' })
 
 export const timebook = new digitalocean.App('timebook', {
   spec: {
@@ -18,7 +18,6 @@ export const timebook = new digitalocean.App('timebook', {
         instanceCount: 1,
         name: 'timebook',
         instanceSizeSlug: 'basic-xxs',
-        sourceDir: '/app',
         buildCommand: 'npm install && npm run build',
         runCommand: 'npm run start',
         envs: [

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
-import '../../../frontend/mocks/mockServer'
+import '../../mocks/mockServer'
 import { ProjectForm } from './projectForm'
 
 jest.mock('next/router', () => ({

@@ -5,7 +5,7 @@ import { createHash, randomBytes } from 'node:crypto'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
 
-dotenv.config({ path: '../../apps/app/.env' })
+dotenv.config({ path: '../../apps/web/.env' })
 
 interface User {
   email: string

@@ -18,9 +18,9 @@ import {
   TableFootRow,
 } from '@progwise/timebook-ui'
 
-import { TaskDetailsModal, taskInputSchema } from '../../../frontend/components/taskDetailsModal'
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
+import { TaskDetailsModal, taskInputSchema } from '../taskDetailsModal'
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]

@@ -71,7 +71,7 @@ const config: PlaywrightTestConfig = {
     command: 'pnpm run dev',
     port: 3000,
     reuseExistingServer: !process.env.CI,
-    cwd: '../app',
+    cwd: '../web',
   },
 }
 
