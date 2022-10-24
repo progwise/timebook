@@ -18,6 +18,7 @@ interface TaskRowProps {
 export const TaskRow = ({ task, onDelete, canModify }: TaskRowProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const {
+    setError,
     register,
     handleSubmit,
     formState: { errors },
@@ -30,13 +31,15 @@ export const TaskRow = ({ task, onDelete, canModify }: TaskRowProps) => {
   })
 
   const handleSubmitTask = async (taskData: TaskFormData) => {
-    await taskUpdate({
+    const result = await taskUpdate({
       id: task.id,
       data: {
         projectId: task.project.id,
         title: taskData.title,
       },
     })
+
+    if (result.error) setError('title', { message: 'Network error' })
   }
 
   return (
@@ -47,14 +50,17 @@ export const TaskRow = ({ task, onDelete, canModify }: TaskRowProps) => {
         </Button>
       )}
 
-      <div className="ml-2 flex min-w-[500px]">
-        <InputField
-          variant="primary"
-          {...register('title', { required: true })}
-          onBlur={handleSubmit(handleSubmitTask)}
-        />
+      <div className="flex flex-col ml-2">
+        <span className="flex flex-row gap-2">
+          <InputField
+            variant="primary"
+            {...register('title', { required: true })}
+            onBlur={handleSubmit(handleSubmitTask)}
+          />
+          {fetching && <CgSpinner className="inline h-8 w-8 animate-spin dark:text-blue-600" />}
+        </span>
+        <br />
 
-        {fetching && <CgSpinner className="inline h-8 w-8 animate-spin dark:text-blue-600" />}
         <ErrorMessage errors={errors} name="title" as={<span role="alert" className="text-red-700" />} />
       </div>
     </>
