@@ -9,13 +9,13 @@ import { Button } from '../button/button'
 import { InputField } from '../inputField/inputField'
 import { TaskFormData, taskInputSchema } from './taskList'
 
-interface TaskRowProps {
+interface TaskCellProps {
   task: TaskFragment
   canModify?: boolean
   onDelete?: () => void
 }
 
-export const TaskRow = ({ task, onDelete, canModify }: TaskRowProps) => {
+export const TaskCell = ({ task, onDelete, canModify }: TaskCellProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const {
     setError,

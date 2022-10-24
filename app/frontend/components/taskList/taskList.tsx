@@ -2,7 +2,6 @@ import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { BiTrash } from 'react-icons/bi'
 import * as yup from 'yup'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
@@ -20,7 +19,7 @@ import {
   TableRow,
   TableFootRow,
 } from '../table/table'
-import { TaskRow } from './taskRow'
+import { TaskCell } from './taskCell'
 
 export type TaskFormData = Pick<TaskInput, 'title'>
 
@@ -74,7 +73,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                <TaskRow canModify={task.canModify} task={task} onDelete={() => setTaskToBeDeleted(task)} />
+                <TaskCell canModify={task.canModify} task={task} onDelete={() => setTaskToBeDeleted(task)} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
               <TableCell>
