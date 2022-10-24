@@ -111,7 +111,7 @@ export const teamHandlers = [
         userRoleUpdate: {
           __typename: 'User',
           id: '123123-asd-12323',
-          role: Role.Admin,
+          role: request.variables.role,
         },
       }),
     )
@@ -138,14 +138,13 @@ export const teamHandlers = [
     return result
   }),
   mockUserCapacityUpdateMutation((request, response, context) => {
-    testTeam1.archived = false
     const result = response(
       context.data({
         __typename: 'Mutation',
         userCapacityUpdate: {
           __typename: 'User',
-          id: '123123',
-          availableMinutesPerWeek: 1231,
+          id: request.variables.userId,
+          availableMinutesPerWeek: request.variables.availableMinutesPerWeek,
         },
       }),
     )

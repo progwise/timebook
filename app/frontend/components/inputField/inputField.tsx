@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { KeyboardEventHandler } from 'react'
+import { HTMLInputTypeAttribute } from 'react'
 
 interface InputProps {
   name?: string
@@ -11,11 +12,24 @@ interface InputProps {
   readOnly?: boolean
   size?: number
   className?: string
+  onKeyPress?: KeyboardEventHandler<HTMLInputElement>
 }
 
 export const InputField = React.forwardRef(
   (
-    { placeholder, variant, disabled, onChange, onBlur, value, name, readOnly, size, className }: InputProps,
+    {
+      placeholder,
+      variant,
+      disabled,
+      onChange,
+      onBlur,
+      value,
+      name,
+      readOnly,
+      size,
+      className,
+      onKeyPress,
+    }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -37,6 +51,7 @@ export const InputField = React.forwardRef(
         ref={ref}
         name={name}
         size={size}
+        onKeyPress={onKeyPress}
       />
     )
   },

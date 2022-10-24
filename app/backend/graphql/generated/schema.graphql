@@ -204,13 +204,13 @@ type Mutation {
   ): Team!
 
   """
-  Updated a user capacity hours
+  Updates the user capacity minutes
   """
   userCapacityUpdate(
     """
     Capacity of minutes
     """
-    availableMinutesPerWeek: Int!
+    availableMinutesPerWeek: Int
 
     """
     Id of the user
@@ -554,7 +554,7 @@ scalar Time
 
 type User {
   """
-  Capacity hours of the use in team
+  Capacity of the user in the team
   """
   availableMinutesPerWeek: Int
   id: ID!

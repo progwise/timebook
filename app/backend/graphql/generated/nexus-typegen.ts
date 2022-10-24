@@ -479,7 +479,7 @@ export interface NexusGenArgTypes {
     }
     userCapacityUpdate: {
       // args
-      availableMinutesPerWeek: number // Float!
+      availableMinutesPerWeek?: number | null // Int
       userId: string // ID!
     }
     userRoleUpdate: {

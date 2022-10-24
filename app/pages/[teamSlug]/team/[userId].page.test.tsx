@@ -1,15 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import '../../../frontend/mocks/mockServer'
-import { Client, Provider } from 'urql'
-import UserDetailsPage from './[userId].page'
 import { mockMeQuery, mockUserQuery, Role } from '../../../frontend/generated/graphql'
+import '../../../frontend/mocks/mockServer'
 import { mockServer } from '../../../frontend/mocks/mockServer'
-import userEvent from '@testing-library/user-event'
 import { assignedProjects } from '../../../frontend/mocks/projectHandlers'
+import UserDetailsPage from './[userId].page'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Client, Provider } from 'urql'
 
 const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
-let userRole: Role = Role.Member
 
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
@@ -18,7 +17,7 @@ jest.mock('next-auth/react', () => ({
 jest.mock('next/router', () => ({
   useRouter() {
     return {
-      query: { teamSlug: 'wint', userId: '23182391283' },
+      query: { teamSlug: 'slug', userId: '23182391283' },
       isReady: true,
       push: jest.fn(),
     }
@@ -55,7 +54,7 @@ beforeEach(() => {
             id: '23182391283',
             name: 'Test Member',
             image: undefined,
-            role: userRole,
+            role: Role.Member,
             projects: assignedProjects,
           },
         }),
@@ -66,22 +65,7 @@ beforeEach(() => {
 })
 
 describe('UserIdPage (Admin)', () => {
-  it('should promote to admin', async () => {
-    render(<UserDetailsPage />, { wrapper })
-
-    const promoteButton = await screen.findByRole('button', {
-      name: /promote to admin/i,
-    })
-
-    await userEvent.click(promoteButton)
-    const loading = await screen.findByText('Loading...')
-    expect(loading).toBeVisible()
-    await waitFor(() => expect(loading).not.toBeInTheDocument())
-
-    userRole = Role.Admin
-  })
-
-  it('should demote to member', async () => {
+  it('should changed roles', async () => {
     render(<UserDetailsPage />, { wrapper })
 
     const demoteButton = await screen.findByRole('button', {
@@ -89,7 +73,16 @@ describe('UserIdPage (Admin)', () => {
     })
 
     await userEvent.click(demoteButton)
-    const loading = await screen.findByText('Loading...')
+    let loading = await screen.findByText('Loading...')
+    expect(loading).toBeVisible()
+    await waitFor(() => expect(loading).not.toBeInTheDocument())
+
+    const promoteButton = await screen.findByRole('button', {
+      name: /promote to admin/i,
+    })
+
+    await userEvent.click(promoteButton)
+    loading = await screen.findByText('Loading...')
     expect(loading).toBeVisible()
     await waitFor(() => expect(loading).not.toBeInTheDocument())
   })
@@ -112,24 +105,6 @@ describe('UserIdPage (Admin)', () => {
     await userEvent.click(switchButtons[1])
 
     await waitFor(() => expect(switchButtons[1]).toBeChecked())
-  })
-
-  it('should get validation errors availableMinutesPerWeek', async () => {
-    render(<UserDetailsPage />, { wrapper })
-
-    const availableMinutesPerWeekField = await screen.findByRole('textbox')
-
-    await userEvent.type(availableMinutesPerWeekField, 'wrong data')
-    const capasityNotNumber = await screen.findByText('Capacity minutes should be number')
-    expect(capasityNotNumber).toBeInTheDocument()
-
-    await userEvent.clear(availableMinutesPerWeekField)
-    const emptyCapacity = await screen.findByText("Capacity minutes can't be empty")
-    expect(emptyCapacity).toBeInTheDocument()
-
-    await userEvent.type(availableMinutesPerWeekField, '-1234')
-    const capasityNegativeNumber = await screen.findByText("Minutes can't be negative")
-    expect(capasityNegativeNumber).toBeInTheDocument()
   })
 
   it('should change availableMinutesPerWeek', async () => {

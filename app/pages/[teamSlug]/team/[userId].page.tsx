@@ -16,17 +16,8 @@ import { useForm } from 'react-hook-form'
 import { InputField } from '../../../frontend/components/inputField/inputField'
 import { Button } from '../../../frontend/components/button/button'
 
-const CAPASITY_MINUTES_FIELD = 'availableMinutesPerWeek'
-
-function validateCapacityField(input: string): string | undefined {
-  const onlyNummber = /^\d+$/
-  const negativeNummber = /^-\d+$/
-
-  if (!input) return "Capacity minutes can't be empty"
-  else if (negativeNummber.test(input)) return "Minutes can't be negative"
-  else if (!onlyNummber.test(input)) return 'Capacity minutes should be number'
-
-  return
+interface UserDetailsForm {
+  availableMinutesPerWeek: number
 }
 
 const UserDetailsPage = (): JSX.Element => {
@@ -48,10 +39,10 @@ const UserDetailsPage = (): JSX.Element => {
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
   const [, updateUserCapacity] = useUserCapacityUpdateMutation()
 
-  const submitHandler = async (data: { [id: string]: string }) => {
-    const response = await updateUserCapacity({ availableMinutesPerWeek: +data[CAPASITY_MINUTES_FIELD], userId })
+  const submitHandler = async (data: UserDetailsForm) => {
+    const response = await updateUserCapacity({ availableMinutesPerWeek: data.availableMinutesPerWeek, userId })
 
-    if (response.error) setError(CAPASITY_MINUTES_FIELD, { message: response.error.message })
+    if (response.error) setError('availableMinutesPerWeek', { message: response.error.message })
   }
 
   const handleUpgradeClick = () => {
@@ -67,7 +58,7 @@ const UserDetailsPage = (): JSX.Element => {
     formState: { errors: fieldsErrors },
     setError,
     handleSubmit,
-  } = useForm({
+  } = useForm<UserDetailsForm>({
     mode: 'onChange',
   })
 
@@ -140,13 +131,18 @@ const UserDetailsPage = (): JSX.Element => {
                 <InputField
                   variant="primary"
                   className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
-                  placeholder="Hours"
-                  {...register(CAPASITY_MINUTES_FIELD, { validate: validateCapacityField })}
+                  placeholder="Minutes"
+                  {...register('availableMinutesPerWeek')}
+                  onKeyPress={(event) => {
+                    if (!/^\d+$/.test(event.key)) {
+                      event.preventDefault()
+                    }
+                  }}
                   onBlur={handleSubmit(submitHandler)}
                 />
-                {fieldsErrors[CAPASITY_MINUTES_FIELD] && (
+                {fieldsErrors.availableMinutesPerWeek && (
                   <div aria-label="error field" className="text-red-600">
-                    {fieldsErrors[CAPASITY_MINUTES_FIELD].message}
+                    Should be a positive number
                   </div>
                 )}
               </div>

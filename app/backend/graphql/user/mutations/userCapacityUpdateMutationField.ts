@@ -1,13 +1,13 @@
-import { intArg, idArg, mutationField } from 'nexus'
-import { User } from '../user'
 import { isTeamAdmin } from '../../isTeamAdmin'
+import { User } from '../user'
+import { intArg, idArg, mutationField, nullable } from 'nexus'
 
 export const userCapacityUpdateMutationField = mutationField('userCapacityUpdate', {
   type: User,
-  description: 'Updates the user capacity hours',
+  description: 'Updates the user capacity minutes',
   args: {
     userId: idArg({ description: 'Id of the user' }),
-    availableMinutesPerWeek: intArg({ description: 'Capacity of minutes' }),
+    availableMinutesPerWeek: nullable(intArg({ description: 'Capacity of minutes' })),
   },
   authorize: async (_source, {}, context) => isTeamAdmin(context),
   resolve: async (_source, { userId, availableMinutesPerWeek }, context) => {

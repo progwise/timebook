@@ -1,4 +1,4 @@
-mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int!) {
+mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int) {
   userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek) {
     id
     availableMinutesPerWeek

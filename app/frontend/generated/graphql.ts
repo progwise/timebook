@@ -84,7 +84,7 @@ export type Mutation = {
   teamUnarchive: Team
   /** Update a new team */
   teamUpdate: Team
-  /** Updated a user capacity hours */
+  /** Updates the user capacity minutes */
   userCapacityUpdate: User
   /** Update a user role */
   userRoleUpdate: User
@@ -175,7 +175,7 @@ export type MutationTeamUpdateArgs = {
 }
 
 export type MutationUserCapacityUpdateArgs = {
-  availableMinutesPerWeek: Scalars['Int']
+  availableMinutesPerWeek?: InputMaybe<Scalars['Int']>
   userId: Scalars['ID']
 }
 
@@ -390,7 +390,7 @@ export enum Theme {
 
 export type User = {
   __typename: 'User'
-  /** Capacity hours of the use in team */
+  /** Capacity of the user in the team */
   availableMinutesPerWeek?: Maybe<Scalars['Int']>
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
@@ -744,7 +744,7 @@ export type TeamWithProjectsFragment = {
 
 export type UserCapacityUpdateMutationVariables = Exact<{
   userId: Scalars['ID']
-  availableMinutesPerWeek: Scalars['Int']
+  availableMinutesPerWeek?: InputMaybe<Scalars['Int']>
 }>
 
 export type UserCapacityUpdateMutation = {
@@ -1354,7 +1354,7 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
   })
 }
 export const UserCapacityUpdateDocument = gql`
-  mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int!) {
+  mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int) {
     userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek) {
       id
       availableMinutesPerWeek
