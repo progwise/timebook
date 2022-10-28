@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+This is a TurboRepo mono-repository. https://turbo.build/
+
+We use `pnpm` for this repository instead of `npm`.
+
+You need to install pnpm:
+
+- `brew install pnpm` for MacOS
+- `iwr https://get.pnpm.io/install.ps1 -useb | iex` for Windows
+
+Windows users may have trouble with the default installation folder of pnpm:
+`copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
+
+Documentation for installing pnpm https://pnpm.io/installation.
+
 # Getting Started
 
 The main application is located in the app folder as next.js app including backend and frontend.
