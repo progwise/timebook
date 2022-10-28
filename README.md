@@ -2,14 +2,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This is a TurboRepo mono-repository. https://turbo.build/
 
-We use ```pnpm``` for this repository instead of ```npm```.
+We use `pnpm` for this repository instead of `npm`.
 
 You need to install pnpm:
-* ```brew install pnpm``` for MacOS
-* ```iwr https://get.pnpm.io/install.ps1 -useb | iex``` for Windows
+
+- `brew install pnpm` for MacOS
+- `iwr https://get.pnpm.io/install.ps1 -useb | iex` for Windows
 
 Windows users may have trouble with the default installation folder of pnpm:
-```copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%```
+`copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
 
 Documentation for installing pnpm https://pnpm.io/installation.
 
