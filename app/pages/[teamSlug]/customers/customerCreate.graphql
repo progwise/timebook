@@ -1,5 +1,0 @@
-mutation customerCreate($data: CustomerInput!) {
-  customerCreate(data: $data) {
-    ...Customer
-  }
-}

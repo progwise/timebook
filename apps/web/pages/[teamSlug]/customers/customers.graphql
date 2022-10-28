@@ -1,0 +1,14 @@
+query customers($slug: String!) {
+  teamBySlug(slug: $slug) {
+    id
+    title
+    customers {
+      ...Customer
+    }
+  }
+}
+
+fragment Customer on Customer {
+  id
+  title
+}

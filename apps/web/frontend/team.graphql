@@ -1,0 +1,24 @@
+query team($teamSlug: String!) {
+  teamBySlug(slug: $teamSlug) {
+    ...Team
+    canModify
+    members {
+      id
+      name
+      image
+      projects(teamSlug: $teamSlug) {
+        id
+        title
+      }
+    }
+  }
+}
+
+fragment Team on Team {
+  id
+  title
+  slug
+  theme
+  inviteKey
+  archived
+}

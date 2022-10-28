@@ -1,0 +1,5 @@
+mutation customerCreate($data: CustomerInput!, $teamSlug: String!) {
+  customerCreate(data: $data, teamSlug: $teamSlug) {
+    ...Customer
+  }
+}

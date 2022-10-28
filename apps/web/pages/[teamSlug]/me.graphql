@@ -1,0 +1,12 @@
+query me($teamSlug: String!) {
+  user {
+    id
+    image
+    name
+    role(teamSlug: $teamSlug)
+    projects(teamSlug: $teamSlug) {
+      id
+      title
+    }
+  }
+}

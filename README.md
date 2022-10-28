@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+This is a TurboRepo mono-repository. https://turbo.build/
+
+We use `pnpm` for this repository instead of `npm`.
+
+You need to install pnpm:
+
+- `brew install pnpm` for MacOS
+- `iwr https://get.pnpm.io/install.ps1 -useb | iex` for Windows
+
+Windows users may have trouble with the default installation folder of pnpm:
+`copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
+
+Documentation for installing pnpm https://pnpm.io/installation.
+
 # Getting Started
 
 The main application is located in the app folder as next.js app including backend and frontend.
@@ -9,6 +23,7 @@ cd app
 ```
 
 ## Start the database server
+
 The database server has to be started prior to make the backend work.
 
 ```bash
@@ -22,6 +37,7 @@ npx prisma studio
 ```
 
 ## Migrate the database
+
 This is needed, if the database schema has changed since the last migration run.
 
 ```bash
@@ -42,8 +58,8 @@ For more information how next.js apps are build see [NextJS basics](https://next
 
 # Running the app
 
--   http://localhost:3000 frontend
--   http://localhost:4000 graphql backend
+- http://localhost:3000 frontend
+- http://localhost:4000 graphql backend
 -
 
 ...
@@ -60,8 +76,8 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 To learn more about Next.js, take a look at the following resources:
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 

@@ -1,0 +1,5 @@
+mutation projectCreate($data: ProjectInput!, $teamSlug: String!) {
+  projectCreate(data: $data, teamSlug: $teamSlug) {
+    ...Project
+  }
+}

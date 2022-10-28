@@ -1,0 +1,35 @@
+query projectsWithTasks($slug: String!) {
+  teamBySlug(slug: $slug) {
+    projects {
+      ...ProjectWithTasks
+    }
+  }
+}
+
+query teamProjects($slug: String!) {
+  teamBySlug(slug: $slug) {
+    projects {
+      ...Project
+    }
+  }
+}
+
+fragment Project on Project {
+  id
+  title
+  startDate
+  endDate
+  customer {
+    id
+  }
+}
+
+fragment ProjectWithTasks on Project {
+  id
+  title
+  startDate
+  endDate
+  tasks {
+    ...Task
+  }
+}

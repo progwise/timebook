@@ -1,0 +1,32 @@
+{
+  "name": "timebook",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "e2e-tests": "turbo run e2e-tests",
+    "typecheck": "turbo run typecheck",
+    "migrate-db": "turbo run migrate-db",
+    "graphql:generate": "turbo run graphql:generate",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
+    "eslint-config-custom": "workspace:*",
+    "prettier": "latest",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "packageManager": "pnpm@7.9.5"
+}

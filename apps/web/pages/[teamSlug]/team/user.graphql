@@ -1,0 +1,12 @@
+query user($userId: ID!, $teamSlug: String!) {
+  user(userId: $userId) {
+    id
+    name
+    image
+    role(teamSlug: $teamSlug)
+    projects(teamSlug: $teamSlug) {
+      id
+      title
+    }
+  }
+}
