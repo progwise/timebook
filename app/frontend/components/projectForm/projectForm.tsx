@@ -18,11 +18,33 @@ const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
   acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
+const getDate = (dateString: string | undefined | null): Date | undefined => {
+  if (!dateString) {
+    return undefined
+  }
+  const usedFormat = acceptedDateFormats.find((format) => parse(dateString, format, new Date()).getDate())
+  if (!usedFormat) {
+    return undefined
+  }
+  return parse(dateString, usedFormat, new Date().getDate())
+}
+
 const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
   customerId: yup.string().nullable(),
   title: yup.string().trim().required().max(20),
-  start: yup.string().nullable(),
-  end: yup.string().nullable(),
+  start: yup
+    .string()
+    .nullable()
+    .test(
+      (value, context) => !value || !context.parent.end || (getDate(context.parent.end) || 1) >= (getDate(value) || 0),
+    ),
+  end: yup
+    .string()
+    .nullable()
+    .test(
+      (value, context) =>
+        !value || !context.parent.start || (getDate(context.parent.start) || 0) <= (getDate(value) || 1),
+    ),
 })
 
 interface ProjectFormProps {
