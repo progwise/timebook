@@ -65,4 +65,37 @@ describe('projectForm', () => {
     // eslint-disable-next-line unicorn/no-null
     expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'old project', start: null, end: null })
   })
+  it('should not be possible to create a project with an end date before the start', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={{
+          title: 'test project',
+          __typename: 'Project',
+          canModify: true,
+          id: '1',
+          startDate: '2023-03-22',
+          endDate: '2022-03-22',
+        }}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+      />,
+    )
+    const startInput = screen.getByRole('textbox', {
+      name: /start/i,
+    })
+    const submitButton = screen.getByRole('button', { name: /save/i })
+    const endInput = screen.getByRole('textbox', {
+      name: /end/i,
+    })
+
+    await userEvent.clear(startInput)
+    await userEvent.type(startInput, '2023-03-22')
+
+    await userEvent.clear(endInput)
+    await userEvent.type(endInput, '2022-03-22')
+    await userEvent.click(submitButton)
+    expect(onSubmit).toHaveBeenCalledWith(startInput < endInput)
+  })
 })
