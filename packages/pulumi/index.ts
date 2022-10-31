@@ -10,7 +10,6 @@ export const timebook = new digitalocean.App('timebook', {
     region: 'fra1',
     services: [
       {
-        environmentSlug: 'node-js',
         git: {
           branch: 'main',
           repoCloneUrl: 'https://github.com/progwise/timebook',
@@ -18,8 +17,7 @@ export const timebook = new digitalocean.App('timebook', {
         instanceCount: 1,
         name: 'timebook',
         instanceSizeSlug: 'basic-xxs',
-        buildCommand: 'npm install -g pnpm && pnpm install && pnpm run build',
-        runCommand: 'pnpm run start',
+        dockerfilePath: 'Dockerfile',
         envs: [
           { key: 'NEXTAUTH_URL', value: '${_self.PUBLIC_URL}' },
           { key: 'NEXTAUTH_SECRET', value: process.env.NEXTAUTH_SECRET, type: 'SECRET' },
