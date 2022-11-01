@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-null */
-import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { format, parse } from 'date-fns'
 import { useState } from 'react'
@@ -91,19 +90,17 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           {isProjectFormReadOnly ? 'View' : 'Edit'} project
         </h2>
       )}
-      <label className="flex flex-1 flex-col">
-        <span className="w-full text-sm text-gray-700 dark:text-white">Name</span>
-        <InputField
-          variant="primary"
-          disabled={formState.isSubmitting}
-          readOnly={isProjectFormReadOnly}
-          {...register('title')}
-          placeholder="Enter project name"
-          size={30}
-          className="font-small dark:placeholder-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
-        />
-        <ErrorMessage errors={formState.errors} name="title" as={<span className="text-red-700" />} />
-      </label>
+      <InputField
+        label="Name"
+        variant="primary"
+        disabled={formState.isSubmitting}
+        readOnly={isProjectFormReadOnly}
+        {...register('title')}
+        placeholder="Enter project name"
+        size={30}
+        className="font-small dark:placeholder-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+        errorMessage={formState.errors.title?.message}
+      />
       <div className="flex flex-col">
         <label htmlFor="start" className="w-full text-sm text-gray-700 dark:text-white">
           Start

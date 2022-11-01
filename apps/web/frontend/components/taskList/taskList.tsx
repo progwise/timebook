@@ -1,4 +1,3 @@
-import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -110,17 +109,13 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
             <TableFootRow>
               <TableCell>
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
-                  <div className="flex flex-col">
-                    <label>
-                      <InputField
-                        variant="primary"
-                        placeholder="Enter Taskname"
-                        className=" dark:bg-slate-800 dark:text-white "
-                        {...register('title')}
-                      />
-                    </label>
-                    <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
-                  </div>
+                  <InputField
+                    variant="primary"
+                    placeholder="Enter Taskname"
+                    className=" dark:bg-slate-800 dark:text-white"
+                    {...register('title')}
+                    errorMessage={errors.title?.message}
+                  />
 
                   <Button variant="secondary" type="submit" disabled={isSubmitting}>
                     Add task
