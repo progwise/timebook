@@ -23,6 +23,7 @@ module.exports = {
     'plugin:jest/style',
     'plugin:testing-library/react',
     'plugin:jest-dom/recommended',
+    'plugin:tailwindcss/recommended',
   ],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs

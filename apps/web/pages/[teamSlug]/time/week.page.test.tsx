@@ -18,18 +18,18 @@ jest.mock('next/router', () => ({
 }))
 
 configure({ asyncUtilTimeout: 10_000 })
+jest.setTimeout(10_000)
 
 const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 describe('The workhours week page', () => {
   // eslint-disable-next-line jest/no-disabled-tests, jest/no-test-prefixes
-  xit('should create a new table row when clicking on add Button', async () => {
+  it('should create a new table row when clicking on add Button', async () => {
     render(<WeekPage />, { wrapper })
     const addButton = screen.getByRole('button', {
       name: /add row/i,
     })
     await userEvent.click(addButton)
-
     const projectSelect = await screen.findByRole('combobox', {
       name: /project/i,
     })
