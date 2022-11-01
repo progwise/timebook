@@ -48,6 +48,7 @@ importers:
       date-fns: ^2.28.0
       eslint: ^8.6.0
       eslint-config-custom: workspace:*
+      eslint-plugin-tailwindcss: ^3.6.2
       graphql: ^16.6.0
       graphql-tag: ^2.12.6
       intersection-observer: ^0.12.2
@@ -61,7 +62,6 @@ importers:
       nodemailer: ^6.8.0
       postcss: ^8.4.4
       prettier: ^2.7.1
-      prettier-plugin-tailwindcss: ^0.1.8
       react: 17.0.2
       react-dom: 17.0.2
       react-hook-form: ^7.25.1
@@ -124,13 +124,13 @@ importers:
       autoprefixer: 10.4.12_postcss@8.4.14
       eslint: 8.24.0
       eslint-config-custom: link:../../packages/eslint-config-custom
+      eslint-plugin-tailwindcss: 3.6.2_ts-node@10.9.1
       intersection-observer: 0.12.2
       jest: 29.1.2_d6bdb6738c11d20283e1cfd7dd1c2278
       jest-transform-stub: 2.0.0
       msw: 0.36.8
       postcss: 8.4.14
       prettier: 2.7.1
-      prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
       simple-git: 3.14.1
       tailwindcss: 3.1.8_ts-node@10.9.1
       ts-jest: 29.0.3_jest@29.1.2+typescript@4.8.4
@@ -4852,6 +4852,17 @@ packages:
       string.prototype.matchall: 4.0.7
     dev: false
 
+  /eslint-plugin-tailwindcss/3.6.2_ts-node@10.9.1:
+    resolution: {integrity: sha512-C9Ka3w6W9F5l/3ZDLnkdbqmeujc1vE+p5drjP1Z1UyxgoE1Nh4/f8oQ4XC45PrZsS0Nyv0YKXNH8/dn/FJZKsQ==}
+    engines: {node: '>=12.13.0'}
+    dependencies:
+      fast-glob: 3.2.12
+      postcss: 8.4.14
+      tailwindcss: 3.1.8_ts-node@10.9.1
+    transitivePeerDependencies:
+      - ts-node
+    dev: true
+
   /eslint-plugin-testing-library/5.7.2_eslint@8.24.0+typescript@4.8.4:
     resolution: {integrity: sha512-0ZmHeR/DUUgEzW8rwUBRWxuqntipDtpvxK0hymdHnLlABryJkzd+CAHr+XnISaVsTisZ5MLHp6nQF+8COHLLTA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0, npm: '>=6'}
@@ -7794,15 +7805,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /prettier-plugin-tailwindcss/0.1.13_prettier@2.7.1:
-    resolution: {integrity: sha512-/EKQURUrxLu66CMUg4+1LwGdxnz8of7IDvrSLqEtDqhLH61SAlNNUSr90UTvZaemujgl3OH/VHg+fyGltrNixw==}
-    engines: {node: '>=12.17.0'}
-    peerDependencies:
-      prettier: '>=2.2.0'
-    dependencies:
-      prettier: 2.7.1
-    dev: true
-
   /prettier/2.7.1:
     resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
@@ -8813,7 +8815,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.1.2_d6bdb6738c11d20283e1cfd7dd1c2278
+      jest: 29.1.2
       jest-util: 29.1.2
       json5: 2.2.1
       lodash.memoize: 4.1.2

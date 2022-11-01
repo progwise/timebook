@@ -1,4 +1,3 @@
-import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -72,9 +71,13 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
         <div className="mt-4 flex flex-col gap-5">
           <label>
             <span className="mr-2 whitespace-nowrap">Task Title</span>
-            <InputField variant="primary" {...register('title', { required: true })} />
+            <InputField
+              label="Task title"
+              variant="primary"
+              {...register('title', { required: true })}
+              errorMessage={errors.title?.message}
+            />
           </label>
-          <ErrorMessage errors={errors} name="title" as={<span className="text-red-700" />} />
         </div>
       </form>
     </Modal>
