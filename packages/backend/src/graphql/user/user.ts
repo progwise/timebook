@@ -1,3 +1,5 @@
+import { GraphQLError } from 'graphql'
+
 import { builder } from '../builder'
 import { prisma } from '../prisma'
 import { RoleEnum } from './role'
@@ -36,6 +38,30 @@ export const User = builder.prismaObject('User', {
           },
         })
         return teamMembership.role
+      },
+    }),
+    availableMinutesPerWeek: t.field({
+      type: 'Int',
+      nullable: true,
+      args: { teamSlug: t.arg.string() },
+      select: { id: true },
+      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
+      description: 'Capacity of the user in the team',
+      resolve: async (user, _arguments) => {
+        const slug = _arguments.teamSlug
+
+        if (!slug) {
+          throw new GraphQLError('Team slug is missing.')
+        }
+
+        const membership = await prisma.teamMembership.findFirstOrThrow({
+          where: {
+            userId: user.id,
+            team: { slug },
+          },
+        })
+
+        return membership.availableMinutesPerWeek
       },
     }),
   }),

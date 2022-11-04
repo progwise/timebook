@@ -19,9 +19,11 @@
     "@prisma/client": "^4.2.1",
     "apollo-server-core": "^3.10.2",
     "apollo-server-micro": "^3.6.7",
-    "micro": "^9.4.1",
     "graphql": "^16.6.0",
-    "graphql-scalars": "^1.14.1"
+    "graphql-scalars": "^1.14.1",
+    "jest-environment-node": "^29.2.2",
+    "micro": "^9.4.1",
+    "nanoid": "3.3.4"
   },
   "devDependencies": {
     "@types/jest": "^29.1.2",
