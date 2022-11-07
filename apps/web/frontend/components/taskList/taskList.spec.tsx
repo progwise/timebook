@@ -34,11 +34,11 @@ const project: ProjectWithTasksFragment & { canModify: boolean } = {
 }
 
 describe('TaskList', () => {
-  it('should display tasks', () => {
+  it('should display tasks', async () => {
     render(<TaskList tasks={tasks} project={project} />, { wrapper })
+    const textBoxes = await screen.findAllByRole('textbox')
 
-    const taskTitle = screen.getByText('Task 1')
-    expect(taskTitle).toBeInTheDocument()
+    expect(textBoxes[0]).toHaveDisplayValue('Task 1')
   })
 
   it('should be possible to delete a task', async () => {
