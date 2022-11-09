@@ -20,7 +20,7 @@ builder.mutationField('userCapacityUpdate', (t) =>
         const teamMembership = await prisma.teamMembership.update({
           where: { userId_teamId: { teamId: team.id, userId: userId.toString() } },
           data: { availableMinutesPerWeek },
-          include: { user: true },
+          select: { user: query },
         })
 
         return teamMembership.user
