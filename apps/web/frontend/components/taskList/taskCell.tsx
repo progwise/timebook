@@ -1,5 +1,6 @@
 import { ErrorMessage } from '@hookform/error-message'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import { CgSpinner } from 'react-icons/cg'
@@ -7,15 +8,15 @@ import { CgSpinner } from 'react-icons/cg'
 import { Button, InputField } from '@progwise/timebook-ui'
 
 import { TaskFragment, useTaskUpdateMutation } from '../../generated/graphql'
+import { DeleteTaskModal } from '../deleteTaskModal'
 import { TaskFormData, taskInputSchema } from './taskList'
 
 interface TaskCellProps {
   task: TaskFragment
   canDelete?: boolean
-  onDelete?: () => void
 }
 
-export const TaskCell = ({ task, onDelete, canDelete }: TaskCellProps) => {
+export const TaskCell = ({ task, canDelete }: TaskCellProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const {
     setError,
@@ -29,6 +30,8 @@ export const TaskCell = ({ task, onDelete, canDelete }: TaskCellProps) => {
     },
     resolver: yupResolver(taskInputSchema),
   })
+
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const handleSubmitTask = async (taskData: TaskFormData) => {
     const result = await taskUpdate({
@@ -45,7 +48,7 @@ export const TaskCell = ({ task, onDelete, canDelete }: TaskCellProps) => {
   return (
     <>
       {canDelete && (
-        <Button ariaLabel="Delete Task" variant="danger" tooltip="Delete Task" onClick={onDelete}>
+        <Button ariaLabel="Delete Task" variant="danger" tooltip="Delete Task" onClick={() => setOpenDeleteModal(true)}>
           <BiTrash />
         </Button>
       )}
@@ -63,6 +66,11 @@ export const TaskCell = ({ task, onDelete, canDelete }: TaskCellProps) => {
 
         <ErrorMessage errors={errors} name="title" as={<span role="alert" className="text-red-700" />} />
       </div>
+
+      {openDeleteModal && (
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />
+      )}
     </>
   )
 }

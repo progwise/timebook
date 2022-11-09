@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
@@ -40,5 +40,18 @@ describe('TaskCell', () => {
     await userEvent.click(document.body)
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('should be possible to delete a task', async () => {
+    render(<TaskCell task={testTask} canDelete />, { wrapper })
+
+    const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
+    expect(deleteButton).toBeInTheDocument()
+    await userEvent.click(deleteButton)
+
+    const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
+    await userEvent.click(confirmDeleteButton)
+
+    await waitForElementToBeRemoved(confirmDeleteButton)
   })
 })

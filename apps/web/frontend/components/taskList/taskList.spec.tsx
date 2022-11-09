@@ -41,19 +41,6 @@ describe('TaskList', () => {
     expect(textBoxes[0]).toHaveDisplayValue('Task 1')
   })
 
-  it('should be possible to delete a task', async () => {
-    render(<TaskList tasks={tasks} project={project} />, { wrapper })
-
-    const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
-    expect(deleteButton).toBeInTheDocument()
-    await userEvent.click(deleteButton)
-
-    const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
-    await userEvent.click(confirmDeleteButton)
-
-    await waitForElementToBeRemoved(confirmDeleteButton)
-  })
-
   describe('Task form', () => {
     it('should display an error message when submitting a new task with less then 4 characters', async () => {
       render(<TaskList tasks={tasks} project={project} />, { wrapper })

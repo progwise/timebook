@@ -42,7 +42,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     formState: { isSubmitting, errors },
   } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
-  const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskFormData) => {
     try {
@@ -72,15 +71,11 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                <TaskCell canDelete={task.canModify} task={task} onDelete={() => setTaskToBeDeleted(task)} />
+                <TaskCell canDelete={task.canModify} task={task} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
             </TableRow>
           ))}
-          {taskToBeDeleted ? (
-            // eslint-disable-next-line unicorn/no-useless-undefined
-            <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
-          ) : undefined}
         </TableBody>
         {project.canModify && (
           <TableFoot>
