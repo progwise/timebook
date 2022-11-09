@@ -18,7 +18,7 @@ import {
 } from '../../../frontend/generated/graphql'
 
 interface UserDetailsForm {
-  availableMinutesPerWeek: number
+  availableMinutesPerWeek: string
 }
 
 const UserDetailsPage = (): JSX.Element => {
@@ -42,7 +42,8 @@ const UserDetailsPage = (): JSX.Element => {
 
   const submitHandler = async (data: UserDetailsForm) => {
     const response = await updateUserCapacity({
-      availableMinutesPerWeek: +data.availableMinutesPerWeek,
+      // eslint-disable-next-line unicorn/no-null
+      availableMinutesPerWeek: data.availableMinutesPerWeek.length > 0 ? +data.availableMinutesPerWeek : null,
       userId,
       teamSlug,
     })
@@ -138,7 +139,8 @@ const UserDetailsPage = (): JSX.Element => {
                   variant="primary"
                   className="w-full dark:border-white dark:bg-slate-800 dark:text-white"
                   placeholder="Minutes"
-                  {...register('availableMinutesPerWeek')}
+                  // 10080 max minutes in a week
+                  {...register('availableMinutesPerWeek', { max: 10_080 })}
                   onKeyPress={(event) => {
                     if (!/^\d+$/.test(event.key)) {
                       event.preventDefault()
@@ -148,7 +150,10 @@ const UserDetailsPage = (): JSX.Element => {
                 />
                 {fieldsErrors.availableMinutesPerWeek && (
                   <div aria-label="error field" className="text-red-600">
-                    Should be a positive number
+                    {fieldsErrors.availableMinutesPerWeek.message !== undefined &&
+                    fieldsErrors.availableMinutesPerWeek.message.length > 0
+                      ? fieldsErrors.availableMinutesPerWeek?.message
+                      : 'Must be from 0 to 10080'}
                   </div>
                 )}
               </div>
