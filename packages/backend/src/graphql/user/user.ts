@@ -50,10 +50,6 @@ export const User = builder.prismaObject('User', {
       resolve: async (user, _arguments) => {
         const slug = _arguments.teamSlug
 
-        if (!slug) {
-          throw new GraphQLError('Team slug is missing.')
-        }
-
         const membership = await prisma.teamMembership.findFirstOrThrow({
           where: {
             userId: user.id,
