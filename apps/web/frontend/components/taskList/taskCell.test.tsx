@@ -18,7 +18,7 @@ jest.mock('next/router', () => ({
   },
 }))
 
-describe('test row', () => {
+describe('TaskCell', () => {
   it('should be validation errors', async () => {
     render(<TaskCell canDelete task={testTask} />, { wrapper })
 
