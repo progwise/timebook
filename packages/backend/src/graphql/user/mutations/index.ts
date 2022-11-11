@@ -1,1 +1,2 @@
+import './userCapacityUpdateMutationField'
 import './userRoleUpdateMutationField'

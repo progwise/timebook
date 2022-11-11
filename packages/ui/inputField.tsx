@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { KeyboardEventHandler } from 'react'
 
 interface InputProps {
   name?: string
@@ -13,6 +13,7 @@ interface InputProps {
   className?: string
   label?: string
   errorMessage?: string
+  onKeyPress?: KeyboardEventHandler<HTMLInputElement>
 }
 
 export const InputField = React.forwardRef(
@@ -22,6 +23,7 @@ export const InputField = React.forwardRef(
       variant,
       disabled,
       onChange,
+      onKeyPress,
       onBlur,
       value,
       name,
@@ -57,6 +59,7 @@ export const InputField = React.forwardRef(
           onBlur={onBlur}
           value={value}
           ref={ref}
+          onKeyPress={onKeyPress}
           name={name}
           size={size}
         />
