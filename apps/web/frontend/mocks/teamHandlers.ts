@@ -11,6 +11,7 @@ import {
   Role,
   TeamFragment,
   Theme,
+  mockUserCapacityUpdateMutation,
 } from '../generated/graphql'
 import { assignedProjects } from './projectHandlers'
 import { testProject1, testProject2 } from './testData'
@@ -113,7 +114,7 @@ export const teamHandlers = [
         userRoleUpdate: {
           __typename: 'User',
           id: '123123-asd-12323',
-          role: Role.Admin,
+          role: request.variables.role,
         },
       }),
     )
@@ -135,6 +136,19 @@ export const teamHandlers = [
       context.data({
         __typename: 'Mutation',
         teamUnarchive: testTeam1,
+      }),
+    )
+    return result
+  }),
+  mockUserCapacityUpdateMutation((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Mutation',
+        userCapacityUpdate: {
+          __typename: 'User',
+          id: request.variables.userId,
+          availableMinutesPerWeek: request.variables.availableMinutesPerWeek,
+        },
       }),
     )
     return result

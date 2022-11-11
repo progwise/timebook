@@ -2,13 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
-import { mockMeQuery, mockUserQuery, mockUserRoleUpdateMutation, Role } from '../../../frontend/generated/graphql'
+import { mockMeQuery, mockUserQuery, Role } from '../../../frontend/generated/graphql'
 import '../../../frontend/mocks/mockServer'
 import { mockServer } from '../../../frontend/mocks/mockServer'
 import { assignedProjects } from '../../../frontend/mocks/projectHandlers'
 import UserDetailsPage from './[userId].page'
-
-let userRole: Role = Role.Admin
 
 const client = new Client({ url: '/api/team1/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
@@ -20,7 +18,7 @@ jest.mock('next-auth/react', () => ({
 jest.mock('next/router', () => ({
   useRouter() {
     return {
-      query: { teamSlug: 'wint', userId: '23182391283' },
+      query: { teamSlug: 'slug', userId: '23182391283' },
       isReady: true,
       push: jest.fn(),
     }
@@ -57,26 +55,8 @@ beforeEach(() => {
             id: '23182391283',
             name: 'Test Member',
             image: undefined,
-            role: userRole,
+            role: Role.Member,
             projects: assignedProjects,
-          },
-        }),
-      )
-      return result
-    }),
-  )
-
-  mockServer.use(
-    mockUserRoleUpdateMutation((request, response, context) => {
-      userRole = request.variables.role
-
-      const result = response(
-        context.data({
-          __typename: 'Mutation',
-          userRoleUpdate: {
-            __typename: 'User',
-            id: '123123-asd-12323',
-            role: userRole,
           },
         }),
       )
@@ -86,11 +66,7 @@ beforeEach(() => {
 })
 
 describe('UserIdPage (Admin)', () => {
-  beforeAll(() => {
-    userRole = Role.Admin
-  })
-
-  it('should demote to member', async () => {
+  it('should changed roles', async () => {
     render(<UserDetailsPage />, { wrapper })
 
     const demoteButton = await screen.findByRole('button', {
@@ -130,5 +106,18 @@ describe('UserIdPage (Admin)', () => {
     await userEvent.click(switchButtons[1])
 
     await waitFor(() => expect(switchButtons[1]).toBeChecked())
+  })
+
+  it('should change availableMinutesPerWeek', async () => {
+    render(<UserDetailsPage />, { wrapper })
+
+    const availableMinutesPerWeekField = await screen.findByRole('textbox')
+
+    await userEvent.type(availableMinutesPerWeekField, '123')
+    await userEvent.click(document.body)
+
+    const errorField = screen.queryByLabelText('error field')
+
+    expect(errorField).not.toBeInTheDocument()
   })
 })

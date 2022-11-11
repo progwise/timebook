@@ -167,11 +167,12 @@ enum Theme {
 }
 
 model TeamMembership {
-  id          String   @id @default(cuid())
-  memberSince DateTime @default(now())
-  userId      String
-  teamId      String
-  role        Role     @default(MEMBER)
+  id                      String   @id @default(cuid())
+  memberSince             DateTime @default(now())
+  userId                  String
+  teamId                  String
+  role                    Role     @default(MEMBER)
+  availableMinutesPerWeek Int?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
