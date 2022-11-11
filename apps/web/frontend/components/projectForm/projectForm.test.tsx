@@ -30,6 +30,8 @@ describe('projectForm', () => {
     await userEvent.type(nameInput, 'new project')
     await userEvent.type(startInput, '2022-04-12')
     await userEvent.type(endInput, '2022-04-13')
+    expect(endInput).toHaveValue('2022-04-13')
+
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'new project', start: '2022-04-12', end: '2022-04-13' })
@@ -65,7 +67,7 @@ describe('projectForm', () => {
     // eslint-disable-next-line unicorn/no-null
     expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'old project', start: null, end: null })
   })
-  it('should not be possible to create a project with an end date before the start', async () => {
+  it('should not be possible to enter an end date earlier as the start', async () => {
     const onSubmit = jest.fn()
     render(
       <ProjectForm
@@ -74,28 +76,28 @@ describe('projectForm', () => {
           __typename: 'Project',
           canModify: true,
           id: '1',
-          startDate: '2023-03-22',
-          endDate: '2022-03-22',
+          startDate: '2022-04-12',
+          endDate: '',
         }}
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
       />,
+      { wrapper },
     )
-    const startInput = screen.getByRole('textbox', {
-      name: /start/i,
-    })
+
+    const endInput = screen.getByRole('textbox', { name: /end/i })
     const submitButton = screen.getByRole('button', { name: /save/i })
-    const endInput = screen.getByRole('textbox', {
-      name: /end/i,
-    })
 
-    await userEvent.clear(startInput)
-    await userEvent.type(startInput, '2023-03-22')
+    await userEvent.type(endInput, '2022-04-13')
+    expect(endInput).toHaveValue('2022-04-13')
 
-    await userEvent.clear(endInput)
-    await userEvent.type(endInput, '2022-03-22')
     await userEvent.click(submitButton)
-    expect(onSubmit).toHaveBeenCalledWith(startInput < endInput)
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      title: 'test project',
+      start: '2022-04-12',
+      end: '2022-04-13',
+      customerId: undefined,
+    })
   })
 })

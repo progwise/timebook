@@ -44,7 +44,7 @@ export const InputField = React.forwardRef(
     return (
       <div className="flex flex-col gap-1">
         {label && (
-          <label htmlFor={name} className="font-semibold text-gray-500 text-sm">
+          <label htmlFor={name} className="text-sm font-semibold text-gray-500">
             {label}
           </label>
         )}
@@ -63,7 +63,11 @@ export const InputField = React.forwardRef(
           name={name}
           size={size}
         />
-        {errorMessage && <span className="text-xs text-red-500">{errorMessage}</span>}
+        {errorMessage && (
+          <span role="alert" className="text-xs text-red-500">
+            {errorMessage}
+          </span>
+        )}
       </div>
     )
   },
