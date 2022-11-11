@@ -1,0 +1,6 @@
+mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int, $teamSlug: String!) {
+  userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek, teamSlug: $teamSlug) {
+    id
+    availableMinutesPerWeek(teamSlug: $teamSlug)
+  }
+}
