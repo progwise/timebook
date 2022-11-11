@@ -98,7 +98,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {...register('title')}
         placeholder="Enter project name"
         size={30}
-        // eslint-disable-next-line tailwindcss/no-custom-classname
         className="font-small dark:placeholder:text-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
         errorMessage={formState.errors.title?.message}
       />
@@ -123,7 +122,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                // eslint-disable-next-line tailwindcss/no-custom-classname
                 className="font-small rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
@@ -143,35 +141,30 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </label>
         <Controller
           control={control}
-          // rules={{ validate: (value) => !value || isValidDateString(value) }}
+          rules={{ validate: (value) => !value || isValidDateString(value) }}
           name="end"
-          render={({ field: { onChange, onBlur, value } }) => {
-            return (
-              <div className="flex items-center">
-                <InputMask
-                  mask="9999-99-99"
-                  disabled={formState.isSubmitting}
-                  onBlur={onBlur}
-                  readOnly={isProjectFormReadOnly}
-                  onChange={(event) => {
-                    onChange(event)
-                  }}
-                  value={value ?? undefined}
-                  id="end"
-                  type="text"
-                  size={10}
-                  // eslint-disable-next-line tailwindcss/enforces-shorthand, tailwindcss/no-custom-classname
-                  className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
-                />
-                <CalendarSelector
-                  disabled={formState.isSubmitting || isProjectFormReadOnly}
-                  className="shrink-0"
-                  hideLabel={true}
-                  onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
-                />
-              </div>
-            )
-          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <div className="flex items-center">
+              <InputMask
+                mask="9999-99-99"
+                disabled={formState.isSubmitting}
+                onBlur={onBlur}
+                readOnly={isProjectFormReadOnly}
+                onChange={onChange}
+                value={value ?? undefined}
+                id="end"
+                type="text"
+                size={10}
+                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+              />
+              <CalendarSelector
+                disabled={formState.isSubmitting || isProjectFormReadOnly}
+                className="shrink-0"
+                hideLabel={true}
+                onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+              />
+            </div>
+          )}
         />
 
         {formState.errors.end && (

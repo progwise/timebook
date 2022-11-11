@@ -89,15 +89,9 @@ describe('projectForm', () => {
     const endInput = screen.getByRole('textbox', { name: /end/i })
     const submitButton = screen.getByRole('button', { name: /save/i })
 
-    await userEvent.type(endInput, '2022-04-13')
-    expect(endInput).toHaveValue('2022-04-13')
-
+    await userEvent.type(endInput, '2022-04-10')
     await userEvent.click(submitButton)
-    expect(onSubmit).toHaveBeenNthCalledWith(1, {
-      title: 'test project',
-      start: '2022-04-12',
-      end: '2022-04-13',
-      customerId: undefined,
-    })
+
+    expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 })
