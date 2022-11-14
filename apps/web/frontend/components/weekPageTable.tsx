@@ -38,6 +38,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
+  //eslint-disable-next-line unicorn/no-useless-undefined
   const [workHourItem, setWorkHourItem] = useState<WorkHourItem | undefined>(undefined)
   const [{ data }] = useWorkHoursQuery({
     variables: {
