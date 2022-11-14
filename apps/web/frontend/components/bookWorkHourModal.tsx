@@ -9,11 +9,11 @@ import * as yup from 'yup'
 import { Button, InputField } from '@progwise/timebook-ui'
 
 import {
-  useWorkHourCreateMutation,
-  useWorkHourUpdateMutation,
   useProjectsWithTasksQuery,
-  useWorkHourDeleteMutation,
   useTaskCreateMutation,
+  useWorkHourCreateMutation,
+  useWorkHourDeleteMutation,
+  useWorkHourUpdateMutation,
 } from '../generated/graphql'
 import { HourInput } from './hourInput'
 import { Modal } from './modal'
@@ -109,7 +109,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
     const result = await (!data.workHourId
       ? createWorkHour({ data: workHourInput })
       : updateWorkHour({
-          id: data.workHourId,
           data: workHourInput,
         }))
 

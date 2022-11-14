@@ -5,20 +5,23 @@ import { prisma } from '../../prisma'
 import { WorkHourInput } from '../workHourInput'
 
 builder.mutationField('workHourUpdate', (t) =>
-  t.prismaField({
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'WorkHour',
     description: 'Updates a work hour entry',
     args: {
-      id: t.arg.id({ description: 'id of the work hour item' }),
       data: t.arg({ type: WorkHourInput }),
     },
-    authScopes: async (_source, { id, data }) => {
+    authScopes: async (_source, { data }, context) => {
+      if (!context.session) return false
+
       const workHour = await prisma.workHour.findUniqueOrThrow({
         select: {
           task: { select: { project: { select: { teamId: true } } } },
           userId: true,
         },
-        where: { id: id.toString() },
+        where: {
+          date_userId_taskId: { date: data.date, taskId: data.taskId.toString(), userId: context.session.user.id },
+        },
       })
 
       const newAssignedTask = await prisma.task.findUniqueOrThrow({
@@ -35,15 +38,18 @@ builder.mutationField('workHourUpdate', (t) =>
         hasUserId: workHour.userId,
       }
     },
-    resolve: (query, _source, { id, data: { date, duration, taskId } }) =>
-      prisma.workHour.update({
+    resolve: (query, _source, { data: { date, taskId, duration } }, context) => {
+      return prisma.workHour.update({
         ...query,
-        where: { id: id.toString() },
+        where: {
+          date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
+        },
         data: {
           date: date,
           duration: duration,
           taskId: taskId.toString(),
         },
-      }),
+      })
+    },
   }),
 )

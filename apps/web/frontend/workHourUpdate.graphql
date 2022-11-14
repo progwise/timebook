@@ -1,5 +1,5 @@
-mutation workHourUpdate($id: ID!, $data: WorkHourInput!) {
-  workHourUpdate(id: $id, data: $data) {
+mutation workHourUpdate($data: WorkHourInput!) {
+  workHourUpdate(data: $data) {
     ...WorkHour
   }
 }

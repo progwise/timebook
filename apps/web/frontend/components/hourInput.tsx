@@ -75,8 +75,9 @@ export const getFormattedWorkHours = (workHours: number): string => {
 
 export const HourInput = (props: {
   workHours: number
-  onChange: (workHours: number) => void
+  onChange?: (workHours: number) => void
   className?: string
+  onBlur?: (workHours: number) => void
   readOnly?: boolean
 }): JSX.Element => {
   const [workHours, setWorkHours] = useState(0)
@@ -84,9 +85,11 @@ export const HourInput = (props: {
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
     const workHours = parseWorkHours(event.target.value)
     const formattedWorkHours = getFormattedWorkHours(workHours)
-    props.onChange(workHours)
     setWorkHours(workHours)
     setFormattedValue(formattedWorkHours)
+
+    if (props.onChange) props.onChange(workHours)
+    if (props.onBlur) props.onBlur(workHours)
   }
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {

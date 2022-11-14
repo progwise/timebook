@@ -17,6 +17,7 @@ import {
 
 import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
+import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
 
@@ -37,6 +38,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
+  const [workHourItem, setWorkHourItem] = useState<WorkHourItem | undefined>(undefined)
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
@@ -93,7 +95,17 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
                   {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-                  <HourInput readOnly onChange={() => {}} workHours={row.durations[dayIndex] / 60} />
+                  <HourInput
+                    onBlur={(duration: number) =>
+                      setWorkHourItem({
+                        date: day,
+                        duration: duration,
+                        projectId: row.project.id,
+                        taskId: row.task.id,
+                      })
+                    }
+                    workHours={row.durations[dayIndex] / 60}
+                  />
                 </TableCell>
               ))}
               <TableCell>
@@ -141,6 +153,10 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
           onClose={() => setIsAddTaskRowModalOpen(false)}
         />
       )}
+      {
+        //eslint-disable-next-line unicorn/no-useless-undefined
+        workHourItem && <BookWorkHourModal workHourItem={workHourItem} onClose={() => setWorkHourItem(undefined)} />
+      }
     </div>
   )
 }
