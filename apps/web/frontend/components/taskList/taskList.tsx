@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
@@ -36,7 +36,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     handleSubmit,
     reset,
     formState: { isSubmitting, errors },
-  } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
+  } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
   const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
   const [taskToBeUpdated, setTaskToBeUpdated] = useState<TaskFragment | undefined>()

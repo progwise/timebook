@@ -1,8 +1,9 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { TaskFragment, TaskInput, useTaskUpdateMutation } from '../generated/graphql'
 import { Modal } from './modal'
@@ -14,9 +15,7 @@ interface TaskDetailsModalProps {
 
 type TaskDetailsFormData = Pick<TaskInput, 'title'>
 
-export const taskInputSchema: yup.SchemaOf<TaskDetailsFormData> = yup.object({
-  title: yup.string().trim().required().min(4).max(50),
-})
+export const taskInputSchema: z.ZodSchema<TaskDetailsFormData> = taskInputValidations.pick({ title: true })
 
 export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
   const { onClose, task } = props
@@ -30,7 +29,7 @@ export const TaskDetailsModal = (props: TaskDetailsModalProps): JSX.Element => {
     defaultValues: {
       title: task.title,
     },
-    resolver: yupResolver(taskInputSchema),
+    resolver: zodResolver(taskInputSchema),
   })
 
   const handleSubmitTask = async (taskData: TaskDetailsFormData) => {

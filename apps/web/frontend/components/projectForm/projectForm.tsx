@@ -1,13 +1,14 @@
 /* eslint-disable unicorn/no-null */
-import { yupResolver } from '@hookform/resolvers/yup'
-import { format, parse } from 'date-fns'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format, isValid, parse, parseISO } from 'date-fns'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import InputMask from 'react-input-mask'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { projectInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
@@ -18,11 +19,17 @@ const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
   acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
-const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
-  customerId: yup.string().nullable(),
-  title: yup.string().trim().required().max(20),
-  start: yup.string().nullable(),
-  end: yup.string().nullable(),
+const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations.extend({
+  start: z
+    .string()
+    .nullish()
+    .transform((value) => (value === '____-__-__' ? null : value))
+    .refine((value) => !value || isValid(parseISO(value))),
+  end: z
+    .string()
+    .nullish()
+    .transform((value) => (value === '____-__-__' ? null : value))
+    .refine((value) => !value || isValid(parseISO(value))),
 })
 
 interface ProjectFormProps {
@@ -42,7 +49,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
       customerId: project?.customer?.id,
     },
-    resolver: yupResolver(projectInputSchema),
+    resolver: zodResolver(projectInputSchema),
   })
 
   const handleSubmitHelper = (data: ProjectInput) => {

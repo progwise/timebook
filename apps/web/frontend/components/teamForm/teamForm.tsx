@@ -1,11 +1,12 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { FiCopy } from 'react-icons/fi'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { teamInputValidations } from '@progwise/timebook-validations'
 
 import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
 
@@ -13,17 +14,7 @@ interface TeamFormProps {
   team?: TeamFragment
 }
 
-const teamInputSchema: yup.SchemaOf<TeamInput> = yup.object({
-  slug: yup
-    .string()
-    .trim()
-    .required()
-    .min(1)
-    .max(50)
-    .matches(/^[\w\-]+$/, 'You are only allowed to use digits, characters, -, _'),
-  theme: yup.mixed<Theme>().oneOf(Object.values(Theme)),
-  title: yup.string().trim().required().min(1).max(50),
-})
+const teamInputSchema: z.ZodType<TeamInput> = teamInputValidations.extend({ theme: z.nativeEnum(Theme).nullish() })
 
 const FormField: React.FC<{ className?: string; children: ReactNode }> = ({ children, className }) => (
   <label className={`flex flex-row flex-wrap gap-2 ${className}`}>{children}</label>
@@ -37,7 +28,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
       slug: team?.slug,
       theme: team?.theme,
     },
-    resolver: yupResolver(teamInputSchema),
+    resolver: zodResolver(teamInputSchema),
   })
   const router = useRouter()
   const [updateTeamResult, updateTeam] = useTeamUpdateMutation()

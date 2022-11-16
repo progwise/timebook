@@ -1,12 +1,13 @@
 import { ErrorMessage } from '@hookform/error-message'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { customerInputValidation } from '@progwise/timebook-validations'
 
 import { DeleteCustomerModal } from '../../../pages/[teamSlug]/customers/[customerId].page'
 import {
@@ -20,9 +21,7 @@ interface CustomerFormProps {
   customer?: CustomerFragment
 }
 
-const customerInputSchema: yup.SchemaOf<CustomerInput> = yup.object({
-  title: yup.string().trim().required().min(2).max(50),
-})
+const customerInputSchema: z.ZodType<CustomerInput> = customerInputValidation
 
 export const CustomerForm = ({ customer }: CustomerFormProps) => {
   const [, updateCustomer] = useCustomerUpdateMutation()
@@ -33,7 +32,7 @@ export const CustomerForm = ({ customer }: CustomerFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CustomerInput>({ defaultValues: { title: customer?.title }, resolver: yupResolver(customerInputSchema) })
+  } = useForm<CustomerInput>({ defaultValues: { title: customer?.title }, resolver: zodResolver(customerInputSchema) })
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
 
   const handleCancelClick = async () => {
