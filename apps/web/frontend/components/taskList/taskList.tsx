@@ -1,7 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { BiTrash } from 'react-icons/bi'
+import * as yup from 'yup'
 
 import {
   Button,
@@ -10,24 +9,27 @@ import {
   TableBody,
   TableCell,
   TableFoot,
+  TableFootRow,
   TableHead,
   TableHeadCell,
   TableHeadRow,
   TableRow,
-  TableFootRow,
 } from '@progwise/timebook-ui'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { DeleteTaskModal } from '../deleteTaskModal'
-import { TaskDetailsModal, taskInputSchema } from '../taskDetailsModal'
+import { TaskCell } from './taskCell'
+
+export type TaskFormData = Pick<TaskInput, 'title'>
+
+export const taskInputSchema: yup.SchemaOf<TaskFormData> = yup.object({
+  title: yup.string().trim().required().min(4).max(50),
+})
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
   project: ProjectFragment & { canModify: boolean }
   className?: string
 }
-
-type TaskFormData = Pick<TaskInput, 'title'>
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { tasks, project, className } = props
@@ -38,8 +40,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     formState: { isSubmitting, errors },
   } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
-  const [taskToBeDeleted, setTaskToBeDeleted] = useState<TaskFragment | undefined>()
-  const [taskToBeUpdated, setTaskToBeUpdated] = useState<TaskFragment | undefined>()
 
   const handleAddTask = async (taskData: TaskFormData) => {
     try {
@@ -63,46 +63,17 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
             <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
-            <TableHeadCell>Details page</TableHeadCell>
           </TableHeadRow>
         </TableHead>
         <TableBody>
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                {task.canModify && (
-                  <Button
-                    ariaLabel="Delete Task"
-                    variant="danger"
-                    tooltip="Delete Task"
-                    onClick={() => setTaskToBeDeleted(task)}
-                  >
-                    <BiTrash />
-                  </Button>
-                )}
-                <span className="ml-2">{task.title}</span>
+                <TaskCell task={task} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
-              <TableCell>
-                <Button
-                  variant="tertiary"
-                  onClick={() => {
-                    setTaskToBeUpdated(task)
-                  }}
-                >
-                  Details
-                </Button>
-              </TableCell>
             </TableRow>
           ))}
-          {taskToBeUpdated ? (
-            // eslint-disable-next-line unicorn/no-useless-undefined
-            <TaskDetailsModal task={taskToBeUpdated} onClose={() => setTaskToBeUpdated(undefined)} />
-          ) : undefined}
-          {taskToBeDeleted ? (
-            // eslint-disable-next-line unicorn/no-useless-undefined
-            <DeleteTaskModal open onClose={() => setTaskToBeDeleted(undefined)} task={taskToBeDeleted} />
-          ) : undefined}
         </TableBody>
         {project.canModify && (
           <TableFoot>
