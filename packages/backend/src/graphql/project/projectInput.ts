@@ -1,6 +1,9 @@
+import { projectInputValidations } from '@progwise/timebook-validations'
+
 import { builder } from '../builder'
 
 export const ProjectInput = builder.inputType('ProjectInput', {
+  validate: { schema: projectInputValidations },
   fields: (t) => ({
     title: t.string(),
     customerId: t.id({

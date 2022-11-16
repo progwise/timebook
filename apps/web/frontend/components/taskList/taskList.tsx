@@ -1,6 +1,6 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import {
   Button,
@@ -15,15 +15,14 @@ import {
   TableHeadRow,
   TableRow,
 } from '@progwise/timebook-ui'
+import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { TaskCell } from './taskCell'
 
 export type TaskFormData = Pick<TaskInput, 'title'>
 
-export const taskInputSchema: yup.SchemaOf<TaskFormData> = yup.object({
-  title: yup.string().trim().required().min(4).max(50),
-})
+export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true })
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
@@ -38,7 +37,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     handleSubmit,
     reset,
     formState: { isSubmitting, errors },
-  } = useForm<TaskFormData>({ resolver: yupResolver(taskInputSchema) })
+  } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
   const [, taskCreate] = useTaskCreateMutation()
 
   const handleAddTask = async (taskData: TaskFormData) => {
