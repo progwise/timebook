@@ -20,7 +20,7 @@ jest.mock('next/router', () => ({
 
 describe('TaskCell', () => {
   it('should be validation errors', async () => {
-    render(<TaskCell canDelete task={testTask} />, { wrapper })
+    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -31,7 +31,7 @@ describe('TaskCell', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
-    render(<TaskCell canDelete task={testTask} />, { wrapper })
+    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -43,7 +43,7 @@ describe('TaskCell', () => {
   })
 
   it('should be possible to delete a task', async () => {
-    render(<TaskCell task={testTask} canDelete />, { wrapper })
+    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
     expect(deleteButton).toBeInTheDocument()

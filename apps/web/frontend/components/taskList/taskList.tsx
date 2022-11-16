@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
@@ -10,15 +9,14 @@ import {
   TableBody,
   TableCell,
   TableFoot,
+  TableFootRow,
   TableHead,
   TableHeadCell,
   TableHeadRow,
   TableRow,
-  TableFootRow,
 } from '@progwise/timebook-ui'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { DeleteTaskModal } from '../deleteTaskModal'
 import { TaskCell } from './taskCell'
 
 export type TaskFormData = Pick<TaskInput, 'title'>
@@ -71,7 +69,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           {tasks.map((task) => (
             <TableRow key={task.id}>
               <TableCell className="mt-1 flex items-center">
-                <TaskCell canDelete={task.canModify} task={task} />
+                <TaskCell task={task} />
               </TableCell>
               <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
             </TableRow>

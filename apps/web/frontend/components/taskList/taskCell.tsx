@@ -12,11 +12,10 @@ import { DeleteTaskModal } from '../deleteTaskModal'
 import { TaskFormData, taskInputSchema } from './taskList'
 
 interface TaskCellProps {
-  task: TaskFragment
-  canDelete?: boolean
+  task: TaskFragment & { canModify: boolean }
 }
 
-export const TaskCell = ({ task, canDelete }: TaskCellProps) => {
+export const TaskCell = ({ task }: TaskCellProps) => {
   const [{ fetching }, taskUpdate] = useTaskUpdateMutation()
   const {
     setError,
@@ -47,7 +46,7 @@ export const TaskCell = ({ task, canDelete }: TaskCellProps) => {
 
   return (
     <>
-      {canDelete && (
+      {task.canModify && (
         <Button ariaLabel="Delete Task" variant="danger" tooltip="Delete Task" onClick={() => setOpenDeleteModal(true)}>
           <BiTrash />
         </Button>
