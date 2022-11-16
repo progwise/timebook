@@ -1,5 +1,5 @@
 import { ErrorMessage } from '@hookform/error-message'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
@@ -27,7 +27,7 @@ export const TaskCell = ({ task }: TaskCellProps) => {
     defaultValues: {
       title: task.title,
     },
-    resolver: yupResolver(taskInputSchema),
+    resolver: zodResolver(taskInputSchema),
   })
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
