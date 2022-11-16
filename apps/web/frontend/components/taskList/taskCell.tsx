@@ -67,10 +67,7 @@ export const TaskCell = ({ task, canDelete }: TaskCellProps) => {
         <ErrorMessage errors={errors} name="title" as={<span role="alert" className="text-red-700" />} />
       </div>
 
-      {openDeleteModal && (
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />
-      )}
+      {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
     </>
   )
 }
