@@ -5,11 +5,13 @@ importers:
   .:
     specifiers:
       '@trivago/prettier-plugin-sort-imports': ^3.3.1
+      dotenv-cli: ^6.0.0
       eslint-config-custom: workspace:*
       prettier: latest
       turbo: latest
     devDependencies:
       '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.7.1
+      dotenv-cli: 6.0.0
       eslint-config-custom: link:packages/eslint-config-custom
       prettier: 2.7.1
       turbo: 1.6.3
@@ -4570,6 +4572,21 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.4.0
+    dev: true
+
+  /dotenv-cli/6.0.0:
+    resolution: {integrity: sha512-qXlCOi3UMDhCWFKe0yq5sg3X+pJAz+RQDiFN38AMSbUrnY3uZshSfDJUAge951OS7J9gwLZGfsBlWRSOYz/TRg==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv: 16.0.3
+      dotenv-expand: 8.0.3
+      minimist: 1.2.6
+    dev: true
+
+  /dotenv-expand/8.0.3:
+    resolution: {integrity: sha512-SErOMvge0ZUyWd5B0NXMQlDkN+8r+HhVUsxgOO7IoPDOdDRD2JjExpN6y3KnFR66jsJMwSn1pqIivhU5rcJiNg==}
+    engines: {node: '>=12'}
     dev: true
 
   /dotenv/16.0.3:
