@@ -3,6 +3,7 @@ import { Session } from 'next-auth'
 import { getSession, SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
+import { Toaster } from 'react-hot-toast'
 
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
@@ -33,10 +34,10 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
       <Link href="/privacy">
         <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
       </Link>
+      <Toaster />
     </footer>
   </SessionProvider>
 )
-
 TimebookApp.getInitialProps = async (context: NextPageContext) => ({
   session: await getSession(context),
 })

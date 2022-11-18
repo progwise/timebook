@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { FiCopy } from 'react-icons/fi'
-import { z } from 'zod'
+import { string, z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
 import { teamInputValidations } from '@progwise/timebook-validations'
@@ -31,13 +32,21 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     resolver: zodResolver(teamInputSchema),
   })
   const router = useRouter()
-  const [updateTeamResult, updateTeam] = useTeamUpdateMutation()
-  const [createTeamResult, createTeam] = useTeamCreateMutation()
+  const [, updateTeam] = useTeamUpdateMutation()
+  const [, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
     const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+    const errorMesegae = error?.graphQLErrors.at(0)?.message
 
-    if (!error) {
+    if (errorMesegae === 'Too many teams') {
+      toast.error('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month', { duration: 7000 })
+      return
+    }
+
+    if (error) {
+      toast.error('Error')
+    } else {
       router.push(`/${data.slug}/team`)
     }
   }
@@ -101,12 +110,6 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
       </div>
-
-      {(createTeamResult.error || updateTeamResult.error) && (
-        <div role="alert" className="text-center text-red-600">
-          {createTeamResult.error?.message ?? updateTeamResult.error?.message ?? 'Server error, try again later'}
-        </div>
-      )}
     </form>
   )
 }
