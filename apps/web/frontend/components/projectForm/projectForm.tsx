@@ -1,52 +1,60 @@
 /* eslint-disable unicorn/no-null */
-import { yupResolver } from '@hookform/resolvers/yup'
-import { format, parse } from 'date-fns'
+import { ErrorMessage } from '@hookform/error-message'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format, isValid, parse, parseISO } from 'date-fns'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import InputMask from 'react-input-mask'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { projectInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { DeleteProjectModal } from '../deleteProjectModal'
 import { CustomerInput } from './customerInput'
 
-const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
-const isValidDateString = (dateString: string): boolean =>
-  acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
-
 const getDate = (dateString: string | undefined | null): Date | undefined => {
   if (!dateString) {
     return undefined
   }
-  const usedFormat = acceptedDateFormats.find((format) => parse(dateString, format, new Date()).getDate())
+  const usedFormat = acceptedDateFormats.find((format) => isValid(parse(dateString, format, new Date())))
   if (!usedFormat) {
     return undefined
   }
   return parse(dateString, usedFormat, new Date().getDate())
 }
 
-const projectInputSchema: yup.SchemaOf<ProjectInput> = yup.object({
-  customerId: yup.string().nullable(),
-  title: yup.string().trim().required().max(20),
+const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
+const isValidDateString = (dateString: string): boolean =>
+  acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
-  start: yup
-    .string()
-    .nullable()
-    .test(
-      (value, context) => !value || !context.parent.end || (getDate(context.parent.end) || 1) >= (getDate(value) || 0),
-    ),
-  end: yup
-    .string()
-    .nullable()
-    .test(
-      (value, context) =>
-        !value || !context.parent.start || (getDate(context.parent.start) || 0) <= (getDate(value) || 1),
-    ),
-})
+const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
+  .extend({
+    start: z
+      .string()
+      .nullish()
+      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
+    end: z
+      .string()
+      .nullish()
+      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
+  })
+  .superRefine((arguments_, context) => {
+    const isStartBeforeEnd = (getDate(arguments_.start) || 0) <= (getDate(arguments_.end) || 1)
+
+    if (!isStartBeforeEnd) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['end'],
+        message: 'The end date must be after start date',
+      })
+    }
+  })
 
 interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
@@ -65,7 +73,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
       customerId: project?.customer?.id,
     },
-    resolver: yupResolver(projectInputSchema),
+    resolver: zodResolver(projectInputSchema),
   })
 
   const handleSubmitHelper = (data: ProjectInput) => {
@@ -133,7 +141,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
           )}
         />
-        {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+        <ErrorMessage name="start" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mb-6 flex flex-col">
         <label htmlFor="end" className="w-full text-sm text-gray-700 dark:text-white">
@@ -167,11 +175,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           )}
         />
 
-        {formState.errors.end && (
-          <span role="alert" className="whitespace-nowrap">
-            Invalid Date
-          </span>
-        )}
+        <ErrorMessage name="end" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <label className="w-full">
         <h1>Customer</h1>
