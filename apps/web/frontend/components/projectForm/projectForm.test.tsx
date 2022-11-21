@@ -30,6 +30,8 @@ describe('projectForm', () => {
     await userEvent.type(nameInput, 'new project')
     await userEvent.type(startInput, '2022-04-12')
     await userEvent.type(endInput, '2022-04-13')
+    expect(endInput).toHaveValue('2022-04-13')
+
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'new project', start: '2022-04-12', end: '2022-04-13' })
@@ -64,5 +66,32 @@ describe('projectForm', () => {
 
     // eslint-disable-next-line unicorn/no-null
     expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'old project', start: null, end: null })
+  })
+  it('should not be possible to enter an end date earlier as the start', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={{
+          title: 'test project',
+          __typename: 'Project',
+          canModify: true,
+          id: '1',
+          startDate: '2022-04-12',
+          endDate: '',
+        }}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+      />,
+      { wrapper },
+    )
+
+    const endInput = screen.getByRole('textbox', { name: /end/i })
+    const submitButton = screen.getByRole('button', { name: /save/i })
+
+    await userEvent.type(endInput, '2022-04-10')
+    await userEvent.click(submitButton)
+
+    expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 })
