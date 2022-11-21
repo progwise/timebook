@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -6,7 +7,7 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const teamUnarchiveMutation = `
+const teamUnarchiveMutation = gql`
   mutation teamUnarchiveMutation($id: ID!) {
     teamUnarchive(teamId: $id) {
       id
