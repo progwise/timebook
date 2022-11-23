@@ -125,7 +125,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 mask="9999-99-99"
                 onBlur={onBlur}
                 onChange={onChange}
-                value={value ?? undefined}
+                value={value ?? ''}
                 readOnly={isProjectFormReadOnly}
                 id="start"
                 type="text"
@@ -159,7 +159,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 onBlur={onBlur}
                 readOnly={isProjectFormReadOnly}
                 onChange={onChange}
-                value={value ?? undefined}
+                value={value ?? ''}
                 id="end"
                 type="text"
                 size={10}

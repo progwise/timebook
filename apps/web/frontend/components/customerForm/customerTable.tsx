@@ -2,7 +2,16 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { MdPersonAddAlt1 } from 'react-icons/md'
 
-import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '@progwise/timebook-ui'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+} from '@progwise/timebook-ui'
 
 import { useCustomersQuery } from '../../generated/graphql'
 import { ProtectedPage } from '../protectedPage'
@@ -23,12 +32,14 @@ export const CustomerTable = (): JSX.Element => {
   return (
     <ProtectedPage>
       <article>
-        <Table className="w-full">
-          <TableHeadRow>
-            <TableHeadCell>Name</TableHeadCell>
-            <TableHeadCell>Customer-ID</TableHeadCell>
-            <TableHeadCell />
-          </TableHeadRow>
+        <Table>
+          <TableHead>
+            <TableHeadRow>
+              <TableHeadCell>Name</TableHeadCell>
+              <TableHeadCell>Customer-ID</TableHeadCell>
+              <TableHeadCell />
+            </TableHeadRow>
+          </TableHead>
           <TableBody>
             {data?.teamBySlug.customers.map((customer) => (
               <TableRow key={customer.id}>
