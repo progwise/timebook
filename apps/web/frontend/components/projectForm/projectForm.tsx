@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/no-null */
+import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format, isValid, parse, parseISO } from 'date-fns'
 import { useState } from 'react'
@@ -15,22 +16,45 @@ import { CalendarSelector } from '../calendarSelector'
 import { DeleteProjectModal } from '../deleteProjectModal'
 import { CustomerInput } from './customerInput'
 
+const getDate = (dateString: string | undefined | null): Date | undefined => {
+  if (!dateString) {
+    return undefined
+  }
+  const usedFormat = acceptedDateFormats.find((format) => isValid(parse(dateString, format, new Date())))
+  if (!usedFormat) {
+    return undefined
+  }
+  return parse(dateString, usedFormat, new Date().getDate())
+}
+
 const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
 const isValidDateString = (dateString: string): boolean =>
   acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
-const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations.extend({
-  start: z
-    .string()
-    .nullish()
-    .transform((value) => (value === '____-__-__' ? null : value))
-    .refine((value) => !value || isValid(parseISO(value))),
-  end: z
-    .string()
-    .nullish()
-    .transform((value) => (value === '____-__-__' ? null : value))
-    .refine((value) => !value || isValid(parseISO(value))),
-})
+const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
+  .extend({
+    start: z
+      .string()
+      .nullish()
+      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
+    end: z
+      .string()
+      .nullish()
+      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
+  })
+  .superRefine((arguments_, context) => {
+    const isStartBeforeEnd = (getDate(arguments_.start) || 0) <= (getDate(arguments_.end) || 1)
+
+    if (!isStartBeforeEnd) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['end'],
+        message: 'The end date must be after start date',
+      })
+    }
+  })
 
 interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
@@ -82,9 +106,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {...register('title')}
         placeholder="Enter project name"
         size={30}
-        className="font-small dark:placeholder-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+        className="font-small dark:placeholder:text-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
         errorMessage={formState.errors.title?.message}
       />
+
       <div className="flex flex-col">
         <label htmlFor="start" className="w-full text-sm text-gray-700 dark:text-white">
           Start
@@ -100,12 +125,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 mask="9999-99-99"
                 onBlur={onBlur}
                 onChange={onChange}
-                value={value ?? undefined}
+                value={value ?? ''}
                 readOnly={isProjectFormReadOnly}
                 id="start"
                 type="text"
                 size={10}
-                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="font-small rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}
@@ -116,7 +141,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
           )}
         />
-        {formState.errors.start && <span className="whitespace-nowrap">Invalid Date</span>}
+        <ErrorMessage name="start" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mb-6 flex flex-col">
         <label htmlFor="end" className="w-full text-sm text-gray-700 dark:text-white">
@@ -134,7 +159,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 onBlur={onBlur}
                 readOnly={isProjectFormReadOnly}
                 onChange={onChange}
-                value={value ?? undefined}
+                value={value ?? ''}
                 id="end"
                 type="text"
                 size={10}
@@ -150,7 +175,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           )}
         />
 
-        {formState.errors.end && <span className="whitespace-nowrap">Invalid Date</span>}
+        <ErrorMessage name="end" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <label className="w-full">
         <h1>Customer</h1>

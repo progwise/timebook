@@ -2,7 +2,16 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { Button, Table, TableBody, TableCell, TableHeadCell, TableHeadRow, TableRow } from '@progwise/timebook-ui'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableHeadRow,
+  TableRow,
+} from '@progwise/timebook-ui'
 
 import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
@@ -60,11 +69,13 @@ const TeamPage = (): JSX.Element => {
             <span>Members</span>
           </h2>
           <Table className="w-full table-auto">
-            <TableHeadRow>
-              <TableHeadCell className="text-left">Username</TableHeadCell>
-              <TableHeadCell className="text-left">Projects</TableHeadCell>
-              <TableHeadCell />
-            </TableHeadRow>
+            <TableHead>
+              <TableHeadRow>
+                <TableHeadCell className="text-left">Username</TableHeadCell>
+                <TableHeadCell className="text-left">Projects</TableHeadCell>
+                <TableHeadCell />
+              </TableHeadRow>
+            </TableHead>
             <TableBody>
               {teamData?.teamBySlug.members.map((user) => (
                 <TableRow key={user.id}>

@@ -1,10 +1,9 @@
-import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 
-import { Button, InputField, Spinner } from '@progwise/timebook-ui'
+import { Button, InputField } from '@progwise/timebook-ui'
 
 import { TaskFragment, useTaskUpdateMutation } from '../../generated/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
@@ -51,19 +50,14 @@ export const TaskCell = ({ task }: TaskCellProps) => {
         </Button>
       )}
 
-      <div className="flex flex-col ml-2">
-        <span className="flex flex-row gap-2">
-          <InputField
-            variant="primary"
-            {...register('title', { required: true })}
-            onBlur={handleSubmit(handleSubmitTask)}
-          />
-          {fetching && <Spinner />}
-        </span>
-        <br />
-
-        <ErrorMessage errors={errors} name="title" as={<span role="alert" className="text-red-700" />} />
-      </div>
+      <InputField
+        className="ml-2"
+        variant="primary"
+        {...register('title', { required: true })}
+        onBlur={handleSubmit(handleSubmitTask)}
+        loading={fetching}
+        errorMessage={errors.title?.message}
+      />
 
       {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
     </>
