@@ -8,8 +8,8 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const workHourUpdateMutation = gql`
-  mutation workHourUpdateMutation($id: ID!, $data: WorkHourInput!) {
-    workHourUpdate(id: $id, data: $data) {
+  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: String!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
       id
       date
       duration
