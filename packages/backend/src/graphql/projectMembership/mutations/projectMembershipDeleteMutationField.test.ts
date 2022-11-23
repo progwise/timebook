@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -6,12 +7,15 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const projectMembershipDeleteMutation = `
-mutation projectMembershipDelete($userID: ID!, $projectID: ID!) {
-  projectMembershipDelete(userId: $userID, projectId: $projectID) {
-    title, members{id}
+const projectMembershipDeleteMutation = gql`
+  mutation projectMembershipDelete($userID: ID!, $projectID: ID!) {
+    projectMembershipDelete(userId: $userID, projectId: $projectID) {
+      title
+      members {
+        id
+      }
+    }
   }
-}
 `
 beforeEach(async () => {
   await prisma.user.createMany({
