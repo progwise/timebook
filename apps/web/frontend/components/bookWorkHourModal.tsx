@@ -110,6 +110,8 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
       ? createWorkHour({ data: workHourInput })
       : updateWorkHour({
           data: workHourInput,
+          taskId: workHourItem.taskId,
+          date: format(workHourItem.date, 'yyyy-MM-dd'),
         }))
 
     if (!result.error) {

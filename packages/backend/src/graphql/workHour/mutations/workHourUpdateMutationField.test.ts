@@ -7,8 +7,8 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const workHourUpdateMutation = `
-  mutation workHourUpdateMutation($data: WorkHourInput!) {
-    workHourUpdate(data: $data) {
+  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: String!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
       id
       date
       duration
@@ -95,12 +95,13 @@ describe('workHourUpdateMutationField', () => {
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
-        id: '1',
         data: {
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
         },
+        date: '2022-01-01',
+        taskId: '1',
       },
     })
 
@@ -119,6 +120,8 @@ describe('workHourUpdateMutationField', () => {
           duration: 60,
           taskId: '1',
         },
+        date: '2022-01-01',
+        taskId: '1',
       },
     })
 
@@ -151,6 +154,8 @@ describe('workHourUpdateMutationField', () => {
           duration: 120,
           taskId: '1',
         },
+        date: '2022-01-01',
+        taskId: '1',
       },
     })
 
@@ -163,12 +168,13 @@ describe('workHourUpdateMutationField', () => {
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
-        id: '1',
         data: {
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
         },
+        date: '2022-01-01',
+        taskId: '1',
       },
     })
 
@@ -195,12 +201,13 @@ describe('workHourUpdateMutationField', () => {
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
-        id: '1',
         data: {
           date: '2022-01-01',
           duration: 120,
           taskId: '1',
         },
+        date: '2022-01-01',
+        taskId: '1',
       },
     })
 
