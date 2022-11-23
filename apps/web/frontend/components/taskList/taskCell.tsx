@@ -1,9 +1,7 @@
-import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import { CgSpinner } from 'react-icons/cg'
 
 import { Button, InputField } from '@progwise/timebook-ui'
 
