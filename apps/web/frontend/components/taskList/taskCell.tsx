@@ -3,9 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import { CgSpinner } from 'react-icons/cg'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { Button, InputField, Spinner } from '@progwise/timebook-ui'
 
 import { TaskFragment, useTaskUpdateMutation } from '../../generated/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
@@ -59,7 +58,7 @@ export const TaskCell = ({ task }: TaskCellProps) => {
             {...register('title', { required: true })}
             onBlur={handleSubmit(handleSubmitTask)}
           />
-          {fetching && <CgSpinner className="inline h-8 w-8 animate-spin dark:text-blue-600" />}
+          {fetching && <Spinner />}
         </span>
         <br />
 
