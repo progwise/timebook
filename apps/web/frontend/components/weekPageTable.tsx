@@ -15,9 +15,9 @@ import {
   TableRow,
 } from '@progwise/timebook-ui'
 
-import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
+import { ProjectFragment, TaskFragment, useWorkHoursQuery, useWorkHourUpdateMutation } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
-import { BookWorkHourModal, WorkHourItem } from './bookWorkHourModal'
+import { WorkHourItem } from './bookWorkHourModal'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
 
@@ -40,6 +40,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   //eslint-disable-next-line unicorn/no-useless-undefined
   const [workHourItem, setWorkHourItem] = useState<WorkHourItem | undefined>(undefined)
+  const [{ fetching }, workHourUpdate] = useWorkHourUpdateMutation()
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
@@ -98,10 +99,13 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
                   {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
                   <HourInput
                     onBlur={(duration: number) =>
-                      setWorkHourItem({
-                        date: day,
-                        duration: duration,
-                        projectId: row.project.id,
+                      workHourUpdate({
+                        data: {
+                          date: format(day, 'yyyy-MM-dd'),
+                          duration: duration,
+                          taskId: row.task.id,
+                        },
+                        date: format(day, 'yyyy-MM-dd'),
                         taskId: row.task.id,
                       })
                     }
@@ -154,10 +158,6 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
           onClose={() => setIsAddTaskRowModalOpen(false)}
         />
       )}
-      {
-        //eslint-disable-next-line unicorn/no-useless-undefined
-        workHourItem && <BookWorkHourModal workHourItem={workHourItem} onClose={() => setWorkHourItem(undefined)} />
-      }
     </div>
   )
 }
