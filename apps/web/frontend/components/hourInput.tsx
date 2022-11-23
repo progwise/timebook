@@ -88,8 +88,8 @@ export const HourInput = (props: {
     setWorkHours(workHours)
     setFormattedValue(formattedWorkHours)
 
-    if (props.onChange) props.onChange(workHours)
-    if (props.onBlur) props.onBlur(workHours)
+    props.onChange?.(workHours)
+    props.onBlur?.(workHours)
   }
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
