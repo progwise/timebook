@@ -1,5 +1,6 @@
 import React, { KeyboardEventHandler } from 'react'
-import { CgSpinner } from 'react-icons/cg'
+
+import { Spinner } from './spinner'
 
 interface InputProps {
   name?: string
@@ -72,7 +73,7 @@ export const InputField = React.forwardRef(
 
           {loading && (
             <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
-              <CgSpinner className="h-6 w-6 animate-spin dark:text-blue-600" />
+              <Spinner />
             </div>
           )}
         </span>
