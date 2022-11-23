@@ -278,6 +278,7 @@ importers:
       jest-environment-jsdom: ^29.1.2
       react: ^17.0.2
       react-dom: ^17.0.2
+      react-icons: ^4.4.0
       ts-jest: ^29.0.3
       tsconfig: workspace:*
       typescript: ^4.5.2
@@ -296,6 +297,7 @@ importers:
       jest-environment-jsdom: 29.1.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+      react-icons: 4.4.0_react@17.0.2
       ts-jest: 29.0.3_2gcdg7c5hzdfd67o3khlosdlhu
       tsconfig: link:../tsconfig
       typescript: 4.8.4
@@ -8083,7 +8085,6 @@ packages:
       react: '*'
     dependencies:
       react: 17.0.2
-    dev: false
 
   /react-input-mask/3.0.0-alpha.2_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-9U7qL+mvDMOJcbOFPdt6Vj+zzmCMNnBjhhjGDrL8BGQmymgvMVKhu/oOVfAkl+5VWOsLr+G3EhZOmae5fBcAkA==}

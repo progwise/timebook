@@ -1,4 +1,5 @@
 import React, { KeyboardEventHandler } from 'react'
+import { CgSpinner } from 'react-icons/cg'
 
 interface InputProps {
   name?: string
@@ -14,6 +15,7 @@ interface InputProps {
   label?: string
   errorMessage?: string
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
+  loading?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -29,9 +31,10 @@ export const InputField = React.forwardRef(
       name,
       readOnly,
       size,
-      className,
+      className = '',
       label,
       errorMessage,
+      loading,
     }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -42,27 +45,37 @@ export const InputField = React.forwardRef(
     }[variant]
 
     return (
-      <div className="flex flex-col gap-1">
+      <div className={`flex w-full flex-col gap-1 ${className}`}>
         {label && (
           <label htmlFor={name} className="text-sm font-semibold text-gray-500">
             {label}
           </label>
         )}
-        <input
-          aria-label={label}
-          className={`dark:placeholder-grey rounded-md  text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${className}`}
-          type="text"
-          placeholder={placeholder}
-          disabled={disabled}
-          readOnly={readOnly}
-          onChange={onChange}
-          onBlur={onBlur}
-          value={value}
-          ref={ref}
-          onKeyPress={onKeyPress}
-          name={name}
-          size={size}
-        />
+        <span className="relative">
+          <input
+            aria-label={label}
+            className={`w-full dark:placeholder-grey rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+              loading ? 'pr-8' : ''
+            }`}
+            type="text"
+            placeholder={placeholder}
+            disabled={disabled}
+            readOnly={readOnly}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            ref={ref}
+            onKeyPress={onKeyPress}
+            name={name}
+            size={size}
+          />
+
+          {loading && (
+            <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
+              <CgSpinner className="h-6 w-6 animate-spin dark:text-blue-600" />
+            </div>
+          )}
+        </span>
         {errorMessage && (
           <span role="alert" className="text-xs text-red-500">
             {errorMessage}
