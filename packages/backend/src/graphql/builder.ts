@@ -2,7 +2,8 @@ import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
-import { ForbiddenError } from 'apollo-server-core'
+import ValidationPlugin from '@pothos/plugin-validation'
+import { ForbiddenError, UserInputError } from 'apollo-server-core'
 
 import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
@@ -45,7 +46,7 @@ export const builder = new SchemaBuilder<{
     Project: { id: string }
   }
 }>({
-  plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin],
+  plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin],
   prisma: {
     client: prisma,
     filterConnectionTotalCount: true,
@@ -128,6 +129,12 @@ export const builder = new SchemaBuilder<{
   }),
   scopeAuthOptions: {
     unauthorizedError: () => new ForbiddenError(`Not authorized`),
+  },
+  validationOptions: {
+    validationError: (zodError) => {
+      const errorMessage = zodError.errors[0].message
+      return new UserInputError(errorMessage)
+    },
   },
 })
 

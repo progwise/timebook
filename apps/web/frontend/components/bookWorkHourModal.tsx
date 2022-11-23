@@ -1,12 +1,13 @@
 import { ErrorMessage } from '@hookform/error-message'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
+import { taskInputValidations, workHourInputValidations } from '@progwise/timebook-validations'
 
 import {
   useProjectsWithTasksQuery,
@@ -34,27 +35,28 @@ export interface WorkHourItem {
 
 const CREATE_NEW_TASK = 'CREATE-NEW-TASK'
 
-const bookWorkHourModalSchema: yup.SchemaOf<WorkHourItem> = yup.object({
-  workHourId: yup.string(),
-  date: yup.date().required(),
-  duration: yup
-    .number()
-    .required()
-    .max(24 * 60)
-    .positive(),
-  projectId: yup.string().required('Project is required'),
-  taskId: yup.string().required('Task is required'),
-  taskTitle: yup
-    .string()
-    .trim()
-    .when('taskId', {
-      //When create new task is selected, task title is required
-      is: CREATE_NEW_TASK,
-      // eslint-disable-next-line unicorn/no-thenable
-      then: (schema) =>
-        schema.min(4, 'task title must be at least 4 characters').max(50, 'task title must be at most 50 characters'),
-    }),
-})
+const schema: z.ZodSchema<WorkHourItem> = workHourInputValidations
+  .extend({
+    workHourId: z.string().optional(),
+    projectId: z.string().min(1, 'Please select a task'),
+    taskId: z.string().min(1, 'Please select a task'),
+    taskTitle: z.string().optional(),
+  })
+  .superRefine((data, context) => {
+    if (data.taskId !== CREATE_NEW_TASK) {
+      return
+    }
+
+    const taskTitleValidation = taskInputValidations.shape.title.safeParse(data.taskTitle)
+    if (taskTitleValidation.success) {
+      return
+    }
+
+    context.addIssue({
+      ...taskTitleValidation.error.errors[0],
+      path: ['taskTitle'],
+    })
+  })
 
 export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element => {
   const { onClose, workHourItem } = props
@@ -71,7 +73,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
   } = useForm<WorkHourItem>({
     defaultValues: workHourItem,
     shouldUnregister: false,
-    resolver: yupResolver(bookWorkHourModalSchema),
+    resolver: zodResolver(schema),
   })
   const [, createWorkHour] = useWorkHourCreateMutation()
   const [, updateWorkHour] = useWorkHourUpdateMutation()

@@ -30,7 +30,7 @@ export const projectHandlers = [
         __typename: 'Mutation',
         projectMembershipDelete: {
           __typename: 'Project',
-          title: assignedProjects.find((project) => project.id === request.variables.projectID)?.title ?? '',
+          title: allProjects.find((project) => project.id === request.variables.projectID)?.title ?? '',
           members: [],
         },
       }),
@@ -38,16 +38,16 @@ export const projectHandlers = [
     return result
   }),
   mockProjectMembershipCreateMutation((request, response, context) => {
-    const addProject = allProjects.find((project) => project.id === request.variables.projectID)
+    const addedProject = allProjects.find((project) => project.id === request.variables.projectID)
 
-    if (addProject) assignedProjects.push(addProject)
+    if (addedProject) assignedProjects.push(addedProject)
 
     const result = response(
       context.data({
         __typename: 'Mutation',
         projectMembershipCreate: {
           __typename: 'Project',
-          title: assignedProjects.find((project) => project.id === request.variables.projectID)?.title ?? '',
+          title: addedProject?.title ?? '',
           members: [{ __typename: 'User', name: 'Team Member' }],
         },
       }),

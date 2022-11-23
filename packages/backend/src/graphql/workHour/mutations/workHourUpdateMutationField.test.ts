@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -6,9 +7,9 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const workHourUpdateMutation = `
-  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: String!) {
-    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
+const workHourUpdateMutation = gql`
+  mutation workHourUpdateMutation($id: ID!, $data: WorkHourInput!) {
+    workHourUpdate(id: $id, data: $data) {
       id
       date
       duration

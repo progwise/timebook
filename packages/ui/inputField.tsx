@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { KeyboardEventHandler } from 'react'
+
+import { Spinner } from './spinner'
 
 interface InputProps {
   name?: string
@@ -13,6 +15,8 @@ interface InputProps {
   className?: string
   label?: string
   errorMessage?: string
+  onKeyPress?: KeyboardEventHandler<HTMLInputElement>
+  loading?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -22,14 +26,16 @@ export const InputField = React.forwardRef(
       variant,
       disabled,
       onChange,
+      onKeyPress,
       onBlur,
       value,
       name,
       readOnly,
       size,
-      className,
+      className = '',
       label,
       errorMessage,
+      loading,
     }: InputProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -40,27 +46,42 @@ export const InputField = React.forwardRef(
     }[variant]
 
     return (
-      <div className="flex flex-col gap-1">
+      <div className={`flex w-full flex-col gap-1 ${className}`}>
         {label && (
-          <label htmlFor={name} className="font-semibold text-gray-500 text-sm">
+          <label htmlFor={name} className="text-sm font-semibold text-gray-500">
             {label}
           </label>
         )}
-        <input
-          aria-label={label}
-          className={`rounded-md text-black ${variantClassName} ${className}`}
-          type="text"
-          placeholder={placeholder}
-          disabled={disabled}
-          readOnly={readOnly}
-          onChange={onChange}
-          onBlur={onBlur}
-          value={value}
-          ref={ref}
-          name={name}
-          size={size}
-        />
-        {errorMessage && <span className="text-xs text-red-500">{errorMessage}</span>}
+        <span className="relative">
+          <input
+            aria-label={label}
+            className={`w-full dark:placeholder-grey rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+              loading ? 'pr-8' : ''
+            }`}
+            type="text"
+            placeholder={placeholder}
+            disabled={disabled}
+            readOnly={readOnly}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            ref={ref}
+            onKeyPress={onKeyPress}
+            name={name}
+            size={size}
+          />
+
+          {loading && (
+            <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
+              <Spinner />
+            </div>
+          )}
+        </span>
+        {errorMessage && (
+          <span role="alert" className="text-xs text-red-500">
+            {errorMessage}
+          </span>
+        )}
       </div>
     )
   },

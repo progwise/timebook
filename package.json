@@ -7,19 +7,20 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
+    "build": "dotenv -- turbo run build",
+    "dev": "dotenv -- turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "e2e-tests": "turbo run e2e-tests",
+    "e2e-tests": "dotenv -- turbo run e2e-tests",
     "typecheck": "turbo run typecheck",
-    "migrate-db": "turbo run migrate-db",
+    "migrate-db": "dotenv -- turbo run migrate-db",
     "graphql:generate": "turbo run graphql:generate",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.1",
+    "dotenv-cli": "^6.0.0",
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
     "turbo": "latest"

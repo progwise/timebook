@@ -215,6 +215,26 @@ type Mutation {
   ): Team!
 
   """
+  Updates the user capacity minutes
+  """
+  userCapacityUpdate(
+    """
+    Capacity of minutes
+    """
+    availableMinutesPerWeek: Int
+
+    """
+    slug of the team
+    """
+    teamSlug: String!
+
+    """
+    Id of the user
+    """
+    userId: ID!
+  ): User!
+
+  """
   Update a user role
   """
   userRoleUpdate(
@@ -536,6 +556,10 @@ enum Theme {
 }
 
 type User {
+  """
+  Capacity of the user in the team
+  """
+  availableMinutesPerWeek(teamSlug: String!): Int
   id: ID!
   image: String
   name: String

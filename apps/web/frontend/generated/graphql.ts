@@ -85,6 +85,8 @@ export type Mutation = {
   teamUnarchive: Team
   /** Update a team */
   teamUpdate: Team
+  /** Updates the user capacity minutes */
+  userCapacityUpdate: User
   /** Update a user role */
   userRoleUpdate: User
   /** Create a new WorkHour */
@@ -173,6 +175,12 @@ export type MutationTeamUnarchiveArgs = {
 export type MutationTeamUpdateArgs = {
   data: TeamInput
   id: Scalars['ID']
+}
+
+export type MutationUserCapacityUpdateArgs = {
+  availableMinutesPerWeek?: InputMaybe<Scalars['Int']>
+  teamSlug: Scalars['String']
+  userId: Scalars['ID']
 }
 
 export type MutationUserRoleUpdateArgs = {
@@ -384,6 +392,8 @@ export enum Theme {
 
 export type User = {
   __typename: 'User'
+  /** Capacity of the user in the team */
+  availableMinutesPerWeek?: Maybe<Scalars['Int']>
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -391,6 +401,10 @@ export type User = {
   projects: Array<Project>
   /** Role of the user in a team */
   role: Role
+}
+
+export type UserAvailableMinutesPerWeekArgs = {
+  teamSlug: Scalars['String']
 }
 
 export type UserProjectsArgs = {
@@ -761,6 +775,17 @@ export type TeamWithProjectsFragment = {
     endDate?: string | null
     customer?: { __typename: 'Customer'; id: string } | null
   }>
+}
+
+export type UserCapacityUpdateMutationVariables = Exact<{
+  userId: Scalars['ID']
+  availableMinutesPerWeek?: InputMaybe<Scalars['Int']>
+  teamSlug: Scalars['String']
+}>
+
+export type UserCapacityUpdateMutation = {
+  __typename: 'Mutation'
+  userCapacityUpdate: { __typename: 'User'; id: string; availableMinutesPerWeek?: number | null }
 }
 
 export type UserRoleUpdateMutationVariables = Exact<{
@@ -1381,6 +1406,18 @@ export function useTeamsWithProjectsQuery(options?: Omit<Urql.UseQueryArgs<Teams
     ...options,
   })
 }
+export const UserCapacityUpdateDocument = gql`
+  mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int, $teamSlug: String!) {
+    userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek, teamSlug: $teamSlug) {
+      id
+      availableMinutesPerWeek(teamSlug: $teamSlug)
+    }
+  }
+`
+
+export function useUserCapacityUpdateMutation() {
+  return Urql.useMutation<UserCapacityUpdateMutation, UserCapacityUpdateMutationVariables>(UserCapacityUpdateDocument)
+}
 export const UserRoleUpdateDocument = gql`
   mutation userRoleUpdate($userId: ID!, $role: Role!, $teamSlug: String!) {
     userRoleUpdate(userId: $userId, role: $role, teamSlug: $teamSlug) {
@@ -1896,6 +1933,25 @@ export const mockTeamsWithProjectsQuery = (
     any
   >,
 ) => graphql.query<TeamsWithProjectsQuery, TeamsWithProjectsQueryVariables>('teamsWithProjects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUserCapacityUpdateMutation((req, res, ctx) => {
+ *   const { userId, availableMinutesPerWeek, teamSlug } = req.variables;
+ *   return res(
+ *     ctx.data({ userCapacityUpdate })
+ *   )
+ * })
+ */
+export const mockUserCapacityUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UserCapacityUpdateMutationVariables>,
+    GraphQLContext<UserCapacityUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<UserCapacityUpdateMutation, UserCapacityUpdateMutationVariables>('userCapacityUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -3,7 +3,8 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build", "graphql:generate"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**"],
+      "env": ["NEXTAUTH_URL"]
     },
     "lint": {
       "outputs": []
