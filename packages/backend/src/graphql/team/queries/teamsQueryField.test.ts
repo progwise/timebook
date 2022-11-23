@@ -1,12 +1,14 @@
+import { gql } from 'apollo-server-core'
+
 import { PrismaClient, Team } from '@progwise/timebook-prisma'
 
 import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const teamsQuery = `
-  query teams ($includeArchived: Boolean) {
-    teams (includeArchived: $includeArchived) {
+const teamsQuery = gql`
+  query teams($includeArchived: Boolean) {
+    teams(includeArchived: $includeArchived) {
       id
       title
       slug

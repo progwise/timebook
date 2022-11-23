@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -6,10 +7,10 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const teamUpdateMutation = `
+const teamUpdateMutation = gql`
   mutation teamUpdateMutation($id: ID!, $data: TeamInput!) {
     teamUpdate(id: $id, data: $data) {
-      id 
+      id
       title
       slug
     }
