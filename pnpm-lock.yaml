@@ -10,10 +10,10 @@ importers:
       prettier: latest
       turbo: latest
     devDependencies:
-      '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.7.1
+      '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.8.0
       dotenv-cli: 6.0.0
       eslint-config-custom: link:packages/eslint-config-custom
-      prettier: 2.7.1
+      prettier: 2.8.0
       turbo: 1.6.3
 
   apps/web:
@@ -278,6 +278,8 @@ importers:
       ts-jest: ^29.0.3
       tsconfig: workspace:*
       typescript: ^4.5.2
+    dependencies:
+      react-icons: 4.4.0_react@17.0.2
     devDependencies:
       '@testing-library/dom': 8.18.1
       '@testing-library/jest-dom': 5.16.5
@@ -293,7 +295,6 @@ importers:
       jest-environment-jsdom: 29.1.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-icons: 4.4.0_react@17.0.2
       ts-jest: 29.0.3_2gcdg7c5hzdfd67o3khlosdlhu
       tsconfig: link:../tsconfig
       typescript: 4.8.4
@@ -2945,7 +2946,7 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@trivago/prettier-plugin-sort-imports/3.3.1_prettier@2.7.1:
+  /@trivago/prettier-plugin-sort-imports/3.3.1_prettier@2.8.0:
     resolution: {integrity: sha512-ITGspeOlFnK1dwJVjqOguGW3Ja8hakxOPFudhpP0YfsDHT0yM0u4TU+62Vl83hCatnhB4+fYhlSZyiifUv4xSg==}
     peerDependencies:
       prettier: 2.x
@@ -2957,7 +2958,7 @@ packages:
       '@babel/types': 7.17.0
       javascript-natural-sort: 0.7.1
       lodash: 4.17.21
-      prettier: 2.7.1
+      prettier: 2.8.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7919,6 +7920,12 @@ packages:
     hasBin: true
     dev: true
 
+  /prettier/2.8.0:
+    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
   /pretty-format/27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
@@ -8060,6 +8067,7 @@ packages:
       react: '*'
     dependencies:
       react: 17.0.2
+    dev: false
 
   /react-input-mask/3.0.0-alpha.2_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-9U7qL+mvDMOJcbOFPdt6Vj+zzmCMNnBjhhjGDrL8BGQmymgvMVKhu/oOVfAkl+5VWOsLr+G3EhZOmae5fBcAkA==}
