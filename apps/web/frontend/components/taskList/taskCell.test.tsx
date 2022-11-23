@@ -2,6 +2,7 @@ import { render, screen, waitForElementToBeRemoved } from '@testing-library/reac
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
+import '../../mocks/mockServer'
 import { testTask } from '../../mocks/testData'
 import { TaskCell } from './taskCell'
 
