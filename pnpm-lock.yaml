@@ -7,7 +7,7 @@ importers:
       '@trivago/prettier-plugin-sort-imports': ^3.3.1
       dotenv-cli: ^6.0.0
       eslint-config-custom: workspace:*
-      prettier: latest
+      prettier: ^2.8.0
       turbo: latest
     devDependencies:
       '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.8.0
@@ -63,7 +63,6 @@ importers:
       next-urql: ^4.0.0
       nodemailer: ^6.8.0
       postcss: ^8.4.4
-      prettier: ^2.7.1
       react: 17.0.2
       react-dom: 17.0.2
       react-hook-form: ^7.25.1
@@ -132,7 +131,6 @@ importers:
       jest-transform-stub: 2.0.0
       msw: 0.36.8
       postcss: 8.4.14
-      prettier: 2.7.1
       simple-git: 3.14.1
       tailwindcss: 3.1.8_pe6iykxod2v7i2uk6okjazxzki
       ts-jest: 29.0.3_2gcdg7c5hzdfd67o3khlosdlhu
@@ -7912,12 +7910,6 @@ packages:
   /prepend-http/2.0.0:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
-    dev: true
-
-  /prettier/2.7.1:
-    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
     dev: true
 
   /prettier/2.8.0:
