@@ -17,7 +17,6 @@ import {
 
 import { ProjectFragment, TaskFragment, useWorkHoursQuery, useWorkHourUpdateMutation } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
-import { WorkHourItem } from './bookWorkHourModal'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
 
@@ -38,9 +37,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  //eslint-disable-next-line unicorn/no-useless-undefined
-  const [workHourItem, setWorkHourItem] = useState<WorkHourItem | undefined>(undefined)
-  const [{ fetching }, workHourUpdate] = useWorkHourUpdateMutation()
+  const [, workHourUpdate] = useWorkHourUpdateMutation()
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
@@ -98,7 +95,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
                   {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
                   <HourInput
-                    onBlur={(duration: number) =>
+                    onBlur={(duration: number) => {
                       workHourUpdate({
                         data: {
                           date: format(day, 'yyyy-MM-dd'),
@@ -108,7 +105,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
                         date: format(day, 'yyyy-MM-dd'),
                         taskId: row.task.id,
                       })
-                    }
+                    }}
                     workHours={row.durations[dayIndex] / 60}
                   />
                 </TableCell>
