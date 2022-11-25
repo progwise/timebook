@@ -4,7 +4,8 @@ import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { FiCopy } from 'react-icons/fi'
-import { string, z } from 'zod'
+import { CombinedError } from 'urql'
+import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
 import { teamInputValidations } from '@progwise/timebook-validations'
@@ -36,19 +37,30 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   const [, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
-    const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
-    const errorMesegae = error?.graphQLErrors.at(0)?.message
+    const mutationPromise: Promise<{ error?: CombinedError }> = team
+      ? updateTeam({ data, id: team.id })
+      : createTeam({ data })
 
-    if (errorMesegae === 'Too many teams') {
-      toast.error('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month', { duration: 7000 })
+    const { error } = await mutationPromise
+    // const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+    const errorMesseage = error?.graphQLErrors.at(0)?.message
+
+    if (errorMesseage === 'Too many teams') {
+      toast.error('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month')
+      return
+    }
+
+    if (error?.networkError) {
+      toast.error('Please check your internet conection')
       return
     }
 
     if (error) {
-      toast.error('Error')
-    } else {
-      router.push(`/${data.slug}/team`)
+      toast.error('unexpectet Error. Please try again')
+      return
     }
+
+    router.push(`/${data.slug}/team`)
   }
 
   const handleDismiss = () => {

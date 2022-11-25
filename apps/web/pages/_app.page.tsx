@@ -34,7 +34,11 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
       <Link href="/privacy">
         <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
       </Link>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          duration: 7000,
+        }}
+      />
     </footer>
   </SessionProvider>
 )
