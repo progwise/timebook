@@ -19,7 +19,7 @@ export const timebook = new digitalocean.App('timebook', {
         instanceSizeSlug: 'basic-xxs',
         dockerfilePath: 'Dockerfile',
         envs: [
-          { key: 'NEXTAUTH_URL', value: '${_self.PUBLIC_URL}' },
+          { key: 'NEXTAUTH_URL', value: '${APP_URL}' },
           { key: 'NEXTAUTH_SECRET', value: process.env.NEXTAUTH_SECRET, type: 'SECRET' },
           { key: 'GITHUB_CLIENT_ID', value: process.env.GITHUB_CLIENT_ID },
           { key: 'GITHUB_CLIENT_SECRET', value: process.env.GITHUB_CLIENT_SECRET, type: 'SECRET' },

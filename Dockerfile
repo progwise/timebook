@@ -10,6 +10,7 @@ RUN turbo prune --scope=@progwise/timebook-web --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:16-alpine AS installer
+ARG NEXTAUTH_URL
 RUN apk add --no-cache libc6-compat
 RUN apk update
 RUN npm install --global pnpm
