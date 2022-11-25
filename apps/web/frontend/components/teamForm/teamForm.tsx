@@ -45,12 +45,12 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     }
 
     if (error?.networkError) {
-      toast.error('Please check your internet conection')
+      toast.error('Please check your internet connection')
       return
     }
 
     if (error) {
-      toast.error('unexpectet Error. Please try again')
+      toast.error('Unexpected Error. Please try again')
       return
     }
 

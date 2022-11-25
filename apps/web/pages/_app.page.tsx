@@ -42,6 +42,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
     </footer>
   </SessionProvider>
 )
+
 TimebookApp.getInitialProps = async (context: NextPageContext) => ({
   session: await getSession(context),
 })
