@@ -119,7 +119,7 @@ jobs:
   pulumi:
     needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: ./packages/pulumi
@@ -149,7 +149,7 @@ jobs:
   deploy:
     needs: [pulumi]
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     name: Deploy App
     steps:
       - name: Checkout code

@@ -11,8 +11,7 @@ export const timebook = new digitalocean.App('timebook', {
     services: [
       {
         git: {
-          // branch: 'main',
-          branch: 'ci/fix-ssr-on-prod',
+          branch: 'main',
           repoCloneUrl: 'https://github.com/progwise/timebook',
         },
         instanceCount: 1,
