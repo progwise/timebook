@@ -225,7 +225,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
                   className="self-end"
                   workHours={field.value / 60}
                   onChange={(workHours: number) => {
-                    setValue('duration', workHours * 60, { shouldValidate: true })
+                    setValue('duration', workHours, { shouldValidate: true })
                   }}
                 />
               )
