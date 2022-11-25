@@ -12,8 +12,8 @@ import {
   useProjectMembershipCreateMutation,
   useProjectMembershipDeleteMutation,
   useTeamProjectsQuery,
-  useUserQuery,
   useUserCapacityUpdateMutation,
+  useUserQuery,
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
 
@@ -30,6 +30,7 @@ const UserDetailsPage = (): JSX.Element => {
 
   const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
   const [{ data: meData }] = useMeQuery({ variables: { teamSlug } })
+
   const [{ data: allProjects }] = useTeamProjectsQuery({ variables: { slug: teamSlug } })
   const [{ data }] = useUserQuery({
     pause: !router.isReady,
@@ -88,7 +89,7 @@ const UserDetailsPage = (): JSX.Element => {
                 <h1 className="text-xl font-semibold text-gray-400">Team member</h1>
 
                 <div className="flex">
-                  {isAdmin && (
+                  {isAdmin && meData?.user.id !== userId && (
                     <>
                       {data?.user.role === Role.Member ? (
                         <Button className="mr-4" variant="secondary" onClick={handleUpgradeClick}>
