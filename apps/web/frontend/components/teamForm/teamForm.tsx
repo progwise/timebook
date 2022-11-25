@@ -4,7 +4,6 @@ import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { FiCopy } from 'react-icons/fi'
-import { CombinedError } from 'urql'
 import { z } from 'zod'
 
 import { Button, InputField } from '@progwise/timebook-ui'
@@ -37,12 +36,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
   const [, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
-    const mutationPromise: Promise<{ error?: CombinedError }> = team
-      ? updateTeam({ data, id: team.id })
-      : createTeam({ data })
-
-    const { error } = await mutationPromise
-    // const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+    const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
     const errorMesseage = error?.graphQLErrors.at(0)?.message
 
     if (errorMesseage === 'Too many teams') {
