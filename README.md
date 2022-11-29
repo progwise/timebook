@@ -16,23 +16,24 @@ Documentation for installing pnpm https://pnpm.io/installation.
 
 # Getting Started
 
-The main application is located in the app folder as next.js app including backend and frontend.
+The main application is located in the apps/web folder as next.js typescript application. It can be started from the root folder using:
 
 ```bash
-cd app
+pnpm run dev
 ```
-
+Make sure the app runs on the right port your SSO is configured for, usually port 3000.
 ## Start the database server
 
 The database server has to be started prior to make the backend work.
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 This app is developed using prisma.io. You can start the prisma studio to view/modify data by using:
 
 ```bash
+cd packages/backend
 npx prisma studio
 ```
 
@@ -41,7 +42,7 @@ npx prisma studio
 This is needed, if the database schema has changed since the last migration run.
 
 ```bash
-npm run migrate:dev
+pnpm run migrate-db
 ```
 
 For more information see [prisma getting started](https://www.prisma.io/docs/concepts/components/prisma-migrate)
@@ -51,7 +52,7 @@ For more information see [prisma getting started](https://www.prisma.io/docs/con
 This nextjs app starts react frontend and graphql backend with a single command:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 For more information how next.js apps are build see [NextJS basics](https://nextjs.org/learn/basics/navigate-between-pages)
@@ -59,9 +60,6 @@ For more information how next.js apps are build see [NextJS basics](https://next
 # Running the app
 
 - http://localhost:3000 frontend
-- http://localhost:4000 graphql backend
--
-
 ...
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
