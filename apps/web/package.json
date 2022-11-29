@@ -10,7 +10,9 @@
     "test:watch": "jest --watchAll",
     "lint": "eslint \"*/**/*.{ts,tsx,js,jsx}\"",
     "graphql:generate": "graphql-codegen",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write --config ../../.prettierrc.js .",
+    "format:check": "prettier --check --config ../../.prettierrc.js ."
   },
   "dependencies": {
     "@floating-ui/react-dom": "^1.0.0",

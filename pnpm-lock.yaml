@@ -8,12 +8,14 @@ importers:
       dotenv-cli: ^6.0.0
       eslint-config-custom: workspace:*
       prettier: ^2.8.0
+      prettier-plugin-tailwindcss: ^0.2.0
       turbo: latest
     devDependencies:
       '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.8.0
       dotenv-cli: 6.0.0
       eslint-config-custom: link:packages/eslint-config-custom
       prettier: 2.8.0
+      prettier-plugin-tailwindcss: 0.2.0_prettier@2.8.0
       turbo: 1.6.3
 
   apps/web:
@@ -7910,6 +7912,15 @@ packages:
   /prepend-http/2.0.0:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
+    dev: true
+
+  /prettier-plugin-tailwindcss/0.2.0_prettier@2.8.0:
+    resolution: {integrity: sha512-Ruqig/mdWCSpqdq9WK44nrmqM4BFWTzBPhPGwC5NK3coV9eZntEQPB84MGZbjAg0XQU02jVRHXNRPREBzxvM+A==}
+    engines: {node: '>=12.17.0'}
+    peerDependencies:
+      prettier: '>=2.2.0'
+    dependencies:
+      prettier: 2.8.0
     dev: true
 
   /prettier/2.8.0:
