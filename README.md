@@ -1,4 +1,5 @@
 # Timebook Monorepo
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 This is a TurboRepo mono-repository. https://turbo.build/
@@ -17,23 +18,23 @@ Documentation for installing pnpm https://pnpm.io/installation.
 
 # apps & packages
 
-* **apps/web**  
-main nextjs web app with backend routes
+- **apps/web**  
+  main nextjs web app with backend routes
 
-* **apps/web-e2e**  
-browser tests build with playwright
+- **apps/web-e2e**  
+  browser tests build with playwright
 
-* **packages/backend**  
-the GraphQL backend with database build with prisma and pothos
+- **packages/backend**  
+  the GraphQL backend with database build with prisma and pothos
 
-* **packages/pulumi**  
-the infrastructure as code package build with pulumi
+- **packages/pulumi**  
+  the infrastructure as code package build with pulumi
 
-* **packages/ui**  
-re-usable UI components
+- **packages/ui**  
+  re-usable UI components
 
-* **packages/tsconfig**  
-central place to store all tsconfigs for all packages that use tsc
+- **packages/tsconfig**  
+  central place to store all tsconfigs for all packages that use tsc
 
 # Getting Started
 
@@ -42,7 +43,9 @@ The main application is located in the apps/web folder as next.js typescript app
 ```bash
 pnpm run dev
 ```
+
 Make sure the app runs on the right port your SSO is configured for, usually port 3000.
+
 ## Start the database server
 
 The database server has to be started prior to make the backend work.
@@ -81,7 +84,7 @@ For more information how next.js apps are build see [NextJS basics](https://next
 # Running the app
 
 - http://localhost:3000 frontend
-...
+  ...
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
