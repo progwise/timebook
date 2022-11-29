@@ -1,3 +1,4 @@
+# Timebook Monorepo
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 This is a TurboRepo mono-repository. https://turbo.build/
@@ -13,6 +14,26 @@ Windows users may have trouble with the default installation folder of pnpm:
 `copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
 
 Documentation for installing pnpm https://pnpm.io/installation.
+
+# apps & packages
+
+* **apps/web**  
+main nextjs web app with backend routes
+
+* **apps/web-e2e**  
+browser tests build with playwright
+
+* **packages/backend**  
+the GraphQL backend with database build with prisma and pothos
+
+* **packages/pulumi**  
+the infrastructure as code package build with pulumi
+
+* **packages/ui**  
+re-usable UI components
+
+* **packages/tsconfig**  
+central place to store all tsconfigs for all packages that use tsc
 
 # Getting Started
 
