@@ -9,14 +9,6 @@
     "lint": {
       "outputs": []
     },
-    "format": {
-      "outputs": [],
-      "cache": false
-    },
-    "format:check": {
-      "outputs": [],
-      "cache": false
-    },
     "dev": {
       "cache": false
     },

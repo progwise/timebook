@@ -15,8 +15,8 @@
     "typecheck": "turbo run typecheck",
     "migrate-db": "dotenv -- turbo run migrate-db",
     "graphql:generate": "turbo run graphql:generate",
-    "format": "turbo run format",
-    "format:check": "turbo run format:check"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.1",
