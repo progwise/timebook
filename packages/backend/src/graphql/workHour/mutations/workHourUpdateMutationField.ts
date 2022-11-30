@@ -13,7 +13,7 @@ builder.mutationField('workHourUpdate', (t) =>
     args: {
       data: t.arg({ type: WorkHourInput }),
       date: t.arg({ type: DateScalar }),
-      taskId: t.arg.string(),
+      taskId: t.arg.id(),
     },
     authScopes: async (_source, { data, date, taskId }, context) => {
       if (!context.session) return false

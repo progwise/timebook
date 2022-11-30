@@ -1,4 +1,4 @@
-mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: String!) {
+mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
   workHourUpdate(data: $data, date: $date, taskId: $taskId) {
     ...WorkHour
   }

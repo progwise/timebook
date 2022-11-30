@@ -269,7 +269,7 @@ type Mutation {
   """
   Updates a work hour entry
   """
-  workHourUpdate(data: WorkHourInput!, date: Date!, taskId: String!): WorkHour!
+  workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
 
 type Project implements ModifyInterface {

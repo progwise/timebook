@@ -200,7 +200,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
-  taskId: Scalars['String']
+  taskId: Scalars['ID']
 }
 
 export type Project = ModifyInterface & {
@@ -839,7 +839,7 @@ export type WorkHourDeleteMutation = { __typename: 'Mutation'; workHourDelete: {
 export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
-  taskId: Scalars['String']
+  taskId: Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1454,7 +1454,7 @@ export function useWorkHourDeleteMutation() {
   return Urql.useMutation<WorkHourDeleteMutation, WorkHourDeleteMutationVariables>(WorkHourDeleteDocument)
 }
 export const WorkHourUpdateDocument = gql`
-  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: String!) {
+  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
     workHourUpdate(data: $data, date: $date, taskId: $taskId) {
       ...WorkHour
     }
