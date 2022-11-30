@@ -35,6 +35,8 @@ const testTeam2: TeamFragment = {
   archived: false,
 }
 
+let userRole = Role.Admin
+
 export const teamHandlers = [
   mockTeamsQuery((request, response, context) => {
     const result = response(
@@ -100,7 +102,7 @@ export const teamHandlers = [
           id: '23182391283',
           name: 'Test Member',
           image: undefined,
-          role: Role.Admin,
+          role: userRole,
           projects: assignedProjects,
         },
       }),
@@ -108,13 +110,15 @@ export const teamHandlers = [
     return result
   }),
   mockUserRoleUpdateMutation((request, response, context) => {
+    userRole = request.variables.role
+
     const result = response(
       context.data({
         __typename: 'Mutation',
         userRoleUpdate: {
           __typename: 'User',
           id: '123123-asd-12323',
-          role: request.variables.role,
+          role: userRole,
         },
       }),
     )
