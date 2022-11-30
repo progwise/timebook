@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { Button, InputField, Spinner } from '@progwise/timebook-ui'
 
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { Toggle } from '../../../frontend/components/toggle/toggle'
@@ -16,6 +16,7 @@ import {
   useUserQuery,
   useUserRoleUpdateMutation,
 } from '../../../frontend/generated/graphql'
+import { UserOverview } from '../../../frontend/userOverview'
 
 interface UserDetailsForm {
   availableMinutesPerWeek: string
@@ -32,10 +33,11 @@ const UserDetailsPage = (): JSX.Element => {
   const [{ data: meData }] = useMeQuery({ variables: { teamSlug } })
 
   const [{ data: allProjects }] = useTeamProjectsQuery({ variables: { slug: teamSlug } })
-  const [{ data }] = useUserQuery({
+  const [{ data, fetching: fetchingUser }] = useUserQuery({
     pause: !router.isReady,
     variables: { userId, teamSlug },
   })
+  console.log(data)
   const isAdmin = meData?.user.role === Role.Admin
   const [, createProjectMembership] = useProjectMembershipCreateMutation()
   const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
@@ -68,7 +70,11 @@ const UserDetailsPage = (): JSX.Element => {
     handleSubmit,
   } = useForm<UserDetailsForm>({
     mode: 'onChange',
+    defaultValues: { availableMinutesPerWeek: data?.user.availableMinutesPerWeek?.toString() },
   })
+
+  if (!data) return <Spinner />
+  return <UserOverview user={data.user} />
 
   return (
     <>
