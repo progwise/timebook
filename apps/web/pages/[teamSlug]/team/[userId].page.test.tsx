@@ -44,25 +44,6 @@ beforeEach(() => {
       return result
     }),
   )
-
-  mockServer.use(
-    mockUserQuery((request, response, context) => {
-      const result = response(
-        context.data({
-          __typename: 'Query',
-          user: {
-            __typename: 'User',
-            id: '23182391283',
-            name: 'Test Member',
-            image: undefined,
-            role: Role.Member,
-            projects: assignedProjects,
-          },
-        }),
-      )
-      return result
-    }),
-  )
 })
 
 describe('UserIdPage (Admin)', () => {
