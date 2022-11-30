@@ -10,7 +10,6 @@ const prisma = new PrismaClient()
 const workHourUpdateMutation = gql`
   mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
     workHourUpdate(data: $data, date: $date, taskId: $taskId) {
-      id
       date
       duration
       user {
@@ -115,7 +114,6 @@ describe('workHourUpdateMutationField', () => {
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
-        id: '1',
         data: {
           date: '2022-01-02',
           duration: 60,
@@ -128,7 +126,6 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toEqual({
       workHourUpdate: {
-        id: '1',
         date: '2022-01-02',
         duration: 60,
         task: {
@@ -149,7 +146,6 @@ describe('workHourUpdateMutationField', () => {
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
       variables: {
-        id: '1',
         data: {
           date: '2022-01-01',
           duration: 120,
@@ -181,7 +177,6 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toEqual({
       workHourUpdate: {
-        id: '1',
         date: '2022-01-01',
         duration: 120,
         task: {
@@ -214,5 +209,36 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
+  it('should create a new work hour if not exist', async () => {
+    const testServer = getTestServer()
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2022-07-03',
+          duration: 60,
+          taskId: '1',
+        },
+        date: '2022-07-03',
+        taskId: '1',
+      },
+    })
+
+    expect(response.data).toEqual({
+      workHourUpdate: {
+        date: '2022-07-03',
+        duration: 60,
+        task: {
+          id: '1',
+          title: 'Task',
+        },
+        user: {
+          id: '1',
+          name: 'Test User 1',
+        },
+      },
+    })
+    expect(response.errors).toBeUndefined()
   })
 })
