@@ -58,7 +58,7 @@ This app is developed using prisma.io. You can start the prisma studio to view/m
 
 ```bash
 cd packages/backend
-npx prisma studio
+pnpx prisma studio
 ```
 
 ## Migrate the database
