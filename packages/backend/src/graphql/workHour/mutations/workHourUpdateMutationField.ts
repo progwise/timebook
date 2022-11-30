@@ -63,29 +63,13 @@ builder.mutationField('workHourUpdate', (t) =>
 
       if (!checkTaskInProject) throw new GraphQLError('Not authorized')
 
-      const workHour = await prisma.workHour.findFirst({
-        where: {
-          date: date,
-          taskId: taskId.toString(),
-          userId: context.session.user.id,
-        },
-      })
-
-      if (!workHour)
-        return await prisma.workHour.create({
-          data: {
-            ...data,
-            taskId: data.taskId.toString(),
-            userId: context.session.user.id,
-          },
-        })
-
-      return await prisma.workHour.update({
+      return await prisma.workHour.upsert({
         ...query,
         where: {
           date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
         },
-        data: { ...data, taskId: data.taskId.toString() },
+        create: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
+        update: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
       })
     },
   }),
