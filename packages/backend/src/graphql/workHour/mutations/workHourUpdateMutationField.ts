@@ -1,5 +1,4 @@
 import { ForbiddenError } from 'apollo-server-core'
-import { GraphQLError } from 'graphql'
 
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
@@ -47,30 +46,14 @@ builder.mutationField('workHourUpdate', (t) =>
         hasUserId: workHour.userId,
       }
     },
-    resolve: async (query, _source, { data, date, taskId }, context) => {
-      const checkTaskInProject = await prisma.projectMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          project: {
-            tasks: {
-              some: {
-                id: taskId.toString(),
-              },
-            },
-          },
-        },
-      })
-
-      if (!checkTaskInProject) throw new GraphQLError('Not authorized')
-
-      return await prisma.workHour.upsert({
+    resolve: async (query, _source, { data, date, taskId }, context) =>
+      await prisma.workHour.upsert({
         ...query,
         where: {
           date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
         },
         create: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
         update: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
-      })
-    },
+      }),
   }),
 )
