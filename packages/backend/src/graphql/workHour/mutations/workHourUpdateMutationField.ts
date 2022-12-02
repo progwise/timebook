@@ -43,7 +43,10 @@ builder.mutationField('workHourUpdate', (t) =>
 
       return {
         isTeamAdminByTeamId: workHour.task.project.teamId,
-        hasUserId: workHour.userId,
+        $all: {
+          hasUserId: workHour.userId,
+          isProjectMember: newAssignedTask.project.id,
+        },
       }
     },
     resolve: async (query, _source, { data, date, taskId }, context) =>
