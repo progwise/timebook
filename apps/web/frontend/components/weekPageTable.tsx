@@ -15,7 +15,7 @@ import {
   TableRow,
 } from '@progwise/timebook-ui'
 
-import { ProjectFragment, TaskFragment, useWorkHoursQuery } from '../generated/graphql'
+import { ProjectFragment, TaskFragment, useWorkHoursQuery, useWorkHourUpdateMutation } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
@@ -37,6 +37,7 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
   const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
   const interval = { start: fromDate, end: toDate }
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
+  const [, workHourUpdate] = useWorkHourUpdateMutation()
   const [{ data }] = useWorkHoursQuery({
     variables: {
       teamSlug: router.query.teamSlug?.toString() ?? '',
@@ -93,7 +94,20 @@ export const WeekPageTable = (props: WeekPageTableProps) => {
               {eachDayOfInterval(interval).map((day, dayIndex) => (
                 <TableCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
                   {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-                  <HourInput readOnly onChange={() => {}} workHours={row.durations[dayIndex] / 60} />
+                  <HourInput
+                    onBlur={(duration: number) => {
+                      workHourUpdate({
+                        data: {
+                          date: format(day, 'yyyy-MM-dd'),
+                          duration: duration,
+                          taskId: row.task.id,
+                        },
+                        date: format(day, 'yyyy-MM-dd'),
+                        taskId: row.task.id,
+                      })
+                    }}
+                    workHours={row.durations[dayIndex] / 60}
+                  />
                 </TableCell>
               ))}
               <TableCell>

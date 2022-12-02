@@ -43,7 +43,7 @@ TimebookApp.getInitialProps = async (context: NextPageContext) => ({
 
 export default withUrqlClient(
   (_ssrExchange, context) => ({
-    url: `${process.env.NEXTAUTH_URL}/api/graphql`,
+    url: `${process.env.NEXTAUTH_URL ?? ''}/api/graphql`,
     fetchOptions: () => ({
       headers: {
         cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,

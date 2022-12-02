@@ -1,3 +1,4 @@
+import { parse } from 'date-fns'
 import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
 
 export interface IWorkDuration {
@@ -75,8 +76,9 @@ export const getFormattedWorkHours = (workHours: number): string => {
 
 export const HourInput = (props: {
   workHours: number
-  onChange: (workHours: number) => void
+  onChange?: (workHours: number) => void
   className?: string
+  onBlur?: (workHours: number) => void
   readOnly?: boolean
 }): JSX.Element => {
   const [workHours, setWorkHours] = useState(0)
@@ -84,9 +86,15 @@ export const HourInput = (props: {
   const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
     const workHours = parseWorkHours(event.target.value)
     const formattedWorkHours = getFormattedWorkHours(workHours)
-    props.onChange(workHours)
     setWorkHours(workHours)
     setFormattedValue(formattedWorkHours)
+
+    const parsedDate = parse(formattedWorkHours, 'HH:mm', new Date())
+
+    const duration = parsedDate.getHours() * 60 + parsedDate.getMinutes()
+
+    props.onChange?.(duration)
+    props.onBlur?.(duration)
   }
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
