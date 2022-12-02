@@ -141,7 +141,7 @@ describe('workHourUpdateMutationField', () => {
     expect(response.errors).toBeUndefined()
   })
 
-  it('should not update work hour from another user', async () => {
+  it('should throw error when updating work hour from another user', async () => {
     const testServer = getTestServer({ userId: '2' })
     const response = await testServer.executeOperation({
       query: workHourUpdateMutation,
@@ -156,14 +156,8 @@ describe('workHourUpdateMutationField', () => {
       },
     })
 
-    expect(response.data).toEqual({
-      workHourUpdate: {
-        date: '2022-01-01',
-        duration: 120,
-        task: { id: '1', title: 'Task' },
-        user: { id: '2', name: 'Test User 2' },
-      },
-    })
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
   it('should update any work hour when user is admin of the same team', async () => {
