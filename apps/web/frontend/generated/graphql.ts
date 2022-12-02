@@ -199,7 +199,8 @@ export type MutationWorkHourDeleteArgs = {
 
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
-  id: Scalars['ID']
+  date: Scalars['Date']
+  taskId: Scalars['ID']
 }
 
 export type Project = ModifyInterface & {
@@ -836,8 +837,9 @@ export type WorkHourDeleteMutationVariables = Exact<{
 export type WorkHourDeleteMutation = { __typename: 'Mutation'; workHourDelete: { __typename: 'WorkHour'; id: string } }
 
 export type WorkHourUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
   data: WorkHourInput
+  date: Scalars['Date']
+  taskId: Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1476,8 +1478,8 @@ export function useWorkHourDeleteMutation() {
   return Urql.useMutation<WorkHourDeleteMutation, WorkHourDeleteMutationVariables>(WorkHourDeleteDocument)
 }
 export const WorkHourUpdateDocument = gql`
-  mutation workHourUpdate($id: ID!, $data: WorkHourInput!) {
-    workHourUpdate(id: $id, data: $data) {
+  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
       ...WorkHour
     }
   }
@@ -2031,7 +2033,7 @@ export const mockWorkHourDeleteMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { id, data } = req.variables;
+ *   const { data, date, taskId } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )
