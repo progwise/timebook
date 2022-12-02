@@ -49,8 +49,8 @@ builder.mutationField('workHourUpdate', (t) =>
         },
       }
     },
-    resolve: async (query, _source, { data, date, taskId }, context) =>
-      await prisma.workHour.upsert({
+    resolve: (query, _source, { data, date, taskId }, context) =>
+      prisma.workHour.upsert({
         ...query,
         where: {
           date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
