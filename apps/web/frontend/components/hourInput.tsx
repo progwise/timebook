@@ -1,9 +1,13 @@
 import { parse } from 'date-fns'
-import { ChangeEvent, FocusEvent, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 export interface IWorkDuration {
   hours: number
   minutes: number
+}
+
+interface HourInputForm {
+  workHour: string
 }
 
 function validateDuration(duration: IWorkDuration): void {
@@ -12,28 +16,12 @@ function validateDuration(duration: IWorkDuration): void {
   }
 }
 
-function parseIntNoNaN(valueAsString: string): number {
-  const valueAsNumber = Number.parseInt(valueAsString)
-  if (Number.isNaN(valueAsNumber)) {
-    return 0
-  }
-  return valueAsNumber
-}
-
-function parseFloatNoNaN(valueAsString: string): number {
-  const valueAsNumber = Number.parseFloat(valueAsString)
-  if (Number.isNaN(valueAsNumber)) {
-    return 0
-  }
-  return valueAsNumber
-}
-
-export const parseWorkHours = (timeString: string): number => {
+const parseWorkHours = (timeString: string): number => {
   try {
     const parts = timeString.split(':')
     if (parts.length > 1) {
-      let hours = parseIntNoNaN(parts[0])
-      let minutes = parseIntNoNaN(parts[1])
+      let hours = Number.parseInt(parts[0]) || 0
+      let minutes = Number.parseInt(parts[1]) || 0
 
       if (minutes > 59) {
         const remainder = minutes % 60
@@ -49,7 +37,7 @@ export const parseWorkHours = (timeString: string): number => {
       return hours + minutes / 60
     }
 
-    const durationAsFloat = parseFloatNoNaN(parts[0])
+    const durationAsFloat = Number.parseFloat(parts[0]) || 0
     const duration = {
       hours: Math.floor(durationAsFloat),
       minutes: Math.floor((durationAsFloat % 1) * 60),
@@ -81,47 +69,35 @@ export const HourInput = (props: {
   onBlur?: (workHours: number) => void
   readOnly?: boolean
 }): JSX.Element => {
-  const [workHours, setWorkHours] = useState(0)
-  const [formattedValue, setFormattedValue] = useState('0:00')
-  const handleOnBlur = (event: FocusEvent<HTMLInputElement>) => {
-    const workHours = parseWorkHours(event.target.value)
-    const formattedWorkHours = getFormattedWorkHours(workHours)
-    setWorkHours(workHours)
-    setFormattedValue(formattedWorkHours)
+  const { register, setValue, formState, handleSubmit } = useForm<HourInputForm>({
+    defaultValues: {
+      workHour: getFormattedWorkHours(props.workHours),
+    },
+  })
 
-    const parsedDate = parse(formattedWorkHours, 'HH:mm', new Date())
+  const handlerSubmit = (data: HourInputForm) => {
+    const formattedValue = getFormattedWorkHours(parseWorkHours(data.workHour))
+    setValue('workHour', formattedValue)
 
-    const duration = parsedDate.getHours() * 60 + parsedDate.getMinutes()
+    if (formState.isDirty) {
+      const parsedDate = parse(formattedValue, 'HH:mm', new Date())
 
-    props.onChange?.(duration)
-    props.onBlur?.(duration)
+      const duration = parsedDate.getHours() * 60 + parsedDate.getMinutes()
+
+      props.onChange?.(duration)
+      props.onBlur?.(duration)
+    }
   }
-
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormattedValue(event.target.value)
-  }
-
-  useEffect(() => {
-    setWorkHours(props.workHours)
-    setFormattedValue(getFormattedWorkHours(workHours))
-  }, [props.workHours])
-
-  useEffect(() => {
-    setFormattedValue(getFormattedWorkHours(workHours))
-  }, [workHours])
 
   return (
     <input
+      {...register('workHour')}
       readOnly={props.readOnly}
       onFocus={(event) => event.target.select()}
       className={`rounded-md p-1 text-center dark:bg-slate-800 ${props.className ?? ''}`}
-      type="text"
       size={5}
-      name="hours"
       placeholder="0:00"
-      onBlur={handleOnBlur}
-      value={formattedValue}
-      onChange={handleOnChange}
+      onBlur={handleSubmit(handlerSubmit)}
     />
   )
 }
