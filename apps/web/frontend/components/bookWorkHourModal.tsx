@@ -2,7 +2,6 @@ import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -123,14 +122,6 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
 
   const [currentProjectId, currentTaskId] = watch(['projectId', 'taskId'])
   const selectedProject = data?.teamBySlug.projects.find((project) => project.id === currentProjectId)
-
-  useEffect(() => {
-    const isTaskFromSelectedProject = selectedProject?.tasks.some((task) => task.id === currentTaskId)
-    if (!isTaskFromSelectedProject) {
-      // eslint-disable-next-line unicorn/no-useless-undefined
-      setValue('taskId', '')
-    }
-  }, [currentProjectId, selectedProject])
 
   if (!data) {
     return <div>Loading...</div>
