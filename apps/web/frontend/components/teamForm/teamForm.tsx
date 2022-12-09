@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { FiCopy } from 'react-icons/fi'
 import { z } from 'zod'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { Button, InputField, toastError } from '@progwise/timebook-ui'
 import { teamInputValidations } from '@progwise/timebook-validations'
 
 import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
@@ -31,15 +31,29 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     resolver: zodResolver(teamInputSchema),
   })
   const router = useRouter()
-  const [updateTeamResult, updateTeam] = useTeamUpdateMutation()
-  const [createTeamResult, createTeam] = useTeamCreateMutation()
+  const [, updateTeam] = useTeamUpdateMutation()
+  const [, createTeam] = useTeamCreateMutation()
 
   const handleTeamSave = async (data: TeamInput) => {
     const { error } = await (team ? updateTeam({ data, id: team.id }) : createTeam({ data }))
+    const errorMesseage = error?.graphQLErrors.at(0)?.message
 
-    if (!error) {
-      router.push(`/${data.slug}/team`)
+    if (errorMesseage === 'Too many teams') {
+      toastError('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month')
+      return
     }
+
+    if (error?.networkError) {
+      toastError('Please check your internet connection')
+      return
+    }
+
+    if (error) {
+      toastError('Unexpectet Error. Please try again')
+      return
+    }
+
+    router.push(`/${data.slug}/team`)
   }
 
   const handleDismiss = () => {
@@ -101,12 +115,6 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
           Save
         </Button>
       </div>
-
-      {(createTeamResult.error || updateTeamResult.error) && (
-        <div role="alert" className="text-center text-red-600">
-          {createTeamResult.error?.message ?? updateTeamResult.error?.message ?? 'Server error, try again later'}
-        </div>
-      )}
     </form>
   )
 }
