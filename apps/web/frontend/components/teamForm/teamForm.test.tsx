@@ -2,6 +2,8 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
+import { TimebookToaster } from '@progwise/timebook-ui'
+
 import { TeamFragment, Theme } from '../../generated/graphql'
 import { requestedSlugs } from '../../mocks/handlers'
 import '../../mocks/mockServer'
@@ -16,7 +18,12 @@ jest.mock('next/router', () => ({
 }))
 
 const client = new Client({ url: '/api/graphql' })
-const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+const wrapper: React.FC = ({ children }) => (
+  <Provider value={client}>
+    {children}
+    <TimebookToaster />
+  </Provider>
+)
 
 afterEach(() => {
   requestedSlugs.slice(0, requestedSlugs.length)
@@ -92,8 +99,7 @@ describe('TeamForm', () => {
     await userEvent.click(saveButton)
 
     const alert = await screen.findByRole('alert')
-
-    expect(alert).toBeVisible()
+    await waitFor(() => expect(alert).toBeInTheDocument())
     expect(routerPush).not.toHaveBeenCalledTimes(2)
   })
 })

@@ -3,7 +3,8 @@ import { Session } from 'next-auth'
 import { getSession, SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
-import { Toaster } from 'react-hot-toast'
+
+import { TimebookToaster } from '@progwise/timebook-ui'
 
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
@@ -34,12 +35,8 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
       <Link href="/privacy">
         <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
       </Link>
-      <Toaster
-        toastOptions={{
-          duration: 7000,
-        }}
-      />
     </footer>
+    <TimebookToaster />
   </SessionProvider>
 )
 

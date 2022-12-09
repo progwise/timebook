@@ -2,11 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
 import { FiCopy } from 'react-icons/fi'
 import { z } from 'zod'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { Button, InputField, toastError } from '@progwise/timebook-ui'
 import { teamInputValidations } from '@progwise/timebook-validations'
 
 import { TeamFragment, TeamInput, Theme, useTeamCreateMutation, useTeamUpdateMutation } from '../../generated/graphql'
@@ -40,17 +39,17 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
     const errorMesseage = error?.graphQLErrors.at(0)?.message
 
     if (errorMesseage === 'Too many teams') {
-      toast.error('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month')
+      toastError('No more Teams allowed. You need more? Buy timebook Pro for 20$ a month')
       return
     }
 
     if (error?.networkError) {
-      toast.error('Please check your internet connection')
+      toastError('Please check your internet connection')
       return
     }
 
     if (error) {
-      toast.error('Unexpected Error. Please try again')
+      toastError('Unexpectet Error. Please try again')
       return
     }
 
