@@ -164,6 +164,7 @@ export const BookWorkHourModal = (props: BookWorkHourModalProps): JSX.Element =>
             className="w-full rounded-md dark:bg-slate-800"
             id="projectId"
             {...register('projectId', { required: 'Project is required' })}
+            onChange={() => setValue('taskId', '')}
           >
             <option value="" disabled>
               Please Select
