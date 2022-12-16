@@ -65,8 +65,8 @@ export const HourInput = (props: {
   onBlur?: (workHours: number) => void
   readOnly?: boolean
 }): JSX.Element => {
-  const [workHour, setWorkHour] = useState<string>('0:00')
-  const previousValue = useRef<string>('0:00')
+  const [workHour, setWorkHour] = useState<string>(getFormattedWorkHours(props.workHours))
+  const previousValue = useRef<string>(getFormattedWorkHours(props.workHours))
 
   const handlerSubmit: FocusEventHandler<HTMLInputElement> = (event) => {
     const formattedValue = getFormattedWorkHours(parseWorkHours(event.target.value))
