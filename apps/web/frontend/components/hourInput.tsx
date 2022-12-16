@@ -1,13 +1,9 @@
 import { parse } from 'date-fns'
-import { useForm } from 'react-hook-form'
+import { FocusEventHandler, useRef, useState } from 'react'
 
 export interface IWorkDuration {
   hours: number
   minutes: number
-}
-
-interface HourInputForm {
-  workHour: string
 }
 
 function validateDuration(duration: IWorkDuration): void {
@@ -69,17 +65,13 @@ export const HourInput = (props: {
   onBlur?: (workHours: number) => void
   readOnly?: boolean
 }): JSX.Element => {
-  const { register, setValue, formState, handleSubmit } = useForm<HourInputForm>({
-    defaultValues: {
-      workHour: getFormattedWorkHours(props.workHours),
-    },
-  })
+  const [workHour, setWorkHour] = useState<string>('0:00')
+  const previousValue = useRef<string>('0:00')
 
-  const handlerSubmit = (data: HourInputForm) => {
-    const formattedValue = getFormattedWorkHours(parseWorkHours(data.workHour))
-    setValue('workHour', formattedValue)
+  const handlerSubmit: FocusEventHandler<HTMLInputElement> = (event) => {
+    const formattedValue = getFormattedWorkHours(parseWorkHours(event.target.value))
 
-    if (formState.isDirty) {
+    if (previousValue.current !== formattedValue) {
       const parsedDate = parse(formattedValue, 'HH:mm', new Date())
 
       const duration = parsedDate.getHours() * 60 + parsedDate.getMinutes()
@@ -87,17 +79,21 @@ export const HourInput = (props: {
       props.onChange?.(duration)
       props.onBlur?.(duration)
     }
+
+    setWorkHour(formattedValue)
+    previousValue.current = formattedValue
   }
 
   return (
     <input
-      {...register('workHour')}
+      value={workHour}
       readOnly={props.readOnly}
+      onChange={(event) => setWorkHour(event.target.value)}
       onFocus={(event) => event.target.select()}
       className={`rounded-md p-1 text-center dark:bg-slate-800 ${props.className ?? ''}`}
       size={5}
       placeholder="0:00"
-      onBlur={handleSubmit(handlerSubmit)}
+      onBlur={handlerSubmit}
     />
   )
 }
