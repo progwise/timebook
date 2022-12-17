@@ -267,7 +267,7 @@ type Mutation {
   ): WorkHour!
 
   """
-  Updates a work hour entry
+  Updates a work hour entry or creates if work hour does not exist
   """
   workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
