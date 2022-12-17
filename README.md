@@ -36,6 +36,12 @@ Documentation for installing pnpm https://pnpm.io/installation.
 - **packages/tsconfig**  
   central place to store all tsconfigs for all packages that use tsc
 
+- **packages/validations**  
+  our zod (https://zod.dev/) validation schemas to be used in form frontend and GraphQL backend validations
+
+- **packages/eslint-config-custom**  
+  eslint for all timebook projects. See the readme there.
+
 # Getting Started
 
 The main application is located in the apps/web folder as next.js typescript application. It can be started from the root folder using:
