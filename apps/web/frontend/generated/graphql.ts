@@ -90,7 +90,7 @@ export type Mutation = {
   workHourCreate: WorkHour
   /** Delete a work hour entry */
   workHourDelete: WorkHour
-  /** Updates a work hour entry */
+  /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
 }
 
