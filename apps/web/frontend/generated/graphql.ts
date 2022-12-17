@@ -1,12 +1,9 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from 'graphql-tag'
-import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
 import * as Urql from 'urql'
-
+import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
