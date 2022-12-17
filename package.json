@@ -23,11 +23,11 @@
     "dotenv-cli": "^6.0.0",
     "eslint-config-custom": "workspace:*",
     "prettier": "^2.8.0",
+    "prettier-plugin-tailwindcss": "^0.2.0",
     "turbo": "latest"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.9.5"
 }
