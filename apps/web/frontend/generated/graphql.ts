@@ -199,7 +199,8 @@ export type MutationWorkHourDeleteArgs = {
 
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
-  id: Scalars['ID']
+  date: Scalars['Date']
+  taskId: Scalars['ID']
 }
 
 export type Project = ModifyInterface & {
@@ -836,8 +837,9 @@ export type WorkHourDeleteMutationVariables = Exact<{
 export type WorkHourDeleteMutation = { __typename: 'Mutation'; workHourDelete: { __typename: 'WorkHour'; id: string } }
 
 export type WorkHourUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
   data: WorkHourInput
+  date: Scalars['Date']
+  taskId: Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1123,8 +1125,19 @@ export type UserQuery = {
     name?: string | null
     image?: string | null
     role: Role
+    availableMinutesPerWeek?: number | null
     projects: Array<{ __typename: 'Project'; id: string; title: string }>
   }
+}
+
+export type UserFragment = {
+  __typename: 'User'
+  id: string
+  name?: string | null
+  image?: string | null
+  role: Role
+  availableMinutesPerWeek?: number | null
+  projects: Array<{ __typename: 'Project'; id: string; title: string }>
 }
 
 export const TaskFragmentDoc = gql`
@@ -1205,6 +1218,19 @@ export const CustomerFragmentDoc = gql`
   fragment Customer on Customer {
     id
     title
+  }
+`
+export const UserFragmentDoc = gql`
+  fragment User on User {
+    id
+    name
+    image
+    role(teamSlug: $teamSlug)
+    projects(teamSlug: $teamSlug) {
+      id
+      title
+    }
+    availableMinutesPerWeek(teamSlug: $teamSlug)
   }
 `
 export const ProjectDocument = gql`
@@ -1452,8 +1478,8 @@ export function useWorkHourDeleteMutation() {
   return Urql.useMutation<WorkHourDeleteMutation, WorkHourDeleteMutationVariables>(WorkHourDeleteDocument)
 }
 export const WorkHourUpdateDocument = gql`
-  mutation workHourUpdate($id: ID!, $data: WorkHourInput!) {
-    workHourUpdate(id: $id, data: $data) {
+  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
       ...WorkHour
     }
   }
@@ -1687,16 +1713,10 @@ export function useTeamUnarchiveMutation() {
 export const UserDocument = gql`
   query user($userId: ID!, $teamSlug: String!) {
     user(userId: $userId) {
-      id
-      name
-      image
-      role(teamSlug: $teamSlug)
-      projects(teamSlug: $teamSlug) {
-        id
-        title
-      }
+      ...User
     }
   }
+  ${UserFragmentDoc}
 `
 
 export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
@@ -2013,7 +2033,7 @@ export const mockWorkHourDeleteMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { id, data } = req.variables;
+ *   const { data, date, taskId } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )

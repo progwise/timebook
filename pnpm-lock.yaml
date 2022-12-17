@@ -11,11 +11,11 @@ importers:
       prettier-plugin-tailwindcss: ^0.2.0
       turbo: latest
     devDependencies:
-      '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.8.0
+      '@trivago/prettier-plugin-sort-imports': 3.3.1_prettier@2.8.1
       dotenv-cli: 6.0.0
       eslint-config-custom: link:packages/eslint-config-custom
-      prettier: 2.8.0
-      prettier-plugin-tailwindcss: 0.2.0_prettier@2.8.0
+      prettier: 2.8.1
+      prettier-plugin-tailwindcss: 0.2.1_prettier@2.8.1
       turbo: 1.6.3
 
   apps/web:
@@ -49,6 +49,7 @@ importers:
       apollo-server-core: ^3.10.2
       apollo-server-micro: ^3.6.7
       autoprefixer: ^10.4.2
+      csstype: ^3.0.10
       date-fns: ^2.28.0
       eslint: ^8.6.0
       eslint-config-custom: workspace:*
@@ -92,6 +93,7 @@ importers:
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
       apollo-server-core: 3.10.2_graphql@16.6.0
       apollo-server-micro: 3.10.2_graphql@16.6.0+micro@9.4.1
+      csstype: 3.1.1
       date-fns: 2.29.3
       graphql: 16.6.0
       graphql-tag: 2.12.6_graphql@16.6.0
@@ -268,17 +270,21 @@ importers:
       '@types/react': ^17.0.2
       '@types/react-dom': ^17.0.2
       '@types/testing-library__jest-dom': ^5.14.5
+      csstype: ^3.0.10
       eslint: ^8.24.0
       eslint-config-custom: workspace:*
       jest: ^29.1.2
       jest-environment-jsdom: ^29.1.2
       react: ^17.0.2
       react-dom: ^17.0.2
+      react-hot-toast: ^2.4.0
       react-icons: ^4.4.0
       ts-jest: ^29.0.3
       tsconfig: workspace:*
       typescript: ^4.5.2
     dependencies:
+      csstype: 3.1.1
+      react-hot-toast: 2.4.0_pwge5r66yg44rq5pj4ruhckhdm
       react-icons: 4.4.0_react@17.0.2
     devDependencies:
       '@testing-library/dom': 8.18.1
@@ -2946,7 +2952,7 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@trivago/prettier-plugin-sort-imports/3.3.1_prettier@2.8.0:
+  /@trivago/prettier-plugin-sort-imports/3.3.1_prettier@2.8.1:
     resolution: {integrity: sha512-ITGspeOlFnK1dwJVjqOguGW3Ja8hakxOPFudhpP0YfsDHT0yM0u4TU+62Vl83hCatnhB4+fYhlSZyiifUv4xSg==}
     peerDependencies:
       prettier: 2.x
@@ -2958,7 +2964,7 @@ packages:
       '@babel/types': 7.17.0
       javascript-natural-sort: 0.7.1
       lodash: 4.17.21
-      prettier: 2.8.0
+      prettier: 2.8.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4352,7 +4358,6 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
-    dev: true
 
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
@@ -5448,6 +5453,14 @@ packages:
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0
+
+  /goober/2.1.11_csstype@3.1.1:
+    resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.1
+    dev: false
 
   /google-protobuf/3.21.2:
     resolution: {integrity: sha512-3MSOYFO5U9mPGikIYCzK0SaThypfGgS6bHqrUGXG3DPHCrb+txNqeEcns1W0lkGfk0rCyNXm7xB9rMxnCiZOoA==}
@@ -7914,17 +7927,17 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /prettier-plugin-tailwindcss/0.2.0_prettier@2.8.0:
-    resolution: {integrity: sha512-Ruqig/mdWCSpqdq9WK44nrmqM4BFWTzBPhPGwC5NK3coV9eZntEQPB84MGZbjAg0XQU02jVRHXNRPREBzxvM+A==}
+  /prettier-plugin-tailwindcss/0.2.1_prettier@2.8.1:
+    resolution: {integrity: sha512-aIO8IguumORyRsmT+E7JfJ3A9FEoyhqZR7Au7TBOege3VZkgMvHJMkufeYp4zjnDK2iq4ktkvGMNOQR9T8lisQ==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
       prettier: '>=2.2.0'
     dependencies:
-      prettier: 2.8.0
+      prettier: 2.8.1
     dev: true
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.1:
+    resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -8062,6 +8075,20 @@ packages:
       react: ^16.8.0 || ^17 || ^18
     dependencies:
       react: 17.0.2
+    dev: false
+
+  /react-hot-toast/2.4.0_pwge5r66yg44rq5pj4ruhckhdm:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.11_csstype@3.1.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-icons/4.4.0_react@17.0.2:
@@ -8928,7 +8955,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.1.2_2263m44mchjafa7bz7l52hbcpa
+      jest: 29.1.2
       jest-util: 29.1.2
       json5: 2.2.1
       lodash.memoize: 4.1.2
