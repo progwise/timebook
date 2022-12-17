@@ -4,6 +4,8 @@ import { getSession, SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
 
+import { TimebookToaster } from '@progwise/timebook-ui'
+
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
 
@@ -34,6 +36,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
         <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
       </Link>
     </footer>
+    <TimebookToaster />
   </SessionProvider>
 )
 
@@ -43,7 +46,7 @@ TimebookApp.getInitialProps = async (context: NextPageContext) => ({
 
 export default withUrqlClient(
   (_ssrExchange, context) => ({
-    url: `${process.env.NEXTAUTH_URL}/api/graphql`,
+    url: `${process.env.NEXTAUTH_URL ?? ''}/api/graphql`,
     fetchOptions: () => ({
       headers: {
         cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
