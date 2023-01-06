@@ -13,6 +13,7 @@
     "test": "turbo run test",
     "e2e-tests": "dotenv -- turbo run e2e-tests",
     "typecheck": "turbo run typecheck",
+    "prisma-studio": "turbo run prisma-studio",
     "migrate-db": "dotenv -- turbo run migrate-db",
     "graphql:generate": "turbo run graphql:generate",
     "format": "prettier --write .",
@@ -23,11 +24,11 @@
     "dotenv-cli": "^6.0.0",
     "eslint-config-custom": "workspace:*",
     "prettier": "^2.8.0",
+    "prettier-plugin-tailwindcss": "^0.2.0",
     "turbo": "latest"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
   "packageManager": "pnpm@7.9.5"
 }

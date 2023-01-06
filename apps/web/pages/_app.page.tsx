@@ -4,6 +4,8 @@ import { getSession, SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
 
+import { TimebookToaster } from '@progwise/timebook-ui'
+
 import { TopNavigation } from '../frontend/components/topNavigation/topNavigation'
 import '../frontend/styles/globals.css'
 
@@ -20,7 +22,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
     <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
       <TopNavigation />
     </header>
-    <main className="mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white container mx-auto">
+    <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white">
       <Component {...pageProps} />
     </main>
     <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
@@ -34,6 +36,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
         <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
       </Link>
     </footer>
+    <TimebookToaster />
   </SessionProvider>
 )
 
