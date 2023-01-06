@@ -1,3 +1,9 @@
+query myProjects {
+  projects {
+    ...ProjectWithTasks
+  }
+}
+
 query projectsWithTasks($slug: String!) {
   teamBySlug(slug: $slug) {
     projects {

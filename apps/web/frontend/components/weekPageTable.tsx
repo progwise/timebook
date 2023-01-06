@@ -1,6 +1,5 @@
-import { addDays, differenceInDays, eachDayOfInterval, format, formatISO, isToday, parseISO } from 'date-fns'
-import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { addDays, eachDayOfInterval, format, isToday } from 'date-fns'
+import { useState } from 'react'
 import { BiPlus } from 'react-icons/bi'
 
 import {
@@ -15,55 +14,27 @@ import {
   TableRow,
 } from '@progwise/timebook-ui'
 
-import { ProjectFragment, TaskFragment, useWorkHoursQuery, useWorkHourUpdateMutation } from '../generated/graphql'
+import { ProjectFragment, TaskFragment, useWorkHourUpdateMutation } from '../generated/graphql'
 import { AddTaskRowModal } from './addTaskRow'
 import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
 
-const NUMBER_OF_DAYS = 7
-
-interface WeekPageTableProps {
+export interface WeekPageTableProps {
   startDate: Date
+  tableData: WorkHoursTableRow[]
+  numberOfDays: number
 }
-interface WorkHoursTableRow {
+export interface WorkHoursTableRow {
   task: TaskFragment
   project: ProjectFragment
   durations: number[]
 }
-export const WeekPageTable = (props: WeekPageTableProps) => {
+export const WeekPageTable: React.FC<WeekPageTableProps> = ({ startDate, tableData, numberOfDays = 7 }) => {
   const [isAddtaskRowModalOpen, setIsAddTaskRowModalOpen] = useState(false)
-  const router = useRouter()
-  const fromDate = props.startDate
-  const toDate = addDays(fromDate, NUMBER_OF_DAYS - 1)
+  const fromDate = startDate
+  const toDate = addDays(fromDate, numberOfDays - 1)
   const interval = { start: fromDate, end: toDate }
-  const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [, workHourUpdate] = useWorkHourUpdateMutation()
-  const [{ data }] = useWorkHoursQuery({
-    variables: {
-      teamSlug: router.query.teamSlug?.toString() ?? '',
-      from: formatISO(fromDate, { representation: 'date' }),
-      to: formatISO(toDate, { representation: 'date' }),
-    },
-    context,
-  })
-  const tableData: WorkHoursTableRow[] = []
-  for (const workHour of data?.workHours ?? []) {
-    const workHourDate = parseISO(workHour.date)
-    const weekDay = differenceInDays(workHourDate, fromDate)
-    const rowIndex = tableData.findIndex((row) => {
-      return row.task.id === workHour.task.id
-    })
-    if (rowIndex === -1) {
-      tableData.push({
-        project: workHour.project,
-        task: workHour.task,
-        durations: eachDayOfInterval(interval).map(() => 0),
-      })
-      tableData[tableData.length - 1].durations[weekDay] = workHour.duration
-    } else {
-      tableData[rowIndex].durations[weekDay] += workHour.duration
-    }
-  }
 
   const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
 

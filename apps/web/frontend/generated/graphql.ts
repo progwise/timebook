@@ -235,6 +235,8 @@ export type Query = {
   customer: Customer
   /** Returns a single project */
   project: Project
+  /** Returns all project of the signed in user */
+  projects: Array<Project>
   /** Returns a monthly project report */
   report: Report
   /** Returns a single task */
@@ -466,6 +468,27 @@ export type TaskFragment = {
   hasWorkHours: boolean
   hourlyRate?: number | null
   project: { __typename: 'Project'; id: string; title: string }
+}
+
+export type MyProjectsQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyProjectsQuery = {
+  __typename: 'Query'
+  projects: Array<{
+    __typename: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    tasks: Array<{
+      __typename: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      hourlyRate?: number | null
+      project: { __typename: 'Project'; id: string; title: string }
+    }>
+  }>
 }
 
 export type ProjectsWithTasksQueryVariables = Exact<{
@@ -1248,6 +1271,18 @@ export const ProjectDocument = gql`
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
+export const MyProjectsDocument = gql`
+  query myProjects {
+    projects {
+      ...ProjectWithTasks
+    }
+  }
+  ${ProjectWithTasksFragmentDoc}
+`
+
+export function useMyProjectsQuery(options?: Omit<Urql.UseQueryArgs<MyProjectsQueryVariables>, 'query'>) {
+  return Urql.useQuery<MyProjectsQuery, MyProjectsQueryVariables>({ query: MyProjectsDocument, ...options })
+}
 export const ProjectsWithTasksDocument = gql`
   query projectsWithTasks($slug: String!) {
     teamBySlug(slug: $slug) {
@@ -1734,6 +1769,20 @@ export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>
 export const mockProjectQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectQueryVariables>, GraphQLContext<ProjectQuery>, any>,
 ) => graphql.query<ProjectQuery, ProjectQueryVariables>('project', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMyProjectsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockMyProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<MyProjectsQueryVariables>, GraphQLContext<MyProjectsQuery>, any>,
+) => graphql.query<MyProjectsQuery, MyProjectsQueryVariables>('myProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

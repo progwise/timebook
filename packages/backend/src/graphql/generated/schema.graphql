@@ -331,6 +331,11 @@ type Query {
   ): Project!
 
   """
+  Returns all project of the signed in user
+  """
+  projects: [Project!]!
+
+  """
   Returns a monthly project report
   """
   report(
