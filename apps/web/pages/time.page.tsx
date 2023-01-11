@@ -1,9 +1,9 @@
-import { getWeek, getYear, startOfWeek, endOfWeek, parse, addDays, format } from 'date-fns'
+import { getWeek, getYear, parse, addDays, format } from 'date-fns'
 import { useState } from 'react'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { WeekPageTable, WorkHoursTableRow } from '../frontend/components/weekPageTable'
 import { WeekSelector } from '../frontend/components/weekSelector'
-import { useMyProjectsQuery } from '../frontend/generated/graphql'
+import { useMyProjectsQuery, useWorkHoursQuery } from '../frontend/generated/graphql'
 
 const today = new Date()
 const NUMBER_OF_DAYS = 7
@@ -11,7 +11,13 @@ const NUMBER_OF_DAYS = 7
 const TimePage = () => {
   const [week, setWeek] = useState({ year: getYear(today), week: getWeek(today) })
   const startDate = parse(week.week.toString(), 'I', new Date(week.year, 1, 1))
-  const [{ data: taskData }, refetch] = useMyProjectsQuery({ variables: { from: format(startDate, 'yyyy-MM-dd') } })
+  const endDate = addDays(startDate, NUMBER_OF_DAYS)
+  const [{ data: taskData, fetching: taskDataFetching }] = useMyProjectsQuery({
+    variables: { from: format(startDate, 'yyyy-MM-dd') },
+  })
+  const [{ data: workHourData, fetching: workHoursFetching }] = useWorkHoursQuery({
+    variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
+  })
   const handleWeekChange = (year: number, week: number) => {
     setWeek({ year, week })
   }
@@ -21,7 +27,15 @@ const TimePage = () => {
       project.tasks.map((task) => ({
         project,
         task,
-        durations: Array.from({ length: NUMBER_OF_DAYS }, () => 20),
+        durations: Array.from({ length: NUMBER_OF_DAYS }, () => 0).map((_n, index) => {
+          const theDate = addDays(startDate, index)
+          return (
+            workHourData?.workHours
+              .filter((workHour) => workHour.task.id === task.id && workHour.date === format(theDate, 'yyyy-MM-dd'))
+              .map((workHour) => workHour.duration ?? 0)
+              .reduce((previous, current) => previous + current, 0) ?? 0
+          )
+        }),
       })),
     ) ?? []
 
@@ -29,8 +43,11 @@ const TimePage = () => {
     <ProtectedPage>
       <h2>Time entries</h2>
       <WeekSelector onChange={handleWeekChange} />
-      <WeekPageTable tableData={tableData} numberOfDays={NUMBER_OF_DAYS} startDate={startDate} />
+      {!workHoursFetching && !taskDataFetching && (
+        <WeekPageTable tableData={tableData} numberOfDays={NUMBER_OF_DAYS} startDate={startDate} />
+      )}
       <pre>{JSON.stringify(taskData, undefined, 2)}</pre>
+      <pre>{JSON.stringify(workHourData, undefined, 2)}</pre>
     </ProtectedPage>
   )
 }

@@ -288,7 +288,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
-  teamSlug: Scalars['String']
+  teamSlug?: InputMaybe<Scalars['String']>
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
@@ -344,7 +344,6 @@ export type Task = ModifyInterface & {
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
-  workhours: Array<WorkHour>
 }
 
 export type TaskInput = {
@@ -898,7 +897,7 @@ export type WorkHourUpdateMutation = {
 }
 
 export type WorkHoursQueryVariables = Exact<{
-  teamSlug: Scalars['String']
+  teamSlug?: InputMaybe<Scalars['String']>
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
@@ -1530,7 +1529,7 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($teamSlug: String!, $from: Date!, $to: Date) {
+  query workHours($teamSlug: String, $from: Date!, $to: Date) {
     workHours(teamSlug: $teamSlug, from: $from, to: $to) {
       ...WorkHour
     }

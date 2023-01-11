@@ -396,7 +396,7 @@ type Query {
     Start of the time period
     """
     from: Date!
-    teamSlug: String!
+    teamSlug: String
 
     """
     End of the time period. If not provided the from arg is used as the end.
@@ -479,7 +479,6 @@ type Task implements ModifyInterface {
   The user can identify the task in the UI
   """
   title: String!
-  workhours: [WorkHour!]!
 }
 
 input TaskInput {
