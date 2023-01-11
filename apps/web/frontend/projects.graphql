@@ -1,5 +1,5 @@
-query myProjects {
-  projects {
+query myProjects($from: Date!, $to: Date) {
+  projects(from: $from, to: $to) {
     ...ProjectWithTasks
   }
 }

@@ -331,9 +331,9 @@ type Query {
   ): Project!
 
   """
-  Returns all project of the signed in user
+  Returns all project of the signed in user that are active
   """
-  projects: [Project!]!
+  projects(from: Date!, to: Date): [Project!]!
 
   """
   Returns a monthly project report

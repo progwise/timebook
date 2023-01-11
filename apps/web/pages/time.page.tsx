@@ -1,4 +1,4 @@
-import { getWeek, getYear, startOfWeek, endOfWeek, parse, addDays } from 'date-fns'
+import { getWeek, getYear, startOfWeek, endOfWeek, parse, addDays, format } from 'date-fns'
 import { useState } from 'react'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { WeekPageTable, WorkHoursTableRow } from '../frontend/components/weekPageTable'
@@ -10,13 +10,11 @@ const NUMBER_OF_DAYS = 7
 
 const TimePage = () => {
   const [week, setWeek] = useState({ year: getYear(today), week: getWeek(today) })
-  const [{ data: taskData }, refetch] = useMyProjectsQuery()
+  const startDate = parse(week.week.toString(), 'I', new Date(week.year, 1, 1))
+  const [{ data: taskData }, refetch] = useMyProjectsQuery({ variables: { from: format(startDate, 'yyyy-MM-dd') } })
   const handleWeekChange = (year: number, week: number) => {
-    console.log('handleWeekChange', year, week)
     setWeek({ year, week })
   }
-
-  const startDate = parse(week.week.toString(), 'I', new Date(week.year, 1, 1))
 
   const tableData: WorkHoursTableRow[] =
     taskData?.projects.flatMap((project) =>

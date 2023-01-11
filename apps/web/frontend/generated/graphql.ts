@@ -235,7 +235,7 @@ export type Query = {
   customer: Customer
   /** Returns a single project */
   project: Project
-  /** Returns all project of the signed in user */
+  /** Returns all project of the signed in user that are active */
   projects: Array<Project>
   /** Returns a monthly project report */
   report: Report
@@ -257,6 +257,11 @@ export type QueryCustomerArgs = {
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryProjectsArgs = {
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }
 
 export type QueryReportArgs = {
@@ -470,7 +475,10 @@ export type TaskFragment = {
   project: { __typename: 'Project'; id: string; title: string }
 }
 
-export type MyProjectsQueryVariables = Exact<{ [key: string]: never }>
+export type MyProjectsQueryVariables = Exact<{
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}>
 
 export type MyProjectsQuery = {
   __typename: 'Query'
@@ -1272,15 +1280,15 @@ export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVari
   return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
 export const MyProjectsDocument = gql`
-  query myProjects {
-    projects {
+  query myProjects($from: Date!, $to: Date) {
+    projects(from: $from, to: $to) {
       ...ProjectWithTasks
     }
   }
   ${ProjectWithTasksFragmentDoc}
 `
 
-export function useMyProjectsQuery(options?: Omit<Urql.UseQueryArgs<MyProjectsQueryVariables>, 'query'>) {
+export function useMyProjectsQuery(options: Omit<Urql.UseQueryArgs<MyProjectsQueryVariables>, 'query'>) {
   return Urql.useQuery<MyProjectsQuery, MyProjectsQueryVariables>({ query: MyProjectsDocument, ...options })
 }
 export const ProjectsWithTasksDocument = gql`
@@ -1775,6 +1783,7 @@ export const mockProjectQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockMyProjectsQuery((req, res, ctx) => {
+ *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
