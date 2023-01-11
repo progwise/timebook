@@ -116,10 +116,11 @@ jobs:
           path: apps/web-e2e/playwright-report/
           retention-days: 30
 
+  # TODO: activate two commented code lines!
   pulumi:
-    needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
+    # needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
+    # if: ${{ github.ref == 'refs/heads/main' }}
     defaults:
       run:
         working-directory: ./packages/pulumi
