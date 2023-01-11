@@ -18,7 +18,7 @@
     "@pothos/plugin-scope-auth": "^3.13.0",
     "@pothos/plugin-simple-objects": "^3.5.0",
     "@pothos/plugin-validation": "^3.8.7",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.8.1",
     "@progwise/timebook-validations": "workspace:*",
     "apollo-server-core": "^3.10.2",
     "apollo-server-micro": "^3.6.7",
