@@ -149,7 +149,6 @@ jobs:
   deploy:
     needs: [pulumi]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     name: Deploy App
     steps:
       - name: Checkout code
