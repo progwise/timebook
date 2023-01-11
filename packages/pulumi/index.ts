@@ -11,7 +11,7 @@ export const timebook = new digitalocean.App('timebook', {
     services: [
       {
         git: {
-          branch: 'main',
+          branch: 'ci-fix-docker-image',
           repoCloneUrl: 'https://github.com/progwise/timebook',
         },
         instanceCount: 1,
