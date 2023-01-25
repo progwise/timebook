@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-core'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -6,13 +7,13 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const userCapacityUpdateMutation = `
+const userCapacityUpdateMutation = gql`
   mutation userCapacityUpdate($userId: ID!, $availableMinutesPerWeek: Int, $teamSlug: String!) {
     userCapacityUpdate(userId: $userId, availableMinutesPerWeek: $availableMinutesPerWeek, teamSlug: $teamSlug) {
       id
       availableMinutesPerWeek(teamSlug: $teamSlug)
     }
-}
+  }
 `
 
 describe('userCapacityUpdate', () => {

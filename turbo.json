@@ -10,6 +10,10 @@
       "outputs": []
     },
     "dev": {
+      "cache": false,
+      "dependsOn": ["migrate-db"]
+    },
+    "prisma-studio": {
       "cache": false
     },
     "test": {
@@ -19,7 +23,8 @@
       "dependsOn": ["^fake"]
     },
     "migrate-db": {
-      "inputs": ["**/migration.sql"]
+      "inputs": ["**/migration.sql"],
+      "cache": false
     },
     "graphql:generate": {
       "inputs": ["**/*.graphql", "../../packages/backend/**/schema.graphql"],

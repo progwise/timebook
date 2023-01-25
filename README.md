@@ -1,3 +1,5 @@
+# Timebook Monorepo
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 This is a TurboRepo mono-repository. https://turbo.build/
@@ -14,26 +16,55 @@ Windows users may have trouble with the default installation folder of pnpm:
 
 Documentation for installing pnpm https://pnpm.io/installation.
 
+# apps & packages
+
+- **apps/web**  
+  main nextjs web app with backend routes
+
+- **apps/web-e2e**  
+  browser tests build with playwright
+
+- **packages/backend**  
+  the GraphQL backend with database build with prisma and pothos
+
+- **packages/pulumi**  
+  the infrastructure as code package build with pulumi
+
+- **packages/ui**  
+  re-usable UI components
+
+- **packages/tsconfig**  
+  central place to store all tsconfigs for all packages that use tsc
+
+- **packages/validations**  
+  our zod (https://zod.dev/) validation schemas to be used in form frontend and GraphQL backend validations
+
+- **packages/eslint-config-custom**  
+  eslint for all timebook projects. See the readme there.
+
 # Getting Started
 
-The main application is located in the app folder as next.js app including backend and frontend.
+The main application is located in the apps/web folder as next.js typescript application. It can be started from the root folder using:
 
 ```bash
-cd app
+pnpm run dev
 ```
+
+Make sure the app runs on the right port your SSO is configured for, usually port 3000.
 
 ## Start the database server
 
 The database server has to be started prior to make the backend work.
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 This app is developed using prisma.io. You can start the prisma studio to view/modify data by using:
 
 ```bash
-npx prisma studio
+cd packages/backend
+pnpm prisma-studio
 ```
 
 ## Migrate the database
@@ -41,7 +72,7 @@ npx prisma studio
 This is needed, if the database schema has changed since the last migration run.
 
 ```bash
-npm run migrate:dev
+pnpm run migrate-db
 ```
 
 For more information see [prisma getting started](https://www.prisma.io/docs/concepts/components/prisma-migrate)
@@ -51,7 +82,7 @@ For more information see [prisma getting started](https://www.prisma.io/docs/con
 This nextjs app starts react frontend and graphql backend with a single command:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 For more information how next.js apps are build see [NextJS basics](https://nextjs.org/learn/basics/navigate-between-pages)
@@ -59,10 +90,7 @@ For more information how next.js apps are build see [NextJS basics](https://next
 # Running the app
 
 - http://localhost:3000 frontend
-- http://localhost:4000 graphql backend
--
-
-...
+  ...
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
