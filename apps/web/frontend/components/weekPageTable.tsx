@@ -115,7 +115,6 @@ export const WeekPageTable: React.FC<WeekPageTableProps> = ({ startDate, tableDa
       <Button ariaLabel="add row" variant="primary" onClick={() => setIsAddTaskRowModalOpen(true)}>
         <BiPlus className="text-3xl" />
       </Button>
-      <DayWeekSwitch selectedButton="week" />
       {isAddtaskRowModalOpen && (
         <AddTaskRowModal
           workHourItem={{

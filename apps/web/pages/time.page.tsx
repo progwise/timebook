@@ -50,8 +50,6 @@ const TimePage = () => {
       {!workHoursFetching && !taskDataFetching && (
         <WeekPageTable tableData={tableData} numberOfDays={NUMBER_OF_DAYS} startDate={startDate} />
       )}
-      <pre>{JSON.stringify(taskData, undefined, 2)}</pre>
-      <pre>{JSON.stringify(workHourData, undefined, 2)}</pre>
     </ProtectedPage>
   )
 }
