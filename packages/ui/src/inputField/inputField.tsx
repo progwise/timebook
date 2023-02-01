@@ -1,8 +1,8 @@
 import React, { KeyboardEventHandler } from 'react'
 
-import { Spinner } from './spinner'
+import { Spinner } from '../spinner'
 
-interface InputProps {
+interface InputFieldProps {
   name?: string
   value?: string
   onBlur?: (event: React.FocusEvent) => void
@@ -36,7 +36,7 @@ export const InputField = React.forwardRef(
       label,
       errorMessage,
       loading,
-    }: InputProps,
+    }: InputFieldProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {

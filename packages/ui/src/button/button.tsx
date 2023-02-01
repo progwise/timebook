@@ -1,4 +1,4 @@
-interface ButtonProps {
+export interface ButtonProps {
   disabled?: boolean
   type?: 'button' | 'submit'
   variant: 'primary' | 'secondary' | 'tertiary' | 'danger'
