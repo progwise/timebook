@@ -1,5 +1,5 @@
 import { getWeek, getYear, parse, addDays, format } from 'date-fns'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { WeekPageTable, WorkHoursTableRow } from '../frontend/components/weekPageTable'
 import { WeekSelector } from '../frontend/components/weekSelector'
@@ -11,11 +11,15 @@ const NUMBER_OF_DAYS = 7
 const TimePage = () => {
   const [week, setWeek] = useState({ year: getYear(today), week: getWeek(today) })
   const startDate = parse(week.week.toString(), 'I', new Date(week.year, 1, 1))
-  const endDate = addDays(startDate, NUMBER_OF_DAYS)
+  const endDate = addDays(startDate, NUMBER_OF_DAYS - 1)
+  const taskContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task'] }), [])
   const [{ data: taskData, fetching: taskDataFetching }] = useMyProjectsQuery({
+    context: taskContext,
     variables: { from: format(startDate, 'yyyy-MM-dd') },
   })
+  const workHourContext = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [{ data: workHourData, fetching: workHoursFetching }] = useWorkHoursQuery({
+    context: workHourContext,
     variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
   })
   const handleWeekChange = (year: number, week: number) => {

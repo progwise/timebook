@@ -42,10 +42,10 @@ export const WeekSelector = (props: { onChange: (year: number, week: number) => 
         {selectedWeek}/{selectedYear}
       </span>
       <div>
-        <select onChange={handleWeekChange}>
+        <select onChange={handleWeekChange} value={selectedWeek}>
           {weekNumbers.map((w: number) => {
             return (
-              <option selected={w === selectedWeek} value={w} key={w}>
+              <option value={w} key={w}>
                 Week {w}
               </option>
             )
@@ -55,7 +55,7 @@ export const WeekSelector = (props: { onChange: (year: number, week: number) => 
         <select onChange={handleYearChange}>
           {years.map((y) => {
             return (
-              <option selected={y === selectedYear} value={y} key={y}>
+              <option value={y} key={y}>
                 {y}
               </option>
             )
