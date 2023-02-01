@@ -1,4 +1,4 @@
-interface FormattedDurationProps {
+export interface FormattedDurationProps {
   minutes: number | undefined
   title: string
 }
