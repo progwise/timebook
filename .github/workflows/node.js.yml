@@ -178,8 +178,11 @@ jobs:
 
   discord:
     name: Discord
-    env:
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-    uses: Ilshidur/action.discord@master
-    with:
-      args: 'Timebook has been deployed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'send message'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action.discord@master
+        with:
+          args: 'Timebook has been deployed'
