@@ -235,6 +235,8 @@ export type Query = {
   customer: Customer
   /** Returns a single project */
   project: Project
+  /** Returns all project of the signed in user that are active */
+  projects: Array<Project>
   /** Returns a monthly project report */
   report: Report
   /** Returns a single task */
@@ -255,6 +257,11 @@ export type QueryCustomerArgs = {
 
 export type QueryProjectArgs = {
   projectId: Scalars['ID']
+}
+
+export type QueryProjectsArgs = {
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }
 
 export type QueryReportArgs = {
@@ -281,7 +288,7 @@ export type QueryUserArgs = {
 
 export type QueryWorkHoursArgs = {
   from: Scalars['Date']
-  teamSlug: Scalars['String']
+  teamSlug?: InputMaybe<Scalars['String']>
   to?: InputMaybe<Scalars['Date']>
   userIds?: InputMaybe<Array<Scalars['ID']>>
 }
@@ -337,7 +344,6 @@ export type Task = ModifyInterface & {
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
-  workhours: Array<WorkHour>
 }
 
 export type TaskInput = {
@@ -466,6 +472,30 @@ export type TaskFragment = {
   hasWorkHours: boolean
   hourlyRate?: number | null
   project: { __typename: 'Project'; id: string; title: string }
+}
+
+export type MyProjectsQueryVariables = Exact<{
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}>
+
+export type MyProjectsQuery = {
+  __typename: 'Query'
+  projects: Array<{
+    __typename: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    tasks: Array<{
+      __typename: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      hourlyRate?: number | null
+      project: { __typename: 'Project'; id: string; title: string }
+    }>
+  }>
 }
 
 export type ProjectsWithTasksQueryVariables = Exact<{
@@ -867,7 +897,7 @@ export type WorkHourUpdateMutation = {
 }
 
 export type WorkHoursQueryVariables = Exact<{
-  teamSlug: Scalars['String']
+  teamSlug?: InputMaybe<Scalars['String']>
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
@@ -1248,6 +1278,18 @@ export const ProjectDocument = gql`
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
   return Urql.useQuery<ProjectQuery, ProjectQueryVariables>({ query: ProjectDocument, ...options })
 }
+export const MyProjectsDocument = gql`
+  query myProjects($from: Date!, $to: Date) {
+    projects(from: $from, to: $to) {
+      ...ProjectWithTasks
+    }
+  }
+  ${ProjectWithTasksFragmentDoc}
+`
+
+export function useMyProjectsQuery(options: Omit<Urql.UseQueryArgs<MyProjectsQueryVariables>, 'query'>) {
+  return Urql.useQuery<MyProjectsQuery, MyProjectsQueryVariables>({ query: MyProjectsDocument, ...options })
+}
 export const ProjectsWithTasksDocument = gql`
   query projectsWithTasks($slug: String!) {
     teamBySlug(slug: $slug) {
@@ -1487,7 +1529,7 @@ export function useWorkHourUpdateMutation() {
   return Urql.useMutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>(WorkHourUpdateDocument)
 }
 export const WorkHoursDocument = gql`
-  query workHours($teamSlug: String!, $from: Date!, $to: Date) {
+  query workHours($teamSlug: String, $from: Date!, $to: Date) {
     workHours(teamSlug: $teamSlug, from: $from, to: $to) {
       ...WorkHour
     }
@@ -1734,6 +1776,21 @@ export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>
 export const mockProjectQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectQueryVariables>, GraphQLContext<ProjectQuery>, any>,
 ) => graphql.query<ProjectQuery, ProjectQueryVariables>('project', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMyProjectsQuery((req, res, ctx) => {
+ *   const { from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockMyProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<MyProjectsQueryVariables>, GraphQLContext<MyProjectsQuery>, any>,
+) => graphql.query<MyProjectsQuery, MyProjectsQueryVariables>('myProjects', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

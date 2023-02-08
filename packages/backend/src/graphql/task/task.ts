@@ -23,7 +23,6 @@ export const Task = builder.prismaObject('Task', {
       resolve: (task) => task._count.workHours > 0,
     }),
     project: t.relation('project'),
-    workhours: t.relation('workHours'),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
       select: { project: { select: { teamId: true } } },
