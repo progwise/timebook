@@ -175,3 +175,11 @@ jobs:
         run: pnpm run migrate-db
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  discord:
+    name: Discord
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+    uses: Ilshidur/action.discord@master
+    with:
+      args: 'Timebook has been deployed'
