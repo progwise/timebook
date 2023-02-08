@@ -185,4 +185,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Timebook ${{toJSON(EVENT_PAYLOAD.sender)}} has been deployed'
+          args: 'Timebook {{ EVENT_PAYLOAD.sender }} has been deployed'
