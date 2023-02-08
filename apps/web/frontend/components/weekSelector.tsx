@@ -37,31 +37,31 @@ export const WeekSelector = (props: { onChange: (year: number, week: number) => 
   }
 
   return (
-    <label className="mt-6 flex flex-row space-x-4">
+    <div className="mt-6 flex flex-row space-x-4">
       <span className="space-x-10">
         {selectedWeek}/{selectedYear}
       </span>
       <div>
-        <select onChange={handleWeekChange}>
+        <select aria-label="week" onChange={handleWeekChange} value={selectedWeek}>
           {weekNumbers.map((w: number) => {
             return (
-              <option selected={w === selectedWeek} value={w} key={w}>
+              <option value={w} key={w}>
                 Week {w}
               </option>
             )
           })}
         </select>
 
-        <select onChange={handleYearChange}>
+        <select aria-label="year" onChange={handleYearChange} value={selectedYear}>
           {years.map((y) => {
             return (
-              <option selected={y === selectedYear} value={y} key={y}>
+              <option value={y} key={y}>
                 {y}
               </option>
             )
           })}
         </select>
       </div>
-    </label>
+    </div>
   )
 }
