@@ -183,7 +183,6 @@ jobs:
       - name: 'send message'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_AVATAR: '${{ EVENT_PAYLOAD.sender.avatar_url }}'
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Timebook has been deployed by {{ EVENT_PAYLOAD.sender.login }}'
+          args: '**{{ EVENT_PAYLOAD.sender.login }}** has deployed **${{ github.event.head_commit.message }}** on production 🎉'
