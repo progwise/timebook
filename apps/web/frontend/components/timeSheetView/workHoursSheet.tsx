@@ -11,14 +11,14 @@ interface SheetPageTableProps {
 }
 
 export const WorkHoursSheet = (props: SheetPageTableProps): JSX.Element => {
-  const [week, setWeek] = useState(7)
+  const [days, setDays] = useState(7)
   const [fetching, setFetching] = useState(true)
   const fromDate = props.startDate
-  const toDate = addDays(fromDate, week - 1)
+  const toDate = addDays(fromDate, days - 1)
   const interval = { start: fromDate, end: toDate }
 
   const loadMore = () => {
-    setWeek(week + 7)
+    setDays(days + 7)
     setFetching(true)
   }
 
