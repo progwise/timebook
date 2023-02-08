@@ -178,6 +178,7 @@ jobs:
 
   discord:
     name: Discord
+        needs: [migrate]
     runs-on: ubuntu-latest
     steps:
       - name: 'send message'
