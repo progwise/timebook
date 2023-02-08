@@ -175,3 +175,15 @@ jobs:
         run: pnpm run migrate-db
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  discord:
+    name: Discord
+    needs: [migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'send message'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '**{{ EVENT_PAYLOAD.sender.login }}** has deployed **${{ github.event.head_commit.message }}** on production 🎉'
