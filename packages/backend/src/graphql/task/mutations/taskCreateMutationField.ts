@@ -17,12 +17,13 @@ builder.mutationField('taskCreate', (t) =>
 
       return { isTeamAdminByTeamId: project.teamId }
     },
-    resolve: (query, _source, { data: { title, projectId } }) =>
+    resolve: (query, _source, { data: { title, projectId, hourlyRate} }) =>
       prisma.task.create({
         ...query,
         data: {
           title,
           projectId: projectId.toString(),
+          hourlyRate,
         },
       }),
   }),

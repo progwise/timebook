@@ -19,10 +19,11 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { TaskCell } from './taskCell'
+import id from 'date-fns/esm/locale/id/index.js'
 
-export type TaskFormData = Pick<TaskInput, 'title'>
+export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
 
-export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true })
+export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true, hourlyRate: true })
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
@@ -38,6 +39,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     reset,
     formState: { isSubmitting, errors },
   } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
+  // } = useForm<TaskFormData>()
   const [, taskCreate] = useTaskCreateMutation()
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -45,7 +47,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       const result = await taskCreate({
         data: {
           projectId: project.id,
-          title: taskData.title,
+          ...taskData,
         },
       })
       if (result.error) {
@@ -70,7 +72,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               <TableCell className="mt-1 flex items-center">
                 <TaskCell task={task} />
               </TableCell>
-              <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
+              {/* <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell> */}
+              <TableCell>
+                <InputField variant="primary" value={task.hourlyRate?.toString()} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -86,7 +91,15 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     {...register('title')}
                     errorMessage={errors.title?.message}
                   />
-
+                  <InputField
+                    variant="primary"
+                    placeholder="Enter Hourly Rate"
+                    className=" dark:bg-slate-800 dark:text-white"
+                    // {...register('hourlyRate', { valueAsNumber: true })}
+                    {...register('hourlyRate')}
+                    errorMessage={errors.hourlyRate?.message}
+                    type="number"
+                  />
                   <Button variant="secondary" type="submit" disabled={isSubmitting}>
                     Add task
                   </Button>

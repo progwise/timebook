@@ -27,7 +27,7 @@
     "jest-environment-node": "^29.2.2",
     "micro": "^9.4.1",
     "nanoid": "3.3.4",
-    "zod": "^3.19.1"
+    "zod": "^3.20.3"
   },
   "devDependencies": {
     "@types/jest": "^29.1.2",

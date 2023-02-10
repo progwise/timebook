@@ -341,6 +341,7 @@ export type Task = ModifyInterface & {
 }
 
 export type TaskInput = {
+  hourlyRate?: InputMaybe<Scalars['Float']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }

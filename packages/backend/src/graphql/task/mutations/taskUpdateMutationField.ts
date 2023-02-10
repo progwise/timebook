@@ -28,11 +28,11 @@ builder.mutationField('taskUpdate', (t) =>
 
       return { isTeamAdminByTeamId: task.project.teamId }
     },
-    resolve: (query, _source, { id, data: { title, projectId } }) =>
+    resolve: (query, _source, { id, data: { title, projectId, hourlyRate} }) =>
       prisma.task.update({
         ...query,
         where: { id: id.toString() },
-        data: { title, projectId: projectId.toString() },
+        data: { title, projectId: projectId.toString(), hourlyRate },
       }),
   }),
 )
