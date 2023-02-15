@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 interface DayWeekSwitchProps {
-  selectedButton: 'day' | 'week'
+  selectedButton: 'day' | 'week' | 'sheet'
 }
 
 export const DayWeekSwitch = ({ selectedButton }: DayWeekSwitchProps) => {
@@ -22,10 +22,13 @@ export const DayWeekSwitch = ({ selectedButton }: DayWeekSwitchProps) => {
         </a>
       </Link>
       <Link href={`/${teamSlug}/time`}>
+        <a className={` inline-block w-10 py-1 ${selectedButton === 'day' ? selectedLink : unselectedLink}`}>Day</a>
+      </Link>
+      <Link href={`/${teamSlug}/time/sheet`}>
         <a
           className={` inline-block w-10 rounded-r-lg py-1 ${selectedButton === 'day' ? selectedLink : unselectedLink}`}
         >
-          Day
+          Sheet
         </a>
       </Link>
     </span>

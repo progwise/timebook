@@ -1,4 +1,5 @@
 import {
+  mockMyProjectsQuery,
   mockProjectMembershipCreateMutation,
   mockProjectMembershipDeleteMutation,
   mockProjectsWithTasksQuery,
@@ -50,6 +51,15 @@ export const projectHandlers = [
           title: addedProject?.title ?? '',
           members: [{ __typename: 'User', name: 'Team Member' }],
         },
+      }),
+    )
+    return result
+  }),
+  mockMyProjectsQuery((request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        projects: [testProject1, testProject2],
       }),
     )
     return result
