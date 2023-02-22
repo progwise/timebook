@@ -1,9 +1,9 @@
 import { getWeek, getYear, parse, addDays, format } from 'date-fns'
 import { useMemo, useState } from 'react'
-import { ProtectedPage } from '../frontend/components/protectedPage'
-import { WeekPageTable, WorkHoursTableRow } from '../frontend/components/weekPageTable'
-import { WeekSelector } from '../frontend/components/weekSelector'
-import { useMyProjectsQuery, useWorkHoursQuery } from '../frontend/generated/graphql'
+import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { WeekPageTable, WorkHoursTableRow } from '../../frontend/components/weekPageTable'
+import { WeekSelector } from '../../frontend/components/weekSelector'
+import { useMyProjectsQuery, useWorkHoursQuery } from '../../frontend/generated/graphql'
 
 const today = new Date()
 const NUMBER_OF_DAYS = 7
