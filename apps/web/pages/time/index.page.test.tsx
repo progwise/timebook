@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import TimePage from './time.page'
-import '../frontend/mocks/mockServer'
+import TimePage from './index.page'
+import '../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
 
 const now = new Date()
