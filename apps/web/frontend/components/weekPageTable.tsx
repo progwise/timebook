@@ -1,9 +1,6 @@
 import { addDays, eachDayOfInterval, format, isToday } from 'date-fns'
-import { useState } from 'react'
-import { BiPlus } from 'react-icons/bi'
 
 import {
-  Button,
   FormattedDuration,
   Table,
   TableBody,
@@ -15,8 +12,6 @@ import {
 } from '@progwise/timebook-ui'
 
 import { ProjectFragment, TaskFragment, useWorkHourUpdateMutation } from '../generated/graphql'
-import { AddTaskRowModal } from './addTaskRow'
-import { DayWeekSwitch } from './dayWeekSwitchButton'
 import { HourInput } from './hourInput'
 
 export interface WeekPageTableProps {
@@ -30,7 +25,6 @@ export interface WorkHoursTableRow {
   durations: number[]
 }
 export const WeekPageTable: React.FC<WeekPageTableProps> = ({ startDate, tableData, numberOfDays = 7 }) => {
-  const [isAddtaskRowModalOpen, setIsAddTaskRowModalOpen] = useState(false)
   const fromDate = startDate
   const toDate = addDays(fromDate, numberOfDays - 1)
   const interval = { start: fromDate, end: toDate }
@@ -112,19 +106,6 @@ export const WeekPageTable: React.FC<WeekPageTableProps> = ({ startDate, tableDa
           </TableRow>
         </TableBody>
       </Table>
-      <Button ariaLabel="add row" variant="primary" onClick={() => setIsAddTaskRowModalOpen(true)}>
-        <BiPlus className="text-3xl" />
-      </Button>
-      {isAddtaskRowModalOpen && (
-        <AddTaskRowModal
-          workHourItem={{
-            date: fromDate,
-            taskId: '',
-            projectId: '',
-          }}
-          onClose={() => setIsAddTaskRowModalOpen(false)}
-        />
-      )}
     </div>
   )
 }
