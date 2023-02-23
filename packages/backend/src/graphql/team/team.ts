@@ -26,7 +26,6 @@ export const Team = builder.prismaObject('Team', {
       },
       resolve: (project) => project.teamMemberships.map((teamMembership) => teamMembership.user),
     }),
-    customers: t.relation('customers', { description: 'List of all customers of the team' }),
     projects: t.withAuth({ isLoggedIn: true }).relation('projects', {
       description: 'List of all projects of the team',
       query: (_arguments, context) => ({

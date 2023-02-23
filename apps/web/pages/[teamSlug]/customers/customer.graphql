@@ -1,5 +1,0 @@
-query customer($customerId: ID!) {
-  customer(customerId: $customerId) {
-    ...Customer
-  }
-}

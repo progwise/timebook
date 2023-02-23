@@ -1,32 +1,3 @@
-type Customer implements ModifyInterface {
-  """
-  Can the user modify the entity
-  """
-  canModify: Boolean!
-
-  """
-  Identifier of the customer
-  """
-  id: ID!
-
-  """
-  List of all customer projects
-  """
-  projects: [Project!]!
-
-  """
-  Title of the customer
-  """
-  title: String!
-}
-
-input CustomerInput {
-  """
-  Title of the customer
-  """
-  title: String!
-}
-
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -43,39 +14,6 @@ interface ModifyInterface {
 }
 
 type Mutation {
-  """
-  Create a new customer for a team
-  """
-  customerCreate(
-    data: CustomerInput!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-  ): Customer!
-
-  """
-  Delete a customer
-  """
-  customerDelete(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-  ): Customer!
-
-  """
-  Update a customer
-  """
-  customerUpdate(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-    data: CustomerInput!
-  ): Customer!
-
   """
   Create a new project
   """
@@ -277,11 +215,6 @@ type Project implements ModifyInterface {
   Can the user modify the entity
   """
   canModify: Boolean!
-
-  """
-  Customer of the project
-  """
-  customer: Customer
   endDate: Date
 
   """
@@ -300,26 +233,12 @@ type Project implements ModifyInterface {
 }
 
 input ProjectInput {
-  """
-  Id of the customer to which the project belongs.
-  """
-  customerId: ID = null
   end: Date
   start: Date
   title: String!
 }
 
 type Query {
-  """
-  Returns a single customer
-  """
-  customer(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-  ): Customer!
-
   """
   Returns a single project
   """
@@ -493,11 +412,6 @@ type Team implements ModifyInterface {
   Can the user modify the entity
   """
   canModify: Boolean!
-
-  """
-  List of all customers of the team
-  """
-  customers: [Customer!]!
 
   """
   Identifier of the team
