@@ -398,6 +398,7 @@ type Task implements ModifyInterface {
   The user can identify the task in the UI
   """
   title: String!
+  workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
 input TaskInput {

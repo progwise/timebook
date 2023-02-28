@@ -1,6 +1,7 @@
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
+import { DateScalar } from '../scalars'
 
 export const Task = builder.prismaObject('Task', {
   select: {},
@@ -23,6 +24,21 @@ export const Task = builder.prismaObject('Task', {
       resolve: (task) => task._count.workHours > 0,
     }),
     project: t.relation('project'),
+    workHours: t.withAuth({ isLoggedIn: true }).relation('workHours', {
+      args: {
+        from: t.arg({ type: DateScalar, required: true }),
+        to: t.arg({ type: DateScalar, required: false }),
+      },
+      query: ({ from, to }, context) => ({
+        where: {
+          userId: context.session.user.id,
+          date: {
+            gte: from,
+            lte: to ?? from,
+          },
+        },
+      }),
+    }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
       select: { project: { select: { teamId: true } } },
