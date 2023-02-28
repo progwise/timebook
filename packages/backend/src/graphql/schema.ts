@@ -1,10 +1,9 @@
 import { writeFileSync } from 'fs'
 import { lexicographicSortSchema, printSchema } from 'graphql'
 import path from 'path'
-import { resolveConfig, format } from 'prettier'
+import { format, resolveConfig } from 'prettier'
 
 import { builder } from './builder'
-import './customer'
 import './project'
 import './projectMembership'
 import './report'

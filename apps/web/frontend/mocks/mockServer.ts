@@ -1,20 +1,12 @@
 import { setupServer } from 'msw/node'
 
-import { customerHandlers } from './customerHandlers'
 import { handlers } from './handlers'
 import { projectHandlers } from './projectHandlers'
 import { taskHandlers } from './taskHandlers'
 import { teamHandlers } from './teamHandlers'
 import { workhourHandlers } from './workhourHandlers'
 
-const allHandlers = [
-  ...handlers,
-  ...workhourHandlers,
-  ...projectHandlers,
-  ...taskHandlers,
-  ...teamHandlers,
-  ...customerHandlers,
-]
+const allHandlers = [...handlers, ...workhourHandlers, ...projectHandlers, ...taskHandlers, ...teamHandlers]
 export const mockServer = setupServer(...allHandlers)
 
 // eslint-disable-next-line no-console

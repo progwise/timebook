@@ -28,7 +28,6 @@ export const Project = builder.prismaObject('Project', {
         },
       }),
     }),
-    customer: t.relation('customer', { nullable: true, description: 'Customer of the project' }),
     members: t.field({
       description: 'List of users that are member of the project',
       select: { projectMemberships: { select: { user: true } } },

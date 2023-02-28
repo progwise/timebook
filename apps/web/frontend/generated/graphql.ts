@@ -21,23 +21,6 @@ export type Scalars = {
   Date: string
 }
 
-export type Customer = ModifyInterface & {
-  __typename: 'Customer'
-  /** Can the user modify the entity */
-  canModify: Scalars['Boolean']
-  /** Identifier of the customer */
-  id: Scalars['ID']
-  /** List of all customer projects */
-  projects: Array<Project>
-  /** Title of the customer */
-  title: Scalars['String']
-}
-
-export type CustomerInput = {
-  /** Title of the customer */
-  title: Scalars['String']
-}
-
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -46,12 +29,6 @@ export type ModifyInterface = {
 
 export type Mutation = {
   __typename: 'Mutation'
-  /** Create a new customer for a team */
-  customerCreate: Customer
-  /** Delete a customer */
-  customerDelete: Customer
-  /** Update a customer */
-  customerUpdate: Customer
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
@@ -92,20 +69,6 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
-}
-
-export type MutationCustomerCreateArgs = {
-  data: CustomerInput
-  teamSlug: Scalars['String']
-}
-
-export type MutationCustomerDeleteArgs = {
-  customerId: Scalars['ID']
-}
-
-export type MutationCustomerUpdateArgs = {
-  customerId: Scalars['ID']
-  data: CustomerInput
 }
 
 export type MutationProjectCreateArgs = {
@@ -204,8 +167,6 @@ export type Project = ModifyInterface & {
   __typename: 'Project'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
-  /** Customer of the project */
-  customer?: Maybe<Customer>
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
@@ -222,8 +183,6 @@ export type ProjectTasksArgs = {
 }
 
 export type ProjectInput = {
-  /** Id of the customer to which the project belongs. */
-  customerId?: InputMaybe<Scalars['ID']>
   end?: InputMaybe<Scalars['Date']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
@@ -231,8 +190,6 @@ export type ProjectInput = {
 
 export type Query = {
   __typename: 'Query'
-  /** Returns a single customer */
-  customer: Customer
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -249,10 +206,6 @@ export type Query = {
   user: User
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
-}
-
-export type QueryCustomerArgs = {
-  customerId: Scalars['ID']
 }
 
 export type QueryProjectArgs = {
@@ -356,8 +309,6 @@ export type Team = ModifyInterface & {
   archived: Scalars['Boolean']
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
-  /** List of all customers of the team */
-  customers: Array<Customer>
   /** Identifier of the team */
   id: Scalars['ID']
   inviteKey: Scalars['String']
@@ -461,7 +412,6 @@ export type ProjectQuery = {
       hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
-    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -538,7 +488,6 @@ export type TeamProjectsQuery = {
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename: 'Customer'; id: string } | null
     }>
   }
 }
@@ -549,7 +498,6 @@ export type ProjectFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
-  customer?: { __typename: 'Customer'; id: string } | null
 }
 
 export type ProjectWithTasksFragment = {
@@ -581,7 +529,6 @@ export type ProjectCreateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -597,7 +544,6 @@ export type ProjectDeleteMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -614,7 +560,6 @@ export type ProjectUpdateMutation = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
   }
 }
 
@@ -781,7 +726,6 @@ export type TeamsWithProjectsQuery = {
       title: string
       startDate?: string | null
       endDate?: string | null
-      customer?: { __typename: 'Customer'; id: string } | null
     }>
   }>
 }
@@ -800,7 +744,6 @@ export type TeamWithProjectsFragment = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
   }>
 }
 
@@ -838,14 +781,7 @@ export type WorkHourCreateMutation = {
     date: string
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
-    project: {
-      __typename: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      customer?: { __typename: 'Customer'; id: string } | null
-    }
+    project: { __typename: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename: 'Task'
       id: string
@@ -877,14 +813,7 @@ export type WorkHourUpdateMutation = {
     date: string
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
-    project: {
-      __typename: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      customer?: { __typename: 'Customer'; id: string } | null
-    }
+    project: { __typename: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename: 'Task'
       id: string
@@ -910,14 +839,7 @@ export type WorkHoursQuery = {
     date: string
     duration: number
     user: { __typename: 'User'; id: string; name?: string | null }
-    project: {
-      __typename: 'Project'
-      id: string
-      title: string
-      startDate?: string | null
-      endDate?: string | null
-      customer?: { __typename: 'Customer'; id: string } | null
-    }
+    project: { __typename: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     task: {
       __typename: 'Task'
       id: string
@@ -935,14 +857,7 @@ export type WorkHourFragment = {
   date: string
   duration: number
   user: { __typename: 'User'; id: string; name?: string | null }
-  project: {
-    __typename: 'Project'
-    id: string
-    title: string
-    startDate?: string | null
-    endDate?: string | null
-    customer?: { __typename: 'Customer'; id: string } | null
-  }
+  project: { __typename: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
   task: {
     __typename: 'Task'
     id: string
@@ -952,54 +867,6 @@ export type WorkHourFragment = {
     project: { __typename: 'Project'; id: string; title: string }
   }
 }
-
-export type CustomerQueryVariables = Exact<{
-  customerId: Scalars['ID']
-}>
-
-export type CustomerQuery = { __typename: 'Query'; customer: { __typename: 'Customer'; id: string; title: string } }
-
-export type CustomerCreateMutationVariables = Exact<{
-  data: CustomerInput
-  teamSlug: Scalars['String']
-}>
-
-export type CustomerCreateMutation = {
-  __typename: 'Mutation'
-  customerCreate: { __typename: 'Customer'; id: string; title: string }
-}
-
-export type CustomerDeleteMutationVariables = Exact<{
-  customerId: Scalars['ID']
-}>
-
-export type CustomerDeleteMutation = { __typename: 'Mutation'; customerDelete: { __typename: 'Customer'; id: string } }
-
-export type CustomerUpdateMutationVariables = Exact<{
-  customerId: Scalars['ID']
-  data: CustomerInput
-}>
-
-export type CustomerUpdateMutation = {
-  __typename: 'Mutation'
-  customerUpdate: { __typename: 'Customer'; id: string; title: string }
-}
-
-export type CustomersQueryVariables = Exact<{
-  slug: Scalars['String']
-}>
-
-export type CustomersQuery = {
-  __typename: 'Query'
-  teamBySlug: {
-    __typename: 'Team'
-    id: string
-    title: string
-    customers: Array<{ __typename: 'Customer'; id: string; title: string }>
-  }
-}
-
-export type CustomerFragment = { __typename: 'Customer'; id: string; title: string }
 
 export type MeQueryVariables = Exact<{
   teamSlug: Scalars['String']
@@ -1207,9 +1074,6 @@ export const ProjectFragmentDoc = gql`
     title
     startDate
     endDate
-    customer {
-      id
-    }
   }
 `
 export const TeamWithProjectsFragmentDoc = gql`
@@ -1240,12 +1104,6 @@ export const WorkHourFragmentDoc = gql`
   }
   ${ProjectFragmentDoc}
   ${TaskFragmentDoc}
-`
-export const CustomerFragmentDoc = gql`
-  fragment Customer on Customer {
-    id
-    title
-  }
 `
 export const UserFragmentDoc = gql`
   fragment User on User {
@@ -1539,69 +1397,6 @@ export const WorkHoursDocument = gql`
 
 export function useWorkHoursQuery(options: Omit<Urql.UseQueryArgs<WorkHoursQueryVariables>, 'query'>) {
   return Urql.useQuery<WorkHoursQuery, WorkHoursQueryVariables>({ query: WorkHoursDocument, ...options })
-}
-export const CustomerDocument = gql`
-  query customer($customerId: ID!) {
-    customer(customerId: $customerId) {
-      ...Customer
-    }
-  }
-  ${CustomerFragmentDoc}
-`
-
-export function useCustomerQuery(options: Omit<Urql.UseQueryArgs<CustomerQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomerQuery, CustomerQueryVariables>({ query: CustomerDocument, ...options })
-}
-export const CustomerCreateDocument = gql`
-  mutation customerCreate($data: CustomerInput!, $teamSlug: String!) {
-    customerCreate(data: $data, teamSlug: $teamSlug) {
-      ...Customer
-    }
-  }
-  ${CustomerFragmentDoc}
-`
-
-export function useCustomerCreateMutation() {
-  return Urql.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument)
-}
-export const CustomerDeleteDocument = gql`
-  mutation customerDelete($customerId: ID!) {
-    customerDelete(customerId: $customerId) {
-      id
-    }
-  }
-`
-
-export function useCustomerDeleteMutation() {
-  return Urql.useMutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>(CustomerDeleteDocument)
-}
-export const CustomerUpdateDocument = gql`
-  mutation customerUpdate($customerId: ID!, $data: CustomerInput!) {
-    customerUpdate(customerId: $customerId, data: $data) {
-      ...Customer
-    }
-  }
-  ${CustomerFragmentDoc}
-`
-
-export function useCustomerUpdateMutation() {
-  return Urql.useMutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>(CustomerUpdateDocument)
-}
-export const CustomersDocument = gql`
-  query customers($slug: String!) {
-    teamBySlug(slug: $slug) {
-      id
-      title
-      customers {
-        ...Customer
-      }
-    }
-  }
-  ${CustomerFragmentDoc}
-`
-
-export function useCustomersQuery(options: Omit<Urql.UseQueryArgs<CustomersQueryVariables>, 'query'>) {
-  return Urql.useQuery<CustomersQuery, CustomersQueryVariables>({ query: CustomersDocument, ...options })
 }
 export const MeDocument = gql`
   query me($teamSlug: String!) {
@@ -2115,93 +1910,6 @@ export const mockWorkHourUpdateMutation = (
 export const mockWorkHoursQuery = (
   resolver: ResponseResolver<GraphQLRequest<WorkHoursQueryVariables>, GraphQLContext<WorkHoursQuery>, any>,
 ) => graphql.query<WorkHoursQuery, WorkHoursQueryVariables>('workHours', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCustomerQuery((req, res, ctx) => {
- *   const { customerId } = req.variables;
- *   return res(
- *     ctx.data({ customer })
- *   )
- * })
- */
-export const mockCustomerQuery = (
-  resolver: ResponseResolver<GraphQLRequest<CustomerQueryVariables>, GraphQLContext<CustomerQuery>, any>,
-) => graphql.query<CustomerQuery, CustomerQueryVariables>('customer', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCustomerCreateMutation((req, res, ctx) => {
- *   const { data, teamSlug } = req.variables;
- *   return res(
- *     ctx.data({ customerCreate })
- *   )
- * })
- */
-export const mockCustomerCreateMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<CustomerCreateMutationVariables>,
-    GraphQLContext<CustomerCreateMutation>,
-    any
-  >,
-) => graphql.mutation<CustomerCreateMutation, CustomerCreateMutationVariables>('customerCreate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCustomerDeleteMutation((req, res, ctx) => {
- *   const { customerId } = req.variables;
- *   return res(
- *     ctx.data({ customerDelete })
- *   )
- * })
- */
-export const mockCustomerDeleteMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<CustomerDeleteMutationVariables>,
-    GraphQLContext<CustomerDeleteMutation>,
-    any
-  >,
-) => graphql.mutation<CustomerDeleteMutation, CustomerDeleteMutationVariables>('customerDelete', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCustomerUpdateMutation((req, res, ctx) => {
- *   const { customerId, data } = req.variables;
- *   return res(
- *     ctx.data({ customerUpdate })
- *   )
- * })
- */
-export const mockCustomerUpdateMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<CustomerUpdateMutationVariables>,
-    GraphQLContext<CustomerUpdateMutation>,
-    any
-  >,
-) => graphql.mutation<CustomerUpdateMutation, CustomerUpdateMutationVariables>('customerUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockCustomersQuery((req, res, ctx) => {
- *   const { slug } = req.variables;
- *   return res(
- *     ctx.data({ teamBySlug })
- *   )
- * })
- */
-export const mockCustomersQuery = (
-  resolver: ResponseResolver<GraphQLRequest<CustomersQueryVariables>, GraphQLContext<CustomersQuery>, any>,
-) => graphql.query<CustomersQuery, CustomersQueryVariables>('customers', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

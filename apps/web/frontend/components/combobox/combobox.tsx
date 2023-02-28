@@ -77,7 +77,7 @@ export const ComboBox = <TOption extends { id: string }>({
       onChange={handleChange}
     >
       <div className="mt-1">
-        <div className="flex w-full cursor-default justify-between overflow-hidden rounded border bg-transparent text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 dark:border-white sm:text-sm">
+        <div className="flex w-full cursor-default justify-between overflow-hidden rounded border bg-transparent text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 dark:border-white sm:text-sm">
           <HUCombobox.Input<'input', TOption | NoOption | NewOption>
             className="w-full border-0 text-sm leading-5 focus:ring-0 dark:bg-slate-800 dark:text-white "
             displayValue={generateLabel}
@@ -90,7 +90,7 @@ export const ComboBox = <TOption extends { id: string }>({
         </div>
         <div className="relative">
           <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-            <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
+            <HUCombobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none  dark:bg-slate-800 sm:text-sm">
               {allOptions.map((option) => (
                 <HUCombobox.Option<'li', TOption | NewOption | NoOption>
                   key={typeof option === 'string' ? option : option.id}
