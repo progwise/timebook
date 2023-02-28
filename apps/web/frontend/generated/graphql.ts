@@ -1062,7 +1062,6 @@ export type TimeTableQuery = {
       workHours: Array<{ __typename: 'WorkHour'; id: string; date: string; duration: number }>
       project: { __typename: 'Project'; id: string; title: string }
     }>
-    customer?: { __typename: 'Customer'; id: string } | null
   }>
 }
 
@@ -1081,7 +1080,6 @@ export type ProjectWithWorkHoursFragment = {
     workHours: Array<{ __typename: 'WorkHour'; id: string; date: string; duration: number }>
     project: { __typename: 'Project'; id: string; title: string }
   }>
-  customer?: { __typename: 'Customer'; id: string } | null
 }
 
 export type TaskWithWorkHoursFragment = {
