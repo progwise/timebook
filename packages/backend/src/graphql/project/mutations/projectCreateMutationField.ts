@@ -11,17 +11,8 @@ builder.mutationField('projectCreate', (t) =>
       teamSlug: t.arg.string({ description: 'slug of the team' }),
     },
     authScopes: (_source, { teamSlug }) => ({ isTeamAdminByTeamSlug: teamSlug }),
-    resolve: async (query, _source, { data: { title, start, end, customerId }, teamSlug }, context) => {
+    resolve: async (query, _source, { data: { title, start, end }, teamSlug }, context) => {
       const now = new Date()
-
-      const customer = customerId
-        ? await prisma.customer.findFirstOrThrow({
-            where: {
-              id: customerId.toString(),
-              team: { slug: teamSlug },
-            },
-          })
-        : undefined
 
       const team = await prisma.team.findUniqueOrThrow({ where: { slug: teamSlug } })
 
@@ -31,7 +22,6 @@ builder.mutationField('projectCreate', (t) =>
           title,
           startDate: start,
           endDate: end,
-          customerId: customer?.id,
           teamId: team.id,
           projectMemberships: {
             create: {

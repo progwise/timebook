@@ -12,10 +12,6 @@ const projectUpdateMutation = gql`
     projectUpdate(id: $id, data: $data) {
       id
       title
-      customer {
-        id
-        title
-      }
     }
   }
 `
@@ -25,7 +21,6 @@ describe('Error', () => {
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
     await prisma.team.deleteMany()
-    await prisma.customer.deleteMany()
 
     await prisma.user.createMany({
       data: [
@@ -50,14 +45,6 @@ describe('Error', () => {
         id: '1',
         slug: 'progwise',
         title: 'Progwise',
-        customers: {
-          createMany: {
-            data: [
-              { id: '1', title: 'Test Customer 1' },
-              { id: '2', title: 'Test Customer 2' },
-            ],
-          },
-        },
         teamMemberships: {
           createMany: {
             data: [
@@ -81,7 +68,6 @@ describe('Error', () => {
             projectMemberships: {
               createMany: { data: [{ userId: '1' }, { userId: '2' }] },
             },
-            customerId: '1',
           },
         },
       },
@@ -93,7 +79,6 @@ describe('Error', () => {
         id: '2',
         slug: 'apple',
         title: 'Apple',
-        customers: { create: { id: '3', title: 'Test Customer 3' } },
         teamMemberships: {
           create: {
             id: '3',
@@ -105,7 +90,6 @@ describe('Error', () => {
           create: {
             id: '2',
             title: 'Test Project 2',
-            customerId: '3',
           },
         },
       },
@@ -120,7 +104,6 @@ describe('Error', () => {
         id: '1',
         data: {
           title: 'Test Project 1',
-          customerId: '1',
         },
       },
     })
@@ -137,7 +120,6 @@ describe('Error', () => {
         id: '2',
         data: {
           title: 'Test Project',
-          customerId: '1',
         },
       },
     })
@@ -154,41 +136,6 @@ describe('Error', () => {
         id: '1',
         data: {
           title: 'Test Project',
-          customerId: '1',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  })
-
-  it('should throw error when customer does not exist', async () => {
-    const testServer = getTestServer({ userId: '1' })
-    const response = await testServer.executeOperation({
-      query: projectUpdateMutation,
-      variables: {
-        id: '1',
-        data: {
-          title: 'Test Project',
-          customerId: 'DoesNotExist',
-        },
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Customer not found')])
-  })
-
-  it('should throw error when customer is from a different team', async () => {
-    const testServer = getTestServer({ userId: '1' })
-    const response = await testServer.executeOperation({
-      query: projectUpdateMutation,
-      variables: {
-        id: '2',
-        data: {
-          title: 'Test Project 2',
-          customerId: '3',
         },
       },
     })
@@ -215,56 +162,8 @@ describe('Error', () => {
         projectUpdate: {
           id: '1',
           title: 'Updated Test Project',
-          // eslint-disable-next-line unicorn/no-null
-          customer: null,
         },
       })
-    })
-
-    it('should be possible to remove a customer from a project', async () => {
-      const testServer = getTestServer({ userId: '1' })
-      const response = await testServer.executeOperation({
-        query: projectUpdateMutation,
-        variables: {
-          id: '1',
-          data: {
-            title: 'Test Project',
-          },
-        },
-      })
-
-      expect(response.data).toEqual({
-        projectUpdate: {
-          id: '1',
-          title: 'Test Project',
-          // eslint-disable-next-line unicorn/no-null
-          customer: null,
-        },
-      })
-      expect(response.errors).toBeUndefined()
-    })
-
-    it('should be possible to change a customer', async () => {
-      const testServer = getTestServer({ userId: '1' })
-      const response = await testServer.executeOperation({
-        query: projectUpdateMutation,
-        variables: {
-          id: '1',
-          data: {
-            title: 'Test Project',
-            customerId: '2',
-          },
-        },
-      })
-
-      expect(response.data).toEqual({
-        projectUpdate: {
-          id: '1',
-          title: 'Test Project',
-          customer: { id: '2', title: 'Test Customer 2' },
-        },
-      })
-      expect(response.errors).toBeUndefined()
     })
   })
 })

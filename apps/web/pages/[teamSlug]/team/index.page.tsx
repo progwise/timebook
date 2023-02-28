@@ -13,7 +13,6 @@ import {
   TableRow,
 } from '@progwise/timebook-ui'
 
-import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
@@ -95,10 +94,6 @@ const TeamPage = (): JSX.Element => {
               ))}
             </TableBody>
           </Table>
-        </section>
-        <section>
-          <h2 className="text-xl font-medium text-gray-500">Customers</h2>
-          <CustomerTable />
         </section>
         {teamToBeArchived ? (
           // eslint-disable-next-line unicorn/no-useless-undefined
