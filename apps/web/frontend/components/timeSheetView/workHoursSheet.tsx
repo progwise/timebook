@@ -1,24 +1,22 @@
-import { addDays, eachWeekOfInterval } from 'date-fns'
+import { eachMonthOfInterval, subMonths } from 'date-fns'
 
 import { Spinner } from '@progwise/timebook-ui'
 import { useState } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
 import { DayWeekSwitch } from '../dayWeekSwitchButton'
-import { SheetWeek } from './sheetWeek'
+import { SheetMonth as SheetMonth } from './sheetMonth'
 
-interface SheetPageTableProps {
-  startDate: Date
-}
-
-export const WorkHoursSheet = (props: SheetPageTableProps): JSX.Element => {
-  const [days, setDays] = useState(7)
+export const WorkHoursSheet = (): JSX.Element => {
+  const today = new Date()
+  // Initially load two months, because on the first day of the month only one row would be initially shown
+  const [monthsToLoad, setMonthsToLoad] = useState(2)
   const [fetching, setFetching] = useState(true)
-  const fromDate = props.startDate
-  const toDate = addDays(fromDate, days - 1)
-  const interval = { start: fromDate, end: toDate }
+  const startDate = subMonths(today, monthsToLoad)
+  const toDate = today
+  const interval = { start: startDate, end: toDate }
 
   const loadMore = () => {
-    setDays(days + 7)
+    setMonthsToLoad((monthsToLoad) => monthsToLoad + 1)
     setFetching(true)
   }
 
@@ -44,9 +42,11 @@ export const WorkHoursSheet = (props: SheetPageTableProps): JSX.Element => {
             <strong>Hours</strong>
           </article>
 
-          {eachWeekOfInterval(interval, { weekStartsOn: 1 }).map((startOfWeek) => (
-            <SheetWeek key={startOfWeek.toString()} startDay={startOfWeek} onFetched={() => setFetching(false)} />
-          ))}
+          {eachMonthOfInterval(interval)
+            .reverse()
+            .map((startOfMonth) => (
+              <SheetMonth key={startOfMonth.toString()} startDay={startOfMonth} onFetched={() => setFetching(false)} />
+            ))}
           <div ref={sentryReference}>
             <Spinner size="small" />
           </div>
