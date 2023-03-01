@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react'
 import TimePage from './index.page'
 import '../../frontend/mocks/mockServer'
 import { Client, Provider } from 'urql'
+import { getWeek, getYear } from 'date-fns'
 
 const now = new Date()
-const start = new Date(now.getFullYear(), 0, 1)
-const weekNumber = Math.floor(((now.getTime() - start.getTime()) / 86_400_000 + start.getDay() + 1) / 7)
-const yearNumber = now.getFullYear()
+const weekNumber = getWeek(now, { firstWeekContainsDate: 7, weekStartsOn: 1 })
+const yearNumber = getYear(now)
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
 
