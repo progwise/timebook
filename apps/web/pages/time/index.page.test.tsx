@@ -15,7 +15,7 @@ jest.mock('next-auth/react', () => ({
 }))
 describe('The time page...', () => {
   it('...renders the week selector with today', () => {
-    render(<TimePage />)
+    render(<TimePage />, { wrapper })
     const weekCombo = screen.getByRole('combobox', {
       name: /week/i,
     })
@@ -29,7 +29,9 @@ describe('The time page...', () => {
     render(<TimePage />, { wrapper })
     const table = await screen.findByRole('table')
     expect(table).toBeVisible()
-    const cell = await screen.findByRole('cell', { name: /project 1 task 1/i })
-    expect(cell).toBeVisible()
+    const projectCell = await screen.findByRole('cell', { name: /project 1/i })
+    const taskCell = await screen.findByRole('cell', { name: /task 1/i })
+    expect(projectCell).toBeVisible()
+    expect(taskCell).toBeVisible()
   })
 })
