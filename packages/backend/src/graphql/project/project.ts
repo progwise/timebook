@@ -26,6 +26,7 @@ export const Project = builder.prismaObject('Project', {
           // eslint-disable-next-line unicorn/no-null
           archivedAt: showArchived ? undefined : null,
         },
+        orderBy: { title: 'asc' },
       }),
     }),
     members: t.field({

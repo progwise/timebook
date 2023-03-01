@@ -297,6 +297,12 @@ export type Task = ModifyInterface & {
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
+  workHours: Array<WorkHour>
+}
+
+export type TaskWorkHoursArgs = {
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }
 
 export type TaskInput = {
@@ -1034,6 +1040,60 @@ export type UserFragment = {
   projects: Array<{ __typename: 'Project'; id: string; title: string }>
 }
 
+export type TimeTableQueryVariables = Exact<{
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}>
+
+export type TimeTableQuery = {
+  __typename: 'Query'
+  projects: Array<{
+    __typename: 'Project'
+    id: string
+    title: string
+    startDate?: string | null
+    endDate?: string | null
+    tasks: Array<{
+      __typename: 'Task'
+      id: string
+      title: string
+      hasWorkHours: boolean
+      hourlyRate?: number | null
+      workHours: Array<{ __typename: 'WorkHour'; id: string; date: string; duration: number }>
+      project: { __typename: 'Project'; id: string; title: string }
+    }>
+  }>
+}
+
+export type ProjectWithWorkHoursFragment = {
+  __typename: 'Project'
+  id: string
+  title: string
+  startDate?: string | null
+  endDate?: string | null
+  tasks: Array<{
+    __typename: 'Task'
+    id: string
+    title: string
+    hasWorkHours: boolean
+    hourlyRate?: number | null
+    workHours: Array<{ __typename: 'WorkHour'; id: string; date: string; duration: number }>
+    project: { __typename: 'Project'; id: string; title: string }
+  }>
+}
+
+export type TaskWithWorkHoursFragment = {
+  __typename: 'Task'
+  id: string
+  title: string
+  hasWorkHours: boolean
+  hourlyRate?: number | null
+  workHours: Array<{ __typename: 'WorkHour'; id: string; date: string; duration: number }>
+  project: { __typename: 'Project'; id: string; title: string }
+}
+
+export type SimpleWorkHourFragment = { __typename: 'WorkHour'; id: string; date: string; duration: number }
+
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -1117,6 +1177,33 @@ export const UserFragmentDoc = gql`
     }
     availableMinutesPerWeek(teamSlug: $teamSlug)
   }
+`
+export const SimpleWorkHourFragmentDoc = gql`
+  fragment SimpleWorkHour on WorkHour {
+    id
+    date
+    duration
+  }
+`
+export const TaskWithWorkHoursFragmentDoc = gql`
+  fragment TaskWithWorkHours on Task {
+    ...Task
+    workHours(from: $from, to: $to) {
+      ...SimpleWorkHour
+    }
+  }
+  ${TaskFragmentDoc}
+  ${SimpleWorkHourFragmentDoc}
+`
+export const ProjectWithWorkHoursFragmentDoc = gql`
+  fragment ProjectWithWorkHours on Project {
+    ...Project
+    tasks {
+      ...TaskWithWorkHours
+    }
+  }
+  ${ProjectFragmentDoc}
+  ${TaskWithWorkHoursFragmentDoc}
 `
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
@@ -1555,6 +1642,18 @@ export const UserDocument = gql`
 
 export function useUserQuery(options: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
   return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options })
+}
+export const TimeTableDocument = gql`
+  query timeTable($from: Date!, $to: Date) {
+    projects(from: $from, to: $to) {
+      ...ProjectWithWorkHours
+    }
+  }
+  ${ProjectWithWorkHoursFragmentDoc}
+`
+
+export function useTimeTableQuery(options: Omit<Urql.UseQueryArgs<TimeTableQueryVariables>, 'query'>) {
+  return Urql.useQuery<TimeTableQuery, TimeTableQueryVariables>({ query: TimeTableDocument, ...options })
 }
 
 /**
@@ -2054,3 +2153,18 @@ export const mockTeamUnarchiveMutation = (
 export const mockUserQuery = (
   resolver: ResponseResolver<GraphQLRequest<UserQueryVariables>, GraphQLContext<UserQuery>, any>,
 ) => graphql.query<UserQuery, UserQueryVariables>('user', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTimeTableQuery((req, res, ctx) => {
+ *   const { from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockTimeTableQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TimeTableQueryVariables>, GraphQLContext<TimeTableQuery>, any>,
+) => graphql.query<TimeTableQuery, TimeTableQueryVariables>('timeTable', resolver)
