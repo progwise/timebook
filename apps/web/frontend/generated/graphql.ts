@@ -791,53 +791,6 @@ export type MeQuery = {
   user: { __typename: 'User'; id: string; image?: string | null; name?: string | null; role: Role }
 }
 
-export type ReportQueryVariables = Exact<{
-  projectId: Scalars['ID']
-  from: Scalars['Date']
-  to: Scalars['Date']
-}>
-
-export type ReportQuery = {
-  __typename: 'Query'
-  report: {
-    __typename: 'Report'
-    groupedByDate: Array<{
-      __typename: 'ReportGroupedByDate'
-      date: string
-      duration: number
-      workHours: Array<{
-        __typename: 'WorkHour'
-        id: string
-        date: string
-        duration: number
-        user: { __typename: 'User'; id: string; name?: string | null; image?: string | null }
-        task: {
-          __typename: 'Task'
-          id: string
-          title: string
-          project: { __typename: 'Project'; id: string; title: string }
-        }
-      }>
-    }>
-    groupedByTask: Array<{
-      __typename: 'ReportGroupedByTask'
-      duration: number
-      task: { __typename: 'Task'; id: string; title: string }
-    }>
-    groupedByUser: Array<{
-      __typename: 'ReportGroupedByUser'
-      duration: number
-      user: { __typename: 'User'; id: string; name?: string | null }
-      workHours: Array<{
-        __typename: 'WorkHour'
-        id: string
-        duration: number
-        task: { __typename: 'Task'; title: string }
-      }>
-    }>
-  }
-}
-
 export type TeamAcceptInviteMutationVariables = Exact<{
   inviteKey: Scalars['String']
 }>
@@ -992,6 +945,53 @@ export type TaskWithWorkHoursFragment = {
 }
 
 export type SimpleWorkHourFragment = { __typename: 'WorkHour'; id: string; date: string; duration: number }
+
+export type ReportQueryVariables = Exact<{
+  projectId: Scalars['ID']
+  from: Scalars['Date']
+  to: Scalars['Date']
+}>
+
+export type ReportQuery = {
+  __typename: 'Query'
+  report: {
+    __typename: 'Report'
+    groupedByDate: Array<{
+      __typename: 'ReportGroupedByDate'
+      date: string
+      duration: number
+      workHours: Array<{
+        __typename: 'WorkHour'
+        id: string
+        date: string
+        duration: number
+        user: { __typename: 'User'; id: string; name?: string | null; image?: string | null }
+        task: {
+          __typename: 'Task'
+          id: string
+          title: string
+          project: { __typename: 'Project'; id: string; title: string }
+        }
+      }>
+    }>
+    groupedByTask: Array<{
+      __typename: 'ReportGroupedByTask'
+      duration: number
+      task: { __typename: 'Task'; id: string; title: string }
+    }>
+    groupedByUser: Array<{
+      __typename: 'ReportGroupedByUser'
+      duration: number
+      user: { __typename: 'User'; id: string; name?: string | null }
+      workHours: Array<{
+        __typename: 'WorkHour'
+        id: string
+        duration: number
+        task: { __typename: 'Task'; title: string }
+      }>
+    }>
+  }
+}
 
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
@@ -1334,59 +1334,6 @@ export const MeDocument = gql`
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options })
 }
-export const ReportDocument = gql`
-  query report($projectId: ID!, $from: Date!, $to: Date!) {
-    report(projectId: $projectId, from: $from, to: $to) {
-      groupedByDate {
-        date
-        duration
-        workHours {
-          id
-          date
-          duration
-          user {
-            id
-            name
-            image
-          }
-          task {
-            id
-            title
-            project {
-              id
-              title
-            }
-          }
-        }
-      }
-      groupedByTask {
-        task {
-          id
-          title
-        }
-        duration
-      }
-      groupedByUser {
-        user {
-          id
-          name
-        }
-        duration
-        workHours {
-          id
-          task {
-            title
-          }
-          duration
-        }
-      }
-    }
-  }
-`
-
-export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
-  return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
-}
 export const TeamAcceptInviteDocument = gql`
   mutation teamAcceptInvite($inviteKey: String!) {
     teamAcceptInvite(inviteKey: $inviteKey) {
@@ -1485,6 +1432,59 @@ export const TimeTableDocument = gql`
 
 export function useTimeTableQuery(options: Omit<Urql.UseQueryArgs<TimeTableQueryVariables>, 'query'>) {
   return Urql.useQuery<TimeTableQuery, TimeTableQueryVariables>({ query: TimeTableDocument, ...options })
+}
+export const ReportDocument = gql`
+  query report($projectId: ID!, $from: Date!, $to: Date!) {
+    report(projectId: $projectId, from: $from, to: $to) {
+      groupedByDate {
+        date
+        duration
+        workHours {
+          id
+          date
+          duration
+          user {
+            id
+            name
+            image
+          }
+          task {
+            id
+            title
+            project {
+              id
+              title
+            }
+          }
+        }
+      }
+      groupedByTask {
+        task {
+          id
+          title
+        }
+        duration
+      }
+      groupedByUser {
+        user {
+          id
+          name
+        }
+        duration
+        workHours {
+          id
+          task {
+            title
+          }
+          duration
+        }
+      }
+    }
+  }
+`
+
+export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
+  return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
 }
 
 /**
@@ -1808,21 +1808,6 @@ export const mockMeQuery = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockReportQuery((req, res, ctx) => {
- *   const { projectId, from, to } = req.variables;
- *   return res(
- *     ctx.data({ report })
- *   )
- * })
- */
-export const mockReportQuery = (
-  resolver: ResponseResolver<GraphQLRequest<ReportQueryVariables>, GraphQLContext<ReportQuery>, any>,
-) => graphql.query<ReportQuery, ReportQueryVariables>('report', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
  * mockTeamAcceptInviteMutation((req, res, ctx) => {
  *   const { inviteKey } = req.variables;
  *   return res(
@@ -1947,3 +1932,18 @@ export const mockUserQuery = (
 export const mockTimeTableQuery = (
   resolver: ResponseResolver<GraphQLRequest<TimeTableQueryVariables>, GraphQLContext<TimeTableQuery>, any>,
 ) => graphql.query<TimeTableQuery, TimeTableQueryVariables>('timeTable', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockReportQuery((req, res, ctx) => {
+ *   const { projectId, from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ report })
+ *   )
+ * })
+ */
+export const mockReportQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ReportQueryVariables>, GraphQLContext<ReportQuery>, any>,
+) => graphql.query<ReportQuery, ReportQueryVariables>('report', resolver)
