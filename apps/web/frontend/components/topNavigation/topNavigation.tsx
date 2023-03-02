@@ -36,8 +36,8 @@ export const TopNavigation = (): JSX.Element => {
 
         <TopNavigationLink href="/time">Time</TopNavigationLink>
         <TopNavigationLink href="/time/sheet">Sheet</TopNavigationLink>
+        <TopNavigationLink href="/projects">Projects</TopNavigationLink>
 
-        {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/team`}>Team</TopNavigationLink>}
 

@@ -13,20 +13,19 @@ builder.queryField('workHours', (t) =>
         required: false,
         description: 'End of the time period. If not provided the from arg is used as the end.',
       }),
-      teamSlug: t.arg.string({ required: false }),
       userIds: t.arg.idList({
         required: false,
         description: 'List of user ids. If not provided only the work hours of the current users are returned.',
       }),
     },
-    resolve: (query, _source, { from, to, userIds, teamSlug }, context) =>
+    resolve: (query, _source, { from, to, userIds }, context) =>
       prisma.workHour.findMany({
         ...query,
         where: {
           task: {
             project: {
-              team: {
-                slug: teamSlug ?? undefined,
+              projectMemberships: {
+                some: { userId: context.session.user.id },
               },
             },
           },

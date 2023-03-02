@@ -4,9 +4,5 @@ query me($teamSlug: String!) {
     image
     name
     role(teamSlug: $teamSlug)
-    projects(teamSlug: $teamSlug) {
-      id
-      title
-    }
   }
 }

@@ -1,5 +1,3 @@
-import { ForbiddenError } from 'apollo-server-core'
-
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { TaskInput } from '../taskInput'
@@ -14,19 +12,17 @@ builder.mutationField('taskUpdate', (t) =>
     },
     authScopes: async (_source, { id, data: { projectId } }) => {
       const task = await prisma.task.findUniqueOrThrow({
-        select: { project: { select: { teamId: true } } },
+        select: { projectId: true },
         where: { id: id.toString() },
       })
-      const project = await prisma.project.findUniqueOrThrow({
-        select: { teamId: true },
-        where: { id: projectId.toString() },
-      })
 
-      if (task.project.teamId !== project.teamId) {
-        throw new ForbiddenError('It is not allowed to move a task to a different team')
+      return {
+        $all: {
+          isProjectMember: task.projectId,
+          // Using $all allows us to run the isProjectMember check twice, once for the previous project and once for the new assigned project
+          $all: { isProjectMember: projectId.toString() },
+        },
       }
-
-      return { isTeamAdminByTeamId: task.project.teamId }
     },
     resolve: (query, _source, { id, data: { title, projectId } }) =>
       prisma.task.update({

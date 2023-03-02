@@ -17,14 +17,7 @@ type Mutation {
   """
   Create a new project
   """
-  projectCreate(
-    data: ProjectInput!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-  ): Project!
+  projectCreate(data: ProjectInput!): Project!
 
   """
   Delete a project
@@ -232,6 +225,13 @@ type Project implements ModifyInterface {
   workHours: [WorkHour!]!
 }
 
+enum ProjectFilter {
+  ACTIVE
+  ALL
+  FUTURE
+  PAST
+}
+
 input ProjectInput {
   end: Date
   start: Date
@@ -252,7 +252,7 @@ type Query {
   """
   Returns all project of the signed in user that are active
   """
-  projects(from: Date!, to: Date): [Project!]!
+  projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
 
   """
   Returns a monthly project report
@@ -315,7 +315,6 @@ type Query {
     Start of the time period
     """
     from: Date!
-    teamSlug: String
 
     """
     End of the time period. If not provided the from arg is used as the end.
@@ -426,11 +425,6 @@ type Team implements ModifyInterface {
   members: [User!]!
 
   """
-  List of all projects of the team
-  """
-  projects: [Project!]!
-
-  """
   Slug that is used in the team URL
   """
   slug: String!
@@ -482,11 +476,6 @@ type User {
   id: ID!
   image: String
   name: String
-
-  """
-  Returns the list of projects where the user is a member
-  """
-  projects(teamSlug: String!): [Project!]!
 
   """
   Role of the user in a team

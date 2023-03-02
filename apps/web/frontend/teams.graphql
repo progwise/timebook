@@ -1,18 +1,5 @@
-query teams {
-  teams {
-    ...Team
-  }
-}
-
-query teamsWithProjects($includeArchived: Boolean) {
+query teams($includeArchived: Boolean) {
   teams(includeArchived: $includeArchived) {
-    ...TeamWithProjects
-  }
-}
-
-fragment TeamWithProjects on Team {
-  ...Team
-  projects {
-    ...Project
+    ...Team
   }
 }

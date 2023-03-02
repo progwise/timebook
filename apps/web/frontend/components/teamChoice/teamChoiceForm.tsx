@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Spinner } from '@progwise/timebook-ui'
 
-import { useTeamsWithProjectsQuery } from '../../generated/graphql'
+import { useTeamsQuery } from '../../generated/graphql'
 import { TeamTile } from '../teamTile/teamTile'
 
 interface TeamChoiceFormProps {
@@ -10,8 +10,8 @@ interface TeamChoiceFormProps {
 }
 
 export const TeamChoiceForm = ({ includeArchived }: TeamChoiceFormProps): JSX.Element => {
-  const context = useMemo(() => ({ additionalTypenames: ['Projects'] }), [])
-  const [{ data: teamsData, fetching }] = useTeamsWithProjectsQuery({ context, variables: { includeArchived } })
+  const context = useMemo(() => ({ additionalTypenames: ['Team'] }), [])
+  const [{ data: teamsData, fetching }] = useTeamsQuery({ context, variables: { includeArchived } })
 
   if (fetching) return <Spinner />
 

@@ -2,10 +2,9 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
-import { mockMeQuery, mockUserQuery, Role } from '../../../frontend/generated/graphql'
+import { mockMeQuery, Role } from '../../../frontend/generated/graphql'
 import '../../../frontend/mocks/mockServer'
 import { mockServer } from '../../../frontend/mocks/mockServer'
-import { assignedProjects } from '../../../frontend/mocks/projectHandlers'
 import UserDetailsPage from './[userId].page'
 
 const client = new Client({ url: '/api/team1/graphql' })
@@ -37,7 +36,6 @@ beforeEach(() => {
             image: undefined,
             name: 'User',
             role: Role.Admin,
-            projects: [],
           },
         }),
       )
@@ -67,26 +65,6 @@ describe('UserIdPage (Admin)', () => {
     loading = await screen.findByText('Loading...')
     expect(loading).toBeVisible()
     await waitFor(() => expect(loading).not.toBeInTheDocument())
-  })
-
-  it('should remove project', async () => {
-    render(<UserDetailsPage />, { wrapper })
-
-    const switchButtons = await screen.findAllByRole('switch')
-
-    await userEvent.click(switchButtons[0])
-
-    await waitFor(() => expect(switchButtons[0]).not.toBeChecked())
-  })
-
-  it('should add project', async () => {
-    render(<UserDetailsPage />, { wrapper })
-
-    const switchButtons = await screen.findAllByRole('switch')
-
-    await userEvent.click(switchButtons[1])
-
-    await waitFor(() => expect(switchButtons[1]).toBeChecked())
   })
 
   it('should change availableMinutesPerWeek', async () => {

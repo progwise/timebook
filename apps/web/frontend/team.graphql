@@ -6,10 +6,6 @@ query team($teamSlug: String!) {
       id
       name
       image
-      projects(teamSlug: $teamSlug) {
-        id
-        title
-      }
     }
   }
 }

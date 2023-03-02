@@ -71,7 +71,6 @@ const TeamPage = (): JSX.Element => {
             <TableHead>
               <TableHeadRow>
                 <TableHeadCell className="text-left">Username</TableHeadCell>
-                <TableHeadCell className="text-left">Projects</TableHeadCell>
                 <TableHeadCell />
               </TableHeadRow>
             </TableHead>
@@ -84,7 +83,6 @@ const TeamPage = (): JSX.Element => {
                     ) : undefined}
                     {user.name}
                   </TableCell>
-                  <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
                   <TableCell className="text-right">
                     <Button onClick={() => handleUserDetails(user.id)} variant="tertiary">
                       Details

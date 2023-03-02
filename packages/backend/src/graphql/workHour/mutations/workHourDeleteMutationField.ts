@@ -10,14 +10,11 @@ builder.mutationField('workHourDelete', (t) =>
     },
     authScopes: async (_source, { id }) => {
       const workHour = await prisma.workHour.findUniqueOrThrow({
-        select: { userId: true, task: { select: { project: { select: { teamId: true } } } } },
+        select: { userId: true },
         where: { id: id.toString() },
       })
 
-      return {
-        isTeamAdminByTeamId: workHour.task.project.teamId,
-        hasUserId: workHour.userId,
-      }
+      return { hasUserId: workHour.userId }
     },
     resolve: (query, _source, { id }) => prisma.workHour.delete({ ...query, where: { id: id.toString() } }),
   }),

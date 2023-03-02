@@ -4,15 +4,14 @@ import { Fragment, useState } from 'react'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
-import { ProjectFragment, useProjectsWithTasksQuery, useReportQuery } from '../../generated/graphql'
+import { ProjectFilter, ProjectFragment, useMyProjectsQuery, useReportQuery } from '../../generated/graphql'
 import { ComboBox } from '../combobox/combobox'
 
 export const ReportForm = () => {
   const router = useRouter()
-  const slug = router.query.teamSlug?.toString() ?? ''
-  const [{ data: projectsData }] = useProjectsWithTasksQuery({ pause: !router.isReady, variables: { slug } })
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))
+  const [{ data: projectsData }] = useMyProjectsQuery({ variables: { from: date, filter: ProjectFilter.All } })
 
   const parsedDate = parse(date, 'yyyy-MM', new Date())
 
@@ -28,7 +27,7 @@ export const ReportForm = () => {
     pause: !router.isReady || !selectedProjectId,
   })
 
-  const selectedProject: ProjectFragment | undefined = projectsData?.teamBySlug.projects.find(
+  const selectedProject: ProjectFragment | undefined = projectsData?.projects.find(
     (project) => project.id === selectedProjectId,
   )
 
@@ -52,7 +51,7 @@ export const ReportForm = () => {
               displayValue={(project) => project.title}
               noOptionLabel="No Project"
               onChange={handleChange}
-              options={projectsData?.teamBySlug.projects ?? []}
+              options={projectsData?.projects ?? []}
             />
           </div>
           <div>
