@@ -10,14 +10,11 @@ builder.queryField('task', (t) =>
     },
     authScopes: async (_source, { taskId }) => {
       const task = await prisma.task.findUniqueOrThrow({
-        select: { project: { select: { id: true, teamId: true } } },
+        select: { projectId: true },
         where: { id: taskId.toString() },
       })
 
-      return {
-        isTeamAdminByTeamId: task.project.teamId,
-        isProjectMember: task.project.id,
-      }
+      return { isProjectMember: task.projectId }
     },
     resolve: (query, _source, { taskId }) =>
       prisma.task.findUniqueOrThrow({

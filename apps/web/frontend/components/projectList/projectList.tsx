@@ -10,8 +10,7 @@ export interface ProjectListProps {
 
 export const ProjectList: React.FC<ProjectListProps> = ({ projects, className }) => {
   const router = useRouter()
-  const handleProjectSelect = (project: ProjectFragment) =>
-    router.push(`/${router.query.teamSlug}/projects/${project.id}`)
+  const handleProjectSelect = (project: ProjectFragment) => router.push(`/projects/${project.id}`)
 
   return (
     <section className={`${className} flex flex-row flex-wrap gap-6`}>

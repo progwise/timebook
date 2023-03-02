@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
-import { ProjectForm } from '../../../frontend/components/projectForm/projectForm'
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { TaskList } from '../../../frontend/components/taskList/taskList'
-import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../../frontend/generated/graphql'
+import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
+import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { TaskList } from '../../frontend/components/taskList/taskList'
+import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
 
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
-  const { id, teamSlug } = router.query
+  const { id } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['Task'] }), [])
   const [{ data, fetching }] = useProjectQuery({
     variables: { projectId: id?.toString() ?? '' },
@@ -28,12 +28,12 @@ const ProjectDetails = (): JSX.Element => {
       if (result.error) {
         throw new Error('graphql error')
       }
-      await router.push(`/${teamSlug}/projects`)
+      await router.push('/projects')
     } catch {}
   }
 
   const handleCancel = async () => {
-    await router.push(`/${teamSlug}/projects`)
+    await router.push('/projects')
   }
 
   if (!router.isReady || fetching) {

@@ -1,6 +1,5 @@
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
-import { prisma } from '../prisma'
 import { User } from '../user'
 import { WorkHour } from '../workHour'
 
@@ -37,19 +36,7 @@ export const Project = builder.prismaObject('Project', {
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
-      select: { teamId: true },
-      resolve: async (project, _arguments, context) => {
-        const teamMembership = await prisma.teamMembership.findUnique({
-          select: { role: true },
-          where: {
-            userId_teamId: {
-              teamId: project.teamId,
-              userId: context.session.user.id,
-            },
-          },
-        })
-        return teamMembership?.role === 'ADMIN'
-      },
+      resolve: () => true,
     }),
   }),
 })

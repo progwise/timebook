@@ -13,9 +13,4 @@ describe('teamChoiceForm', () => {
     render(<TeamChoiceForm />, { wrapper })
     expect(await screen.findByRole('link', { name: /team1/i })).toBeVisible()
   })
-  it('should display projects', async () => {
-    render(<TeamChoiceForm />, { wrapper })
-    expect(await screen.findByRole('link', { name: /project 1/i })).toBeVisible()
-    expect(await screen.findByRole('link', { name: /project 2/i })).toBeVisible()
-  })
 })

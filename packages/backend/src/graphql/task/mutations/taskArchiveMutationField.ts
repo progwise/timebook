@@ -10,11 +10,11 @@ builder.mutationField('taskArchive', (t) =>
     },
     authScopes: async (_source, { taskId }) => {
       const task = await prisma.task.findUniqueOrThrow({
-        select: { project: { select: { teamId: true } } },
+        select: { projectId: true },
         where: { id: taskId.toString() },
       })
 
-      return { isTeamAdminByTeamId: task.project.teamId }
+      return { isProjectMember: task.projectId }
     },
     resolve: (query, _source, { taskId }) =>
       prisma.task.update({
