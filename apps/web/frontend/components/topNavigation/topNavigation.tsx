@@ -37,8 +37,8 @@ export const TopNavigation = (): JSX.Element => {
         <TopNavigationLink href="/time">Time</TopNavigationLink>
         <TopNavigationLink href="/time/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
+        <TopNavigationLink href="/reports">Reports</TopNavigationLink>
 
-        {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/team`}>Team</TopNavigationLink>}
 
         <ProfileMenu className="ml-3 dark:text-white " />
