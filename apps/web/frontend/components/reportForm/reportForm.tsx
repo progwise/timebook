@@ -10,13 +10,13 @@ import { ComboBox } from '../combobox/combobox'
 export const ReportForm = () => {
   const router = useRouter()
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM'))
-  const [{ data: projectsData }] = useMyProjectsQuery({ variables: { from: date, filter: ProjectFilter.All } })
+  const [date, setDate] = useState(new Date())
+  const startOfMonthString = formatISO(startOfMonth(date), { representation: 'date' })
+  const endOfMonthString = formatISO(endOfMonth(date), { representation: 'date' })
 
-  const parsedDate = parse(date, 'yyyy-MM', new Date())
-
-  const startOfMonthString = formatISO(startOfMonth(parsedDate), { representation: 'date' })
-  const endOfMonthString = formatISO(endOfMonth(parsedDate), { representation: 'date' })
+  const [{ data: projectsData }] = useMyProjectsQuery({
+    variables: { from: startOfMonthString, filter: ProjectFilter.All },
+  })
 
   const [{ data: reportGroupedData }] = useReportQuery({
     variables: {
@@ -58,10 +58,11 @@ export const ReportForm = () => {
             <input
               className="rounded-lg border-none py-2 pl-3 text-sm leading-5  shadow-md dark:bg-slate-700"
               type="month"
-              value={date}
+              value={format(date, 'yyyy-MM')}
               onChange={(event) => {
                 if (event.target.value) {
-                  setDate(event.target.value)
+                  const newDate = parse(event.target.value, 'yyyy-MM', new Date())
+                  setDate(newDate)
                 }
               }}
             />
