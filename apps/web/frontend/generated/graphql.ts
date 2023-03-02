@@ -145,7 +145,7 @@ export type MutationTaskDeleteArgs = {
 }
 
 export type MutationTaskUpdateArgs = {
-  data: TaskInput
+  data: TaskUpdateInput
   id: Scalars['ID']
 }
 
@@ -350,6 +350,12 @@ export type TaskInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
   projectId: Scalars['ID']
   title: Scalars['String']
+}
+
+export type TaskUpdateInput = {
+  hourlyRate?: InputMaybe<Scalars['Float']>
+  projectId?: InputMaybe<Scalars['ID']>
+  title?: InputMaybe<Scalars['String']>
 }
 
 export type Team = ModifyInterface & {
@@ -662,7 +668,7 @@ export type TaskDeleteMutation = {
 
 export type TaskUpdateMutationVariables = Exact<{
   id: Scalars['ID']
-  data: TaskInput
+  data: TaskUpdateInput
 }>
 
 export type TaskUpdateMutation = {
@@ -1386,7 +1392,7 @@ export function useTaskDeleteMutation() {
   return Urql.useMutation<TaskDeleteMutation, TaskDeleteMutationVariables>(TaskDeleteDocument)
 }
 export const TaskUpdateDocument = gql`
-  mutation taskUpdate($id: ID!, $data: TaskInput!) {
+  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {
     taskUpdate(id: $id, data: $data) {
       ...Task
     }

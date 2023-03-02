@@ -19,7 +19,6 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
 import { TaskCell } from './taskCell'
-import id from 'date-fns/esm/locale/id/index.js'
 
 export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
 
@@ -39,7 +38,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     reset,
     formState: { isSubmitting, errors },
   } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
-  // } = useForm<TaskFormData>()
   const [, taskCreate] = useTaskCreateMutation()
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -64,18 +62,13 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
             <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell>Buttons</TableHeadCell>
           </TableHeadRow>
         </TableHead>
         <TableBody>
           {tasks.map((task) => (
             <TableRow key={task.id}>
-              <TableCell className="mt-1 flex items-center">
-                <TaskCell task={task} />
-              </TableCell>
-              {/* <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell> */}
-              <TableCell>
-                <InputField variant="primary" value={task.hourlyRate?.toString()} />
-              </TableCell>
+              <TaskCell task={task} />
             </TableRow>
           ))}
         </TableBody>
@@ -91,15 +84,22 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     {...register('title')}
                     errorMessage={errors.title?.message}
                   />
+                </form>
+              </TableCell>
+              <TableCell>
+                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <InputField
                     variant="primary"
                     placeholder="Enter Hourly Rate"
                     className=" dark:bg-slate-800 dark:text-white"
-                    // {...register('hourlyRate', { valueAsNumber: true })}
                     {...register('hourlyRate')}
                     errorMessage={errors.hourlyRate?.message}
                     type="number"
                   />
+                </form>
+              </TableCell>
+              <TableCell>
+                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
                   <Button variant="secondary" type="submit" disabled={isSubmitting}>
                     Add task
                   </Button>
