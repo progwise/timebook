@@ -29,73 +29,31 @@ describe('workHourCreateMutationField', () => {
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
-    await prisma.team.deleteMany()
 
     await prisma.user.createMany({
       data: [
         {
           id: '1',
-          name: 'Test User 1',
+          name: 'Test User with project membership',
         },
         {
           id: '2',
-          name: 'Test User 2',
+          name: 'Test User without project membership',
         },
       ],
     })
 
-    await prisma.team.create({
+    await prisma.project.create({
       data: {
-        id: '1',
-        slug: 'progwise',
-        title: 'Progwise',
-        teamMemberships: {
-          createMany: {
-            data: [
-              {
-                id: '1',
-                userId: '1',
-                role: 'ADMIN',
-              },
-              {
-                id: '2',
-                userId: '2',
-                role: 'MEMBER',
-              },
-            ],
-          },
-        },
-        projects: {
+        id: 'P1',
+        title: 'Project 1',
+        tasks: {
           create: {
-            title: 'Project',
-            tasks: {
-              createMany: {
-                data: [
-                  {
-                    id: '1',
-                    title: 'Task',
-                  },
-                  {
-                    id: '2',
-                    title: 'Task 2',
-                  },
-                ],
-              },
-            },
-            projectMemberships: {
-              createMany: { data: [{ userId: '1' }] },
-            },
+            id: 'T1',
+            title: 'Task 1',
           },
         },
-      },
-    })
-
-    await prisma.workHour.create({
-      data: {
-        date: new Date('2022-01-01'),
-        duration: 1,
-        taskId: '2',
-        userId: '1',
+        projectMemberships: { create: { userId: '1' } },
       },
     })
   })
@@ -108,7 +66,7 @@ describe('workHourCreateMutationField', () => {
         data: {
           date: '2022-01-01',
           duration: 120,
-          taskId: '1',
+          taskId: 'T1',
         },
       },
     })
@@ -125,7 +83,7 @@ describe('workHourCreateMutationField', () => {
         data: {
           date: '2022-01-01',
           duration: 120,
-          taskId: '1',
+          taskId: 'T1',
         },
       },
     })
@@ -141,7 +99,7 @@ describe('workHourCreateMutationField', () => {
         data: {
           date: '2022-01-01',
           duration: 120,
-          taskId: '1',
+          taskId: 'T1',
         },
       },
     })
@@ -152,12 +110,12 @@ describe('workHourCreateMutationField', () => {
         date: '2022-01-01',
         duration: 120,
         task: {
-          id: '1',
-          title: 'Task',
+          id: 'T1',
+          title: 'Task 1',
         },
         user: {
           id: '1',
-          name: 'Test User 1',
+          name: 'Test User with project membership',
         },
       },
     })
@@ -165,6 +123,15 @@ describe('workHourCreateMutationField', () => {
   })
 
   it('should add a work hours if already existed', async () => {
+    await prisma.workHour.create({
+      data: {
+        date: new Date('2022-01-01'),
+        duration: 1,
+        taskId: 'T1',
+        userId: '1',
+      },
+    })
+
     const testServer = getTestServer()
     const response = await testServer.executeOperation({
       query: workHourCreateMutation,
@@ -172,7 +139,7 @@ describe('workHourCreateMutationField', () => {
         data: {
           date: '2022-01-01',
           duration: 120,
-          taskId: '2',
+          taskId: 'T1',
         },
       },
     })
@@ -183,12 +150,12 @@ describe('workHourCreateMutationField', () => {
         date: '2022-01-01',
         duration: 121,
         task: {
-          id: '2',
-          title: 'Task 2',
+          id: 'T1',
+          title: 'Task 1',
         },
         user: {
           id: '1',
-          name: 'Test User 1',
+          name: 'Test User with project membership',
         },
       },
     })

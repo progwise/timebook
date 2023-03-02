@@ -21,7 +21,6 @@ async function main() {
                   create: {
                     project: {
                       create: {
-                        team: { connect: { slug: 'progwise' } },
                         title: 'Project 1',
                         tasks: {
                           create: [{ title: 'Task 1' }, { title: 'Task 2' }],
@@ -43,7 +42,6 @@ async function main() {
                   create: {
                     project: {
                       create: {
-                        team: { connect: { slug: 'progwise' } },
                         title: 'Project 2',
                         tasks: {
                           create: [{ title: 'Task 3' }, { title: 'Task 4' }],

@@ -1,5 +1,5 @@
-query workHours($teamSlug: String, $from: Date!, $to: Date) {
-  workHours(teamSlug: $teamSlug, from: $from, to: $to) {
+query workHours($from: Date!, $to: Date) {
+  workHours(from: $from, to: $to) {
     ...WorkHour
   }
 }

@@ -9,22 +9,7 @@ builder.mutationField('projectMembershipCreate', (t) =>
       userId: t.arg.id(),
       projectId: t.arg.id(),
     },
-    authScopes: async (_source, { projectId, userId }) => {
-      const project = await prisma.project.findUnique({
-        where: { id: projectId.toString() },
-        select: { teamId: true },
-      })
-
-      if (!project) {
-        return false
-      }
-
-      const teamMembership = await prisma.teamMembership.findUnique({
-        select: { id: true },
-        where: { userId_teamId: { userId: userId.toString(), teamId: project.teamId } },
-      })
-      return teamMembership ? { isTeamAdminByTeamId: project.teamId } : false
-    },
+    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString() }),
     resolve: async (query, _source, { userId, projectId }) => {
       const projectMembership = await prisma.projectMembership.findUnique({
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },

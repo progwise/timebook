@@ -54,14 +54,6 @@ const globalSetup = async () => {
   await createUserSession({ browser, user: users.newUser })
   await createUserSession({ browser, user: users.existingUser })
 
-  // Delete all teams:
-  await prisma.project.deleteMany({
-    where: {
-      team: {
-        slug: 'test-team',
-      },
-    },
-  })
   await prisma.team.deleteMany({
     where: { teamMemberships: { some: { user: { email: { in: [users.newUser.email, users.existingUser.email] } } } } },
   })

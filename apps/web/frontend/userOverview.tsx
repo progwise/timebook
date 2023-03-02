@@ -4,13 +4,9 @@ import { useForm } from 'react-hook-form'
 
 import { Button, InputField } from '@progwise/timebook-ui'
 
-import { Toggle } from './components/toggle/toggle'
 import {
   Role,
   useMeQuery,
-  useProjectMembershipCreateMutation,
-  useProjectMembershipDeleteMutation,
-  useTeamProjectsQuery,
   useUserCapacityUpdateMutation,
   useUserRoleUpdateMutation,
   UserFragment,
@@ -26,10 +22,7 @@ interface UserOverviewProps {
 export const UserOverview = ({ user }: UserOverviewProps): JSX.Element => {
   const router = useRouter()
   const teamSlug = router.query.teamSlug?.toString() ?? ''
-  const [{ data: allProjects }] = useTeamProjectsQuery({ variables: { slug: teamSlug } })
   const [{ data: meData }] = useMeQuery({ variables: { teamSlug } })
-  const [, createProjectMembership] = useProjectMembershipCreateMutation()
-  const [, deleteProjectMembership] = useProjectMembershipDeleteMutation()
   const isAdmin = meData?.user.role === Role.Admin
 
   const [{ error, fetching }, userRoleUpdate] = useUserRoleUpdateMutation()
@@ -99,29 +92,8 @@ export const UserOverview = ({ user }: UserOverviewProps): JSX.Element => {
             </div>
           </div>
         </div>
-        {isAdmin ? (
+        {isAdmin && (
           <div className="flex justify-between">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-400"> All Projects:</h1>
-              <ul>
-                {allProjects?.teamBySlug.projects.map((project) => (
-                  <li key={project.id} className="p-3">
-                    <span className=" inline-block w-32"> {project.title} </span>
-                    <Toggle
-                      checked={user.projects.some((userProject) => userProject.id === project.id) ?? false}
-                      onChange={(newValue) => {
-                        if (newValue === false) {
-                          deleteProjectMembership({ projectID: project.id, userID: user.id })
-                        } else {
-                          createProjectMembership({ projectID: project.id, userID: user.id })
-                        }
-                      }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             <div className="mt-1 w-[250px]">
               <h1 className="text-start text-xl font-semibold text-gray-400">Capacity minutes/week</h1>
               <InputField
@@ -147,15 +119,6 @@ export const UserOverview = ({ user }: UserOverviewProps): JSX.Element => {
               )}
             </div>
           </div>
-        ) : (
-          <>
-            <h1 className="text-xl font-semibold text-gray-400"> Assigned Projects:</h1>
-            <ul>
-              {user.projects.map((project) => (
-                <li key={project.id}> {project.title}</li>
-              ))}
-            </ul>
-          </>
         )}
       </article>
       {fetching && <span>Loading...</span>}

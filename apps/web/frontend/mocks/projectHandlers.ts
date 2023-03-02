@@ -2,7 +2,6 @@ import {
   mockMyProjectsQuery,
   mockProjectMembershipCreateMutation,
   mockProjectMembershipDeleteMutation,
-  mockProjectsWithTasksQuery,
   mockTimeTableQuery,
 } from '../generated/graphql'
 import { testProject1, testProject2 } from './testData'
@@ -12,18 +11,6 @@ export let assignedProjects = [testProject1, testProject2]
 const allProjects = [testProject1, testProject2]
 
 export const projectHandlers = [
-  mockProjectsWithTasksQuery((request, response, context) => {
-    const result = response(
-      context.data({
-        __typename: 'Query',
-        teamBySlug: {
-          __typename: 'Team',
-          projects: [testProject1, testProject2],
-        },
-      }),
-    )
-    return result
-  }),
   mockProjectMembershipDeleteMutation((request, response, context) => {
     assignedProjects = assignedProjects.filter((project) => project.id !== request.variables.projectID)
 

@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
-import { TeamWithProjectsFragment } from '../../generated/graphql'
+import { TeamFragment } from '../../generated/graphql'
 
 export interface TeamTileProps {
-  team: TeamWithProjectsFragment
+  team: TeamFragment
 }
 export const TeamTile = ({ team }: TeamTileProps): JSX.Element => {
   return (
@@ -17,14 +17,6 @@ export const TeamTile = ({ team }: TeamTileProps): JSX.Element => {
       <Link href={`/${team.slug}/time`} passHref={false}>
         <a className="text-blue-600 hover:underline">{`/${team.slug}`}</a>
       </Link>
-      {team.projects.length === 0 && <div className="mt-2 flex flex-wrap gap-1 text-xs italic">No projects</div>}
-      <div className="mt-2 flex flex-wrap gap-1">
-        {team.projects.map((project) => (
-          <Link key={project.id} href={`/${team.slug}/projects/${project.id}`} passHref={true}>
-            <a className="text-xs hover:underline">{project.title}</a>
-          </Link>
-        ))}
-      </div>
     </article>
   )
 }
