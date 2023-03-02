@@ -8,7 +8,7 @@ test.describe('project page', () => {
   test('it should be possible to create a new project', async ({ page }, testInfo) => {
     const projectName = `Project ${testInfo.project.name}`
 
-    await page.goto('/test-team/projects')
+    await page.goto('/projects')
     await page.click('text=Add')
 
     await page.fill('[placeholder="Enter project name"]', projectName)
@@ -17,7 +17,7 @@ test.describe('project page', () => {
 
     await page.click('text=Save')
 
-    await expect(page).toHaveURL('/test-team/projects')
+    await expect(page).toHaveURL('/projects')
 
     await expect(page.locator(`text=${projectName}`).first()).toBeVisible()
   })
