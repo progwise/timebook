@@ -5,6 +5,7 @@ export const taskInputValidations = z.object({
   projectId: z.string(),
   hourlyRate: z.coerce
     .number()
-    .transform((val) => (val === 0 ? null : val))
+    // eslint-disable-next-line unicorn/no-null
+    .transform((value) => (value === 0 ? null : value))
     .optional(),
 })
