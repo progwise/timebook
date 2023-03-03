@@ -3,7 +3,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format, isValid, parse, parseISO } from 'date-fns'
 import { useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import InputMask from 'react-input-mask'
 import { z } from 'zod'
@@ -14,7 +14,6 @@ import { projectInputValidations } from '@progwise/timebook-validations'
 import { ProjectFragment, ProjectInput } from '../../generated/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { DeleteProjectModal } from '../deleteProjectModal'
-import { CustomerInput } from './customerInput'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
   if (!dateString) {
@@ -71,7 +70,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
-      customerId: project?.customer?.id,
     },
     resolver: zodResolver(projectInputSchema),
   })
@@ -106,7 +104,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {...register('title')}
         placeholder="Enter project name"
         size={30}
-        className="font-small dark:placeholder:text-grey rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+        className="rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
         errorMessage={formState.errors.title?.message}
       />
 
@@ -130,7 +128,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="font-small rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}
@@ -163,7 +161,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="font-small rounded pt-1 pb-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
                 disabled={formState.isSubmitting || isProjectFormReadOnly}
@@ -177,10 +175,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
         <ErrorMessage name="end" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
-      <label className="w-full">
-        <h1>Customer</h1>
-        <CustomerInput control={control} name="customerId" />
-      </label>
       <div className="mt-8 flex w-full justify-center gap-2">
         {project?.canModify && (
           <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>

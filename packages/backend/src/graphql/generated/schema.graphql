@@ -1,32 +1,3 @@
-type Customer implements ModifyInterface {
-  """
-  Can the user modify the entity
-  """
-  canModify: Boolean!
-
-  """
-  Identifier of the customer
-  """
-  id: ID!
-
-  """
-  List of all customer projects
-  """
-  projects: [Project!]!
-
-  """
-  Title of the customer
-  """
-  title: String!
-}
-
-input CustomerInput {
-  """
-  Title of the customer
-  """
-  title: String!
-}
-
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -44,49 +15,9 @@ interface ModifyInterface {
 
 type Mutation {
   """
-  Create a new customer for a team
-  """
-  customerCreate(
-    data: CustomerInput!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-  ): Customer!
-
-  """
-  Delete a customer
-  """
-  customerDelete(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-  ): Customer!
-
-  """
-  Update a customer
-  """
-  customerUpdate(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-    data: CustomerInput!
-  ): Customer!
-
-  """
   Create a new project
   """
-  projectCreate(
-    data: ProjectInput!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-  ): Project!
+  projectCreate(data: ProjectInput!): Project!
 
   """
   Delete a project
@@ -277,11 +208,6 @@ type Project implements ModifyInterface {
   Can the user modify the entity
   """
   canModify: Boolean!
-
-  """
-  Customer of the project
-  """
-  customer: Customer
   endDate: Date
 
   """
@@ -299,27 +225,20 @@ type Project implements ModifyInterface {
   workHours: [WorkHour!]!
 }
 
+enum ProjectFilter {
+  ACTIVE
+  ALL
+  FUTURE
+  PAST
+}
+
 input ProjectInput {
-  """
-  Id of the customer to which the project belongs.
-  """
-  customerId: ID = null
   end: Date
   start: Date
   title: String!
 }
 
 type Query {
-  """
-  Returns a single customer
-  """
-  customer(
-    """
-    Id of the customer
-    """
-    customerId: ID!
-  ): Customer!
-
   """
   Returns a single project
   """
@@ -333,7 +252,7 @@ type Query {
   """
   Returns all project of the signed in user that are active
   """
-  projects(from: Date!, to: Date): [Project!]!
+  projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
 
   """
   Returns a monthly project report
@@ -396,7 +315,6 @@ type Query {
     Start of the time period
     """
     from: Date!
-    teamSlug: String
 
     """
     End of the time period. If not provided the from arg is used as the end.
@@ -479,6 +397,7 @@ type Task implements ModifyInterface {
   The user can identify the task in the UI
   """
   title: String!
+  workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
 input TaskInput {
@@ -502,11 +421,6 @@ type Team implements ModifyInterface {
   canModify: Boolean!
 
   """
-  List of all customers of the team
-  """
-  customers: [Customer!]!
-
-  """
   Identifier of the team
   """
   id: ID!
@@ -516,11 +430,6 @@ type Team implements ModifyInterface {
   All members of the team
   """
   members: [User!]!
-
-  """
-  List of all projects of the team
-  """
-  projects: [Project!]!
 
   """
   Slug that is used in the team URL
@@ -574,11 +483,6 @@ type User {
   id: ID!
   image: String
   name: String
-
-  """
-  Returns the list of projects where the user is a member
-  """
-  projects(teamSlug: String!): [Project!]!
 
   """
   Role of the user in a team

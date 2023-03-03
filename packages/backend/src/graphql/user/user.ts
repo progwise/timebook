@@ -1,5 +1,3 @@
-import { GraphQLError } from 'graphql'
-
 import { builder } from '../builder'
 import { prisma } from '../prisma'
 import { RoleEnum } from './role'
@@ -10,20 +8,6 @@ export const User = builder.prismaObject('User', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: true }),
     image: t.exposeString('image', { nullable: true }),
-    projects: t.prismaField({
-      type: ['Project'],
-      description: 'Returns the list of projects where the user is a member',
-      args: { teamSlug: t.arg.string() },
-      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
-      resolve: (query, user, { teamSlug }) =>
-        prisma.project.findMany({
-          ...query,
-          where: {
-            team: { slug: teamSlug },
-            projectMemberships: { some: { userId: user.id } },
-          },
-        }),
-    }),
     role: t.field({
       type: RoleEnum,
       args: { teamSlug: t.arg.string() },

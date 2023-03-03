@@ -9,9 +9,5 @@ fragment User on User {
   name
   image
   role(teamSlug: $teamSlug)
-  projects(teamSlug: $teamSlug) {
-    id
-    title
-  }
   availableMinutesPerWeek(teamSlug: $teamSlug)
 }

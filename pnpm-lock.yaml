@@ -16,7 +16,7 @@ importers:
       eslint-config-custom: link:packages/eslint-config-custom
       prettier: 2.8.1
       prettier-plugin-tailwindcss: 0.2.1_prettier@2.8.1
-      turbo: 1.7.4
+      turbo: 1.8.3
 
   apps/web:
     specifiers:
@@ -147,7 +147,7 @@ importers:
 
   apps/web-e2e:
     specifiers:
-      '@playwright/test': ^1.30.0
+      '@playwright/test': ^1.31.0
       '@types/node': ^17.0.13
       date-fns: ^2.28.0
       dotenv: ^16.0.3
@@ -157,7 +157,7 @@ importers:
       tsconfig: workspace:*
       typescript: ^4.7.3
     dependencies:
-      '@playwright/test': 1.30.0
+      '@playwright/test': 1.31.0
       date-fns: 2.29.3
       dotenv: 16.0.3
     devDependencies:
@@ -170,11 +170,11 @@ importers:
 
   packages/backend:
     specifiers:
-      '@pothos/core': ^3.21.0
-      '@pothos/plugin-prisma': ^3.34.0
-      '@pothos/plugin-scope-auth': ^3.13.0
-      '@pothos/plugin-simple-objects': ^3.5.0
-      '@pothos/plugin-validation': ^3.8.7
+      '@pothos/core': ^3.27.1
+      '@pothos/plugin-prisma': ^3.41.3
+      '@pothos/plugin-scope-auth': ^3.18.0
+      '@pothos/plugin-simple-objects': ^3.6.7
+      '@pothos/plugin-validation': ^3.9.0
       '@prisma/client': ^4.8.1
       '@progwise/timebook-validations': workspace:*
       '@types/jest': ^29.1.2
@@ -193,11 +193,11 @@ importers:
       typescript: ^4.7.3
       zod: ^3.20.3
     dependencies:
-      '@pothos/core': 3.22.6_graphql@16.6.0
-      '@pothos/plugin-prisma': 3.35.4_dopo4xsyxlhbr2mj7biuc5ykrq
-      '@pothos/plugin-scope-auth': 3.15.0_vudbyezzjqutprnfij5jyvuu5i
-      '@pothos/plugin-simple-objects': 3.6.4_vudbyezzjqutprnfij5jyvuu5i
-      '@pothos/plugin-validation': 3.8.7_biymaingdxv5y2eru2ha3iptsy
+      '@pothos/core': 3.27.1_graphql@16.6.0
+      '@pothos/plugin-prisma': 3.41.3_ib3i5uhzgzzwctd7j7762ygsfq
+      '@pothos/plugin-scope-auth': 3.18.0_7fudwdnucmacspsozzhr4rb5cm
+      '@pothos/plugin-simple-objects': 3.6.7_7fudwdnucmacspsozzhr4rb5cm
+      '@pothos/plugin-validation': 3.9.0_67bxstwdd3fp4jkwurcvg5ntj4
       '@prisma/client': 4.8.1_prisma@4.8.1
       '@progwise/timebook-validations': link:../validations
       apollo-server-core: 3.10.2_graphql@16.6.0
@@ -4757,25 +4757,27 @@ packages:
       webcrypto-core: 1.7.5
     dev: true
 
-  /@playwright/test/1.30.0:
-    resolution: {integrity: sha512-SVxkQw1xvn/Wk/EvBnqWIq6NLo1AppwbYOjNLmyU0R1RoQ3rLEBtmjTnElcnz8VEtn11fptj1ECxK0tgURhajw==}
+  /@playwright/test/1.31.0:
+    resolution: {integrity: sha512-Ys5s/06Dg9g3zAIdCIb/UOBYim3U7Zjb3DvC6XBtnRmnglH5O47iwYzmtxXu9fhSyzI2Jn28apkXIOD81GgCdw==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 17.0.45
-      playwright-core: 1.30.0
+      playwright-core: 1.31.0
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: false
 
-  /@pothos/core/3.22.6_graphql@16.6.0:
-    resolution: {integrity: sha512-cm/LTYjo3R8hR7a91v+dopL/CRigrw/+DhGgh1YfMGd1qYrVqaL8dt8tbWOzvmkbxsEoETQ2Vc3I7cF3ywMU8g==}
+  /@pothos/core/3.27.1_graphql@16.6.0:
+    resolution: {integrity: sha512-cvnF3eoVTF7Dw5obRYUGdC4sK62rGiM4EHQOb3z1nVIY6gutYoG2eEVZGR7yQXmsTBQp6tIW5w66JHfXwU/kiA==}
     peerDependencies:
       graphql: '>=15.1.0'
     dependencies:
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-prisma/3.35.4_dopo4xsyxlhbr2mj7biuc5ykrq:
-    resolution: {integrity: sha512-1Pw69JISdDJAIKyWY5huHZk8oKvdpZoyOfq0UInuESFRloP7v4UNOfN+zCIqWAAPFQdMnEbcFl1bBNFwNtrvnA==}
+  /@pothos/plugin-prisma/3.41.3_ib3i5uhzgzzwctd7j7762ygsfq:
+    resolution: {integrity: sha512-rhPZDwLN07jux8sLUg1irXdFDaqi2uyXAjgmcxHTsIQr02/hGlSodR2716/oynvLwjvMRCD0OwbqPzwxQWxQ5g==}
     hasBin: true
     peerDependencies:
       '@pothos/core': '*'
@@ -4783,43 +4785,43 @@ packages:
       graphql: '>=15.1.0'
       typescript: '>=4.7.2'
     dependencies:
-      '@pothos/core': 3.22.6_graphql@16.6.0
+      '@pothos/core': 3.27.1_graphql@16.6.0
       '@prisma/client': 4.8.1_prisma@4.8.1
-      '@prisma/generator-helper': 4.4.0
+      '@prisma/generator-helper': 4.11.0
       graphql: 16.6.0
       typescript: 4.8.4
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@pothos/plugin-scope-auth/3.15.0_vudbyezzjqutprnfij5jyvuu5i:
-    resolution: {integrity: sha512-KUAFE6VzqDx2NdSPqrhX6mRzinfkgKD/H7qc63Soyo7uiPVlNYG63cfRCAh96tO7ZRbeyCMqDqO2Oau7gxdszA==}
+  /@pothos/plugin-scope-auth/3.18.0_7fudwdnucmacspsozzhr4rb5cm:
+    resolution: {integrity: sha512-HIVjLyYY85Yea6lRMJoWE3BpVUIuOLXZ8Ux3y8SW0T+nSaf+GmAedP2khGwFETnOy3UCcEwNJmwccF+ldiifQw==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
     dependencies:
-      '@pothos/core': 3.22.6_graphql@16.6.0
+      '@pothos/core': 3.27.1_graphql@16.6.0
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-simple-objects/3.6.4_vudbyezzjqutprnfij5jyvuu5i:
-    resolution: {integrity: sha512-BY6dYigYjq9/NmIVSrrhhHVNU3Dr4GDJWnZKTNx291P+OzB2nXqQzpuvS9bfqky0iKqqF8CBoJpoqAvviLTVyw==}
+  /@pothos/plugin-simple-objects/3.6.7_7fudwdnucmacspsozzhr4rb5cm:
+    resolution: {integrity: sha512-2ME7NSJZMh7MFAsTScHRiZusrLd5qpMBT/zgfmlGSGZgTFOUj38fWkQGYTFbFxTP4uClEcf9GW3aAkwLmH2ATw==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
     dependencies:
-      '@pothos/core': 3.22.6_graphql@16.6.0
+      '@pothos/core': 3.27.1_graphql@16.6.0
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-validation/3.8.7_biymaingdxv5y2eru2ha3iptsy:
-    resolution: {integrity: sha512-V+gJR6dA0U7SRtn3K2F32EwyiynTH0rQkdayl3WFQvT5cB+/nDYp2R5XYGDx5Q8s4R6xqV8NZg1N8IsFiGnIMA==}
+  /@pothos/plugin-validation/3.9.0_67bxstwdd3fp4jkwurcvg5ntj4:
+    resolution: {integrity: sha512-w2Q52l8JnhceKfDzuX1zOfspTZPc3gxxixgt10y1bB/h/kD2n/xwYXmAOLqyIN+TTr0Bi8/udYUDAAtWn9Q67A==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
       zod: '*'
     dependencies:
-      '@pothos/core': 3.22.6_graphql@16.6.0
+      '@pothos/core': 3.27.1_graphql@16.6.0
       graphql: 16.6.0
       zod: 3.20.3
     dev: false
@@ -4851,8 +4853,8 @@ packages:
       prisma: 4.8.1
     dev: false
 
-  /@prisma/debug/4.4.0:
-    resolution: {integrity: sha512-tpJqrvmA8VlQuaVAmkFzIU7Of6xk3kQ2DYV6bPJukDZ6xmnufT27EpU8TSIra4jGdzz7y/R0rxmuXSBp24ew5w==}
+  /@prisma/debug/4.11.0:
+    resolution: {integrity: sha512-2ZCmY5l5IfMCnlsBYECysK3Gaoq4BWl7KbOLGDYRwrlZTA/DwUqJ3JrmroJQY6jHvSkyvMrkaJpQKo1QfKuuyw==}
     dependencies:
       '@types/debug': 4.1.7
       debug: 4.3.4
@@ -4873,10 +4875,10 @@ packages:
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
     requiresBuild: true
 
-  /@prisma/generator-helper/4.4.0:
-    resolution: {integrity: sha512-6z5Tl+Cjk/WDWUMvpCOzhsK4Nkcb64zGoU/NePl3Z0tFR2RkfnBfnmJbpWdHr9HQYz7jO7LsTAyS5aWPjqeHKg==}
+  /@prisma/generator-helper/4.11.0:
+    resolution: {integrity: sha512-hHP2sqMT7xPbFOVQQ1HrGFbCG1mV1DHiiUC7wceJfpWMMuBIBZhQVsayNspHk3V5Y+HeOOUruE+qPNHXk2Botg==}
     dependencies:
-      '@prisma/debug': 4.4.0
+      '@prisma/debug': 4.11.0
       '@types/cross-spawn': 6.0.2
       chalk: 4.1.2
       cross-spawn: 7.0.3
@@ -5324,7 +5326,7 @@ packages:
       '@storybook/client-logger': 7.0.0-beta.38
       '@storybook/components': 7.0.0-beta.38_sfoxds7t5ydpegc3knd667wn6m
       '@storybook/core-events': 7.0.0-beta.38
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/docs-tools': 7.0.0-beta.38
       '@storybook/global': 5.0.0
       '@storybook/manager-api': 7.0.0-beta.38_sfoxds7t5ydpegc3knd667wn6m
@@ -5493,7 +5495,7 @@ packages:
       '@babel/core': 7.20.12
       '@babel/preset-env': 7.20.2_@babel+core@7.20.12
       '@babel/types': 7.20.7
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/csf-tools': 7.0.0-beta.38
       '@storybook/node-logger': 7.0.0-beta.38
       '@storybook/types': 7.0.0-beta.38
@@ -5515,7 +5517,7 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@storybook/client-logger': 7.0.0-beta.38
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/global': 5.0.0
       '@storybook/theming': 7.0.0-beta.38_sfoxds7t5ydpegc3knd667wn6m
       '@storybook/types': 7.0.0-beta.38
@@ -5578,7 +5580,7 @@ packages:
       '@storybook/builder-manager': 7.0.0-beta.38
       '@storybook/core-common': 7.0.0-beta.38
       '@storybook/core-events': 7.0.0-beta.38
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/csf-tools': 7.0.0-beta.38
       '@storybook/docs-mdx': 0.0.1-next.6
       '@storybook/global': 5.0.0
@@ -5635,7 +5637,7 @@ packages:
     resolution: {integrity: sha512-qx1RIcfx8ofshqadJTGd2SgM12F08NJhNJeNLW4WTU5+rv2rmZ/OfagUJDNBoeS9OOfveoxJSWAcCbE4ks1fOA==}
     dependencies:
       '@babel/types': 7.20.2
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/types': 7.0.0-beta.38
       fs-extra: 11.1.0
       recast: 0.23.1
@@ -5644,11 +5646,9 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/csf/0.0.2-next.8:
-    resolution: {integrity: sha512-3T6rflW7D9q1iXOR+bidwoNbd9rVUTyjYH/sqsnYjbXhb/aOXsQzGKwNeq9QqZIFVpKfg5BoOF5i7DCMtoGknQ==}
+  /@storybook/csf/0.0.2-next.10:
+    resolution: {integrity: sha512-m2PFgBP/xRIF85VrDhvesn9ktaD2pN3VUjvMqkAL/cINp/3qXsCyI81uw7N5VEOkQAbWrY2FcydnvEPDEdE8fA==}
     dependencies:
-      expect-type: 0.14.2
-      lodash: 4.17.21
       type-fest: 2.19.0
     dev: true
 
@@ -5695,7 +5695,7 @@ packages:
       '@storybook/channels': 7.0.0-beta.38
       '@storybook/client-logger': 7.0.0-beta.38
       '@storybook/core-events': 7.0.0-beta.38
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/global': 5.0.0
       '@storybook/router': 7.0.0-beta.38_sfoxds7t5ydpegc3knd667wn6m
       '@storybook/theming': 7.0.0-beta.38_sfoxds7t5ydpegc3knd667wn6m
@@ -5741,7 +5741,7 @@ packages:
       '@storybook/channels': 7.0.0-beta.38
       '@storybook/client-logger': 7.0.0-beta.38
       '@storybook/core-events': 7.0.0-beta.38
-      '@storybook/csf': 0.0.2-next.8
+      '@storybook/csf': 0.0.2-next.10
       '@storybook/global': 5.0.0
       '@storybook/types': 7.0.0-beta.38
       '@types/qs': 6.9.7
@@ -9045,10 +9045,6 @@ packages:
       to-regex: 3.0.2
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /expect-type/0.14.2:
-    resolution: {integrity: sha512-ed3+tr5ujbIYXZ8Pl/VgIphwJQ0q5tBLGGdn7Zvwt1WyPBRX83xjT5pT77P/GkuQbctx0K2ZNSSan7eruJqTCQ==}
     dev: true
 
   /expect/29.1.2:
@@ -12707,8 +12703,8 @@ packages:
       find-up: 5.0.0
     dev: true
 
-  /playwright-core/1.30.0:
-    resolution: {integrity: sha512-7AnRmTCf+GVYhHbLJsGUtskWTE33SwMZkybJ0v6rqR1boxq2x36U7p1vDRV7HO2IwTZgmycracLxPEJI49wu4g==}
+  /playwright-core/1.31.0:
+    resolution: {integrity: sha512-/KquBjS5DcASCh8cGeNVHuC0kyb7c9plKTwaKxgOGtxT7+DZO2fjmFvPDBSXslEIK5CeOO/2kk5rOCktFXKEdA==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
@@ -14654,65 +14650,65 @@ packages:
       typescript: 4.8.4
     dev: false
 
-  /turbo-darwin-64/1.7.4:
-    resolution: {integrity: sha512-ZyYrQlUl8K/mYN1e6R7bEhPPYjMakz0DYMaexkyD7TAijQtWmTSd4a+I7VknOYNEssnUZ/v41GU3gPV1JAzxxQ==}
+  /turbo-darwin-64/1.8.3:
+    resolution: {integrity: sha512-bLM084Wr17VAAY/EvCWj7+OwYHvI9s/NdsvlqGp8iT5HEYVimcornCHespgJS/yvZDfC+mX9EQkn3V2JmYgGGw==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.7.4:
-    resolution: {integrity: sha512-CKIXg9uqp1a+Yeq/c4U0alPOqvwLUq5SBZf1PGYhGqJsfG0fRBtJfkUjHuBsuJIOGXg8rCmcGSWGIsIF6fqYuw==}
+  /turbo-darwin-arm64/1.8.3:
+    resolution: {integrity: sha512-4oZjXtzakopMK110kue3z/hqu3WLv+eDLZOX1NGdo49gqca9BeD8GbH+sXpAp6tqyeuzpss+PIliVYuyt7LgbA==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.7.4:
-    resolution: {integrity: sha512-RIUl4RUFFyzD2T024vL7509Ygwcw+SEa8NOwPfaN6TtJHK7RZV/SBP3fLNVOptG9WRLnOWX3OvsLMbiOqDLLyA==}
+  /turbo-linux-64/1.8.3:
+    resolution: {integrity: sha512-uvX2VKotf5PU14FCxJA5iHItPQno2JWzerMd+g3/h/Asay6dvxvtVjc39MQeGT0H5njSvzVKFkT+3/5q8lgOEg==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.7.4:
-    resolution: {integrity: sha512-Bg65F0AjYYYxqE6RPf2H5TIGuA/EyWMeGOATHVSZOWAbYcnG3Ly03GZii8AHnUi7ntWBdjwvXf/QbOS1ayNB6A==}
+  /turbo-linux-arm64/1.8.3:
+    resolution: {integrity: sha512-E1p+oH3XKMaPS4rqWhYsL4j2Pzc0d/9P5KU7Kn1kqVLo2T3iRA7n2KVULEieUNE0nTH+aIJPXYXOpqCI5wFJaA==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.7.4:
-    resolution: {integrity: sha512-rTaV50XZ2BRxRHOHqt1UsWfeDmYLbn8UKE6g2D2ED+uW+kmnTvR9s01nmlGWd2sAuWcRYQyQ2V+O09VfKPKcQw==}
+  /turbo-windows-64/1.8.3:
+    resolution: {integrity: sha512-cnzAytHtoLXd0J7aNzRpZFpL/GTjcBmkvAPlbOdf/Pl1iwS4qzGrudZQ+OM1lmLgLIfBPIavsGHBknTwTNib4A==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.7.4:
-    resolution: {integrity: sha512-h8sxdKPvHTnWUPtwnYszFMmSO0P/iUUwmYY9n7iYThA71zSao28UeZ0H0Gw75cY3MPjvkjn2C4EBAUGPjuZJLw==}
+  /turbo-windows-arm64/1.8.3:
+    resolution: {integrity: sha512-ulIiItNm2w/zYJdD5/oAzjzNns1IjbpweRzpsE8tLXaWwo6+fnXXkyloUug0IUhcd2k6fJXfoiDZfygqpOVuXg==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.7.4:
-    resolution: {integrity: sha512-8RLedDoUL0kkVKWEZ/RMM70BvKLyDFen06QuKKhYC2XNOfNKqFDqzIdcY/vGick869bNIWalChoy4O07k0HLsA==}
+  /turbo/1.8.3:
+    resolution: {integrity: sha512-zGrkU1EuNFmkq6iky6LcMqD4h0OLE8XysVFxQWRIZbcTNnf0XAycbsbeEyiJpiWeqb7qtg2bVuY9EYcNoNhVuQ==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      turbo-darwin-64: 1.7.4
-      turbo-darwin-arm64: 1.7.4
-      turbo-linux-64: 1.7.4
-      turbo-linux-arm64: 1.7.4
-      turbo-windows-64: 1.7.4
-      turbo-windows-arm64: 1.7.4
+      turbo-darwin-64: 1.8.3
+      turbo-darwin-arm64: 1.8.3
+      turbo-linux-64: 1.8.3
+      turbo-linux-arm64: 1.8.3
+      turbo-windows-64: 1.8.3
+      turbo-windows-arm64: 1.8.3
     dev: true
 
   /type-check/0.3.2:

@@ -24,19 +24,7 @@ export const Team = builder.prismaObject('Team', {
           },
         },
       },
-      resolve: (project) => project.teamMemberships.map((teamMembership) => teamMembership.user),
-    }),
-    customers: t.relation('customers', { description: 'List of all customers of the team' }),
-    projects: t.withAuth({ isLoggedIn: true }).relation('projects', {
-      description: 'List of all projects of the team',
-      query: (_arguments, context) => ({
-        where: {
-          OR: {
-            projectMemberships: { some: { userId: context.session.user.id } },
-            team: { teamMemberships: { some: { role: 'ADMIN', userId: context.session.user.id } } },
-          },
-        },
-      }),
+      resolve: (team) => team.teamMemberships.map((teamMembership) => teamMembership.user),
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',

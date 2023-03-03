@@ -1,67 +1,75 @@
-import React, { useState } from 'react'
+import {
+  eachWeekOfInterval,
+  endOfWeek,
+  endOfYear,
+  format,
+  getWeek,
+  getYear,
+  isSameYear,
+  isThisWeek,
+  setWeek,
+  setYear,
+  startOfWeek,
+  startOfYear,
+} from 'date-fns'
 
-const arrayOfYears = () => {
-  const max = new Date().getFullYear()
-  const min = max - 2
-  const years = []
-
-  for (let year = max; year >= min; year--) {
-    years.push(year)
-  }
-  return years
+interface WeekSelectorProps {
+  value: Date
+  onChange: (newDay: Date) => void
 }
 
-export const WeekSelector = (props: { onChange: (year: number, week: number) => void }): JSX.Element => {
-  const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear())
-  const [selectedWeek, setSelectedWeek] = useState(() => {
-    const now = new Date()
-    const start = new Date(now.getFullYear(), 0, 1)
-    const weekNumber = Math.floor(((now.getTime() - start.getTime()) / 86_400_000 + start.getDay() + 1) / 7)
-    return weekNumber
-  })
+export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
+  const selectedDay = startOfWeek(value, { weekStartsOn: 1 })
+  const selectedYear = getYear(selectedDay)
+  const selectedWeek = getWeek(selectedDay, { weekStartsOn: 1, firstWeekContainsDate: 7 })
 
-  const weekNumbers = [...Array.from({ length: 54 })].map((_, index) => 1 + index)
+  const startOfSelectedYear = startOfYear(selectedDay)
+  const endOfSelectedYear = endOfYear(selectedDay)
 
-  const years = arrayOfYears()
+  const weeksOfSelectedYear = eachWeekOfInterval(
+    { start: startOfSelectedYear, end: endOfSelectedYear },
+    { weekStartsOn: 1 },
+  ).filter((startOfWeekDate) => isSameYear(startOfWeekDate, selectedDay))
+
+  const thisYear = getYear(new Date())
+  const years = [thisYear, thisYear - 1, thisYear - 2]
 
   const handleWeekChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newWeek = Number.parseInt(event.target.value)
-    setSelectedWeek(newWeek)
-    props.onChange(selectedYear, newWeek)
+    const newDay = setWeek(selectedDay, newWeek, { weekStartsOn: 1, firstWeekContainsDate: 7 })
+    onChange(newDay)
   }
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newYear = Number.parseInt(event.target.value)
-    setSelectedYear(newYear)
-    props.onChange(newYear, selectedWeek)
+    const newDay = setYear(selectedDay, newYear)
+    onChange(newDay)
   }
 
   return (
-    <div className="mt-6 flex flex-row space-x-4">
-      <span className="space-x-10">
-        {selectedWeek}/{selectedYear}
-      </span>
-      <div>
-        <select aria-label="week" onChange={handleWeekChange} value={selectedWeek}>
-          {weekNumbers.map((w: number) => {
-            return (
-              <option value={w} key={w}>
-                Week {w}
-              </option>
-            )
-          })}
-        </select>
+    <div>
+      <select aria-label="week" onChange={handleWeekChange} value={selectedWeek}>
+        {weeksOfSelectedYear.map((startOfWeekDate) => {
+          const weekNumber = getWeek(startOfWeekDate, { firstWeekContainsDate: 7 })
+          const monday = startOfWeekDate
+          const sunday = endOfWeek(startOfWeekDate, { weekStartsOn: 1 })
+          const isCurrentWeek = isThisWeek(startOfWeekDate, { weekStartsOn: 1 })
 
-        <select aria-label="year" onChange={handleYearChange} value={selectedYear}>
-          {years.map((y) => {
-            return (
-              <option value={y} key={y}>
-                {y}
-              </option>
-            )
-          })}
-        </select>
-      </div>
+          return (
+            <option value={weekNumber} key={weekNumber}>
+              Week {weekNumber} ({format(monday, 'yyyy-MM-dd')} - {format(sunday, 'yyyy-MM-dd')}) {isCurrentWeek && '*'}
+            </option>
+          )
+        })}
+      </select>
+
+      <select aria-label="year" onChange={handleYearChange} value={selectedYear}>
+        {years.map((year) => (
+          <option value={year} key={year}>
+            {year}
+          </option>
+        ))}
+      </select>
     </div>
   )
 }

@@ -19,18 +19,14 @@ generator pothos {
 }
 
 model Project {
-  id         String    @id @default(cuid())
-  title      String    @db.VarChar(255)
-  startDate  DateTime? @db.Date
-  endDate    DateTime? @db.Date
-  customerId String?
-  teamId     String
+  id        String    @id @default(cuid())
+  title     String    @db.VarChar(255)
+  startDate DateTime? @db.Date
+  endDate   DateTime? @db.Date
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer           Customer?           @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  team               Team                @relation(fields: [teamId], references: [id])
   projectMemberships ProjectMembership[]
   tasks              Task[]
 }
@@ -151,8 +147,6 @@ model Team {
   archivedAt DateTime?
 
   teamMemberships TeamMembership[]
-  customers       Customer[]
-  projects        Project[]
 }
 
 enum Theme {
@@ -178,15 +172,4 @@ model TeamMembership {
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([userId, teamId])
-}
-
-model Customer {
-  id        String   @id @default(cuid())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  teamId    String
-
-  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  projects Project[]
 }

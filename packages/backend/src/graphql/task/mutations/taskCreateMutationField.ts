@@ -9,14 +9,7 @@ builder.mutationField('taskCreate', (t) =>
     args: {
       data: t.arg({ type: TaskInput }),
     },
-    authScopes: async (_source, { data: { projectId } }) => {
-      const project = await prisma.project.findUniqueOrThrow({
-        select: { teamId: true },
-        where: { id: projectId.toString() },
-      })
-
-      return { isTeamAdminByTeamId: project.teamId }
-    },
+    authScopes: (_source, { data: { projectId } }) => ({ isProjectMember: projectId.toString() }),
     resolve: (query, _source, { data: { title, projectId, hourlyRate } }) =>
       prisma.task.create({
         ...query,

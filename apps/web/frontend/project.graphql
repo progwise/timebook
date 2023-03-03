@@ -6,7 +6,16 @@ query project($projectId: ID!) {
       canModify
       ...Task
     }
+    members {
+      ...SimpleUser
+    }
   }
+}
+
+fragment SimpleUser on User {
+  id
+  name
+  image
 }
 
 fragment Task on Task {

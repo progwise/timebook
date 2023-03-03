@@ -16,9 +16,9 @@ export const TopNavigation = (): JSX.Element => {
   return (
     <section className="items-strech flex  w-full flex-row ">
       <h1 className="flex min-w-0 flex-1 flex-row  items-center gap-2">
-        <AiOutlineFieldTime className="text-blue-500  " size="2em" />
+        <AiOutlineFieldTime className="text-blue-500" size="2em" />
         <Link href="/">
-          <a className="text-2xl font-semibold  text-blue-400 ">timebook</a>
+          <a className="text-2xl font-semibold text-blue-400">timebook</a>
         </Link>
         {teamSlug && (
           <span
@@ -29,14 +29,16 @@ export const TopNavigation = (): JSX.Element => {
           </span>
         )}
       </h1>
-      <nav className="flex flex-row items-center  gap-5 dark:text-white">
+      <nav className="flex flex-row items-center gap-5 dark:text-white">
         {session.status !== 'authenticated' && (
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
 
-        {teamSlug && <TopNavigationLink href={`/${teamSlug}/time`}>Time</TopNavigationLink>}
-        {teamSlug && <TopNavigationLink href={`/${teamSlug}/projects`}>Projects</TopNavigationLink>}
-        {teamSlug && <TopNavigationLink href={`/${teamSlug}/reports`}>Reports</TopNavigationLink>}
+        <TopNavigationLink href="/time">Time</TopNavigationLink>
+        <TopNavigationLink href="/time/sheet">Sheet</TopNavigationLink>
+        <TopNavigationLink href="/projects">Projects</TopNavigationLink>
+        <TopNavigationLink href="/reports">Reports</TopNavigationLink>
+
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/team`}>Team</TopNavigationLink>}
 
         <ProfileMenu className="ml-3 dark:text-white " />

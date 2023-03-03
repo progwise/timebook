@@ -13,7 +13,6 @@ import {
   TableRow,
 } from '@progwise/timebook-ui'
 
-import { CustomerTable } from '../../../frontend/components/customerForm/customerTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { TeamArchiveModal } from '../../../frontend/components/teamArchiveModal'
 import { TeamForm } from '../../../frontend/components/teamForm/teamForm'
@@ -72,7 +71,6 @@ const TeamPage = (): JSX.Element => {
             <TableHead>
               <TableHeadRow>
                 <TableHeadCell className="text-left">Username</TableHeadCell>
-                <TableHeadCell className="text-left">Projects</TableHeadCell>
                 <TableHeadCell />
               </TableHeadRow>
             </TableHead>
@@ -85,7 +83,6 @@ const TeamPage = (): JSX.Element => {
                     ) : undefined}
                     {user.name}
                   </TableCell>
-                  <TableCell>{user.projects.map((project) => project.title).join(', ')}</TableCell>
                   <TableCell className="text-right">
                     <Button onClick={() => handleUserDetails(user.id)} variant="tertiary">
                       Details
@@ -95,10 +92,6 @@ const TeamPage = (): JSX.Element => {
               ))}
             </TableBody>
           </Table>
-        </section>
-        <section>
-          <h2 className="text-xl font-medium text-gray-500">Customers</h2>
-          <CustomerTable />
         </section>
         {teamToBeArchived ? (
           // eslint-disable-next-line unicorn/no-useless-undefined

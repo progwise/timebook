@@ -8,14 +8,7 @@ builder.queryField('project', (t) =>
     args: {
       projectId: t.arg.id({ description: 'Identifier for the project' }),
     },
-    authScopes: async (_source, { projectId }) => {
-      const project = await prisma.project.findUniqueOrThrow({
-        select: { id: true, teamId: true },
-        where: { id: projectId.toString() },
-      })
-
-      return { isTeamAdminByTeamId: project.teamId, isProjectMember: project.id }
-    },
+    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString() }),
     resolve: (query, _source, { projectId }) =>
       prisma.project.findUniqueOrThrow({
         ...query,

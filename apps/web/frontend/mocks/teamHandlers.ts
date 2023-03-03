@@ -2,10 +2,8 @@ import {
   mockTeamArchiveMutation,
   mockTeamUnarchiveMutation,
   mockMeQuery,
-  mockTeamProjectsQuery,
   mockTeamQuery,
   mockTeamsQuery,
-  mockTeamsWithProjectsQuery,
   mockUserQuery,
   mockUserRoleUpdateMutation,
   Role,
@@ -13,8 +11,6 @@ import {
   Theme,
   mockUserCapacityUpdateMutation,
 } from '../generated/graphql'
-import { assignedProjects } from './projectHandlers'
-import { testProject1, testProject2 } from './testData'
 
 const testTeam1: TeamFragment = {
   __typename: 'Team',
@@ -56,27 +52,6 @@ export const teamHandlers = [
     )
     return result
   }),
-  mockTeamsWithProjectsQuery((request, response, context) => {
-    const result = response(
-      context.data({
-        __typename: 'Query',
-        teams: [{ ...testTeam1, projects: [testProject1, testProject2] }],
-      }),
-    )
-    return result
-  }),
-  mockTeamProjectsQuery((request, response, context) => {
-    const result = response(
-      context.data({
-        __typename: 'Query',
-        teamBySlug: {
-          __typename: 'Team',
-          projects: [testProject1, testProject2],
-        },
-      }),
-    )
-    return result
-  }),
   mockMeQuery((request, response, context) => {
     const result = response(
       context.data({
@@ -87,7 +62,6 @@ export const teamHandlers = [
           image: undefined,
           name: 'Admin',
           role: Role.Admin,
-          projects: assignedProjects,
         },
       }),
     )
@@ -103,7 +77,6 @@ export const teamHandlers = [
           name: 'Test Member',
           image: undefined,
           role: userRole,
-          projects: assignedProjects,
         },
       }),
     )

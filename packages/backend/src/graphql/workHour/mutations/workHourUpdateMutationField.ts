@@ -1,5 +1,3 @@
-import { ForbiddenError } from 'apollo-server-core'
-
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { WorkHourInput } from '../workHourInput'
@@ -18,34 +16,29 @@ builder.mutationField('workHourUpdate', (t) =>
       if (!context.session) return false
 
       const workHour = await prisma.workHour.findUnique({
-        select: {
-          task: { select: { project: { select: { teamId: true } } } },
-          userId: true,
-        },
+        select: { task: { select: { projectId: true } } },
         where: {
           date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
         },
       })
 
       const newAssignedTask = await prisma.task.findUniqueOrThrow({
-        select: { project: { select: { teamId: true, id: true } } },
+        select: { projectId: true },
         where: { id: data.taskId.toString() },
       })
 
-      if (!workHour)
+      if (!workHour) {
         return {
-          isProjectMember: newAssignedTask.project.id,
+          isProjectMember: newAssignedTask.projectId,
         }
-
-      if (workHour.task.project.teamId !== newAssignedTask.project.teamId) {
-        throw new ForbiddenError('It is not allowed to move a work hour to a different team')
       }
 
       return {
-        isTeamAdminByTeamId: workHour.task.project.teamId,
         $all: {
-          hasUserId: workHour.userId,
-          isProjectMember: newAssignedTask.project.id,
+          isProjectMember: workHour.task.projectId,
+          $all: {
+            isProjectMember: newAssignedTask.projectId,
+          },
         },
       }
     },

@@ -38,6 +38,7 @@ module.exports = {
     'react/self-closing-comp': 'error',
     'unicorn/prefer-node-protocol': 'off',
     '@next/next/no-html-link-for-pages': 'off',
+    'unicorn/switch-case-braces': 'off',
   },
   overrides: [
     {
