@@ -3,17 +3,17 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 
-import { Button, InputField, TableCell } from '@progwise/timebook-ui'
+import { Button, InputField, TableCell, TableRow } from '@progwise/timebook-ui'
 
-import { TaskFragment, TaskInput, TaskUpdateInput, useTaskUpdateMutation } from '../../generated/graphql'
+import { TaskFragment, TaskUpdateInput, useTaskUpdateMutation } from '../../generated/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
-interface TaskCellProps {
+interface TaskRowProps {
   task: TaskFragment & { canModify: boolean }
 }
 
-export const TaskCell = ({ task }: TaskCellProps) => {
+export const TaskRow = ({ task }: TaskRowProps) => {
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useTaskUpdateMutation()
   const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useTaskUpdateMutation()
   const {
@@ -45,7 +45,6 @@ export const TaskCell = ({ task }: TaskCellProps) => {
     const result = await updateTaskTitle({
       id: task.id,
       data: {
-        // projectId: task.project.id,
         title: taskData.title,
       },
     })
@@ -57,8 +56,6 @@ export const TaskCell = ({ task }: TaskCellProps) => {
     const result = await updateHourlyRate({
       id: task.id,
       data: {
-        // projectId: task.project.id,
-        // title: task.title,
         hourlyRate: taskData.hourlyRate,
       },
     })
@@ -67,20 +64,15 @@ export const TaskCell = ({ task }: TaskCellProps) => {
   }
 
   return (
-    <>
+    <TableRow>
       <TableCell className="mt-1 flex items-center">
-        <>
-          <InputField
-            className="ml-2"
-            variant="primary"
-            {...register('title', { required: true })}
-            onBlur={handleSubmit(handleTitleSubmit)}
-            loading={fetchingTitle}
-            errorMessage={errors.title?.message}
-          />
-
-          {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
-        </>
+        <InputField
+          variant="primary"
+          {...register('title', { required: true })}
+          onBlur={handleSubmit(handleTitleSubmit)}
+          loading={fetchingTitle}
+          errorMessage={errors.title?.message}
+        />
       </TableCell>
       <TableCell>
         <InputField
@@ -90,6 +82,8 @@ export const TaskCell = ({ task }: TaskCellProps) => {
           onBlur={hourlyRateForm.handleSubmit(handleHourlyRateSubmit)}
           loading={fetchingHourlyRate}
           errorMessage={hourlyRateForm.formState.errors.hourlyRate?.message}
+          label="hourly rate"
+          hideLabel
         />
       </TableCell>
       <TableCell>
@@ -103,7 +97,8 @@ export const TaskCell = ({ task }: TaskCellProps) => {
             <BiTrash />
           </Button>
         )}
+        {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
       </TableCell>
-    </>
+    </TableRow>
   )
 }

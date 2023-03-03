@@ -18,6 +18,8 @@ export interface InputFieldProps {
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
   type?: 'number' | 'text'
+  form?: string
+  hideLabel?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -38,6 +40,8 @@ export const InputField = React.forwardRef(
       errorMessage,
       loading,
       type,
+      form,
+      hideLabel = false,
     }: InputFieldProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -49,7 +53,7 @@ export const InputField = React.forwardRef(
 
     return (
       <div className={`flex w-full flex-col gap-1 ${className}`}>
-        {label && (
+        {label && !hideLabel && (
           <label htmlFor={name} className="text-sm font-semibold text-gray-500">
             {label}
           </label>
@@ -71,6 +75,7 @@ export const InputField = React.forwardRef(
             onKeyPress={onKeyPress}
             name={name}
             size={size}
+            form={form}
           />
 
           {loading && (

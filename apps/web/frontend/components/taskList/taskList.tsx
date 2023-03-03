@@ -13,12 +13,11 @@ import {
   TableHead,
   TableHeadCell,
   TableHeadRow,
-  TableRow,
 } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { TaskCell } from './taskCell'
+import { TaskRow } from './taskRow'
 
 export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
 
@@ -61,22 +60,20 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
-            <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
-            <TableHeadCell>Buttons</TableHeadCell>
+            <TableHeadCell>Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell />
           </TableHeadRow>
         </TableHead>
         <TableBody>
           {tasks.map((task) => (
-            <TableRow key={task.id}>
-              <TaskCell task={task} />
-            </TableRow>
+            <TaskRow task={task} key={task.id} />
           ))}
         </TableBody>
         {project.canModify && (
           <TableFoot>
             <TableFootRow>
               <TableCell>
-                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
+                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     variant="primary"
                     placeholder="Enter Taskname"
@@ -87,23 +84,20 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 </form>
               </TableCell>
               <TableCell>
-                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
-                  <InputField
-                    variant="primary"
-                    placeholder="Enter Hourly Rate"
-                    className=" dark:bg-slate-800 dark:text-white"
-                    {...register('hourlyRate')}
-                    errorMessage={errors.hourlyRate?.message}
-                    type="number"
-                  />
-                </form>
+                <InputField
+                  variant="primary"
+                  placeholder="Enter Hourly Rate"
+                  className=" dark:bg-slate-800 dark:text-white"
+                  {...register('hourlyRate')}
+                  errorMessage={errors.hourlyRate?.message}
+                  type="number"
+                  form="form-create-task"
+                />
               </TableCell>
               <TableCell>
-                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)}>
-                  <Button variant="secondary" type="submit" disabled={isSubmitting}>
-                    Add task
-                  </Button>
-                </form>
+                <Button variant="secondary" type="submit" disabled={isSubmitting} form="form-create-task">
+                  Add task
+                </Button>
               </TableCell>
             </TableFootRow>
           </TableFoot>
