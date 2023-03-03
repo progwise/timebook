@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
+import { ProjectMemberList } from '../../frontend/components/projectMemberList'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { TaskList } from '../../frontend/components/taskList/taskList'
 import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
@@ -9,7 +10,7 @@ import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../f
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const context = useMemo(() => ({ additionalTypenames: ['Task'] }), [])
+  const context = useMemo(() => ({ additionalTypenames: ['Task', 'User'] }), [])
   const [{ data, fetching }] = useProjectQuery({
     variables: { projectId: id?.toString() ?? '' },
     context,
@@ -53,6 +54,7 @@ const ProjectDetails = (): JSX.Element => {
         hasError={!!projectUpdateResult.error}
       />
       <TaskList className="mt-10" project={selectedProject} tasks={selectedProject.tasks} />
+      <ProjectMemberList users={selectedProject.members} />
     </ProtectedPage>
   )
 }
