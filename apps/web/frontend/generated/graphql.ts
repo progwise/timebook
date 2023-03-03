@@ -416,8 +416,11 @@ export type ProjectQuery = {
       hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
+    members: Array<{ __typename: 'User'; id: string; name?: string | null; image?: string | null }>
   }
 }
+
+export type SimpleUserFragment = { __typename: 'User'; id: string; name?: string | null; image?: string | null }
 
 export type TaskFragment = {
   __typename: 'Task'
@@ -993,6 +996,13 @@ export type ReportQuery = {
   }
 }
 
+export const SimpleUserFragmentDoc = gql`
+  fragment SimpleUser on User {
+    id
+    name
+    image
+  }
+`
 export const TaskFragmentDoc = gql`
   fragment Task on Task {
     id
@@ -1099,10 +1109,14 @@ export const ProjectDocument = gql`
         canModify
         ...Task
       }
+      members {
+        ...SimpleUser
+      }
     }
   }
   ${ProjectFragmentDoc}
   ${TaskFragmentDoc}
+  ${SimpleUserFragmentDoc}
 `
 
 export function useProjectQuery(options: Omit<Urql.UseQueryArgs<ProjectQueryVariables>, 'query'>) {
