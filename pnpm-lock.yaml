@@ -44,6 +44,7 @@ importers:
       '@types/jest': ^29.1.2
       '@types/node': ^17.0.13
       '@types/react': ^17.0.38
+      '@types/react-date-range': ^1.4.4
       '@types/react-input-mask': ^3.0.1
       '@types/testing-library__jest-dom': ^5.14.5
       apollo-server-core: ^3.10.2
@@ -67,6 +68,8 @@ importers:
       nodemailer: ^6.8.0
       postcss: ^8.4.4
       react: 17.0.2
+      react-click-away-listener: ^2.2.3
+      react-date-range: ^1.4.0
       react-dom: 17.0.2
       react-hook-form: ^7.25.1
       react-icons: ^4.4.0
@@ -104,6 +107,8 @@ importers:
       next-urql: 4.0.0_react@17.0.2+urql@3.0.3
       nodemailer: 6.8.0
       react: 17.0.2
+      react-click-away-listener: 2.2.3_sfoxds7t5ydpegc3knd667wn6m
+      react-date-range: 1.4.0_u7llumuttikfkadt5pfsmapgmy
       react-dom: 17.0.2_react@17.0.2
       react-hook-form: 7.36.1_react@17.0.2
       react-icons: 4.4.0_react@17.0.2
@@ -126,6 +131,7 @@ importers:
       '@types/jest': 29.1.2
       '@types/node': 17.0.45
       '@types/react': 17.0.50
+      '@types/react-date-range': 1.4.4
       '@types/react-input-mask': 3.0.1
       '@types/testing-library__jest-dom': 5.14.5
       autoprefixer: 10.4.12_postcss@8.4.14
@@ -6263,6 +6269,13 @@ packages:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
     dev: true
 
+  /@types/react-date-range/1.4.4:
+    resolution: {integrity: sha512-9Y9NyNgaCsEVN/+O4HKuxzPbVjRVBGdOKRxMDcsTRWVG62lpYgnxefNckTXDWup8FvczoqPW0+ESZR6R1yymDg==}
+    dependencies:
+      '@types/react': 17.0.50
+      date-fns: 2.29.3
+    dev: true
+
   /@types/react-dom/17.0.17:
     resolution: {integrity: sha512-VjnqEmqGnasQKV0CWLevqMTXBYG9GbwuE6x3VetERLh0cq2LTptFE73MrQi2S7GkKXCf2GgwItB/melLnxfnsg==}
     dependencies:
@@ -7656,6 +7669,10 @@ packages:
       isobject: 3.0.1
       static-extend: 0.1.2
     dev: true
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /clean-regexp/1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
@@ -13113,6 +13130,16 @@ packages:
       strip-json-comments: 2.0.1
     dev: true
 
+  /react-click-away-listener/2.2.3_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-p63JRQtK9d085+QHUJ2Pje22P/N4tEaXsS2x7tbbptriQqZ9o8xEk7G1JrxwND5YmEVc/VO4fC3+cSBsqqgLUQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
   /react-colorful/5.6.1_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==}
     peerDependencies:
@@ -13122,6 +13149,20 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: true
+
+  /react-date-range/1.4.0_u7llumuttikfkadt5pfsmapgmy:
+    resolution: {integrity: sha512-+9t0HyClbCqw1IhYbpWecjsiaftCeRN5cdhsi9v06YdimwyMR2yYHWcgVn3URwtN/txhqKpEZB6UX1fHpvK76w==}
+    peerDependencies:
+      date-fns: 2.0.0-alpha.7 || >=2.0.0
+      react: ^0.14 || ^15.0.0-rc || >=15.0
+    dependencies:
+      classnames: 2.3.2
+      date-fns: 2.29.3
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-list: 0.8.17_react@17.0.2
+      shallow-equal: 1.2.1
+    dev: false
 
   /react-docgen-typescript/2.2.2_typescript@4.8.4:
     resolution: {integrity: sha512-tvg2ZtOpOi6QDwsb3GZhOjDkkX0h8Z2gipvTg6OVMUyoYoURhEiRNePT8NZItTVCDh39JJHnLdfCOkzoLbFnTg==}
@@ -13255,6 +13296,15 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
+  /react-list/0.8.17_react@17.0.2:
+    resolution: {integrity: sha512-pgmzGi0G5uGrdHzMhgO7KR1wx5ZXVvI3SsJUmkblSAKtewIhMwbQiMuQiTE83ozo04BQJbe0r3WIWzSO0dR1xg==}
+    peerDependencies:
+      react: 0.14 || 15 - 18
+    dependencies:
+      prop-types: 15.8.1
+      react: 17.0.2
+    dev: false
 
   /react-refresh/0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
@@ -13860,6 +13910,10 @@ packages:
     dependencies:
       kind-of: 6.0.3
     dev: true
+
+  /shallow-equal/1.2.1:
+    resolution: {integrity: sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==}
+    dev: false
 
   /shebang-command/2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -14562,7 +14616,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.1.2
+      jest: 29.1.2_2263m44mchjafa7bz7l52hbcpa
       jest-util: 29.1.2
       json5: 2.2.1
       lodash.memoize: 4.1.2
