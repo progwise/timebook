@@ -1,6 +1,6 @@
-import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
-import { eachDayOfInterval, isSameDay, parseISO } from 'date-fns'
-import { TaskWithWorkHoursFragment } from '../../generated/graphql'
+import { FormattedDuration, Spinner, TableCell, TableRow } from '@progwise/timebook-ui'
+import { eachDayOfInterval, isSameDay, parseISO, format, isBefore, isAfter } from 'date-fns'
+import { ProjectFilter, TaskWithWorkHoursFragment, useMyProjectsQuery } from '../../generated/graphql'
 import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
 
 interface WeekTableTaskRowProps {
@@ -13,17 +13,41 @@ export const WeekTableTaskRow = ({ interval, task }: WeekTableTaskRowProps) => {
     .map((workHour) => workHour.duration)
     .reduce((previous, current) => previous + current, 0)
 
+  const [{ data, error, fetching: projectsLoading }] = useMyProjectsQuery({
+    variables: { from: format(new Date(), 'yyyy-MM-dd'), filter: ProjectFilter.All },
+  })
+
+  const currentProjekt = data?.projects.find((project) => project.id === task.project.id)
+  const startDay = new Date(currentProjekt?.startDate ?? '')
+  const endDate = new Date(currentProjekt?.endDate ?? '')
+
   return (
     <TableRow>
       <TableCell>{task.title}</TableCell>
-      {eachDayOfInterval(interval).map((day) => {
-        const durations = task.workHours
-          .filter((workHour) => isSameDay(parseISO(workHour.date), day))
-          .map((workHour) => workHour.duration)
-        const duration = durations.reduce((previous, current) => previous + current, 0)
+      {error && <span>{error.message}</span>}
+      {projectsLoading && <Spinner />}
+      {data &&
+        eachDayOfInterval(interval).map((day) => {
+          const isDayBefore = isBefore(day, startDay)
+          const isDayAfter = isAfter(day, endDate)
+          // console.log('isDayAfter: ', isDayAfter)
+          // console.log('isDayBefore: ', isDayBefore)
 
-        return <WeekTableTaskDayCell day={day} taskId={task.id} duration={duration} key={day.toDateString()} />
-      })}
+          const durations = task.workHours
+            .filter((workHour) => isSameDay(parseISO(workHour.date), day))
+            .map((workHour) => workHour.duration)
+          const duration = durations.reduce((previous, current) => previous + current, 0)
+
+          return (
+            <WeekTableTaskDayCell
+              day={day}
+              isdisabled={isDayBefore || isDayAfter}
+              taskId={task.id}
+              duration={duration}
+              key={day.toDateString()}
+            />
+          )
+        })}
       <TableCell>
         <FormattedDuration minutes={taskDurations} title="" />
       </TableCell>

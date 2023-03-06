@@ -64,6 +64,7 @@ export const HourInput = (props: {
   className?: string
   onBlur?: (workHours: number) => void
   readOnly?: boolean
+  isdisabled?: boolean
 }): JSX.Element => {
   const [workHour, setWorkHour] = useState<string>(getFormattedWorkHours(props.workHours))
   const previousValue = useRef<string>(getFormattedWorkHours(props.workHours))
@@ -86,6 +87,7 @@ export const HourInput = (props: {
 
   return (
     <input
+      disabled={props.isdisabled}
       value={workHour}
       readOnly={props.readOnly}
       onChange={(event) => setWorkHour(event.target.value)}
@@ -94,6 +96,7 @@ export const HourInput = (props: {
       size={5}
       placeholder="0:00"
       onBlur={handlerSubmit}
+      type={props.isdisabled ? 'hidden' : ''}
     />
   )
 }
