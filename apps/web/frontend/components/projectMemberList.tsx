@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 import Image from 'next/image'
 import { SimpleUserFragment } from '../generated/graphql'
+import { AddProjectMember } from './addProjectMember'
 
 interface ProjectMemberListProps {
   users: SimpleUserFragment[]
@@ -23,6 +24,9 @@ export const ProjectMemberList = ({ users }: ProjectMemberListProps) => (
             </TableCell>
           </TableRow>
         ))}
+        <TableRow>
+          <AddProjectMember />
+        </TableRow>
       </TableBody>
     </Table>
   </>
