@@ -13,7 +13,7 @@ export const WeekTableTaskRow = ({ interval, task }: WeekTableTaskRowProps) => {
     .map((workHour) => workHour.duration)
     .reduce((previous, current) => previous + current, 0)
 
-  const [{ data, error, fetching: projectsLoading }] = useMyProjectsQuery({
+  const [{ data }] = useMyProjectsQuery({
     variables: { from: format(new Date(), 'yyyy-MM-dd'), filter: ProjectFilter.All },
   })
 
@@ -24,14 +24,10 @@ export const WeekTableTaskRow = ({ interval, task }: WeekTableTaskRowProps) => {
   return (
     <TableRow>
       <TableCell>{task.title}</TableCell>
-      {error && <span>{error.message}</span>}
-      {projectsLoading && <Spinner />}
       {data &&
         eachDayOfInterval(interval).map((day) => {
           const isDayBefore = isBefore(day, startDay)
           const isDayAfter = isAfter(day, endDate)
-          // console.log('isDayAfter: ', isDayAfter)
-          // console.log('isDayBefore: ', isDayBefore)
 
           const durations = task.workHours
             .filter((workHour) => isSameDay(parseISO(workHour.date), day))
@@ -41,7 +37,7 @@ export const WeekTableTaskRow = ({ interval, task }: WeekTableTaskRowProps) => {
           return (
             <WeekTableTaskDayCell
               day={day}
-              isdisabled={isDayBefore || isDayAfter}
+              disabled={isDayBefore || isDayAfter}
               taskId={task.id}
               duration={duration}
               key={day.toDateString()}
