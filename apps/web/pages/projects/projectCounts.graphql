@@ -1,0 +1,6 @@
+query projectCounts($from: Date!, $to: Date) {
+  allCounts: projectsCount(from: $from, to: $to, filter: ALL)
+  activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
+  futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
+  pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+}
