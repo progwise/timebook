@@ -42,6 +42,7 @@ export const builder = new SchemaBuilder<{
       projectId: string
       from: Date
       to: Date
+      userId?: string
     }
     Project: { id: string }
   }

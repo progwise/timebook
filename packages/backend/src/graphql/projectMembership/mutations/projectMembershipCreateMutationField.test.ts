@@ -82,7 +82,7 @@ it('should create projectMembership when session user is project membership', as
     },
   })
   expect(response.errors).toBeUndefined()
-  expect(response.data).toEqual({ projectMembershipCreate: { title: 'P1', members: [{ id: '1' }, { id: '2' }] } })
+  expect(response.data).toEqual({ projectMembershipCreate: { title: 'P1', members: [{ id: '2' }, { id: '1' }] } })
 })
 
 it('user is already project member', async () => {
