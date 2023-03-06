@@ -200,6 +200,7 @@ export type Query = {
   project: Project
   /** Returns all project of the signed in user that are active */
   projects: Array<Project>
+  projectsCount: Scalars['Int']
   /** Returns a monthly project report */
   report: Report
   /** Returns a single task */
@@ -220,6 +221,12 @@ export type QueryProjectArgs = {
 
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}
+
+export type QueryProjectsCountArgs = {
+  filter: ProjectFilter
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }
@@ -949,6 +956,19 @@ export type TaskWithWorkHoursFragment = {
 
 export type SimpleWorkHourFragment = { __typename: 'WorkHour'; id: string; date: string; duration: number }
 
+export type ProjectCountsQueryVariables = Exact<{
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}>
+
+export type ProjectCountsQuery = {
+  __typename: 'Query'
+  allCounts: number
+  activeCounts: number
+  futureCounts: number
+  pastCounts: number
+}
+
 export type ReportQueryVariables = Exact<{
   projectId: Scalars['ID']
   from: Scalars['Date']
@@ -1446,6 +1466,18 @@ export const TimeTableDocument = gql`
 
 export function useTimeTableQuery(options: Omit<Urql.UseQueryArgs<TimeTableQueryVariables>, 'query'>) {
   return Urql.useQuery<TimeTableQuery, TimeTableQueryVariables>({ query: TimeTableDocument, ...options })
+}
+export const ProjectCountsDocument = gql`
+  query projectCounts($from: Date!, $to: Date) {
+    allCounts: projectsCount(from: $from, to: $to, filter: ALL)
+    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
+    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
+    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+  }
+`
+
+export function useProjectCountsQuery(options: Omit<Urql.UseQueryArgs<ProjectCountsQueryVariables>, 'query'>) {
+  return Urql.useQuery<ProjectCountsQuery, ProjectCountsQueryVariables>({ query: ProjectCountsDocument, ...options })
 }
 export const ReportDocument = gql`
   query report($projectId: ID!, $from: Date!, $to: Date!) {
@@ -1946,6 +1978,21 @@ export const mockUserQuery = (
 export const mockTimeTableQuery = (
   resolver: ResponseResolver<GraphQLRequest<TimeTableQueryVariables>, GraphQLContext<TimeTableQuery>, any>,
 ) => graphql.query<TimeTableQuery, TimeTableQueryVariables>('timeTable', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectCountsQuery((req, res, ctx) => {
+ *   const { from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ projectsCount, projectsCount, projectsCount, projectsCount })
+ *   )
+ * })
+ */
+export const mockProjectCountsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectCountsQueryVariables>, GraphQLContext<ProjectCountsQuery>, any>,
+) => graphql.query<ProjectCountsQuery, ProjectCountsQueryVariables>('projectCounts', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

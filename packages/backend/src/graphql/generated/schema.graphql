@@ -253,6 +253,7 @@ type Query {
   Returns all project of the signed in user that are active
   """
   projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
+  projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 
   """
   Returns a monthly project report
