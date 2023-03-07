@@ -4,7 +4,7 @@ import { Client, Provider } from 'urql'
 
 import '../../mocks/mockServer'
 import { testTask } from '../../mocks/testData'
-import { TaskCell } from './taskCell'
+import { TaskRow } from './taskRow'
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
@@ -21,7 +21,7 @@ jest.mock('next/router', () => ({
 
 describe('TaskCell', () => {
   it('should be validation errors', async () => {
-    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -32,7 +32,7 @@ describe('TaskCell', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
-    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -44,7 +44,7 @@ describe('TaskCell', () => {
   })
 
   it('should be possible to delete a task', async () => {
-    render(<TaskCell task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
 
     const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
     expect(deleteButton).toBeInTheDocument()

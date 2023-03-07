@@ -67,4 +67,16 @@ describe('TaskList', () => {
       await waitFor(() => expect(titleInput).toHaveValue(''))
     })
   })
+
+  it('should update hourly rates', async () => {
+    render(<TaskList tasks={tasks} project={project} />, { wrapper })
+    const hourlyRateInput = screen.getByRole('spinbutton', {
+      name: /hourly rate/i,
+    })
+    await userEvent.type(hourlyRateInput, '100')
+    await userEvent.tab()
+    const spinner = await screen.findByRole('progressbar')
+    expect(spinner).toBeInTheDocument()
+    await waitForElementToBeRemoved(spinner)
+  })
 })
