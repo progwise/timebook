@@ -13,7 +13,7 @@ export const TeamTile = ({ team }: TeamTileProps): JSX.Element => {
       } hover:backdrop-brightness-105`}
       key={team.id}
     >
-      <h2 className="text-md mb-2  font-bold text-gray-700 dark:text-white">Team &quot;{team.title}&quot;</h2>
+      <h2 className="mb-2 font-bold text-gray-700 dark:text-white">Team &quot;{team.title}&quot;</h2>
       <Link href={`/${team.slug}/time`} passHref={false}>
         <a className="text-blue-600 hover:underline">{`/${team.slug}`}</a>
       </Link>

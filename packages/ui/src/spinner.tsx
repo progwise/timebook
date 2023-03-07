@@ -14,7 +14,8 @@ export const Spinner = ({ size }: SpinnerProps): JSX.Element => {
   return (
     <CgSpinner
       size={size ? Size[size] : Size.small}
-      className="text-black-600 inline  animate-spin dark:text-blue-600"
+      className="inline animate-spin dark:text-blue-600"
+      role="progressbar"
     />
   )
 }

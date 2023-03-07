@@ -80,7 +80,7 @@ type Mutation {
   Update a task
   """
   taskUpdate(
-    data: TaskInput!
+    data: TaskUpdateInput!
 
     """
     id of the task
@@ -402,8 +402,15 @@ type Task implements ModifyInterface {
 }
 
 input TaskInput {
+  hourlyRate: Float
   projectId: ID!
   title: String!
+}
+
+input TaskUpdateInput {
+  hourlyRate: Float
+  projectId: ID
+  title: String
 }
 
 type Team implements ModifyInterface {

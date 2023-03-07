@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/filename-case */
-import NextAuth, { DefaultUser } from 'next-auth'
+import { DefaultUser } from 'next-auth'
 
 declare module 'next-auth' {
   /**

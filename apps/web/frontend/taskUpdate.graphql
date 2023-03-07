@@ -1,4 +1,4 @@
-mutation taskUpdate($id: ID!, $data: TaskInput!) {
+mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {
   taskUpdate(id: $id, data: $data) {
     ...Task
   }
