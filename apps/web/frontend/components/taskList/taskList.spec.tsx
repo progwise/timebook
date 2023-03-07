@@ -75,7 +75,7 @@ describe('TaskList', () => {
     })
     await userEvent.type(hourlyRateInput, '100')
     await userEvent.tab()
-    const spinner = await screen.findByTestId('spinner')
+    const spinner = await screen.findByRole('progressbar')
     expect(spinner).toBeInTheDocument()
     await waitForElementToBeRemoved(spinner)
   })
