@@ -19,7 +19,13 @@ export const WeekTableProjectRowGroup = ({ interval, project }: WeekTableProject
       <TableCell />
     </TableRow>
     {project.tasks.map((task) => (
-      <WeekTableTaskRow interval={interval} task={task} key={task.id} />
+      <WeekTableTaskRow
+        projectStart={project.startDate}
+        projectEnd={project.endDate}
+        interval={interval}
+        task={task}
+        key={task.id}
+      />
     ))}
   </>
 )
