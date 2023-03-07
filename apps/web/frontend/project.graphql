@@ -16,6 +16,7 @@ fragment SimpleUser on User {
   id
   name
   image
+  projectRole(projectId: $projectId)
 }
 
 fragment Task on Task {

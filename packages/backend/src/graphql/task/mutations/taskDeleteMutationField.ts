@@ -8,10 +8,7 @@ builder.mutationField('taskDelete', (t) =>
     args: {
       id: t.arg.id({ description: 'id of the task' }),
     },
-    authScopes: async (_source, { id }) => {
-      const task = await prisma.task.findUniqueOrThrow({ where: { id: id.toString() } })
-      return { isProjectMember: task.projectId }
-    },
+    authScopes: async (_source, { id }) => ({ isTaskAdmin: id.toString() }),
     resolve: (query, _source, { id }) =>
       prisma.task.delete({
         ...query,

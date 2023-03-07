@@ -16,13 +16,10 @@ builder.mutationField('taskUpdate', (t) =>
         where: { id: id.toString() },
       })
 
-      return {
-        $all: {
-          isProjectMember: task.projectId,
-          // Using $all allows us to run the isProjectMember check twice, once for the previous project and once for the new assigned project
-          $all: { isProjectMember: projectId.toString() },
-        },
-      }
+      const oldProjectId = task.projectId
+      const newProjectId = projectId.toString()
+
+      return { isProjectAdminOfMultipleProjects: [oldProjectId, newProjectId] }
     },
     resolve: (query, _source, { id, data: { title, projectId } }) =>
       prisma.task.update({

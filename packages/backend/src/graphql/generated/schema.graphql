@@ -30,9 +30,9 @@ type Mutation {
   ): Project!
 
   """
-  Assign user to Project
+  Assign user to a project. This mutation can also be used for updating the role of a project member
   """
-  projectMembershipCreate(projectId: ID!, userId: ID!): Project!
+  projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
   Unassign user to Project
@@ -477,6 +477,11 @@ type User {
   id: ID!
   image: String
   name: String
+
+  """
+  Role of the user in a project
+  """
+  projectRole(projectId: ID!): Role!
 
   """
   Role of the user in a team

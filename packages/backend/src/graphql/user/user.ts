@@ -24,6 +24,25 @@ export const User = builder.prismaObject('User', {
         return teamMembership.role
       },
     }),
+    projectRole: t.field({
+      type: RoleEnum,
+      args: { projectId: t.arg.id() },
+      select: { id: true },
+      authScopes: (_user, { projectId }) => ({ isProjectMember: projectId.toString() }),
+      description: 'Role of the user in a project',
+      resolve: async (user, { projectId }) => {
+        const projectMembership = await prisma.projectMembership.findUniqueOrThrow({
+          select: { role: true },
+          where: {
+            userId_projectId: {
+              userId: user.id,
+              projectId: projectId.toString(),
+            },
+          },
+        })
+        return projectMembership.role
+      },
+    }),
     availableMinutesPerWeek: t.field({
       type: 'Int',
       nullable: true,

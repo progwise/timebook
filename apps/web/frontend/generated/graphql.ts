@@ -33,7 +33,7 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
-  /** Assign user to Project */
+  /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
@@ -81,6 +81,7 @@ export type MutationProjectDeleteArgs = {
 
 export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
+  role?: Role
   userId: Scalars['ID']
 }
 
@@ -368,12 +369,18 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
+  /** Role of the user in a project */
+  projectRole: Role
   /** Role of the user in a team */
   role: Role
 }
 
 export type UserAvailableMinutesPerWeekArgs = {
   teamSlug: Scalars['String']
+}
+
+export type UserProjectRoleArgs = {
+  projectId: Scalars['ID']
 }
 
 export type UserRoleArgs = {
@@ -423,11 +430,17 @@ export type ProjectQuery = {
       hourlyRate?: number | null
       project: { __typename: 'Project'; id: string; title: string }
     }>
-    members: Array<{ __typename: 'User'; id: string; name?: string | null; image?: string | null }>
+    members: Array<{ __typename: 'User'; id: string; name?: string | null; image?: string | null; projectRole: Role }>
   }
 }
 
-export type SimpleUserFragment = { __typename: 'User'; id: string; name?: string | null; image?: string | null }
+export type SimpleUserFragment = {
+  __typename: 'User'
+  id: string
+  name?: string | null
+  image?: string | null
+  projectRole: Role
+}
 
 export type TaskFragment = {
   __typename: 'Task'
@@ -1021,6 +1034,7 @@ export const SimpleUserFragmentDoc = gql`
     id
     name
     image
+    projectRole(projectId: $projectId)
   }
 `
 export const TaskFragmentDoc = gql`

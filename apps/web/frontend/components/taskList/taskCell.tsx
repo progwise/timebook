@@ -51,6 +51,7 @@ export const TaskCell = ({ task }: TaskCellProps) => {
       )}
 
       <InputField
+        disabled={!task.canModify}
         className="ml-2"
         variant="primary"
         {...register('title', { required: true })}

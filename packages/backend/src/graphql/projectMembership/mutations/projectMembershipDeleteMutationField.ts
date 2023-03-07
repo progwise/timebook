@@ -9,7 +9,7 @@ builder.mutationField('projectMembershipDelete', (t) =>
       userId: t.arg.id(),
       projectId: t.arg.id(),
     },
-    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString() }),
+    authScopes: (_source, { projectId }) => ({ isProjectAdmin: projectId.toString() }),
     resolve: async (query, _source, { userId, projectId }) => {
       const projectMembership = await prisma.projectMembership.findUnique({
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
@@ -18,11 +18,14 @@ builder.mutationField('projectMembershipDelete', (t) =>
         throw new Error('project membership not found')
       }
 
-      const numberOfMembershipsOnTheProject = await prisma.projectMembership.count({
-        where: { projectId: projectId.toString() },
+      const numberOfAdminsOnTheProject = await prisma.projectMembership.count({
+        where: {
+          projectId: projectId.toString(),
+          role: 'ADMIN',
+        },
       })
-      if (numberOfMembershipsOnTheProject === 1) {
-        throw new Error('Membership can not be deleted because user is the last member')
+      if (projectMembership.role === 'ADMIN' && numberOfAdminsOnTheProject === 1) {
+        throw new Error('Membership can not be deleted because user is the last admin')
       }
 
       await prisma.projectMembership.delete({
