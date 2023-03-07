@@ -24,6 +24,7 @@ module.exports = {
     'plugin:testing-library/react',
     'plugin:jest-dom/recommended',
     'plugin:tailwindcss/recommended',
+    'turbo',
   ],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
