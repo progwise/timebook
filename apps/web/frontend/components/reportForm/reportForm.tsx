@@ -28,7 +28,7 @@ export const ReportForm = () => {
       from: fromString,
       to: endString,
       userId: selectedUserId,
-      skipGroupByUser: !!selectedUserId,
+      groupByUser: !selectedUserId,
     },
     pause: !router.isReady || !selectedProjectId,
   })

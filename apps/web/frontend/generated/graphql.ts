@@ -1008,7 +1008,7 @@ export type ReportQueryVariables = Exact<{
   from: Scalars['Date']
   to: Scalars['Date']
   userId?: InputMaybe<Scalars['ID']>
-  skipGroupByUser: Scalars['Boolean']
+  groupByUser: Scalars['Boolean']
 }>
 
 export type ReportQuery = {
@@ -1539,7 +1539,7 @@ export function useProjectCountsQuery(options: Omit<Urql.UseQueryArgs<ProjectCou
   return Urql.useQuery<ProjectCountsQuery, ProjectCountsQueryVariables>({ query: ProjectCountsDocument, ...options })
 }
 export const ReportDocument = gql`
-  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $skipGroupByUser: Boolean!) {
+  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
     report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
       groupedByDate {
         date
@@ -1570,7 +1570,7 @@ export const ReportDocument = gql`
         }
         duration
       }
-      groupedByUser @skip(if: $skipGroupByUser) {
+      groupedByUser @include(if: $groupByUser) {
         user {
           id
           name
@@ -2073,7 +2073,7 @@ export const mockProjectCountsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportQuery((req, res, ctx) => {
- *   const { projectId, from, to, userId, skipGroupByUser } = req.variables;
+ *   const { projectId, from, to, userId, groupByUser } = req.variables;
  *   return res(
  *     ctx.data({ report })
  *   )

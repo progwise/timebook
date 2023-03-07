@@ -1,4 +1,4 @@
-query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $skipGroupByUser: Boolean!) {
+query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
   report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
     groupedByDate {
       date
@@ -29,7 +29,7 @@ query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $skipGroupB
       }
       duration
     }
-    groupedByUser @skip(if: $skipGroupByUser) {
+    groupedByUser @include(if: $groupByUser) {
       user {
         id
         name
