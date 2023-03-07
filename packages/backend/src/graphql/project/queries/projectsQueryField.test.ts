@@ -8,13 +8,13 @@ import { GraphQLError } from 'graphql'
 const prisma = new PrismaClient()
 
 const projectsQuery = gql`
-  query projects($from: Date!, $includingUsersWhoBookedWorkHours: Boolean) {
+  query projects($from: Date!, $includePastMembers: Boolean) {
     projects(from: $from) {
       id
       title
       startDate
       endDate
-      members(includingUsersWhoBookedWorkHours: $includingUsersWhoBookedWorkHours) {
+      members(includePastMembers: $includePastMembers) {
         id
         name
       }
@@ -81,11 +81,11 @@ describe('members', () => {
     })
   })
 
-  it('should return all members + members who booked work hours when includingUsersWhoBookedWorkHours=true', async () => {
+  it('should return all members + members who booked work hours when includePastMembers=true', async () => {
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectsQuery,
-      variables: { from: '2023-01-01', includingUsersWhoBookedWorkHours: true },
+      variables: { from: '2023-01-01', includePastMembers: true },
     })
 
     expect(response.errors).toBeUndefined()
