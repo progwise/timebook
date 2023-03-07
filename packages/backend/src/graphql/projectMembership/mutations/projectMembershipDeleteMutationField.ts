@@ -1,5 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
+import { isUserTheLastAdminOfProject } from './isUserTheLastAdminOfProject'
 
 builder.mutationField('projectMembershipDelete', (t) =>
   t.prismaField({
@@ -18,13 +19,7 @@ builder.mutationField('projectMembershipDelete', (t) =>
         throw new Error('project membership not found')
       }
 
-      const numberOfAdminsOnTheProject = await prisma.projectMembership.count({
-        where: {
-          projectId: projectId.toString(),
-          role: 'ADMIN',
-        },
-      })
-      if (projectMembership.role === 'ADMIN' && numberOfAdminsOnTheProject === 1) {
+      if (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString())) {
         throw new Error('Membership can not be deleted because user is the last admin')
       }
 
