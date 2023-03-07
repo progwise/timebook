@@ -222,7 +222,7 @@ type Project implements ModifyInterface {
     """
     Set this to true if you want to see also the users who booked work hours on this project, but are no longer project members. This arg is useful for e.g. reports.
     """
-    includingUsersWhoBookedWorkHours: Boolean! = false
+    includePastMembers: Boolean! = false
   ): [User!]!
   startDate: Date
   tasks(showArchived: Boolean! = false): [Task!]!

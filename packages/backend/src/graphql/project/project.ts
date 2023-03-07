@@ -33,16 +33,16 @@ export const Project = builder.prismaObject('Project', {
       select: { id: true },
       type: ['User'],
       args: {
-        includingUsersWhoBookedWorkHours: t.arg.boolean({
+        includePastMembers: t.arg.boolean({
           defaultValue: false,
           description:
             'Set this to true if you want to see also the users who booked work hours on this project, but are no longer project members. This arg is useful for e.g. reports.',
         }),
       },
-      resolve: (query, project, { includingUsersWhoBookedWorkHours }) =>
+      resolve: (query, project, { includePastMembers }) =>
         prisma.user.findMany({
           ...query,
-          where: includingUsersWhoBookedWorkHours
+          where: includePastMembers
             ? {
                 OR: [
                   { projectMemberships: { some: { projectId: project.id } } },

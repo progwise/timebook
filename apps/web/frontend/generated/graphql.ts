@@ -178,7 +178,7 @@ export type Project = ModifyInterface & {
 }
 
 export type ProjectMembersArgs = {
-  includingUsersWhoBookedWorkHours?: Scalars['Boolean']
+  includePastMembers?: Scalars['Boolean']
 }
 
 export type ProjectTasksArgs = {
@@ -1167,7 +1167,7 @@ export const ReportUsersDocument = gql`
   query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {
     project(projectId: $projectId) {
       id
-      members(includingUsersWhoBookedWorkHours: true) {
+      members(includePastMembers: true) {
         ...ReportUser
         durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
       }
