@@ -104,7 +104,7 @@ export const TeamForm = (props: TeamFormProps): JSX.Element => {
         </>
       )}
 
-      <div className="start mt-4 flex flex-row justify-between gap-2 sm:justify-end">
+      <div className="mt-4 flex flex-row justify-between gap-2 sm:justify-end">
         {/* Dismiss button available only during the creation of a new team */}
         {!team ? (
           <Button variant="secondary" onClick={handleDismiss}>

@@ -2,7 +2,7 @@ import React, { KeyboardEventHandler } from 'react'
 
 import { Spinner } from '../spinner'
 
-interface InputFieldProps {
+export interface InputFieldProps {
   name?: string
   value?: string
   onBlur?: (event: React.FocusEvent) => void
@@ -55,7 +55,7 @@ export const InputField = React.forwardRef(
         <span className="relative">
           <input
             aria-label={label}
-            className={`dark:placeholder-grey w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+            className={`w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''
             }`}
             type="text"

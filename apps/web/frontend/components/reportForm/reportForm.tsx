@@ -38,7 +38,7 @@ export const ReportForm = () => {
   return (
     <>
       <div>
-        <h1 className="mb-4 mt-4 font-bold">
+        <h1 className="my-4 font-bold">
           Detailed time report: {startOfMonthString} - {endOfMonthString}
         </h1>
         <h2>Select a project</h2>
