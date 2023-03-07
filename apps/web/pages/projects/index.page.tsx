@@ -1,14 +1,14 @@
 import { useRouter } from 'next/router'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Button, Spinner } from '@progwise/timebook-ui'
 
+import { format } from 'date-fns'
+import { ComboBox } from '../../frontend/components/combobox/combobox'
 import { ProjectList } from '../../frontend/components/projectList/projectList'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { ProjectFilter, useMyProjectsQuery, useProjectCountsQuery } from '../../frontend/generated/graphql'
-import { format } from 'date-fns'
-import { ComboBox } from '../../frontend/components/combobox/combobox'
 
 const projectFilters = Object.values(ProjectFilter).map((projectFilter) => ({ id: projectFilter }))
 
@@ -42,7 +42,7 @@ const Projects = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <article className="timebook">
+      <article>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold text-gray-400 dark:text-white">Projects</h2>
           <Button variant="primary" onClick={handleAddProject}>
