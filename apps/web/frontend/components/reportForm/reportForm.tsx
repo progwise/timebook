@@ -6,23 +6,29 @@ import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { ProjectFilter, ProjectFragment, useMyProjectsQuery, useReportQuery } from '../../generated/graphql'
 import { ComboBox } from '../combobox/combobox'
+import { ReportUserSelect } from './reportUserSelect'
 
 export const ReportForm = () => {
   const router = useRouter()
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
+  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const [date, setDate] = useState(new Date())
-  const startOfMonthString = formatISO(startOfMonth(date), { representation: 'date' })
-  const endOfMonthString = formatISO(endOfMonth(date), { representation: 'date' })
+  const from = startOfMonth(date)
+  const to = endOfMonth(date)
+  const fromString = formatISO(from, { representation: 'date' })
+  const endString = formatISO(to, { representation: 'date' })
 
   const [{ data: projectsData }] = useMyProjectsQuery({
-    variables: { from: startOfMonthString, filter: ProjectFilter.All },
+    variables: { from: fromString, filter: ProjectFilter.All },
   })
 
   const [{ data: reportGroupedData }] = useReportQuery({
     variables: {
       projectId: selectedProjectId ?? '',
-      from: startOfMonthString,
-      to: endOfMonthString,
+      from: fromString,
+      to: endString,
+      userId: selectedUserId,
+      groupByUser: !selectedUserId,
     },
     pause: !router.isReady || !selectedProjectId,
   })
@@ -39,13 +45,13 @@ export const ReportForm = () => {
     <>
       <div>
         <h1 className="my-4 font-bold">
-          Detailed time report: {startOfMonthString} - {endOfMonthString}
+          Detailed time report: {fromString} - {endString}
         </h1>
         <h2>Select a project</h2>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div className="flex flex-row">
+          <div className="flex flex-row gap-4">
             <ComboBox<ProjectFragment>
               value={selectedProject}
               displayValue={(project) => project.title}
@@ -53,6 +59,15 @@ export const ReportForm = () => {
               onChange={handleChange}
               options={projectsData?.projects ?? []}
             />
+            {selectedProjectId && (
+              <ReportUserSelect
+                projectId={selectedProjectId}
+                selectedUserId={selectedUserId}
+                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
+                from={from}
+                to={to}
+              />
+            )}
           </div>
           <div>
             <input
@@ -116,18 +131,20 @@ export const ReportForm = () => {
                   <FormattedDuration title="Total by task" minutes={entry.duration} />
                 </div>
               ))}
-            </article>
-            <article className="contents">
               <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
-              <strong className="col-span-3">Total by Person</strong>
-              {reportGroupedData?.report.groupedByUser.map((group) => (
-                <div key={group.user.id} className="grid grid-flow-row">
-                  <span>{group.user.name}</span>
-                  <FormattedDuration title="Total by user" minutes={group.duration} />
-                </div>
-              ))}
-              <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
             </article>
+            {reportGroupedData?.report.groupedByUser && (
+              <article className="contents">
+                <strong className="col-span-3">Total by Person</strong>
+                {reportGroupedData.report.groupedByUser.map((group) => (
+                  <div key={group.user.id} className="grid grid-flow-row">
+                    <span>{group.user.name}</span>
+                    <FormattedDuration title="Total by user" minutes={group.duration} />
+                  </div>
+                ))}
+                <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
+              </article>
+            )}
           </section>
         )}
       </div>
