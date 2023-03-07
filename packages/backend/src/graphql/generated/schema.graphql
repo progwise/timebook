@@ -218,7 +218,12 @@ type Project implements ModifyInterface {
   """
   List of users that are member of the project
   """
-  members: [User!]!
+  members(
+    """
+    Set this to true if you want to see also the users who booked work hours on this project, but are no longer project members. This arg is useful for e.g. reports.
+    """
+    includePastMembers: Boolean! = false
+  ): [User!]!
   startDate: Date
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
@@ -266,6 +271,11 @@ type Query {
     """
     projectId: ID!
     to: Date!
+
+    """
+    if not set all users will be included in the report
+    """
+    userId: ID
   ): Report!
 
   """
@@ -481,6 +491,7 @@ type User {
   Capacity of the user in the team
   """
   availableMinutesPerWeek(teamSlug: String!): Int
+  durationWorkedOnProject(from: Date!, projectId: ID!, to: Date): Int!
   id: ID!
   image: String
   name: String

@@ -122,9 +122,9 @@ it('should create projectMembership when session user is project membership and 
     projectMembershipCreate: {
       title: 'P1',
       members: [
+        { id: '2', projectRole: 'MEMBER' },
         { id: '1', projectRole: 'ADMIN' },
         { id: '3', projectRole: 'MEMBER' },
-        { id: '2', projectRole: 'MEMBER' },
       ],
     },
   })

@@ -178,6 +178,10 @@ export type Project = ModifyInterface & {
   workHours: Array<WorkHour>
 }
 
+export type ProjectMembersArgs = {
+  includePastMembers?: Scalars['Boolean']
+}
+
 export type ProjectTasksArgs = {
   showArchived?: Scalars['Boolean']
 }
@@ -236,6 +240,7 @@ export type QueryReportArgs = {
   from: Scalars['Date']
   projectId: Scalars['ID']
   to: Scalars['Date']
+  userId?: InputMaybe<Scalars['ID']>
 }
 
 export type QueryTaskArgs = {
@@ -373,6 +378,7 @@ export type User = {
   __typename: 'User'
   /** Capacity of the user in the team */
   availableMinutesPerWeek?: Maybe<Scalars['Int']>
+  durationWorkedOnProject: Scalars['Int']
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
@@ -384,6 +390,12 @@ export type User = {
 
 export type UserAvailableMinutesPerWeekArgs = {
   teamSlug: Scalars['String']
+}
+
+export type UserDurationWorkedOnProjectArgs = {
+  from: Scalars['Date']
+  projectId: Scalars['ID']
+  to?: InputMaybe<Scalars['Date']>
 }
 
 export type UserProjectRoleArgs = {
@@ -413,6 +425,28 @@ export type WorkHourInput = {
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type ReportUsersQueryVariables = Exact<{
+  projectId: Scalars['ID']
+  from: Scalars['Date']
+  to: Scalars['Date']
+}>
+
+export type ReportUsersQuery = {
+  __typename: 'Query'
+  project: {
+    __typename: 'Project'
+    id: string
+    members: Array<{ __typename: 'User'; durationWorkedOnProject: number; id: string; name?: string | null }>
+  }
+}
+
+export type ReportUserFragment = {
+  __typename: 'User'
+  id: string
+  name?: string | null
+  durationWorkedOnProject: number
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -993,6 +1027,8 @@ export type ReportQueryVariables = Exact<{
   projectId: Scalars['ID']
   from: Scalars['Date']
   to: Scalars['Date']
+  userId?: InputMaybe<Scalars['ID']>
+  groupByUser: Scalars['Boolean']
 }>
 
 export type ReportQuery = {
@@ -1022,7 +1058,7 @@ export type ReportQuery = {
       duration: number
       task: { __typename: 'Task'; id: string; title: string }
     }>
-    groupedByUser: Array<{
+    groupedByUser?: Array<{
       __typename: 'ReportGroupedByUser'
       duration: number
       user: { __typename: 'User'; id: string; name?: string | null }
@@ -1036,6 +1072,13 @@ export type ReportQuery = {
   }
 }
 
+export const ReportUserFragmentDoc = gql`
+  fragment ReportUser on User {
+    id
+    name
+    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
+  }
+`
 export const SimpleUserFragmentDoc = gql`
   fragment SimpleUser on User {
     id
@@ -1141,6 +1184,22 @@ export const ProjectWithWorkHoursFragmentDoc = gql`
   ${ProjectFragmentDoc}
   ${TaskWithWorkHoursFragmentDoc}
 `
+export const ReportUsersDocument = gql`
+  query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {
+    project(projectId: $projectId) {
+      id
+      members(includePastMembers: true) {
+        ...ReportUser
+        durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
+      }
+    }
+  }
+  ${ReportUserFragmentDoc}
+`
+
+export function useReportUsersQuery(options: Omit<Urql.UseQueryArgs<ReportUsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<ReportUsersQuery, ReportUsersQueryVariables>({ query: ReportUsersDocument, ...options })
+}
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
@@ -1501,8 +1560,8 @@ export function useProjectCountsQuery(options: Omit<Urql.UseQueryArgs<ProjectCou
   return Urql.useQuery<ProjectCountsQuery, ProjectCountsQueryVariables>({ query: ProjectCountsDocument, ...options })
 }
 export const ReportDocument = gql`
-  query report($projectId: ID!, $from: Date!, $to: Date!) {
-    report(projectId: $projectId, from: $from, to: $to) {
+  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
+    report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
       groupedByDate {
         date
         duration
@@ -1532,7 +1591,7 @@ export const ReportDocument = gql`
         }
         duration
       }
-      groupedByUser {
+      groupedByUser @include(if: $groupByUser) {
         user {
           id
           name
@@ -1553,6 +1612,21 @@ export const ReportDocument = gql`
 export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
   return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockReportUsersQuery((req, res, ctx) => {
+ *   const { projectId, from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ project })
+ *   )
+ * })
+ */
+export const mockReportUsersQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ReportUsersQueryVariables>, GraphQLContext<ReportUsersQuery>, any>,
+) => graphql.query<ReportUsersQuery, ReportUsersQueryVariables>('reportUsers', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -2020,7 +2094,7 @@ export const mockProjectCountsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportQuery((req, res, ctx) => {
- *   const { projectId, from, to } = req.variables;
+ *   const { projectId, from, to, userId, groupByUser } = req.variables;
  *   return res(
  *     ctx.data({ report })
  *   )

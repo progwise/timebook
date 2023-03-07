@@ -9,12 +9,13 @@ export const Report = builder.objectType('Report', {
   fields: (t) => ({
     groupedByTask: t.field({
       type: [ReportGroupedByTask],
-      resolve: async ({ projectId, from, to }) => {
+      resolve: async ({ projectId, from, to, userId }) => {
         const groupByTaskResult = await prisma.workHour.groupBy({
           by: ['taskId'],
           where: {
             task: { projectId },
             date: { gte: from, lte: to },
+            userId,
           },
           _sum: {
             duration: true,
@@ -33,6 +34,7 @@ export const Report = builder.objectType('Report', {
             where: {
               taskId,
               date: { gte: from, lte: to },
+              userId,
             },
           }),
         }))
@@ -40,12 +42,13 @@ export const Report = builder.objectType('Report', {
     }),
     groupedByUser: t.field({
       type: [ReportGroupedByUser],
-      resolve: async ({ projectId, from, to }) => {
+      resolve: async ({ projectId, from, to, userId }) => {
         const groupedByUserResult = await prisma.workHour.groupBy({
           by: ['userId'],
           where: {
             task: { projectId },
             date: { gte: from, lte: to },
+            userId,
           },
           _sum: {
             duration: true,
@@ -72,12 +75,13 @@ export const Report = builder.objectType('Report', {
     }),
     groupedByDate: t.field({
       type: [ReportGroupedByDate],
-      resolve: async ({ projectId, from, to }) => {
+      resolve: async ({ projectId, from, to, userId }) => {
         const groupByDateResult = await prisma.workHour.groupBy({
           by: ['date'],
           where: {
             task: { projectId },
             date: { gte: from, lte: to },
+            userId,
           },
           _sum: {
             duration: true,
@@ -93,6 +97,7 @@ export const Report = builder.objectType('Report', {
             where: {
               task: { projectId },
               date: { equals: date },
+              userId,
             },
           }),
         }))

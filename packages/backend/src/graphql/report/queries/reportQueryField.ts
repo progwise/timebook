@@ -10,7 +10,13 @@ builder.queryField('report', (t) =>
       projectId: t.arg.id({ description: 'Project identifier' }),
       from: t.arg({ type: DateScalar }),
       to: t.arg({ type: DateScalar }),
+      userId: t.arg.id({ required: false, description: 'if not set all users will be included in the report' }),
     },
-    resolve: (_source, { projectId, from, to }) => ({ projectId: projectId.toString(), from, to }),
+    resolve: (_source, { projectId, from, to, userId }) => ({
+      projectId: projectId.toString(),
+      from,
+      to,
+      userId: userId?.toString() ?? undefined,
+    }),
   }),
 )

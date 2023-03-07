@@ -1,8 +1,7 @@
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
-import { User } from '../user'
-import { WorkHour } from '../workHour'
 import { prisma } from '../prisma'
+import { WorkHour } from '../workHour'
 
 export const Project = builder.prismaObject('Project', {
   select: {},
@@ -29,11 +28,32 @@ export const Project = builder.prismaObject('Project', {
         orderBy: { title: 'asc' },
       }),
     }),
-    members: t.field({
+    members: t.prismaField({
       description: 'List of users that are member of the project',
-      select: { projectMemberships: { select: { user: true } } },
-      type: [User],
-      resolve: (project) => project.projectMemberships.map((projectMembership) => projectMembership.user),
+      select: { id: true },
+      type: ['User'],
+      args: {
+        includePastMembers: t.arg.boolean({
+          defaultValue: false,
+          description:
+            'Set this to true if you want to see also the users who booked work hours on this project, but are no longer project members. This arg is useful for e.g. reports.',
+        }),
+      },
+      resolve: (query, project, { includePastMembers }) =>
+        prisma.user.findMany({
+          ...query,
+          where: includePastMembers
+            ? {
+                OR: [
+                  { projectMemberships: { some: { projectId: project.id } } },
+                  { workhours: { some: { task: { projectId: project.id } } } },
+                ],
+              }
+            : {
+                projectMemberships: { some: { projectId: project.id } },
+              },
+          orderBy: { name: 'asc' },
+        }),
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
