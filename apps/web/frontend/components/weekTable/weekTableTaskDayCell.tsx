@@ -11,7 +11,7 @@ interface WeekTableTaskDayCellProps {
   disabled: boolean
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, disabled: isdisabled }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, disabled }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useWorkHourUpdateMutation()
 
   return (
@@ -29,7 +29,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, disabled: isdisabl
           })
         }}
         workHours={duration / 60}
-        disabled={isdisabled}
+        disabled={disabled}
       />
     </TableCell>
   )
