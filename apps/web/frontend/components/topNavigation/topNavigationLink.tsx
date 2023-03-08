@@ -20,7 +20,7 @@ export const TopNavigationLink: React.FC<TopNavigationLinkProps> = ({
   if (href) {
     return (
       <Link href={href} passHref>
-        {href && router.asPath.startsWith(href) ? (
+        {href && router.asPath.endsWith(href) ? (
           <span className={`text-blue-500 underline  ${className}`}>{children}</span>
         ) : (
           <span className={`cursor-pointer text-gray-500 hover:text-blue-500  dark:text-white ${className}`}>
