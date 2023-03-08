@@ -18,7 +18,7 @@ export type Scalars = {
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  DateTime: string
+  DateTime: any
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -580,14 +580,14 @@ export type CurrentTrackingQuery = {
   __typename?: 'Query'
   currentTracking?: {
     __typename?: 'Tracking'
-    start: string
+    start: any
     task: { __typename?: 'Task'; title: string; id: string; project: { __typename?: 'Project'; title: string } }
   } | null
 }
 
 export type TrackingButtonsTrackingFragment = {
   __typename?: 'Tracking'
-  start: string
+  start: any
   task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
 }
 
@@ -599,7 +599,7 @@ export type TrackingStartMutationVariables = Exact<{
 
 export type TrackingStartMutation = {
   __typename?: 'Mutation'
-  trackingStart: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } }
+  trackingStart: { __typename?: 'Tracking'; start: any; task: { __typename?: 'Task'; id: string } }
 }
 
 export type TrackingStopMutationVariables = Exact<{ [key: string]: never }>
@@ -613,7 +613,7 @@ export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
 
 export type TrackingCancelMutation = {
   __typename?: 'Mutation'
-  trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
+  trackingCancel?: { __typename?: 'Tracking'; start: any; task: { __typename?: 'Task'; id: string } } | null
 }
 
 export type WeekTableProjectFragment = {
@@ -629,7 +629,7 @@ export type WeekTableProjectFragment = {
     project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     tracking?: {
       __typename?: 'Tracking'
-      start: string
+      start: any
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
   }>
@@ -650,7 +650,7 @@ export type WeekTableProjectRowGroupFragment = {
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     tracking?: {
       __typename?: 'Tracking'
-      start: string
+      start: any
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
   }>
@@ -685,7 +685,7 @@ export type WeekTableTaskRowFragment = {
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?: {
     __typename?: 'Tracking'
-    start: string
+    start: any
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
 }
@@ -777,7 +777,7 @@ export type WeekTableQuery = {
       project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
       tracking?: {
         __typename?: 'Tracking'
-        start: string
+        start: any
         task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
       } | null
     }>

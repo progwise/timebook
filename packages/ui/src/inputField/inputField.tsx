@@ -22,6 +22,7 @@ export interface InputFieldProps {
   form?: string
   hideLabel?: boolean
   onFocus?: React.FocusEventHandler<HTMLInputElement>
+  isDirty?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -52,7 +53,7 @@ export const InputField = React.forwardRef(
   ): JSX.Element => {
     const variantClassName: string = {
       primary:
-        'font-small px-2 py-1 border-b2 border border-gray-600 disabled:bg-gray-100 disabled:opacity-50 read-only:bg-gray-100 read-only:opacity-50',
+        'border border-gray-600 px-2 py-1 focus:bg-yellow-50 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
     }[variant]
 
     return (
@@ -82,7 +83,6 @@ export const InputField = React.forwardRef(
             form={form}
             onFocus={onFocus}
           />
-
           {loading && (
             <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
               <Spinner />

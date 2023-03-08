@@ -47,6 +47,7 @@ export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.p
 export interface TaskListProps {
   project: FragmentType<typeof TaskListProjectFragment>
   className?: string
+  isDirty?: boolean
 }
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
@@ -56,8 +57,11 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, errors },
-  } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<TaskFormData>({
+    resolver: zodResolver(taskInputSchema),
+    defaultValues: { title: '', hourlyRate: undefined },
+  })
   const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -97,26 +101,34 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     variant="primary"
-                    placeholder="Enter Taskname"
+                    placeholder="Enter task name"
                     className=" dark:bg-slate-800 dark:text-white"
                     {...register('title')}
                     errorMessage={errors.title?.message}
+                    isDirty={isDirty}
                   />
                 </form>
               </TableCell>
               <TableCell>
                 <InputField
                   variant="primary"
-                  placeholder="Enter Hourly Rate"
+                  placeholder="Enter hourly rate"
                   className=" dark:bg-slate-800 dark:text-white"
                   {...register('hourlyRate')}
                   errorMessage={errors.hourlyRate?.message}
                   type="number"
                   form="form-create-task"
+                  isDirty={isDirty}
                 />
               </TableCell>
               <TableCell>
-                <Button variant="secondary" type="submit" disabled={isSubmitting} form="form-create-task">
+                <Button
+                  variant="secondary"
+                  className="h-8"
+                  type="submit"
+                  disabled={isSubmitting}
+                  form="form-create-task"
+                >
                   Add task
                 </Button>
               </TableCell>
