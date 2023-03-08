@@ -60,8 +60,8 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       <Table className="min-w-full  dark:bg-slate-800">
         <TableHead>
           <TableHeadRow>
-            <TableHeadCell>Tasks</TableHeadCell>
-            <TableHeadCell className="text-center">Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell className="w-2/3">Tasks</TableHeadCell>
+            <TableHeadCell className="w-1/3 text-center">Billable / Hourly rate</TableHeadCell>
           </TableHeadRow>
         </TableHead>
         <TableBody>
@@ -86,7 +86,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     {...register('title')}
                     errorMessage={errors.title?.message}
                   />
-                  <Button className="whitespace-nowrap" variant="secondary" type="submit" disabled={isSubmitting}>
+                  <Button
+                    className="w-[90px] whitespace-nowrap"
+                    variant="secondary"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
                     Add task
                   </Button>
                 </form>

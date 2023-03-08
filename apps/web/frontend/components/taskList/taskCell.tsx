@@ -43,23 +43,26 @@ export const TaskCell = ({ task }: TaskCellProps) => {
   }
 
   return (
-    <>
-      {task.canModify && (
-        <Button ariaLabel="Delete Task" variant="danger" tooltip="Delete Task" onClick={() => setOpenDeleteModal(true)}>
-          <BiTrash />
-        </Button>
-      )}
-
+    <form className="flex w-full gap-4">
       <InputField
-        className="ml-2"
         variant="primary"
         {...register('title', { required: true })}
         onBlur={handleSubmit(handleSubmitTask)}
         loading={fetching}
         errorMessage={errors.title?.message}
       />
-
+      {task.canModify && (
+        <Button
+          ariaLabel="Delete Task"
+          variant="danger"
+          className="w-[90px]"
+          tooltip="Delete Task"
+          onClick={() => setOpenDeleteModal(true)}
+        >
+          <BiTrash />
+        </Button>
+      )}
       {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
-    </>
+    </form>
   )
 }
