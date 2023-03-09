@@ -1,9 +1,9 @@
+import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 
 import { Button, Spinner } from '@progwise/timebook-ui'
 
-import { format } from 'date-fns'
 import { ComboBox } from '../../frontend/components/combobox/combobox'
 import { ProjectList } from '../../frontend/components/projectList/projectList'
 import { ProjectTable } from '../../frontend/components/projectTable'

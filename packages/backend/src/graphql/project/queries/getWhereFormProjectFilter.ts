@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import { Prisma } from '@progwise/timebook-prisma'
+
 import { ProjectFilter } from '../projectsFilterEnum'
 
 export const getWhereFromProjectFilter = (

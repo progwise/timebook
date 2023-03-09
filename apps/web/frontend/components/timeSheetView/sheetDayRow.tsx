@@ -1,5 +1,7 @@
-import { FormattedDuration } from '@progwise/timebook-ui'
 import { format, isToday } from 'date-fns'
+
+import { FormattedDuration } from '@progwise/timebook-ui'
+
 import { WorkHourFragment } from '../../generated/graphql'
 
 interface SheetDayRowProps {

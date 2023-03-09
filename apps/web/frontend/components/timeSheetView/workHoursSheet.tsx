@@ -1,10 +1,11 @@
 import { eachMonthOfInterval, subMonths } from 'date-fns'
-
-import { Spinner } from '@progwise/timebook-ui'
 import { useState } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
+
+import { Spinner } from '@progwise/timebook-ui'
+
 import { DayWeekSwitch } from '../dayWeekSwitchButton'
-import { SheetMonth as SheetMonth } from './sheetMonth'
+import { SheetMonth } from './sheetMonth'
 
 export const WorkHoursSheet = (): JSX.Element => {
   const today = new Date()
