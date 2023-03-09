@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { useEffect, useMemo } from 'react'
+
 import { ReportUserFragment, useReportUsersQuery } from '../../generated/graphql'
 import { ComboBox } from '../combobox/combobox'
 
