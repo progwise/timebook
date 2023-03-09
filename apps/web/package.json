@@ -51,7 +51,7 @@
     "@graphql-codegen/typescript-msw": "^1.0.12",
     "@graphql-codegen/typescript-operations": "2.3.2",
     "@graphql-codegen/typescript-urql": "^3.6.4",
-    "@testing-library/dom": "^8.11.3",
+    "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^14.4.3",
