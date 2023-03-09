@@ -1,6 +1,0 @@
-import './teamAcceptInviteMutationField'
-import './teamArchiveMutationField'
-import './teamCreateMutationField'
-import './teamDeleteMutationField'
-import './teamUnarchiveMutationField'
-import './teamUpdateMutationField'

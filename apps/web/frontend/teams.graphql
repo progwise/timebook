@@ -1,5 +1,0 @@
-query teams($includeArchived: Boolean) {
-  teams(includeArchived: $includeArchived) {
-    ...Team
-  }
-}

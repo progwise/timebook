@@ -1,5 +1,0 @@
-mutation teamCreate($data: TeamInput!) {
-  teamCreate(data: $data) {
-    ...Team
-  }
-}

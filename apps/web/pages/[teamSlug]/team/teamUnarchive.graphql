@@ -1,5 +1,0 @@
-mutation teamUnarchive($id: ID!) {
-  teamUnarchive(teamId: $id) {
-    ...Team
-  }
-}

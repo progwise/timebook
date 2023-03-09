@@ -1,16 +1,12 @@
 import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 
 import { Button } from '@progwise/timebook-ui'
 
-import { TeamChoiceForm } from '../frontend/components/teamChoice/teamChoiceForm'
 import { TimebookPage } from '../frontend/components/timebookPage'
 
 export default function Home(): JSX.Element {
-  const router = useRouter()
   const session = useSession()
-  const handleManageTeams = () => router.push('/teams')
   return (
     <>
       <Head>
@@ -22,15 +18,7 @@ export default function Home(): JSX.Element {
       <TimebookPage>
         <h2 className="font-bold">Welcome</h2>
         <p>This is the new app for reporting your work.</p>
-        {session.status === 'authenticated' ? (
-          <>
-            <h3>Select your team</h3>
-            <TeamChoiceForm />
-            <Button variant="secondary" onClick={handleManageTeams}>
-              Manage your teams
-            </Button>
-          </>
-        ) : (
+        {session.status !== 'authenticated' && (
           <Button onClick={() => signIn('github')} variant="primary">
             Sign in
           </Button>
