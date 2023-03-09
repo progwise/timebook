@@ -89,100 +89,6 @@ type Mutation {
   ): Task!
 
   """
-  Accept an invite to a team
-  """
-  teamAcceptInvite(
-    """
-    Invite key of the team
-    """
-    inviteKey: String!
-  ): Team!
-
-  """
-  Archive a team
-  """
-  teamArchive(
-    """
-    id of the team
-    """
-    teamId: ID!
-  ): Team!
-
-  """
-  Create a new team
-  """
-  teamCreate(data: TeamInput!): Team!
-
-  """
-  Delete a team
-  """
-  teamDelete(
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
-
-  """
-  Unarchive a team
-  """
-  teamUnarchive(
-    """
-    Id of the team
-    """
-    teamId: ID!
-  ): Team!
-
-  """
-  Update a team
-  """
-  teamUpdate(
-    data: TeamInput!
-
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
-
-  """
-  Updates the user capacity minutes
-  """
-  userCapacityUpdate(
-    """
-    Capacity of minutes
-    """
-    availableMinutesPerWeek: Int
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-
-    """
-    Id of the user
-    """
-    userId: ID!
-  ): User!
-
-  """
-  Update a user role
-  """
-  userRoleUpdate(
-    role: Role!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-
-    """
-    Id of the user
-    """
-    userId: ID!
-  ): User!
-
-  """
   Create a new WorkHour
   """
   workHourCreate(data: WorkHourInput!): WorkHour!
@@ -289,26 +195,6 @@ type Query {
   ): Task!
 
   """
-  Return a team by a slug
-  """
-  teamBySlug(
-    """
-    slug of the team
-    """
-    slug: String!
-  ): Team!
-
-  """
-  Return all teams
-  """
-  teams(
-    """
-    Show archived teams
-    """
-    includeArchived: Boolean! = false
-  ): [Team!]!
-
-  """
   Returns a single user
   """
   user(
@@ -376,14 +262,6 @@ type ReportGroupedByUser {
   workHours: [WorkHour!]!
 }
 
-"""
-Roles a user can have in a team
-"""
-enum Role {
-  ADMIN
-  MEMBER
-}
-
 type Task implements ModifyInterface {
   archived: Boolean!
 
@@ -423,83 +301,11 @@ input TaskUpdateInput {
   title: String
 }
 
-type Team implements ModifyInterface {
-  archived: Boolean!
-
-  """
-  Can the user modify the entity
-  """
-  canModify: Boolean!
-
-  """
-  Identifier of the team
-  """
-  id: ID!
-  inviteKey: String!
-
-  """
-  All members of the team
-  """
-  members: [User!]!
-
-  """
-  Slug that is used in the team URL
-  """
-  slug: String!
-
-  """
-  Color theme of the team
-  """
-  theme: Theme!
-
-  """
-  Title of the team
-  """
-  title: String!
-}
-
-input TeamInput {
-  """
-  Slug that is used in the team URL
-  """
-  slug: String!
-
-  """
-  Color theme of the team
-  """
-  theme: Theme
-
-  """
-  Title of the team
-  """
-  title: String!
-}
-
-enum Theme {
-  BLUE
-  GRAY
-  GREEN
-  INDIGO
-  PINK
-  PURPLE
-  RED
-  YELLOW
-}
-
 type User {
-  """
-  Capacity of the user in the team
-  """
-  availableMinutesPerWeek(teamSlug: String!): Int
   durationWorkedOnProject(from: Date!, projectId: ID!, to: Date): Int!
   id: ID!
   image: String
   name: String
-
-  """
-  Role of the user in a team
-  """
-  role(teamSlug: String!): Role!
 }
 
 type WorkHour {
