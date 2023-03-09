@@ -2,12 +2,21 @@ import { render, screen, waitForElementToBeRemoved } from '@testing-library/reac
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
+import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
-import { testTask } from '../../mocks/testData'
-import { TaskRow } from './taskRow'
+import { TaskRow, TaskRowFragment } from './taskRow'
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+
+const testTask = makeFragmentData(
+  {
+    id: 'task1',
+    title: 'Task 1',
+    canModify: true,
+  },
+  TaskRowFragment,
+)
 
 jest.mock('next/router', () => ({
   useRouter() {
@@ -21,7 +30,7 @@ jest.mock('next/router', () => ({
 
 describe('TaskCell', () => {
   it('should be validation errors', async () => {
-    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -32,7 +41,7 @@ describe('TaskCell', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
   it('should be success', async () => {
-    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={testTask} />, { wrapper })
 
     const textBox = await screen.findByRole('textbox')
 
@@ -44,7 +53,7 @@ describe('TaskCell', () => {
   })
 
   it('should be possible to delete a task', async () => {
-    render(<TaskRow task={{ ...testTask, canModify: true }} />, { wrapper })
+    render(<TaskRow task={testTask} />, { wrapper })
 
     const deleteButton = screen.getByRole('button', { name: 'Delete Task' })
     expect(deleteButton).toBeInTheDocument()

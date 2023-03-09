@@ -8,7 +8,7 @@ interface ComboBoxProps<TOption extends { id: TIdType }, TIdType extends string>
   onChange: (id: TIdType | null) => void
   displayValue: (option: TOption) => string
   onBlur?: () => void
-  options: TOption[]
+  options: Readonly<TOption[]>
   noOptionLabel?: string
   onCreateNew?: (title: string) => Promise<TOption>
   isCreating?: boolean
