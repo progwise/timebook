@@ -1,5 +1,7 @@
-import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 import Image from 'next/image'
+
+import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
+
 import { SimpleUserFragment } from '../generated/graphql'
 
 interface ProjectMemberListProps {

@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import TimePage from './index.page'
-import '../../frontend/mocks/mockServer'
-import { Client, Provider } from 'urql'
 import { getWeek, getYear } from 'date-fns'
+import { Client, Provider } from 'urql'
+
+import '../../frontend/mocks/mockServer'
+import TimePage from './index.page'
 
 const now = new Date()
 const weekNumber = getWeek(now, { firstWeekContainsDate: 7, weekStartsOn: 1 })

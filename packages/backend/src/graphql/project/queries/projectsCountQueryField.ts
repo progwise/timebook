@@ -1,8 +1,8 @@
 import { builder } from '../../builder'
+import { prisma } from '../../prisma'
 import { DateScalar } from '../../scalars/date'
 import { ProjectFilterEnum } from '../projectsFilterEnum'
 import { getWhereFromProjectFilter } from './getWhereFormProjectFilter'
-import { prisma } from '../../prisma'
 
 export const projectsCountQueryField = builder.queryField('projectsCount', (t) =>
   t.withAuth({ isLoggedIn: true }).int({

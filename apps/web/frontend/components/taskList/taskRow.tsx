@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 
 import { Button, InputField, TableCell, TableRow } from '@progwise/timebook-ui'
+import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { TaskFragment, TaskUpdateInput, useTaskUpdateMutation } from '../../generated/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
-import { taskInputValidations } from '@progwise/timebook-validations'
 
 interface TaskRowProps {
   task: TaskFragment & { canModify: boolean }
