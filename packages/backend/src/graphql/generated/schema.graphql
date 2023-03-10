@@ -30,9 +30,9 @@ type Mutation {
   ): Project!
 
   """
-  Assign user to Project
+  Assign user to a project. This mutation can also be used for updating the role of a project member
   """
-  projectMembershipCreate(projectId: ID!, userId: ID!): Project!
+  projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
   Unassign user to Project
@@ -262,6 +262,14 @@ type ReportGroupedByUser {
   workHours: [WorkHour!]!
 }
 
+"""
+Roles a user can have in a team
+"""
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 type Task implements ModifyInterface {
   archived: Boolean!
 
@@ -306,6 +314,11 @@ type User {
   id: ID!
   image: String
   name: String
+
+  """
+  Role of the user in a project
+  """
+  role(projectId: ID!): Role!
 }
 
 type WorkHour {

@@ -8,11 +8,12 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const projectMembershipCreateMutation = gql`
-  mutation projectMembershipCreate($userID: ID!, $projectID: ID!) {
-    projectMembershipCreate(userId: $userID, projectId: $projectID) {
+  mutation projectMembershipCreate($userID: ID!, $projectID: ID!, $role: Role) {
+    projectMembershipCreate(userId: $userID, projectId: $projectID, role: $role) {
       title
       members {
         id
+        role(projectId: $projectID)
       }
     }
   }
@@ -22,11 +23,15 @@ beforeEach(async () => {
     data: [
       {
         id: '1',
-        name: 'User with project membership',
+        name: 'User with project membership (role=admin)',
       },
       {
         id: '2',
         name: 'User without project membership',
+      },
+      {
+        id: '3',
+        name: 'User with project membership (role=member)',
       },
     ],
   })
@@ -34,12 +39,16 @@ beforeEach(async () => {
     data: {
       title: 'P1',
       id: 'project1',
-      projectMemberships: { create: { userId: '1' } },
+      projectMemberships: {
+        createMany: {
+          data: [
+            { userId: '1', role: 'ADMIN' },
+            { userId: '3', role: 'MEMBER' },
+          ],
+        },
+      },
     },
   })
-  // await prisma.project.create({
-  //   data: { title: 'P2', id: 'project2' },
-  // })
 })
 afterEach(async () => {
   await prisma.project.deleteMany()
@@ -72,7 +81,34 @@ it('should throw error when user is not a project member', async () => {
   expect(response.data).toBeNull()
 })
 
-it('should create projectMembership when session user is project membership', async () => {
+it('should throw error when user is a project member but has role=Member', async () => {
+  const testServer = getTestServer({ userId: '3' })
+  const response = await testServer.executeOperation({
+    query: projectMembershipCreateMutation,
+    variables: {
+      userID: '2',
+      projectID: 'project1',
+    },
+  })
+  expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  expect(response.data).toBeNull()
+})
+
+it('should throw error when downgrading the last admin', async () => {
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({
+    query: projectMembershipCreateMutation,
+    variables: {
+      userID: '1',
+      projectID: 'project1',
+      role: 'MEMBER',
+    },
+  })
+  expect(response.errors).toEqual([new GraphQLError('Membership can not be changed because user is the last admin')])
+  expect(response.data).toBeNull()
+})
+
+it('should create projectMembership when session user is project membership and has role=admin', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -82,7 +118,16 @@ it('should create projectMembership when session user is project membership', as
     },
   })
   expect(response.errors).toBeUndefined()
-  expect(response.data).toEqual({ projectMembershipCreate: { title: 'P1', members: [{ id: '2' }, { id: '1' }] } })
+  expect(response.data).toEqual({
+    projectMembershipCreate: {
+      title: 'P1',
+      members: [
+        { id: '2', role: 'MEMBER' },
+        { id: '1', role: 'ADMIN' },
+        { id: '3', role: 'MEMBER' },
+      ],
+    },
+  })
 })
 
 it('user is already project member', async () => {
@@ -90,10 +135,19 @@ it('user is already project member', async () => {
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
     variables: {
-      userID: '1',
+      userID: '3',
       projectID: 'project1',
+      role: 'ADMIN',
     },
   })
   expect(response.errors).toBeUndefined()
-  expect(response.data).toEqual({ projectMembershipCreate: { title: 'P1', members: [{ id: '1' }] } })
+  expect(response.data).toEqual({
+    projectMembershipCreate: {
+      title: 'P1',
+      members: [
+        { id: '1', role: 'ADMIN' },
+        { id: '3', role: 'ADMIN' },
+      ],
+    },
+  })
 })

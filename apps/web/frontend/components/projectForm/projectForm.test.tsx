@@ -14,7 +14,9 @@ jest.mock('next/router', () => ({
   }),
 }))
 const client = new Client({ url: '/api/team1/graphql' })
-const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Provider value={client}>{children}</Provider>
+)
 
 describe('projectForm', () => {
   it('should submit a new project', async () => {

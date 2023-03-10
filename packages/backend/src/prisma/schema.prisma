@@ -43,6 +43,7 @@ model ProjectMembership {
   invitedAt        DateTime? @default(now())
   inviteAcceptedAt DateTime?
   updatedAt        DateTime  @updatedAt
+  role             Role      @default(MEMBER)
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
