@@ -1,4 +1,4 @@
-import { mockMyProjectsQuery, mockTimeTableQuery } from '../generated/graphql'
+import { mockMyProjectsQuery, mockWeekTableQuery } from '../generated/graphql'
 import { testProject1, testProject2 } from './testData'
 
 export const projectHandlers = [
@@ -11,7 +11,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockTimeTableQuery((_request, response, context) =>
+  mockWeekTableQuery((_request, response, context) =>
     response(
       context.data({
         __typename: 'Query',
