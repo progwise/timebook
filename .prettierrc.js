@@ -5,5 +5,5 @@ module.exports = {
   printWidth: 120,
   importOrder: ['<THIRD_PARTY_MODULES>', '^@progwise/(.*)$', '^[./]'],
   importOrderSeparation: true,
-  plugins: [require('@trivago/prettier-plugin-sort-imports'), require('prettier-plugin-tailwindcss')],
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 }

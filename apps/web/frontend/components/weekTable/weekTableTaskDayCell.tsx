@@ -1,5 +1,7 @@
-import { TableCell } from '@progwise/timebook-ui'
 import { format, isToday } from 'date-fns'
+
+import { TableCell } from '@progwise/timebook-ui'
+
 import { useWorkHourUpdateMutation } from '../../generated/graphql'
 import { HourInput } from '../hourInput'
 import { classNameMarkDay } from './classNameMarkDay'

@@ -38,5 +38,6 @@
       "inputs": [],
       "outputs": []
     }
-  }
+  },
+  "globalEnv": ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "NODE_ENV", "SECRET"]
 }

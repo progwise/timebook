@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router'
 import { format, startOfWeek, endOfWeek, isThisWeek } from 'date-fns'
+import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 
 import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { WeekTable } from '../../frontend/components/weekTable/weekTable'
 import { WeekSelector } from '../../frontend/components/weekSelector'
+import { WeekTable } from '../../frontend/components/weekTable/weekTable'
 import { useTimeTableQuery } from '../../frontend/generated/graphql'
 
 export interface TimePageProps {

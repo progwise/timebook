@@ -1,2 +1,0 @@
-import './teamBySlugQueryField'
-import './teamsQueryField'

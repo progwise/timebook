@@ -1,9 +1,10 @@
 /* eslint-disable unicorn/no-null */
 import { gql } from 'apollo-server-core'
+import { GraphQLError } from 'graphql'
+
 import { PrismaClient } from '@progwise/timebook-prisma'
 
 import { getTestServer } from '../../../getTestServer'
-import { GraphQLError } from 'graphql'
 
 const prisma = new PrismaClient()
 

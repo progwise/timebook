@@ -2,8 +2,8 @@ import { Table, TableBody, TableFoot, TableHead } from '@progwise/timebook-ui'
 
 import { ProjectWithWorkHoursFragment } from '../../generated/graphql'
 import { WeekTableDateHeaderRow } from './weekTableDateHeaderRow'
-import { WeekTableProjectRowGroup } from './weekTableProjectRowGroup'
 import { WeekTableFooterRow } from './weekTableFooterRow'
+import { WeekTableProjectRowGroup } from './weekTableProjectRowGroup'
 
 export interface WeekTableProps {
   tableData: ProjectWithWorkHoursFragment[]

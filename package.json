@@ -20,7 +20,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.1",
+    "@trivago/prettier-plugin-sort-imports": "^4.0.0",
     "dotenv-cli": "^6.0.0",
     "eslint-config-custom": "workspace:*",
     "prettier": "^2.8.0",
@@ -30,5 +30,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "pnpm@7.9.5"
+  "packageManager": "pnpm@7.29.1"
 }
