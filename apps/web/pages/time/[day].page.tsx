@@ -1,5 +1,6 @@
 import { isThisWeek, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+
 import TimePage from './index.page'
 
 const TimePageForASpecificDay = () => {

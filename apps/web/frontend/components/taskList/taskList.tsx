@@ -13,16 +13,15 @@ import {
   TableHead,
   TableHeadCell,
   TableHeadRow,
-  TableRow,
 } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
-import { TaskCell } from './taskCell'
+import { TaskRow } from './taskRow'
 
-export type TaskFormData = Pick<TaskInput, 'title'>
+export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
 
-export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true })
+export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true, hourlyRate: true })
 
 export interface TaskListProps {
   tasks: (TaskFragment & { canModify: boolean })[]
@@ -45,7 +44,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       const result = await taskCreate({
         data: {
           projectId: project.id,
-          title: taskData.title,
+          ...taskData,
         },
       })
       if (result.error) {
@@ -60,25 +59,21 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       <Table className="min-w-full  dark:bg-slate-800">
         <TableHead>
           <TableHeadRow>
-            <TableHeadCell className="w-2/3">Tasks</TableHeadCell>
-            <TableHeadCell className="w-1/3 text-center">Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell>Tasks</TableHeadCell>
+            <TableHeadCell>Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell />
           </TableHeadRow>
         </TableHead>
         <TableBody>
           {tasks.map((task) => (
-            <TableRow key={task.id}>
-              <TableCell className="mt-1 flex items-center">
-                <TaskCell task={task} />
-              </TableCell>
-              <TableCell className="text-center">{task.hourlyRate ?? 'No'}</TableCell>
-            </TableRow>
+            <TaskRow task={task} key={task.id} />
           ))}
         </TableBody>
         {project.canModify && (
           <TableFoot>
             <TableFootRow>
               <TableCell>
-                <form className="flex items-center gap-4" onSubmit={handleSubmit(handleAddTask)}>
+                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     variant="primary"
                     placeholder="Enter Taskname"
@@ -86,15 +81,23 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     {...register('title')}
                     errorMessage={errors.title?.message}
                   />
-                  <Button
-                    className="w-[90px] whitespace-nowrap"
-                    variant="secondary"
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    Add task
-                  </Button>
                 </form>
+              </TableCell>
+              <TableCell>
+                <InputField
+                  variant="primary"
+                  placeholder="Enter Hourly Rate"
+                  className=" dark:bg-slate-800 dark:text-white"
+                  {...register('hourlyRate')}
+                  errorMessage={errors.hourlyRate?.message}
+                  type="number"
+                  form="form-create-task"
+                />
+              </TableCell>
+              <TableCell>
+                <Button variant="secondary" type="submit" disabled={isSubmitting} form="form-create-task">
+                  Add task
+                </Button>
               </TableCell>
             </TableFootRow>
           </TableFoot>

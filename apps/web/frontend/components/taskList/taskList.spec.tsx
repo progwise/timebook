@@ -8,7 +8,9 @@ import { TaskList } from './taskList'
 
 const client = new Client({ url: '/api/graphql' })
 
-const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Provider value={client}>{children}</Provider>
+)
 
 const tasks: (TaskFragment & { canModify: boolean })[] = [
   {
@@ -66,5 +68,17 @@ describe('TaskList', () => {
 
       await waitFor(() => expect(titleInput).toHaveValue(''))
     })
+  })
+
+  it('should update hourly rates', async () => {
+    render(<TaskList tasks={tasks} project={project} />, { wrapper })
+    const hourlyRateInput = screen.getByRole('spinbutton', {
+      name: /hourly rate/i,
+    })
+    await userEvent.type(hourlyRateInput, '100')
+    await userEvent.tab()
+    const spinner = await screen.findByRole('progressbar')
+    expect(spinner).toBeInTheDocument()
+    await waitForElementToBeRemoved(spinner)
   })
 })

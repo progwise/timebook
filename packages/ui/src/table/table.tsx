@@ -1,5 +1,6 @@
 export interface DefaultTableComponentProps {
   className?: string
+  children?: React.ReactNode
 }
 
 export const Table: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
@@ -17,7 +18,7 @@ export const TableHeadRow: React.FC<DefaultTableComponentProps> = ({ children, c
 
 export const TableHeadCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
   return (
-    <th className={`border-b bg-gray-100 p-2 text-left text-gray-600 dark:bg-slate-800  dark:text-white ${className}`}>
+    <th className={`border-b bg-gray-100 p-2 text-left text-gray-600 dark:bg-slate-800 dark:text-white${className}`}>
       {children}
     </th>
   )

@@ -1,5 +1,0 @@
-mutation teamUpdate($id: ID!, $data: TeamInput!) {
-  teamUpdate(id: $id, data: $data) {
-    ...Team
-  }
-}

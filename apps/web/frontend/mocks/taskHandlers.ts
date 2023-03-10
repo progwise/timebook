@@ -41,7 +41,7 @@ export const taskHandlers = [
         taskUpdate: {
           ...testTask,
           id: request.variables.id,
-          title: request.variables.data.title,
+          title: request.variables.data.title ?? '',
         },
       }),
     ),

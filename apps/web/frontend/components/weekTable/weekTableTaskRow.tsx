@@ -1,5 +1,7 @@
-import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 import { eachDayOfInterval, isSameDay, parseISO } from 'date-fns'
+
+import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
+
 import { TaskWithWorkHoursFragment } from '../../generated/graphql'
 import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
 

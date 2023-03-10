@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { TaskInput } from '../taskInput'
+import { TaskUpdateInput } from '../taskUpdateInput'
 
 builder.mutationField('taskUpdate', (t) =>
   t.prismaField({
@@ -8,7 +8,7 @@ builder.mutationField('taskUpdate', (t) =>
     description: 'Update a task',
     args: {
       id: t.arg.id({ description: 'id of the task' }),
-      data: t.arg({ type: TaskInput }),
+      data: t.arg({ type: TaskUpdateInput }),
     },
     authScopes: async (_source, { id, data: { projectId } }) => {
       const task = await prisma.task.findUniqueOrThrow({
@@ -16,19 +16,19 @@ builder.mutationField('taskUpdate', (t) =>
         where: { id: id.toString() },
       })
 
-      return {
-        $all: {
-          isProjectMember: task.projectId,
-          // Using $all allows us to run the isProjectMember check twice, once for the previous project and once for the new assigned project
-          $all: { isProjectMember: projectId.toString() },
-        },
+      const oldProjectId = task.projectId
+      if (projectId) {
+        const newProjectId = projectId.toString()
+        return { isAdminByProjects: [oldProjectId, newProjectId] }
       }
+
+      return { isAdminByProject: oldProjectId }
     },
-    resolve: (query, _source, { id, data: { title, projectId } }) =>
+    resolve: (query, _source, { id, data: { title, projectId, hourlyRate } }) =>
       prisma.task.update({
         ...query,
         where: { id: id.toString() },
-        data: { title, projectId: projectId.toString() },
+        data: { title: title ?? undefined, projectId: projectId?.toString(), hourlyRate },
       }),
   }),
 )

@@ -1,5 +1,6 @@
 import { builder } from '../builder'
 import { prisma } from '../prisma'
+import { DateScalar } from '../scalars/date'
 import { RoleEnum } from './role'
 
 export const User = builder.prismaObject('User', {
@@ -10,38 +11,44 @@ export const User = builder.prismaObject('User', {
     image: t.exposeString('image', { nullable: true }),
     role: t.field({
       type: RoleEnum,
-      args: { teamSlug: t.arg.string() },
+      args: { projectId: t.arg.id() },
       select: { id: true },
-      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
-      description: 'Role of the user in a team',
-      resolve: async (user, { teamSlug }) => {
-        const teamMembership = await prisma.teamMembership.findFirstOrThrow({
+      authScopes: (_user, { projectId }) => ({ isMemberByProject: projectId.toString() }),
+      description: 'Role of the user in a project',
+      resolve: async (user, { projectId }) => {
+        const projectMembership = await prisma.projectMembership.findUniqueOrThrow({
+          select: { role: true },
           where: {
-            userId: user.id,
-            team: { slug: teamSlug },
+            userId_projectId: {
+              userId: user.id,
+              projectId: projectId.toString(),
+            },
           },
         })
-        return teamMembership.role
+        return projectMembership.role
       },
     }),
-    availableMinutesPerWeek: t.field({
-      type: 'Int',
-      nullable: true,
-      args: { teamSlug: t.arg.string() },
+    durationWorkedOnProject: t.int({
       select: { id: true },
-      authScopes: (_user, { teamSlug }) => ({ isTeamMemberByTeamSlug: teamSlug }),
-      description: 'Capacity of the user in the team',
-      resolve: async (user, _arguments) => {
-        const slug = _arguments.teamSlug
-
-        const membership = await prisma.teamMembership.findFirstOrThrow({
+      args: {
+        projectId: t.arg.id(),
+        from: t.arg({ type: DateScalar }),
+        to: t.arg({ type: DateScalar, required: false }),
+      },
+      authScopes: (_user, { projectId }) => ({ isMemberByProject: projectId.toString() }),
+      resolve: async (user, { projectId, from, to }) => {
+        const aggregationResult = await prisma.workHour.aggregate({
+          _sum: { duration: true },
           where: {
             userId: user.id,
-            team: { slug },
+            task: { projectId: projectId.toString() },
+            date: {
+              gte: from,
+              lte: to ?? from,
+            },
           },
         })
-
-        return membership.availableMinutesPerWeek
+        return aggregationResult._sum.duration ?? 0
       },
     }),
   }),

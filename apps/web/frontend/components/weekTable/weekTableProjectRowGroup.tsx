@@ -1,5 +1,7 @@
-import { TableCell, TableRow } from '@progwise/timebook-ui'
 import { eachDayOfInterval, isToday } from 'date-fns'
+
+import { TableCell, TableRow } from '@progwise/timebook-ui'
+
 import { ProjectWithWorkHoursFragment } from '../../generated/graphql'
 import { classNameMarkDay } from './classNameMarkDay'
 import { WeekTableTaskRow } from './weekTableTaskRow'

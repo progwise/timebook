@@ -1,0 +1,14 @@
+query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {
+  project(projectId: $projectId) {
+    id
+    members(includePastMembers: true) {
+      ...ReportUser
+      durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
+    }
+  }
+}
+fragment ReportUser on User {
+  id
+  name
+  durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
+}

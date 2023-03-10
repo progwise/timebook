@@ -1,16 +1,8 @@
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableHeadRow,
-  TableRow,
-} from '@progwise/timebook-ui'
 import Image from 'next/image'
-import { SimpleUserFragment } from '../generated/graphql'
-import { AddProjectMember } from './addProjectMember'
+
+import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
+
+import { Role, SimpleUserFragment } from '../generated/graphql'
 
 interface ProjectMemberListProps {
   users: SimpleUserFragment[]
@@ -52,6 +44,7 @@ export const ProjectMemberList = ({ users }: ProjectMemberListProps) => (
               )}
               {user.name}
             </TableCell>
+            <TableCell>{user.role === Role.Admin && 'Admin'}</TableCell>
           </TableRow>
         ))}
         <TableRow>

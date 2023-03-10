@@ -2,7 +2,7 @@ import React, { KeyboardEventHandler } from 'react'
 
 import { Spinner } from '../spinner'
 
-interface InputFieldProps {
+export interface InputFieldProps {
   name?: string
   value?: string
   onBlur?: (event: React.FocusEvent) => void
@@ -17,7 +17,9 @@ interface InputFieldProps {
   errorMessage?: string
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
-  type?: string
+  type?: 'number' | 'text'
+  form?: string
+  hideLabel?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -37,7 +39,9 @@ export const InputField = React.forwardRef(
       label,
       errorMessage,
       loading,
-      type = 'text',
+      type,
+      form,
+      hideLabel = false,
     }: InputFieldProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -49,7 +53,7 @@ export const InputField = React.forwardRef(
 
     return (
       <div className={`flex w-full flex-col gap-1 ${className}`}>
-        {label && (
+        {label && !hideLabel && (
           <label htmlFor={name} className="text-sm font-semibold text-gray-500">
             {label}
           </label>
@@ -57,7 +61,7 @@ export const InputField = React.forwardRef(
         <span className="relative">
           <input
             aria-label={label}
-            className={`dark:placeholder-grey w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+            className={`w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''
             }`}
             type={type}
@@ -71,6 +75,7 @@ export const InputField = React.forwardRef(
             onKeyPress={onKeyPress}
             name={name}
             size={size}
+            form={form}
           />
 
           {loading && (

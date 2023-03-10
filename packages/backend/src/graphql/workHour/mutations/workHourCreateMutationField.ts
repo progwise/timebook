@@ -9,14 +9,7 @@ builder.mutationField('workHourCreate', (t) =>
     args: {
       data: t.arg({ type: WorkHourInput }),
     },
-    authScopes: async (_source, { data: { taskId } }) => {
-      const task = await prisma.task.findUniqueOrThrow({
-        select: { projectId: true },
-        where: { id: taskId.toString() },
-      })
-
-      return { isProjectMember: task.projectId }
-    },
+    authScopes: (_source, { data: { taskId } }) => ({ isMemberByTask: taskId.toString() }),
     resolve: (query, _source, { data: { date, duration, taskId } }, context) => {
       const workHourKey = {
         date,

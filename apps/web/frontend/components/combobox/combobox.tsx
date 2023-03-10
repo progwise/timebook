@@ -2,14 +2,14 @@ import { Combobox as HUCombobox, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { HiCheck, HiSelector } from 'react-icons/hi'
 
-interface ComboBoxProps<TOption> {
+interface ComboBoxProps<TOption extends { id: TIdType }, TIdType extends string> {
   value?: TOption
   disabled?: boolean
-  onChange: (id: string | null) => void
+  onChange: (id: TIdType | null) => void
   displayValue: (option: TOption) => string
   onBlur?: () => void
   options: TOption[]
-  noOptionLabel: string
+  noOptionLabel?: string
   onCreateNew?: (title: string) => Promise<TOption>
   isCreating?: boolean
 }
@@ -18,7 +18,7 @@ type NewOption = 'newOption'
 
 type NoOption = 'noOption'
 
-export const ComboBox = <TOption extends { id: string }>({
+export const ComboBox = <TOption extends { id: TIdType }, TIdType extends string = string>({
   value,
   disabled,
   onChange,
@@ -28,15 +28,15 @@ export const ComboBox = <TOption extends { id: string }>({
   noOptionLabel,
   onCreateNew,
   isCreating,
-}: ComboBoxProps<TOption>): JSX.Element => {
+}: ComboBoxProps<TOption, TIdType>): JSX.Element => {
   const [inputQuery, setInputQuery] = useState('')
 
-  const generateLabel = (option: TOption | NewOption | NoOption) => {
+  const generateLabel = (option: TOption | NewOption | NoOption): string => {
     if (option === 'newOption') {
       return `Create "${inputQuery}"`
     }
     if (option === 'noOption') {
-      return noOptionLabel
+      return noOptionLabel ?? 'No option'
     }
     return displayValue(option)
   }
@@ -64,7 +64,13 @@ export const ComboBox = <TOption extends { id: string }>({
 
   const showCreateOption = !!onCreateNew && inputQuery.length > 0 && !optionTitleExists
 
-  const allOptions: (TOption | NewOption | NoOption)[] = ['noOption', ...filteredOptions]
+  const allOptions: (TOption | NewOption | NoOption)[] = []
+
+  if (noOptionLabel) {
+    allOptions.push('noOption')
+  }
+
+  allOptions.push(...filteredOptions)
 
   if (showCreateOption) {
     allOptions.push('newOption')
