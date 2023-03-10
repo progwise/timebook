@@ -44,9 +44,10 @@ export const Task = builder.prismaObject('Task', {
       select: { projectId: true },
       resolve: async (task, _arguments, context) => {
         const projectMembership = await prisma.projectMembership.findUnique({
+          select: { role: true },
           where: { userId_projectId: { projectId: task.projectId, userId: context.session.user.id } },
         })
-        return !!projectMembership
+        return projectMembership?.role === 'ADMIN'
       },
     }),
   }),
