@@ -9,7 +9,7 @@ builder.mutationField('workHourCreate', (t) =>
     args: {
       data: t.arg({ type: WorkHourInput }),
     },
-    authScopes: (_source, { data: { taskId } }) => ({ isTaskAdmin: taskId.toString() }),
+    authScopes: (_source, { data: { taskId } }) => ({ isMemberByTask: taskId.toString() }),
     resolve: (query, _source, { data: { date, duration, taskId } }, context) => {
       const workHourKey = {
         date,

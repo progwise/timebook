@@ -30,11 +30,11 @@ builder.mutationField('workHourUpdate', (t) =>
       const newProjectId = newAssignedTask.projectId
 
       if (!workHour) {
-        return { isProjectMember: newProjectId }
+        return { isMemberByProject: newProjectId }
       }
 
       const oldProjectId = workHour.task.projectId
-      return { isProjectMemberOfMultipleProjects: [oldProjectId, newProjectId] }
+      return { isMemberByProjects: [oldProjectId, newProjectId] }
     },
     resolve: (query, _source, { data, date, taskId }, context) =>
       prisma.workHour.upsert({

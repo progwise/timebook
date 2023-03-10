@@ -10,7 +10,7 @@ builder.mutationField('projectMembershipDelete', (t) =>
       userId: t.arg.id(),
       projectId: t.arg.id(),
     },
-    authScopes: (_source, { projectId }) => ({ isProjectAdmin: projectId.toString() }),
+    authScopes: (_source, { projectId }) => ({ isAdminByProject: projectId.toString() }),
     resolve: async (query, _source, { userId, projectId }) => {
       const projectMembership = await prisma.projectMembership.findUnique({
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },

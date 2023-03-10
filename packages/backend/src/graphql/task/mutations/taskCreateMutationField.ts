@@ -9,7 +9,7 @@ builder.mutationField('taskCreate', (t) =>
     args: {
       data: t.arg({ type: TaskInput }),
     },
-    authScopes: (_source, { data: { projectId } }) => ({ isProjectAdmin: projectId.toString() }),
+    authScopes: (_source, { data: { projectId } }) => ({ isAdminByProject: projectId.toString() }),
     resolve: (query, _source, { data: { title, projectId, hourlyRate } }) =>
       prisma.task.create({
         ...query,

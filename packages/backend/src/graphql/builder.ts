@@ -16,20 +16,22 @@ export const builder = new SchemaBuilder<{
   AuthScopes: {
     isLoggedIn: boolean
     hasUserId: string
-    isProjectMember: string
-    isProjectMemberOfMultipleProjects: string[]
-    isProjectAdmin: string
-    isProjectAdminOfMultipleProjects: string[]
-    isTaskAdmin: string
+    isMemberByProject: string
+    isMemberByProjects: string[]
+    isMemberByTask: string
+    isAdminByProject: string
+    isAdminByProjects: string[]
+    isAdminByTask: string
   }
   AuthContexts: {
     isLoggedIn: LoggedInContext
     hasUserId: LoggedInContext
-    isProjectMember: LoggedInContext
-    isProjectMemberOfMultipleProjects: LoggedInContext
-    isProjectAdmin: LoggedInContext
-    isProjectAdminOfMultipleProjects: LoggedInContext
-    isTaskAdmin: LoggedInContext
+    isMemberByProject: LoggedInContext
+    isMemberByProjects: LoggedInContext
+    isMemberByTask: LoggedInContext
+    isAdminByProject: LoggedInContext
+    isAdminByProjects: LoggedInContext
+    isAdminByTask: LoggedInContext
   }
   Scalars: {
     Date: {
@@ -56,7 +58,7 @@ export const builder = new SchemaBuilder<{
   authScopes: (context) => ({
     isLoggedIn: !!context.session,
     hasUserId: (userId: string) => context.session?.user.id === userId,
-    isProjectMember: async (projectId) => {
+    isMemberByProject: async (projectId) => {
       if (!context.session) {
         return false
       }
@@ -72,7 +74,7 @@ export const builder = new SchemaBuilder<{
 
       return !!projectMembership
     },
-    isProjectMemberOfMultipleProjects: async (projectIds) => {
+    isMemberByProjects: async (projectIds) => {
       if (!context.session) {
         return false
       }
@@ -84,7 +86,22 @@ export const builder = new SchemaBuilder<{
 
       return projectMembershipsCount === uniqueProjectIds.length
     },
-    isProjectAdmin: async (projectId) => {
+    isMemberByTask: async (taskId) => {
+      if (!context.session) {
+        return false
+      }
+
+      const projectMembership = await prisma.projectMembership.findFirst({
+        select: { role: true },
+        where: {
+          userId: context.session.user.id,
+          project: { tasks: { some: { id: taskId } } },
+        },
+      })
+
+      return !!projectMembership
+    },
+    isAdminByProject: async (projectId) => {
       if (!context.session) {
         return false
       }
@@ -101,7 +118,7 @@ export const builder = new SchemaBuilder<{
 
       return projectMembership?.role === 'ADMIN'
     },
-    isProjectAdminOfMultipleProjects: async (projectIds) => {
+    isAdminByProjects: async (projectIds) => {
       if (!context.session) {
         return false
       }
@@ -116,7 +133,7 @@ export const builder = new SchemaBuilder<{
 
       return projectMembershipsCount === uniqueProjectIds.length
     },
-    isTaskAdmin: async (taskId) => {
+    isAdminByTask: async (taskId) => {
       if (!context.session) {
         return false
       }

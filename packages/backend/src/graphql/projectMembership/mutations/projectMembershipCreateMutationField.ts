@@ -12,7 +12,7 @@ builder.mutationField('projectMembershipCreate', (t) =>
       projectId: t.arg.id(),
       role: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
     },
-    authScopes: (_source, { projectId }) => ({ isProjectAdmin: projectId.toString() }),
+    authScopes: (_source, { projectId }) => ({ isAdminByProject: projectId.toString() }),
     resolve: async (query, _source, { userId, projectId, role }) => {
       if (role === 'MEMBER' && (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString()))) {
         throw new Error('Membership can not be changed because user is the last admin')

@@ -19,10 +19,10 @@ builder.mutationField('taskUpdate', (t) =>
       const oldProjectId = task.projectId
       if (projectId) {
         const newProjectId = projectId.toString()
-        return { isProjectAdminOfMultipleProjects: [oldProjectId, newProjectId] }
+        return { isAdminByProjects: [oldProjectId, newProjectId] }
       }
 
-      return { isProjectAdmin: oldProjectId }
+      return { isAdminByProject: oldProjectId }
     },
     resolve: (query, _source, { id, data: { title, projectId, hourlyRate } }) =>
       prisma.task.update({

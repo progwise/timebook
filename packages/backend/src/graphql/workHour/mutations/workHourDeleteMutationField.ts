@@ -15,7 +15,7 @@ builder.mutationField('workHourDelete', (t) =>
       })
 
       return {
-        isTaskAdmin: workHour.taskId,
+        isAdminByTask: workHour.taskId,
         hasUserId: workHour.userId,
       }
     },

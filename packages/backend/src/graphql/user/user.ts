@@ -13,7 +13,7 @@ export const User = builder.prismaObject('User', {
       type: RoleEnum,
       args: { projectId: t.arg.id() },
       select: { id: true },
-      authScopes: (_user, { projectId }) => ({ isProjectMember: projectId.toString() }),
+      authScopes: (_user, { projectId }) => ({ isMemberByProject: projectId.toString() }),
       description: 'Role of the user in a project',
       resolve: async (user, { projectId }) => {
         const projectMembership = await prisma.projectMembership.findUniqueOrThrow({
@@ -35,7 +35,7 @@ export const User = builder.prismaObject('User', {
         from: t.arg({ type: DateScalar }),
         to: t.arg({ type: DateScalar, required: false }),
       },
-      authScopes: (_user, { projectId }) => ({ isProjectMember: projectId.toString() }),
+      authScopes: (_user, { projectId }) => ({ isMemberByProject: projectId.toString() }),
       resolve: async (user, { projectId, from, to }) => {
         const aggregationResult = await prisma.workHour.aggregate({
           _sum: { duration: true },
