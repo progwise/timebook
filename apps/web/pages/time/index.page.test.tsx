@@ -9,7 +9,9 @@ const now = new Date()
 const weekNumber = getWeek(now, { firstWeekContainsDate: 7, weekStartsOn: 1 })
 const yearNumber = getYear(now)
 const client = new Client({ url: '/api/graphql' })
-const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Provider value={client}>{children}</Provider>
+)
 
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated' }),
