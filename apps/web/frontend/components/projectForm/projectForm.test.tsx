@@ -4,7 +4,7 @@ import { Client, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
-import { DeleteProjectModal, DeleteProjectModalFragment } from '../deleteProjectModal'
+import { DeleteProjectModalFragment } from '../deleteProjectModal'
 import { ProjectForm, ProjectFormFragment } from './projectForm'
 
 jest.mock('next/router', () => ({
