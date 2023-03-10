@@ -1,19 +1,29 @@
-import { format, isToday } from 'date-fns'
+import { format, getMonth, getYear, isToday } from 'date-fns'
+import { useSession } from 'next-auth/react'
 
 import { TableCell } from '@progwise/timebook-ui'
 
-import { useWorkHourUpdateMutation } from '../../generated/graphql'
+import { useIsLockedQuery, useWorkHourUpdateMutation } from '../../generated/graphql'
 import { HourInput } from '../hourInput'
 import { classNameMarkDay } from './classNameMarkDay'
 
 interface WeekTableTaskDayCellProps {
   duration: number
   taskId: string
+  projectId: string
   day: Date
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useWorkHourUpdateMutation()
+  const session = useSession()
+  const userId = session.data?.user.id
+
+  const year = getYear(day)
+  const month = getMonth(day)
+
+  const [{ data }] = useIsLockedQuery({ variables: { year, month, userId: userId ?? '', projectId }, pause: !userId })
+  const isLockedByReport = data?.report.isLocked ?? false
 
   return (
     <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>
@@ -30,6 +40,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day }: WeekTableTaskDay
           })
         }}
         workHours={duration / 60}
+        disabled={isLockedByReport}
       />
     </TableCell>
   )

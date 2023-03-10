@@ -42,6 +42,8 @@ export type Mutation = {
   projectMembershipDelete: Project
   /** Update a project */
   projectUpdate: Project
+  reportLock: Report
+  reportUnlock: Report
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
@@ -80,6 +82,20 @@ export type MutationProjectMembershipDeleteArgs = {
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
+}
+
+export type MutationReportLockArgs = {
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  year: Scalars['Int']
+}
+
+export type MutationReportUnlockArgs = {
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  year: Scalars['Int']
 }
 
 export type MutationTaskArchiveArgs = {
@@ -183,10 +199,10 @@ export type QueryProjectsCountArgs = {
 }
 
 export type QueryReportArgs = {
-  from: Scalars['Date']
+  month: Scalars['Int']
   projectId: Scalars['ID']
-  to: Scalars['Date']
   userId?: InputMaybe<Scalars['ID']>
+  year: Scalars['Int']
 }
 
 export type QueryTaskArgs = {
@@ -208,6 +224,8 @@ export type Report = {
   groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
   groupedByUser: Array<ReportGroupedByUser>
+  /** If set to true the work hours can not be updated */
+  isLocked: Scalars['Boolean']
 }
 
 export type ReportGroupedByDate = {
@@ -336,6 +354,15 @@ export type ReportUserFragment = {
   name?: string | null
   durationWorkedOnProject: number
 }
+
+export type IsLockedQueryVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type IsLockedQuery = { __typename: 'Query'; report: { __typename: 'Report'; isLocked: boolean } }
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -646,8 +673,8 @@ export type ProjectCountsQuery = {
 
 export type ReportQueryVariables = Exact<{
   projectId: Scalars['ID']
-  from: Scalars['Date']
-  to: Scalars['Date']
+  month: Scalars['Int']
+  year: Scalars['Int']
   userId?: InputMaybe<Scalars['ID']>
   groupByUser: Scalars['Boolean']
 }>
@@ -656,6 +683,7 @@ export type ReportQuery = {
   __typename: 'Query'
   report: {
     __typename: 'Report'
+    isLocked: boolean
     groupedByDate: Array<{
       __typename: 'ReportGroupedByDate'
       date: string
@@ -692,6 +720,24 @@ export type ReportQuery = {
     }>
   }
 }
+
+export type ReportLockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportLockMutation = { __typename: 'Mutation'; reportLock: { __typename: 'Report'; isLocked: boolean } }
+
+export type ReportUnlockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportUnlockMutation = { __typename: 'Mutation'; reportUnlock: { __typename: 'Report'; isLocked: boolean } }
 
 export type TimeTableQueryVariables = Exact<{
   from: Scalars['Date']
@@ -855,6 +901,17 @@ export const ReportUsersDocument = gql`
 
 export function useReportUsersQuery(options: Omit<Urql.UseQueryArgs<ReportUsersQueryVariables>, 'query'>) {
   return Urql.useQuery<ReportUsersQuery, ReportUsersQueryVariables>({ query: ReportUsersDocument, ...options })
+}
+export const IsLockedDocument = gql`
+  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+      isLocked
+    }
+  }
+`
+
+export function useIsLockedQuery(options: Omit<Urql.UseQueryArgs<IsLockedQueryVariables>, 'query'>) {
+  return Urql.useQuery<IsLockedQuery, IsLockedQueryVariables>({ query: IsLockedDocument, ...options })
 }
 export const ProjectDocument = gql`
   query project($projectId: ID!) {
@@ -1025,8 +1082,8 @@ export function useProjectCountsQuery(options: Omit<Urql.UseQueryArgs<ProjectCou
   return Urql.useQuery<ProjectCountsQuery, ProjectCountsQueryVariables>({ query: ProjectCountsDocument, ...options })
 }
 export const ReportDocument = gql`
-  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
-    report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
+  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {
+    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {
       groupedByDate {
         date
         duration
@@ -1070,12 +1127,35 @@ export const ReportDocument = gql`
           duration
         }
       }
+      isLocked
     }
   }
 `
 
 export function useReportQuery(options: Omit<Urql.UseQueryArgs<ReportQueryVariables>, 'query'>) {
   return Urql.useQuery<ReportQuery, ReportQueryVariables>({ query: ReportDocument, ...options })
+}
+export const ReportLockDocument = gql`
+  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+      isLocked
+    }
+  }
+`
+
+export function useReportLockMutation() {
+  return Urql.useMutation<ReportLockMutation, ReportLockMutationVariables>(ReportLockDocument)
+}
+export const ReportUnlockDocument = gql`
+  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+      isLocked
+    }
+  }
+`
+
+export function useReportUnlockMutation() {
+  return Urql.useMutation<ReportUnlockMutation, ReportUnlockMutationVariables>(ReportUnlockDocument)
 }
 export const TimeTableDocument = gql`
   query timeTable($from: Date!, $to: Date) {
@@ -1104,6 +1184,21 @@ export function useTimeTableQuery(options: Omit<Urql.UseQueryArgs<TimeTableQuery
 export const mockReportUsersQuery = (
   resolver: ResponseResolver<GraphQLRequest<ReportUsersQueryVariables>, GraphQLContext<ReportUsersQuery>, any>,
 ) => graphql.query<ReportUsersQuery, ReportUsersQueryVariables>('reportUsers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockIsLockedQuery((req, res, ctx) => {
+ *   const { year, month, projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ report })
+ *   )
+ * })
+ */
+export const mockIsLockedQuery = (
+  resolver: ResponseResolver<GraphQLRequest<IsLockedQueryVariables>, GraphQLContext<IsLockedQuery>, any>,
+) => graphql.query<IsLockedQuery, IsLockedQueryVariables>('isLocked', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1329,7 +1424,7 @@ export const mockProjectCountsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportQuery((req, res, ctx) => {
- *   const { projectId, from, to, userId, groupByUser } = req.variables;
+ *   const { projectId, month, year, userId, groupByUser } = req.variables;
  *   return res(
  *     ctx.data({ report })
  *   )
@@ -1338,6 +1433,36 @@ export const mockProjectCountsQuery = (
 export const mockReportQuery = (
   resolver: ResponseResolver<GraphQLRequest<ReportQueryVariables>, GraphQLContext<ReportQuery>, any>,
 ) => graphql.query<ReportQuery, ReportQueryVariables>('report', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockReportLockMutation((req, res, ctx) => {
+ *   const { year, month, projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ reportLock })
+ *   )
+ * })
+ */
+export const mockReportLockMutation = (
+  resolver: ResponseResolver<GraphQLRequest<ReportLockMutationVariables>, GraphQLContext<ReportLockMutation>, any>,
+) => graphql.mutation<ReportLockMutation, ReportLockMutationVariables>('reportLock', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockReportUnlockMutation((req, res, ctx) => {
+ *   const { year, month, projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ reportUnlock })
+ *   )
+ * })
+ */
+export const mockReportUnlockMutation = (
+  resolver: ResponseResolver<GraphQLRequest<ReportUnlockMutationVariables>, GraphQLContext<ReportUnlockMutation>, any>,
+) => graphql.mutation<ReportUnlockMutation, ReportUnlockMutationVariables>('reportUnlock', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

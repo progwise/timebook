@@ -1,5 +1,5 @@
-query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
-  report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
+query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {
+  report(projectId: $projectId, month: $month, year: $year, userId: $userId) {
     groupedByDate {
       date
       duration
@@ -43,5 +43,18 @@ query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUse
         duration
       }
     }
+    isLocked
+  }
+}
+
+mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+  reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+    isLocked
+  }
+}
+
+mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+  reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+    isLocked
   }
 }

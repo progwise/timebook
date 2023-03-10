@@ -2,6 +2,7 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { WorkHourInput } from '../workHourInput'
 import { DateScalar } from './../../scalars/date'
+import { isProjectLocked } from './isProjectLocked'
 
 builder.mutationField('workHourUpdate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -36,14 +37,35 @@ builder.mutationField('workHourUpdate', (t) =>
       const oldProjectId = workHour.task.projectId
       return { isMemberByProjects: [oldProjectId, newProjectId] }
     },
-    resolve: (query, _source, { data, date, taskId }, context) =>
-      prisma.workHour.upsert({
+    resolve: async (query, _source, { data, date, taskId }, context) => {
+      const userId = context.session.user.id
+
+      const previousTask = await prisma.task.findUnique({
+        select: { projectId: true },
+        where: { id: taskId.toString() },
+      })
+
+      if (previousTask && (await isProjectLocked({ date, userId, projectId: previousTask.projectId }))) {
+        throw new Error('project is locked by report')
+      }
+
+      const newAssignedTask = await prisma.task.findUniqueOrThrow({
+        select: { projectId: true },
+        where: { id: data.taskId.toString() },
+      })
+
+      if (await isProjectLocked({ projectId: newAssignedTask.projectId, date: data.date, userId })) {
+        throw new Error('project is locked by report')
+      }
+
+      return prisma.workHour.upsert({
         ...query,
         where: {
           date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
         },
-        create: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
-        update: { ...data, taskId: data.taskId.toString(), userId: context.session.user.id },
-      }),
+        create: { ...data, taskId: data.taskId.toString(), userId },
+        update: { ...data, taskId: data.taskId.toString(), userId },
+      })
+    },
   }),
 )

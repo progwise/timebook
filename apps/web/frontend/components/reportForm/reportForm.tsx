@@ -1,4 +1,4 @@
-import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
+import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 
@@ -6,6 +6,7 @@ import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { ProjectFilter, ProjectFragment, useMyProjectsQuery, useReportQuery } from '../../generated/graphql'
 import { ComboBox } from '../combobox/combobox'
+import { ReportLockButton } from './reportLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
 export const ReportForm = () => {
@@ -13,6 +14,8 @@ export const ReportForm = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const [date, setDate] = useState(new Date())
+  const year = getYear(date)
+  const month = getMonth(date)
   const from = startOfMonth(date)
   const to = endOfMonth(date)
   const fromString = formatISO(from, { representation: 'date' })
@@ -25,8 +28,8 @@ export const ReportForm = () => {
   const [{ data: reportGroupedData }] = useReportQuery({
     variables: {
       projectId: selectedProjectId ?? '',
-      from: fromString,
-      to: endString,
+      year,
+      month,
       userId: selectedUserId,
       groupByUser: !selectedUserId,
     },
@@ -83,6 +86,17 @@ export const ReportForm = () => {
             />
           </div>
         </div>
+
+        {selectedProjectId && reportGroupedData && selectedUserId && (
+          <ReportLockButton
+            year={year}
+            month={month}
+            projectId={selectedProjectId}
+            userId={selectedUserId}
+            isLocked={reportGroupedData.report.isLocked}
+          />
+        )}
+
         {selectedProject && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
