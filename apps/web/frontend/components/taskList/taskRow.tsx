@@ -72,6 +72,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
           onBlur={handleSubmit(handleTitleSubmit)}
           loading={fetchingTitle}
           errorMessage={errors.title?.message}
+          disabled={!task.canModify}
         />
       </TableCell>
       <TableCell>
@@ -84,6 +85,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
           errorMessage={hourlyRateForm.formState.errors.hourlyRate?.message}
           label="hourly rate"
           hideLabel
+          disabled={!task.canModify}
         />
       </TableCell>
       <TableCell>

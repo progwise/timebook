@@ -24,11 +24,15 @@ beforeEach(async () => {
     data: [
       {
         id: '1',
-        name: 'Test User with project membership',
+        name: 'Test User with project membership (role=Admin)',
       },
       {
         id: '2',
         name: 'Test User without project memberships',
+      },
+      {
+        id: '3',
+        name: 'Test User with project membership (role=Member)',
       },
     ],
   })
@@ -38,7 +42,12 @@ beforeEach(async () => {
       id: '1',
       title: 'Test Project',
       projectMemberships: {
-        create: { userId: '1' },
+        createMany: {
+          data: [
+            { userId: '1', role: 'ADMIN' },
+            { userId: '3', role: 'MEMBER' },
+          ],
+        },
       },
     },
   })
@@ -76,10 +85,26 @@ describe('Error', () => {
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
+
+  it('should throw error when user is a project member, but has role MEMBER', async () => {
+    const testServer = getTestServer({ userId: '3' })
+    const response = await testServer.executeOperation({
+      query: projectUpdateMutation,
+      variables: {
+        id: '1',
+        data: {
+          title: 'new project title',
+        },
+      },
+    })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
 })
 
 describe('Success', () => {
-  it('should update a project when user is project member', async () => {
+  it('should update a project when user is project member and has role ADMIN', async () => {
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,

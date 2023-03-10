@@ -5,7 +5,7 @@ builder.queryField('report', (t) =>
   t.field({
     type: 'Report',
     description: 'Returns a monthly project report',
-    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString() }),
+    authScopes: (_source, { projectId }) => ({ isMemberByProject: projectId.toString() }),
     args: {
       projectId: t.arg.id({ description: 'Project identifier' }),
       from: t.arg({ type: DateScalar }),

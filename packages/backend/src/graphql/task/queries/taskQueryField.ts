@@ -14,7 +14,7 @@ builder.queryField('task', (t) =>
         where: { id: taskId.toString() },
       })
 
-      return { isProjectMember: task.projectId }
+      return { isMemberByProject: task.projectId }
     },
     resolve: (query, _source, { taskId }) =>
       prisma.task.findUniqueOrThrow({

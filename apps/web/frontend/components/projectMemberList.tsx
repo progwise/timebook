@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
-import { SimpleUserFragment } from '../generated/graphql'
+import { Role, SimpleUserFragment } from '../generated/graphql'
 
 interface ProjectMemberListProps {
   users: SimpleUserFragment[]
@@ -23,6 +23,7 @@ export const ProjectMemberList = ({ users }: ProjectMemberListProps) => (
               )}
               {user.name}
             </TableCell>
+            <TableCell>{user.role === Role.Admin && 'Admin'}</TableCell>
           </TableRow>
         ))}
       </TableBody>

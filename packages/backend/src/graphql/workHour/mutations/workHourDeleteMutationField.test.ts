@@ -25,11 +25,15 @@ describe('workHourDeleteMutationField', () => {
       data: [
         {
           id: '1',
-          name: 'Test User with project membership',
+          name: 'Test User with project membership (role=member)',
         },
         {
           id: '2',
           name: 'Test User without project membership',
+        },
+        {
+          id: '3',
+          name: 'Test User with project membership (role=Admin)',
         },
       ],
     })
@@ -53,7 +57,7 @@ describe('workHourDeleteMutationField', () => {
           },
         },
         projectMemberships: {
-          create: { userId: '1' },
+          createMany: { data: [{ userId: '1' }, { userId: '3', role: 'ADMIN' }] },
         },
       },
     })
@@ -77,6 +81,15 @@ describe('workHourDeleteMutationField', () => {
 
   it('should delete when work hour belongs to the user', async () => {
     const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
+
+    expect(response.data).toEqual({ workHourDelete: { id: '1' } })
+    expect(response.errors).toBeUndefined()
+    expect(await prisma.workHour.count()).toBe(0)
+  })
+
+  it('should delete when user is Admin of the project', async () => {
+    const testServer = getTestServer({ userId: '3' })
     const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
 
     expect(response.data).toEqual({ workHourDelete: { id: '1' } })

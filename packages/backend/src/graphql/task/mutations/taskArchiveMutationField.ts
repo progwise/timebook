@@ -8,14 +8,7 @@ builder.mutationField('taskArchive', (t) =>
     args: {
       taskId: t.arg.id({ description: 'id of the task' }),
     },
-    authScopes: async (_source, { taskId }) => {
-      const task = await prisma.task.findUniqueOrThrow({
-        select: { projectId: true },
-        where: { id: taskId.toString() },
-      })
-
-      return { isProjectMember: task.projectId }
-    },
+    authScopes: async (_source, { taskId }) => ({ isAdminByTask: taskId.toString() }),
     resolve: (query, _source, { taskId }) =>
       prisma.task.update({
         ...query,

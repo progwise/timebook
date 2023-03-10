@@ -8,7 +8,7 @@ builder.queryField('project', (t) =>
     args: {
       projectId: t.arg.id({ description: 'Identifier for the project' }),
     },
-    authScopes: (_source, { projectId }) => ({ isProjectMember: projectId.toString() }),
+    authScopes: (_source, { projectId }) => ({ isMemberByProject: projectId.toString() }),
     resolve: (query, _source, { projectId }) =>
       prisma.project.findUniqueOrThrow({
         ...query,
