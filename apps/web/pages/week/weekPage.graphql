@@ -1,4 +1,4 @@
-query timeTable($from: Date!, $to: Date) {
+query weekTable($from: Date!, $to: Date) {
   projects(from: $from, to: $to) {
     ...ProjectWithWorkHours
   }

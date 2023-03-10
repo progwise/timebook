@@ -5,37 +5,37 @@ import { useMemo } from 'react'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
-import { useTimeTableQuery } from '../../frontend/generated/graphql'
+import { useWeekTableQuery } from '../../frontend/generated/graphql'
 
-export interface TimePageProps {
+export interface WeekPageProps {
   day?: Date
 }
 
-const TimePage = (props: TimePageProps) => {
+const WeekPage = (props: WeekPageProps) => {
   const router = useRouter()
   const day = props.day ?? new Date()
   const startDate = startOfWeek(day, { weekStartsOn: 1 })
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
 
-  const timeTableContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const [{ data: timeTableData }] = useTimeTableQuery({
+  const weekTableContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
+  const [{ data: weekTableData }] = useWeekTableQuery({
     variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
-    context: timeTableContext,
+    context: weekTableContext,
   })
 
   const handleWeekChange = (newDate: Date) => {
-    router.push(isThisWeek(newDate) ? '/time' : `/time/${format(newDate, 'yyyy-MM-dd')}`)
+    router.push(isThisWeek(newDate) ? '/week' : `/week/${format(newDate, 'yyyy-MM-dd')}`)
   }
 
   return (
     <ProtectedPage>
-      <h2>Time entries</h2>
+      <h2>Week entries</h2>
       <WeekSelector value={day} onChange={handleWeekChange} />
-      {timeTableData?.projects && (
-        <WeekTable tableData={timeTableData.projects} startDate={startDate} endDate={endDate} />
+      {weekTableData?.projects && (
+        <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />
       )}
     </ProtectedPage>
   )
 }
 
-export default TimePage
+export default WeekPage

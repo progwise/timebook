@@ -34,7 +34,7 @@ export const TopNavigation = (): JSX.Element => {
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
 
-        <TopNavigationLink href="/time">Time</TopNavigationLink>
+        <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
