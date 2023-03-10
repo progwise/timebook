@@ -13,7 +13,7 @@ const projectMembershipCreateMutation = gql`
       title
       members {
         id
-        projectRole(projectId: $projectID)
+        role(projectId: $projectID)
       }
     }
   }
@@ -122,9 +122,9 @@ it('should create projectMembership when session user is project membership and 
     projectMembershipCreate: {
       title: 'P1',
       members: [
-        { id: '2', projectRole: 'MEMBER' },
-        { id: '1', projectRole: 'ADMIN' },
-        { id: '3', projectRole: 'MEMBER' },
+        { id: '2', role: 'MEMBER' },
+        { id: '1', role: 'ADMIN' },
+        { id: '3', role: 'MEMBER' },
       ],
     },
   })
@@ -145,8 +145,8 @@ it('user is already project member', async () => {
     projectMembershipCreate: {
       title: 'P1',
       members: [
-        { id: '1', projectRole: 'ADMIN' },
-        { id: '3', projectRole: 'ADMIN' },
+        { id: '1', role: 'ADMIN' },
+        { id: '3', role: 'ADMIN' },
       ],
     },
   })

@@ -13,7 +13,7 @@ const projectMembershipDeleteMutation = gql`
       title
       members {
         id
-        projectRole(projectId: $projectId)
+        role(projectId: $projectId)
       }
     }
   }
@@ -134,8 +134,8 @@ it('should delete an existing projectMembership when role=admin', async () => {
   expect(response.data).toEqual({
     projectMembershipDelete: {
       members: [
-        { id: '1', projectRole: 'ADMIN' },
-        { id: '3', projectRole: 'MEMBER' },
+        { id: '1', role: 'ADMIN' },
+        { id: '3', role: 'MEMBER' },
       ],
       title: 'P1',
     },
