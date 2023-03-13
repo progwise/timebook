@@ -1,16 +1,38 @@
+import { useMutation } from 'urql'
+
 import { Button } from '@progwise/timebook-ui'
 
-import { TaskFragment, useTaskDeleteMutation } from '../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Modal } from './modal'
+
+const DeleteTaskModalFragment = graphql(`
+  fragment DeleteTaskModal on Task {
+    id
+    hasWorkHours
+    title
+  }
+`)
+
+const TaskDeleteMutationDocument = graphql(`
+  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {
+    taskDelete(id: $id) @skip(if: $hasWorkHours) {
+      id
+    }
+    taskArchive(taskId: $id) @include(if: $hasWorkHours) {
+      id
+    }
+  }
+`)
 
 export interface DeleteTaskModalProps {
   open: boolean
   onClose: () => void
-  task: TaskFragment
+  task: FragmentType<typeof DeleteTaskModalFragment>
 }
 
-export const DeleteTaskModal = ({ open, onClose, task }: DeleteTaskModalProps): JSX.Element => {
-  const [{ fetching }, taskDelete] = useTaskDeleteMutation()
+export const DeleteTaskModal = ({ open, onClose, task: taskFragment }: DeleteTaskModalProps): JSX.Element => {
+  const task = useFragment(DeleteTaskModalFragment, taskFragment)
+  const [{ fetching }, taskDelete] = useMutation(TaskDeleteMutationDocument)
 
   const handleDeleteTask = async () => {
     try {

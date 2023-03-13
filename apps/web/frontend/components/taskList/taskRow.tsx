@@ -2,20 +2,41 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
+import { useMutation } from 'urql'
 
 import { Button, InputField, TableCell, TableRow } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
-import { TaskFragment, TaskUpdateInput, useTaskUpdateMutation } from '../../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { TaskUpdateInput } from '../../generated/gql/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
 
+export const TaskRowFragment = graphql(`
+  fragment TaskRow on Task {
+    id
+    title
+    hourlyRate
+    canModify
+    ...DeleteTaskModal
+  }
+`)
+
+const TaskUpdateMutationDocument = graphql(`
+  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {
+    taskUpdate(id: $id, data: $data) {
+      id
+    }
+  }
+`)
+
 interface TaskRowProps {
-  task: TaskFragment & { canModify: boolean }
+  task: FragmentType<typeof TaskRowFragment>
 }
 
-export const TaskRow = ({ task }: TaskRowProps) => {
-  const [{ fetching: fetchingTitle }, updateTaskTitle] = useTaskUpdateMutation()
-  const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useTaskUpdateMutation()
+export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
+  const task = useFragment(TaskRowFragment, taskFragment)
+  const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
+  const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
     register,
@@ -36,8 +57,6 @@ export const TaskRow = ({ task }: TaskRowProps) => {
     },
     resolver: zodResolver(taskInputValidations.pick({ hourlyRate: true })),
   })
-
-  hourlyRateForm.formState.errors
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 

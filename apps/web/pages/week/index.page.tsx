@@ -1,11 +1,20 @@
 import { format, startOfWeek, endOfWeek, isThisWeek } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { useQuery } from 'urql'
 
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
-import { useWeekTableQuery } from '../../frontend/generated/graphql'
+import { graphql } from '../../frontend/generated/gql'
+
+const weekTableQueryDocument = graphql(`
+  query weekTable($from: Date!, $to: Date) {
+    projects(from: $from, to: $to) {
+      ...WeekTableProject
+    }
+  }
+`)
 
 export interface WeekPageProps {
   day?: Date
@@ -18,7 +27,8 @@ const WeekPage = (props: WeekPageProps) => {
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
 
   const weekTableContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const [{ data: weekTableData }] = useWeekTableQuery({
+  const [{ data: weekTableData }] = useQuery({
+    query: weekTableQueryDocument,
     variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
     context: weekTableContext,
   })

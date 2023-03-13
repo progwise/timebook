@@ -1,8 +1,18 @@
 import { eachDayOfInterval, endOfMonth, format, isSameDay, min, parseISO } from 'date-fns'
 import { useEffect, useMemo } from 'react'
+import { useQuery } from 'urql'
 
-import { useWorkHoursQuery } from '../../generated/graphql'
+import { graphql } from '../../generated/gql'
 import { SheetDayRow } from './sheetDayRow'
+
+const WorkHoursQueryDocument = graphql(`
+  query workHours($from: Date!, $to: Date) {
+    workHours(from: $from, to: $to) {
+      date
+      ...SheetDayRow
+    }
+  }
+`)
 
 interface SheetMonthProps {
   startDay: Date
@@ -16,7 +26,8 @@ export const SheetMonth = (props: SheetMonthProps): JSX.Element | null => {
 
   const interval = { start: startDate, end: endDate }
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  const [{ data, fetching }] = useWorkHoursQuery({
+  const [{ data, fetching }] = useQuery({
+    query: WorkHoursQueryDocument,
     variables: { from: format(props.startDay, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
     context,
   })
