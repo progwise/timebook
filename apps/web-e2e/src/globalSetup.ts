@@ -44,7 +44,7 @@ const createUserSession = async (options: { browser: Browser; user: User }): Pro
 
   const page = await options.browser.newPage()
   await page.goto(signInUrl)
-  await page.waitForURL('http://localhost:3000/home')
+  await page.waitForURL('http://localhost:3000/week')
   await page.context().storageState({ path: options.user.storageStatePath })
 }
 
@@ -53,23 +53,6 @@ const globalSetup = async () => {
 
   await createUserSession({ browser, user: users.newUser })
   await createUserSession({ browser, user: users.existingUser })
-
-  await prisma.team.deleteMany({
-    where: { teamMemberships: { some: { user: { email: { in: [users.newUser.email, users.existingUser.email] } } } } },
-  })
-
-  await prisma.team.create({
-    data: {
-      title: 'Test Team',
-      slug: 'test-team',
-      teamMemberships: {
-        create: {
-          user: { connect: { email: users.existingUser.email } },
-          role: 'ADMIN',
-        },
-      },
-    },
-  })
 
   await browser.close()
 }

@@ -1,35 +1,94 @@
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
+import { useQuery } from 'urql'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
-import { ProjectFilter, ProjectFragment, useMyProjectsQuery, useReportQuery } from '../../generated/graphql'
+import { graphql, useFragment } from '../../generated/gql'
+import { ProjectFilter, ReportProjectFragment as ReportProjectFragmentType } from '../../generated/gql/graphql'
 import { ComboBox } from '../combobox/combobox'
+import { ReportUserSelect } from './reportUserSelect'
+
+const ReportProjectFragment = graphql(`
+  fragment ReportProject on Project {
+    id
+    title
+  }
+`)
+
+const ReportProjectsQueryDocument = graphql(`
+  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {
+    projects(from: $from, to: $to, filter: $filter) {
+      ...ReportProject
+    }
+  }
+`)
+
+const ReportQueryDocument = graphql(`
+  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
+    report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
+      groupedByDate {
+        date
+        duration
+        workHours {
+          id
+          duration
+          user {
+            name
+          }
+          task {
+            title
+          }
+        }
+      }
+      groupedByTask {
+        task {
+          id
+          title
+        }
+        duration
+      }
+      groupedByUser @include(if: $groupByUser) {
+        user {
+          id
+          name
+        }
+        duration
+      }
+    }
+  }
+`)
 
 export const ReportForm = () => {
   const router = useRouter()
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
+  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const [date, setDate] = useState(new Date())
-  const startOfMonthString = formatISO(startOfMonth(date), { representation: 'date' })
-  const endOfMonthString = formatISO(endOfMonth(date), { representation: 'date' })
+  const from = startOfMonth(date)
+  const to = endOfMonth(date)
+  const fromString = formatISO(from, { representation: 'date' })
+  const endString = formatISO(to, { representation: 'date' })
 
-  const [{ data: projectsData }] = useMyProjectsQuery({
-    variables: { from: startOfMonthString, filter: ProjectFilter.All },
+  const [{ data: projectsData }] = useQuery({
+    query: ReportProjectsQueryDocument,
+    variables: { from: fromString, filter: ProjectFilter.All },
   })
+  const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
-  const [{ data: reportGroupedData }] = useReportQuery({
+  const [{ data: reportGroupedData }] = useQuery({
+    query: ReportQueryDocument,
     variables: {
       projectId: selectedProjectId ?? '',
-      from: startOfMonthString,
-      to: endOfMonthString,
+      from: fromString,
+      to: endString,
+      userId: selectedUserId,
+      groupByUser: !selectedUserId,
     },
     pause: !router.isReady || !selectedProjectId,
   })
 
-  const selectedProject: ProjectFragment | undefined = projectsData?.projects.find(
-    (project) => project.id === selectedProjectId,
-  )
+  const selectedProject = projects?.find((project) => project.id === selectedProjectId)
 
   const handleChange = (selectedProjectId: string | null) => {
     setSelectedProjectId(selectedProjectId ?? undefined)
@@ -38,21 +97,30 @@ export const ReportForm = () => {
   return (
     <>
       <div>
-        <h1 className="mb-4 mt-4 font-bold">
-          Detailed time report: {startOfMonthString} - {endOfMonthString}
+        <h1 className="my-4 font-bold">
+          Detailed time report: {fromString} - {endString}
         </h1>
         <h2>Select a project</h2>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div className="flex flex-row">
-            <ComboBox<ProjectFragment>
+          <div className="flex flex-row gap-4">
+            <ComboBox<ReportProjectFragmentType>
               value={selectedProject}
               displayValue={(project) => project.title}
               noOptionLabel="No Project"
               onChange={handleChange}
-              options={projectsData?.projects ?? []}
+              options={projects ?? []}
             />
+            {selectedProjectId && (
+              <ReportUserSelect
+                projectId={selectedProjectId}
+                selectedUserId={selectedUserId}
+                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
+                from={from}
+                to={to}
+              />
+            )}
           </div>
           <div>
             <input
@@ -116,18 +184,20 @@ export const ReportForm = () => {
                   <FormattedDuration title="Total by task" minutes={entry.duration} />
                 </div>
               ))}
-            </article>
-            <article className="contents">
               <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
-              <strong className="col-span-3">Total by Person</strong>
-              {reportGroupedData?.report.groupedByUser.map((group) => (
-                <div key={group.user.id} className="grid grid-flow-row">
-                  <span>{group.user.name}</span>
-                  <FormattedDuration title="Total by user" minutes={group.duration} />
-                </div>
-              ))}
-              <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
             </article>
+            {reportGroupedData?.report.groupedByUser && (
+              <article className="contents">
+                <strong className="col-span-3">Total by Person</strong>
+                {reportGroupedData.report.groupedByUser.map((group) => (
+                  <div key={group.user.id} className="grid grid-flow-row">
+                    <span>{group.user.name}</span>
+                    <FormattedDuration title="Total by user" minutes={group.duration} />
+                  </div>
+                ))}
+                <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
+              </article>
+            )}
           </section>
         )}
       </div>

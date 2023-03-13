@@ -10,7 +10,7 @@ builder.mutationField('projectUpdate', (t) =>
       id: t.arg.id({ description: 'id of the project' }),
       data: t.arg({ type: ProjectInput }),
     },
-    authScopes: async (_source, { id }) => ({ isProjectMember: id.toString() }),
+    authScopes: async (_source, { id }) => ({ isAdminByProject: id.toString() }),
     resolve: async (query, _source, { id, data: { title, start, end } }) =>
       prisma.project.update({
         ...query,

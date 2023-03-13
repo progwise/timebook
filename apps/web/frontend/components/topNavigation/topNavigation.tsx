@@ -14,7 +14,7 @@ export const TopNavigation = (): JSX.Element => {
   const handleTimeBookClick = () => router.push(`/home`)
 
   return (
-    <section className="items-strech flex  w-full flex-row ">
+    <section className="flex w-full flex-row">
       <h1 className="flex min-w-0 flex-1 flex-row  items-center gap-2">
         <AiOutlineFieldTime className="text-blue-500" size="2em" />
         <Link href="/">
@@ -34,8 +34,8 @@ export const TopNavigation = (): JSX.Element => {
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
 
-        <TopNavigationLink href="/time">Time</TopNavigationLink>
-        <TopNavigationLink href="/time/sheet">Sheet</TopNavigationLink>
+        <TopNavigationLink href="/week">Week</TopNavigationLink>
+        <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
 

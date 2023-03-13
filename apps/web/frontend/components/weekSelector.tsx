@@ -1,15 +1,16 @@
+import { Transition } from '@headlessui/react'
+import { endOfWeek, format, getWeek, getYear, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
+import { enGB } from 'date-fns/locale'
+import { useState } from 'react'
+import ClickAwayListener from 'react-click-away-listener'
+import { DateRangePicker, RangeKeyDict } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 import { BsCalendarCheck, BsCalendarDate } from 'react-icons/bs'
+
 import { Button } from '@progwise/timebook-ui'
-import { DateRangePicker, RangeKeyDict } from 'react-date-range'
-import { endOfWeek, format, getWeek, getYear, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
-import { enGB } from 'date-fns/locale'
-import { Transition } from '@headlessui/react'
-import { useState } from 'react'
-import ClickAwayListener from 'react-click-away-listener'
 
 interface WeekSelectorProps {
   value: Date
@@ -30,9 +31,9 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const getDaysOfWeek = (date: Date) => {
     const monday = startOfWeek(date, { locale: enGB })
     const sunday = endOfWeek(date, { locale: enGB })
-    const year = getYear(date)
+    const year = getYear(monday)
     setSelectedWeek({ startDate: monday, endDate: sunday, year, key: 'selection' })
-    // onChange(monday)
+    onChange(monday)
   }
   const handleWeekSelect = (ranges: RangeKeyDict) => {
     const { startDate } = ranges.selection
