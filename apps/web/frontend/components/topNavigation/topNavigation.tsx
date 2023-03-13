@@ -33,14 +33,12 @@ export const TopNavigation = (): JSX.Element => {
         {session.status !== 'authenticated' && (
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
-
         <TopNavigationLink href="/time">Time</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
+        <div className="h-[20px]  w-[1px] bg-blue-400" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
-
         {teamSlug && <TopNavigationLink href={`/${teamSlug}/team`}>Team</TopNavigationLink>}
-
         <ProfileMenu className="ml-3 dark:text-white " />
       </nav>
     </section>
