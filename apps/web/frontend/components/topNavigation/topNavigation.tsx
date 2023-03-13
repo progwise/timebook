@@ -33,7 +33,7 @@ export const TopNavigation = (): JSX.Element => {
         {session.status !== 'authenticated' && (
           <TopNavigationLink onClick={() => signIn('github')}>Sign in</TopNavigationLink>
         )}
-        <TopNavigationLink href="/time">Time</TopNavigationLink>
+        <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <div className="my-1 w-px self-stretch bg-gray-400 dark:bg-blue-400" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
