@@ -28,7 +28,7 @@
       "cache": false
     },
     "graphql:generate": {
-      "inputs": ["**/*.graphql", "../../packages/backend/**/schema.graphql"],
+      "inputs": ["**/*.tsx", "../../packages/backend/**/schema.graphql"],
       "outputs": ["**/graphql.ts"]
     },
     "typecheck": {

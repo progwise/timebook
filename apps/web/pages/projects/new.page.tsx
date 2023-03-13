@@ -1,11 +1,21 @@
 import { useRouter } from 'next/router'
+import { useMutation } from 'urql'
 
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { ProjectInput, useProjectCreateMutation } from '../../frontend/generated/graphql'
+import { graphql } from '../../frontend/generated/gql'
+import { ProjectInput } from '../../frontend/generated/gql/graphql'
+
+const ProjectCreateMutationDocument = graphql(`
+  mutation projectCreate($data: ProjectInput!) {
+    projectCreate(data: $data) {
+      id
+    }
+  }
+`)
 
 const NewProjectPage = (): JSX.Element => {
-  const [projectCreateResult, projectCreate] = useProjectCreateMutation()
+  const [projectCreateResult, projectCreate] = useMutation(ProjectCreateMutationDocument)
   const router = useRouter()
 
   const handleSubmit = async (data: ProjectInput) => {

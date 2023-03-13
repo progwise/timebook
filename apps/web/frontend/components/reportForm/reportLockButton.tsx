@@ -1,8 +1,25 @@
 import { ChangeEventHandler } from 'react'
+import { useMutation } from 'urql'
 
 import { Spinner } from '@progwise/timebook-ui'
 
-import { useReportLockMutation, useReportUnlockMutation } from '../../generated/graphql'
+import { graphql } from '../../generated/gql'
+
+const ReportLockMutationDocument = graphql(`
+  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+      isLocked
+    }
+  }
+`)
+
+const ReportUnlockMutationDocument = graphql(`
+  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+      isLocked
+    }
+  }
+`)
 
 interface ReportLockButtonProps {
   userId: string
@@ -13,8 +30,8 @@ interface ReportLockButtonProps {
 }
 
 export const ReportLockButton = ({ isLocked, year, month, projectId, userId }: ReportLockButtonProps) => {
-  const [{ fetching: lockFetching }, lockReport] = useReportLockMutation()
-  const [{ fetching: unlockFetching }, unlockReport] = useReportUnlockMutation()
+  const [{ fetching: lockFetching }, lockReport] = useMutation(ReportLockMutationDocument)
+  const [{ fetching: unlockFetching }, unlockReport] = useMutation(ReportUnlockMutationDocument)
 
   const variables = { year, month, projectId, userId }
 

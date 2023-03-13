@@ -1,24 +1,45 @@
 import { useRouter } from 'next/router'
+import { useMutation } from 'urql'
 
 import { Button } from '@progwise/timebook-ui'
 
-import { ProjectFragment, useProjectDeleteMutation } from '../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Modal } from './modal'
+
+export const DeleteProjectModalFragment = graphql(`
+  fragment DeleteProjectModal on Project {
+    id
+    title
+  }
+`)
+
+const ProjectDeleteMutationDocument = graphql(`
+  mutation projectDelete($id: ID!) {
+    projectDelete(id: $id) {
+      id
+    }
+  }
+`)
 
 interface DeleteProjectModalProps {
   open: boolean
   onClose: () => void
-  project: ProjectFragment
+  project: FragmentType<typeof DeleteProjectModalFragment>
 }
 
-export const DeleteProjectModal = ({ onClose, project, open }: DeleteProjectModalProps): JSX.Element => {
-  const [projectDeleteState, projectDelete] = useProjectDeleteMutation()
+export const DeleteProjectModal = ({
+  onClose,
+  project: projectFragment,
+  open,
+}: DeleteProjectModalProps): JSX.Element => {
+  const project = useFragment(DeleteProjectModalFragment, projectFragment)
+  const [projectDeleteState, projectDelete] = useMutation(ProjectDeleteMutationDocument)
   const router = useRouter()
 
   const handleDeleteProject = async () => {
     try {
       await projectDelete({ id: project.id })
-      await router.push(`/${router.query.teamSlug}/projects`)
+      await router.push('/projects')
     } catch {}
   }
 
