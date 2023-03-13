@@ -35,7 +35,7 @@ export const TopNavigation = (): JSX.Element => {
         )}
 
         <TopNavigationLink href="/time">Time</TopNavigationLink>
-        <TopNavigationLink href="/time/sheet">Sheet</TopNavigationLink>
+        <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
 

@@ -29,7 +29,7 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
-  /** Assign user to Project */
+  /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
@@ -61,6 +61,7 @@ export type MutationProjectDeleteArgs = {
 
 export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
+  role?: Role
   userId: Scalars['ID']
 }
 
@@ -227,6 +228,12 @@ export type ReportGroupedByUser = {
   workHours: Array<WorkHour>
 }
 
+/** Roles a user can have in a team */
+export enum Role {
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+}
+
 export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -266,12 +273,18 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
+  /** Role of the user in a project */
+  role: Role
 }
 
 export type UserDurationWorkedOnProjectArgs = {
   from: Scalars['Date']
   projectId: Scalars['ID']
   to?: InputMaybe<Scalars['Date']>
+}
+
+export type UserRoleArgs = {
+  projectId: Scalars['ID']
 }
 
 export type WorkHour = {
@@ -343,6 +356,7 @@ export type ProjectMemberListUserFragment = {
   id: string
   image?: string | null
   name?: string | null
+  role: Role
 } & { ' $fragmentName'?: 'ProjectMemberListUserFragment' }
 
 export type ProjectTableItemFragment = {
@@ -677,6 +691,17 @@ export const ProjectMemberListUserFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'role' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+          },
         ],
       },
     },
@@ -1942,6 +1967,17 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'role' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+          },
         ],
       },
     },

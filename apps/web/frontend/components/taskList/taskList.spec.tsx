@@ -9,7 +9,9 @@ import { TaskRowFragment } from './taskRow'
 
 const client = new Client({ url: '/api/graphql' })
 
-const wrapper: React.FC = ({ children }) => <Provider value={client}>{children}</Provider>
+const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Provider value={client}>{children}</Provider>
+)
 
 const project = makeFragmentData(
   {

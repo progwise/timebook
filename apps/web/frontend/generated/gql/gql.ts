@@ -25,7 +25,7 @@ const documents = {
     types.ProjectFormFragmentDoc,
   '\n  fragment ProjectListItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n':
     types.ProjectListItemFragmentDoc,
-  '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n  }\n':
+  '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n':
     types.ProjectMemberListUserFragmentDoc,
   '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n':
     types.ProjectTableItemFragmentDoc,
@@ -127,8 +127,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n  }\n',
-): typeof documents['\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n  }\n']
+  source: '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n',
+): typeof documents['\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

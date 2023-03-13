@@ -1,5 +1,6 @@
 export interface DefaultTableComponentProps {
   className?: string
+  children?: React.ReactNode
 }
 
 export const Table: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {

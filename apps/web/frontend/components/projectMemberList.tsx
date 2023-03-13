@@ -3,12 +3,14 @@ import Image from 'next/image'
 import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
+import { Role } from '../generated/gql/graphql'
 
 const ProjectMemberListUserFragment = graphql(`
   fragment ProjectMemberListUser on User {
     id
     image
     name
+    role(projectId: $projectId)
   }
 `)
 
@@ -33,6 +35,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 )}
                 {user.name}
               </TableCell>
+              <TableCell>{user.role === Role.Admin && 'Admin'}</TableCell>
             </TableRow>
           ))}
         </TableBody>
