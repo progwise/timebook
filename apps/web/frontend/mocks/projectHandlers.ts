@@ -1,4 +1,4 @@
-import { mockMyProjectsQuery, mockTimeTableQuery } from './mocks.generated'
+import { mockMyProjectsQuery, mockWeekTableQuery } from './mocks.generated'
 
 const testProject1 = { id: 'project1', title: 'Project 1' }
 const testProject2 = { id: 'project2', title: 'Project 2' }
@@ -13,7 +13,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockTimeTableQuery((_request, response, context) =>
+  mockWeekTableQuery((_request, response, context) =>
     response(
       context.data({
         __typename: 'Query',

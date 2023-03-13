@@ -648,12 +648,12 @@ export type ProjectCreateMutationVariables = Exact<{
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
 
-export type TimeTableQueryVariables = Exact<{
+export type WeekTableQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
 
-export type TimeTableQuery = {
+export type WeekTableQuery = {
   __typename?: 'Query'
   projects: Array<
     { __typename?: 'Project' } & { ' $fragmentRefs'?: { WeekTableProjectFragment: WeekTableProjectFragment } }
@@ -2547,13 +2547,13 @@ export const ProjectCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectCreateMutation, ProjectCreateMutationVariables>
-export const TimeTableDocument = {
+export const WeekTableDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'timeTable' },
+      name: { kind: 'Name', value: 'weekTable' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -2715,4 +2715,4 @@ export const TimeTableDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<TimeTableQuery, TimeTableQueryVariables>
+} as unknown as DocumentNode<WeekTableQuery, WeekTableQueryVariables>

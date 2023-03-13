@@ -75,8 +75,8 @@ const documents = {
     types.ProjectCountsDocument,
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
-  '\n  query timeTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n':
-    types.TimeTableDocument,
+  '\n  query weekTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n':
+    types.WeekTableDocument,
 }
 
 /**
@@ -289,8 +289,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query timeTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n',
-): typeof documents['\n  query timeTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n']
+  source: '\n  query weekTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n',
+): typeof documents['\n  query weekTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to) {\n      ...WeekTableProject\n    }\n  }\n']
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {}
