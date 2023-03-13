@@ -2,9 +2,10 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
-import { ProjectWithTasksFragment, TaskFragment } from '../../generated/graphql'
+import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
-import { TaskList } from './taskList'
+import { TaskList, TaskListProjectFragment } from './taskList'
+import { TaskRowFragment } from './taskRow'
 
 const client = new Client({ url: '/api/graphql' })
 
@@ -12,32 +13,30 @@ const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )
 
-const tasks: (TaskFragment & { canModify: boolean })[] = [
+const project = makeFragmentData(
   {
     id: '1',
-    hasWorkHours: false,
-    title: 'Task 1',
-    project: {
-      id: '1',
-      title: 'Project 1',
-      __typename: 'Project',
-    },
     canModify: true,
-    __typename: 'Task',
+    tasks: [
+      {
+        id: '1',
+        ...makeFragmentData(
+          {
+            id: '1',
+            canModify: true,
+            title: 'Task 1',
+          },
+          TaskRowFragment,
+        ),
+      },
+    ],
   },
-]
-
-const project: ProjectWithTasksFragment & { canModify: boolean } = {
-  id: '1',
-  title: 'Project 1',
-  tasks: [],
-  canModify: true,
-  __typename: 'Project',
-}
+  TaskListProjectFragment,
+)
 
 describe('TaskList', () => {
   it('should display tasks', async () => {
-    render(<TaskList tasks={tasks} project={project} />, { wrapper })
+    render(<TaskList project={project} />, { wrapper })
     const textBoxes = await screen.findAllByRole('textbox')
 
     expect(textBoxes[0]).toHaveDisplayValue('Task 1')
@@ -45,7 +44,7 @@ describe('TaskList', () => {
 
   describe('Task form', () => {
     it('should display an error message when submitting a new task with less then 4 characters', async () => {
-      render(<TaskList tasks={tasks} project={project} />, { wrapper })
+      render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
       const titleInput = screen.getByPlaceholderText('Enter Taskname')
@@ -58,7 +57,7 @@ describe('TaskList', () => {
     })
 
     it('should submit a new task to the backend and clean the form', async () => {
-      render(<TaskList tasks={tasks} project={project} />, { wrapper })
+      render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
       const titleInput = screen.getByPlaceholderText('Enter Taskname')
@@ -71,7 +70,7 @@ describe('TaskList', () => {
   })
 
   it('should update hourly rates', async () => {
-    render(<TaskList tasks={tasks} project={project} />, { wrapper })
+    render(<TaskList project={project} />, { wrapper })
     const hourlyRateInput = screen.getByRole('spinbutton', {
       name: /hourly rate/i,
     })

@@ -1,24 +1,48 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
+import { useMutation, useQuery } from 'urql'
 
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProjectMemberList } from '../../frontend/components/projectMemberList'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { TaskList } from '../../frontend/components/taskList/taskList'
-import { ProjectInput, useProjectQuery, useProjectUpdateMutation } from '../../frontend/generated/graphql'
+import { graphql } from '../../frontend/generated/gql'
+import { ProjectInput } from '../../frontend/generated/gql/graphql'
+
+const ProjectQueryDocument = graphql(`
+  query project($projectId: ID!) {
+    project(projectId: $projectId) {
+      id
+      ...TaskListProject
+      members {
+        ...ProjectMemberListUser
+      }
+      ...ProjectForm
+    }
+  }
+`)
+
+const ProjectUpdateMutationDocument = graphql(`
+  mutation projectUpdate($id: ID!, $data: ProjectInput!) {
+    projectUpdate(id: $id, data: $data) {
+      id
+    }
+  }
+`)
 
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['Task', 'User'] }), [])
-  const [{ data, fetching }] = useProjectQuery({
+  const [{ data, fetching }] = useQuery({
+    query: ProjectQueryDocument,
     variables: { projectId: id?.toString() ?? '' },
     context,
     pause: !router.isReady,
   })
 
   const selectedProject = data?.project
-  const [projectUpdateResult, projectUpdate] = useProjectUpdateMutation()
+  const [projectUpdateResult, projectUpdate] = useMutation(ProjectUpdateMutationDocument)
 
   const handleSubmit = async (data: ProjectInput) => {
     try {
@@ -53,7 +77,7 @@ const ProjectDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!projectUpdateResult.error}
       />
-      <TaskList className="mt-10" project={selectedProject} tasks={selectedProject.tasks} />
+      <TaskList className="mt-10" project={selectedProject} />
       <ProjectMemberList users={selectedProject.members} />
     </ProtectedPage>
   )

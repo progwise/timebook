@@ -2,8 +2,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
+import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
-import { ProjectForm } from './projectForm'
+import { DeleteProjectModalFragment } from '../deleteProjectModal'
+import { ProjectForm, ProjectFormFragment } from './projectForm'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -43,14 +45,16 @@ describe('projectForm', () => {
     const onSubmit = jest.fn()
     render(
       <ProjectForm
-        project={{
-          title: 'old project',
-          __typename: 'Project',
-          canModify: true,
-          id: '1',
-          startDate: '2022-03-21',
-          endDate: '2023-03-21',
-        }}
+        project={makeFragmentData(
+          {
+            title: 'old project',
+            startDate: '2022-03-21',
+            endDate: '2022-03-21',
+            canModify: true,
+            ...makeFragmentData({ id: '1', title: 'old project' }, DeleteProjectModalFragment),
+          },
+          ProjectFormFragment,
+        )}
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
@@ -73,14 +77,16 @@ describe('projectForm', () => {
     const onSubmit = jest.fn()
     render(
       <ProjectForm
-        project={{
-          title: 'test project',
-          __typename: 'Project',
-          canModify: true,
-          id: '1',
-          startDate: '2022-04-12',
-          endDate: '',
-        }}
+        project={makeFragmentData(
+          {
+            title: 'test project',
+            startDate: '2022-04-12',
+            endDate: '',
+            canModify: true,
+            ...makeFragmentData({ id: '1', title: 'old project' }, DeleteProjectModalFragment),
+          },
+          ProjectFormFragment,
+        )}
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}

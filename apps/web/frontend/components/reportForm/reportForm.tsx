@@ -1,12 +1,64 @@
 import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
+import { useQuery } from 'urql'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
-import { ProjectFilter, ProjectFragment, useMyProjectsQuery, useReportQuery } from '../../generated/graphql'
+import { graphql, useFragment } from '../../generated/gql'
+import { ProjectFilter, ReportProjectFragment as ReportProjectFragmentType } from '../../generated/gql/graphql'
 import { ComboBox } from '../combobox/combobox'
 import { ReportUserSelect } from './reportUserSelect'
+
+const ReportProjectFragment = graphql(`
+  fragment ReportProject on Project {
+    id
+    title
+  }
+`)
+
+const ReportProjectsQueryDocument = graphql(`
+  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {
+    projects(from: $from, to: $to, filter: $filter) {
+      ...ReportProject
+    }
+  }
+`)
+
+const ReportQueryDocument = graphql(`
+  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
+    report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
+      groupedByDate {
+        date
+        duration
+        workHours {
+          id
+          duration
+          user {
+            name
+          }
+          task {
+            title
+          }
+        }
+      }
+      groupedByTask {
+        task {
+          id
+          title
+        }
+        duration
+      }
+      groupedByUser @include(if: $groupByUser) {
+        user {
+          id
+          name
+        }
+        duration
+      }
+    }
+  }
+`)
 
 export const ReportForm = () => {
   const router = useRouter()
@@ -18,11 +70,14 @@ export const ReportForm = () => {
   const fromString = formatISO(from, { representation: 'date' })
   const endString = formatISO(to, { representation: 'date' })
 
-  const [{ data: projectsData }] = useMyProjectsQuery({
+  const [{ data: projectsData }] = useQuery({
+    query: ReportProjectsQueryDocument,
     variables: { from: fromString, filter: ProjectFilter.All },
   })
+  const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
-  const [{ data: reportGroupedData }] = useReportQuery({
+  const [{ data: reportGroupedData }] = useQuery({
+    query: ReportQueryDocument,
     variables: {
       projectId: selectedProjectId ?? '',
       from: fromString,
@@ -33,9 +88,7 @@ export const ReportForm = () => {
     pause: !router.isReady || !selectedProjectId,
   })
 
-  const selectedProject: ProjectFragment | undefined = projectsData?.projects.find(
-    (project) => project.id === selectedProjectId,
-  )
+  const selectedProject = projects?.find((project) => project.id === selectedProjectId)
 
   const handleChange = (selectedProjectId: string | null) => {
     setSelectedProjectId(selectedProjectId ?? undefined)
@@ -52,12 +105,12 @@ export const ReportForm = () => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row gap-4">
-            <ComboBox<ProjectFragment>
+            <ComboBox<ReportProjectFragmentType>
               value={selectedProject}
               displayValue={(project) => project.title}
               noOptionLabel="No Project"
               onChange={handleChange}
-              options={projectsData?.projects ?? []}
+              options={projects ?? []}
             />
             {selectedProjectId && (
               <ReportUserSelect

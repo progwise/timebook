@@ -1,4 +1,4 @@
 schema: packages/backend/src/graphql/generated/schema.graphql
 documents:
-  - apps/web/frontend/**/*.graphql
-  - apps/web/pages/**/*.graphql
+  - apps/web/frontend/**/*.tsx
+  - apps/web/pages/**/*.tsx

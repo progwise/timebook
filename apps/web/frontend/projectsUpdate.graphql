@@ -1,5 +1,0 @@
-mutation projectUpdate($id: ID!, $data: ProjectInput!) {
-  projectUpdate(id: $id, data: $data) {
-    ...Project
-  }
-}
