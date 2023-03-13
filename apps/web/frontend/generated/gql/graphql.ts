@@ -447,6 +447,18 @@ export type ReportLockMutationVariables = Exact<{
 
 export type ReportLockMutation = { __typename?: 'Mutation'; reportLock: { __typename?: 'Report'; isLocked: boolean } }
 
+export type ReportUnlockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportUnlockMutation = {
+  __typename?: 'Mutation'
+  reportUnlock: { __typename?: 'Report'; isLocked: boolean }
+}
+
 export type ReportUserFragment = {
   __typename?: 'User'
   id: string
@@ -1653,6 +1665,73 @@ export const ReportLockDocument = {
     },
   ],
 } as unknown as DocumentNode<ReportLockMutation, ReportLockMutationVariables>
+export const ReportUnlockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'reportUnlock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'reportUnlock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'year' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'month' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ReportUnlockMutation, ReportUnlockMutationVariables>
 export const ReportUsersDocument = {
   kind: 'Document',
   definitions: [

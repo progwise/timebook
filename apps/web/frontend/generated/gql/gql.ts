@@ -36,6 +36,8 @@ const documents = {
     types.ReportDocument,
   '\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
     types.ReportLockDocument,
+  '\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
+    types.ReportUnlockDocument,
   '\n  fragment ReportUser on User {\n    id\n    name\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n':
     types.ReportUserFragmentDoc,
   '\n  query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {\n    project(projectId: $projectId) {\n      id\n      members(includePastMembers: true) {\n        ...ReportUser\n      }\n    }\n  }\n':
@@ -163,6 +165,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n',
 ): typeof documents['\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n',
+): typeof documents['\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

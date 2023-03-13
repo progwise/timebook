@@ -14,8 +14,8 @@ const ReportLockMutationDocument = graphql(`
 `)
 
 const ReportUnlockMutationDocument = graphql(`
-  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
-    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
+  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {
       isLocked
     }
   }

@@ -442,6 +442,18 @@ export type ReportLockMutationVariables = Exact<{
 
 export type ReportLockMutation = { __typename?: 'Mutation'; reportLock: { __typename?: 'Report'; isLocked: boolean } }
 
+export type ReportUnlockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportUnlockMutation = {
+  __typename?: 'Mutation'
+  reportUnlock: { __typename?: 'Report'; isLocked: boolean }
+}
+
 export type ReportUserFragment = {
   __typename?: 'User'
   id: string
@@ -749,6 +761,21 @@ export const mockReportQuery = (
 export const mockReportLockMutation = (
   resolver: ResponseResolver<GraphQLRequest<ReportLockMutationVariables>, GraphQLContext<ReportLockMutation>, any>,
 ) => graphql.mutation<ReportLockMutation, ReportLockMutationVariables>('reportLock', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockReportUnlockMutation((req, res, ctx) => {
+ *   const { year, month, projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ reportUnlock })
+ *   )
+ * })
+ */
+export const mockReportUnlockMutation = (
+  resolver: ResponseResolver<GraphQLRequest<ReportUnlockMutationVariables>, GraphQLContext<ReportUnlockMutation>, any>,
+) => graphql.mutation<ReportUnlockMutation, ReportUnlockMutationVariables>('reportUnlock', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
