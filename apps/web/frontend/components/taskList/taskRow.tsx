@@ -58,8 +58,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     resolver: zodResolver(taskInputValidations.pick({ hourlyRate: true })),
   })
 
-  hourlyRateForm.formState.errors
-
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const handleTitleSubmit = async (taskData: Pick<TaskUpdateInput, 'title'>) => {
