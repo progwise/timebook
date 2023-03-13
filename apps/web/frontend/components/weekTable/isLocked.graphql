@@ -1,5 +1,0 @@
-query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
-  report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
-    isLocked
-  }
-}
