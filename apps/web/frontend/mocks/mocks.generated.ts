@@ -610,12 +610,12 @@ export type ProjectCreateMutationVariables = Exact<{
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
 
-export type TimeTableQueryVariables = Exact<{
+export type WeekTableQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
 
-export type TimeTableQuery = {
+export type WeekTableQuery = {
   __typename?: 'Query'
   projects: Array<{
     __typename?: 'Project'
@@ -860,13 +860,13 @@ export const mockProjectCreateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockTimeTableQuery((req, res, ctx) => {
+ * mockWeekTableQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
  * })
  */
-export const mockTimeTableQuery = (
-  resolver: ResponseResolver<GraphQLRequest<TimeTableQueryVariables>, GraphQLContext<TimeTableQuery>, any>,
-) => graphql.query<TimeTableQuery, TimeTableQueryVariables>('timeTable', resolver)
+export const mockWeekTableQuery = (
+  resolver: ResponseResolver<GraphQLRequest<WeekTableQueryVariables>, GraphQLContext<WeekTableQuery>, any>,
+) => graphql.query<WeekTableQuery, WeekTableQueryVariables>('weekTable', resolver)
