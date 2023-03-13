@@ -2,14 +2,31 @@ import { format, isToday } from 'date-fns'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
-import { WorkHourFragment } from '../../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
+
+export const SheetDayRowFragment = graphql(`
+  fragment SheetDayRow on WorkHour {
+    id
+    duration
+    project {
+      title
+    }
+    task {
+      title
+    }
+    user {
+      name
+    }
+  }
+`)
 
 interface SheetDayRowProps {
   day: Date
-  workHours: WorkHourFragment[]
+  workHours: FragmentType<typeof SheetDayRowFragment>[]
 }
 
 export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
+  const workHours = useFragment(SheetDayRowFragment, props.workHours)
   const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
 
   return (
@@ -20,12 +37,12 @@ export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
       </strong>
       <FormattedDuration
         title="Total work hours of the day"
-        minutes={props.workHours
+        minutes={workHours
           .map((WorkHourDuration) => WorkHourDuration.duration)
           .reduce((sum, duration) => duration + sum, 0)}
       />
 
-      {props.workHours.map((workHour) => (
+      {workHours.map((workHour) => (
         <article key={workHour.id} className="contents">
           <h1>{workHour.project.title}</h1>
           <h1>{workHour.task.title}</h1>

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useMutation } from 'urql'
 import { z } from 'zod'
 
 import {
@@ -16,28 +17,48 @@ import {
 } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
-import { ProjectFragment, TaskFragment, TaskInput, useTaskCreateMutation } from '../../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { TaskInput } from '../../generated/gql/graphql'
 import { TaskRow } from './taskRow'
+
+export const TaskListProjectFragment = graphql(`
+  fragment TaskListProject on Project {
+    id
+    canModify
+    tasks {
+      id
+      ...TaskRow
+    }
+  }
+`)
+
+const TaskCreateMutationDocument = graphql(`
+  mutation taskCreate($data: TaskInput!) {
+    taskCreate(data: $data) {
+      id
+    }
+  }
+`)
 
 export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
 
 export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true, hourlyRate: true })
 
 export interface TaskListProps {
-  tasks: (TaskFragment & { canModify: boolean })[]
-  project: ProjectFragment & { canModify: boolean }
+  project: FragmentType<typeof TaskListProjectFragment>
   className?: string
 }
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
-  const { tasks, project, className } = props
+  const { className } = props
+  const project = useFragment(TaskListProjectFragment, props.project)
   const {
     register,
     handleSubmit,
     reset,
     formState: { isSubmitting, errors },
   } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
-  const [, taskCreate] = useTaskCreateMutation()
+  const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 
   const handleAddTask = async (taskData: TaskFormData) => {
     try {
@@ -65,7 +86,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           </TableHeadRow>
         </TableHead>
         <TableBody>
-          {tasks.map((task) => (
+          {project.tasks.map((task) => (
             <TaskRow task={task} key={task.id} />
           ))}
         </TableBody>
