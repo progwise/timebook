@@ -14,7 +14,7 @@ export default NextAuth({
     }),
 
     // Email Provider only used for e2e testing
-    ...(process.env.NODE_ENV !== 'production' ? [EmailProvider({})] : []),
+    ...(process.env.NODE_ENV === 'production' ? [] : [EmailProvider({})]),
   ],
   callbacks: {
     async session({ session, user }) {

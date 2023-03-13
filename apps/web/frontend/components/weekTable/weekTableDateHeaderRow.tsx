@@ -1,5 +1,7 @@
-import { TableHeadCell, TableHeadRow } from '@progwise/timebook-ui'
 import { eachDayOfInterval, format, isToday } from 'date-fns'
+
+import { TableHeadCell, TableHeadRow } from '@progwise/timebook-ui'
+
 import { classNameMarkDay } from './classNameMarkDay'
 
 interface WeekTableDateHeaderRowProps {

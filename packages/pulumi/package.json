@@ -2,7 +2,7 @@
   "name": "timebook-app",
   "main": "index.ts",
   "devDependencies": {
-    "@types/node": "^16",
+    "@types/node": "^18.0.0",
     "tsconfig": "workspace:*"
   },
   "dependencies": {

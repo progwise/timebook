@@ -11,7 +11,8 @@ import { z } from 'zod'
 import { Button, InputField } from '@progwise/timebook-ui'
 import { projectInputValidations } from '@progwise/timebook-validations'
 
-import { ProjectFragment, ProjectInput } from '../../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { DeleteProjectModal } from '../deleteProjectModal'
 
@@ -55,15 +56,26 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
     }
   })
 
+export const ProjectFormFragment = graphql(`
+  fragment ProjectForm on Project {
+    title
+    startDate
+    endDate
+    canModify
+    ...DeleteProjectModal
+  }
+`)
+
 interface ProjectFormProps {
   onSubmit: (data: ProjectInput) => Promise<void>
   onCancel: () => void
-  project?: ProjectFragment & { canModify: boolean }
+  project?: FragmentType<typeof ProjectFormFragment>
   hasError: boolean
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
-  const { project, onSubmit, onCancel, hasError } = props
+  const { onSubmit, onCancel, hasError } = props
+  const project = useFragment(ProjectFormFragment, props.project)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {

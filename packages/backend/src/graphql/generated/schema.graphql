@@ -30,9 +30,9 @@ type Mutation {
   ): Project!
 
   """
-  Assign user to Project
+  Assign user to a project. This mutation can also be used for updating the role of a project member
   """
-  projectMembershipCreate(projectId: ID!, userId: ID!): Project!
+  projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
   Unassign user to Project
@@ -80,107 +80,13 @@ type Mutation {
   Update a task
   """
   taskUpdate(
-    data: TaskInput!
+    data: TaskUpdateInput!
 
     """
     id of the task
     """
     id: ID!
   ): Task!
-
-  """
-  Accept an invite to a team
-  """
-  teamAcceptInvite(
-    """
-    Invite key of the team
-    """
-    inviteKey: String!
-  ): Team!
-
-  """
-  Archive a team
-  """
-  teamArchive(
-    """
-    id of the team
-    """
-    teamId: ID!
-  ): Team!
-
-  """
-  Create a new team
-  """
-  teamCreate(data: TeamInput!): Team!
-
-  """
-  Delete a team
-  """
-  teamDelete(
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
-
-  """
-  Unarchive a team
-  """
-  teamUnarchive(
-    """
-    Id of the team
-    """
-    teamId: ID!
-  ): Team!
-
-  """
-  Update a team
-  """
-  teamUpdate(
-    data: TeamInput!
-
-    """
-    Id of the team
-    """
-    id: ID!
-  ): Team!
-
-  """
-  Updates the user capacity minutes
-  """
-  userCapacityUpdate(
-    """
-    Capacity of minutes
-    """
-    availableMinutesPerWeek: Int
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-
-    """
-    Id of the user
-    """
-    userId: ID!
-  ): User!
-
-  """
-  Update a user role
-  """
-  userRoleUpdate(
-    role: Role!
-
-    """
-    slug of the team
-    """
-    teamSlug: String!
-
-    """
-    Id of the user
-    """
-    userId: ID!
-  ): User!
 
   """
   Create a new WorkHour
@@ -218,7 +124,12 @@ type Project implements ModifyInterface {
   """
   List of users that are member of the project
   """
-  members: [User!]!
+  members(
+    """
+    Set this to true if you want to see also the users who booked work hours on this project, but are no longer project members. This arg is useful for e.g. reports.
+    """
+    includePastMembers: Boolean! = false
+  ): [User!]!
   startDate: Date
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
@@ -253,6 +164,7 @@ type Query {
   Returns all project of the signed in user that are active
   """
   projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
+  projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 
   """
   Returns a monthly project report
@@ -265,6 +177,11 @@ type Query {
     """
     projectId: ID!
     to: Date!
+
+    """
+    if not set all users will be included in the report
+    """
+    userId: ID
   ): Report!
 
   """
@@ -276,26 +193,6 @@ type Query {
     """
     taskId: ID!
   ): Task!
-
-  """
-  Return a team by a slug
-  """
-  teamBySlug(
-    """
-    slug of the team
-    """
-    slug: String!
-  ): Team!
-
-  """
-  Return all teams
-  """
-  teams(
-    """
-    Show archived teams
-    """
-    includeArchived: Boolean! = false
-  ): [Team!]!
 
   """
   Returns a single user
@@ -401,86 +298,27 @@ type Task implements ModifyInterface {
 }
 
 input TaskInput {
+  hourlyRate: Float
   projectId: ID!
   title: String!
 }
 
-type Team implements ModifyInterface {
-  archived: Boolean!
-
-  """
-  Can the user modify the entity
-  """
-  canModify: Boolean!
-
-  """
-  Identifier of the team
-  """
-  id: ID!
-  inviteKey: String!
-
-  """
-  All members of the team
-  """
-  members: [User!]!
-
-  """
-  Slug that is used in the team URL
-  """
-  slug: String!
-
-  """
-  Color theme of the team
-  """
-  theme: Theme!
-
-  """
-  Title of the team
-  """
-  title: String!
-}
-
-input TeamInput {
-  """
-  Slug that is used in the team URL
-  """
-  slug: String!
-
-  """
-  Color theme of the team
-  """
-  theme: Theme
-
-  """
-  Title of the team
-  """
-  title: String!
-}
-
-enum Theme {
-  BLUE
-  GRAY
-  GREEN
-  INDIGO
-  PINK
-  PURPLE
-  RED
-  YELLOW
+input TaskUpdateInput {
+  hourlyRate: Float
+  projectId: ID
+  title: String
 }
 
 type User {
-  """
-  Capacity of the user in the team
-  """
-  availableMinutesPerWeek(teamSlug: String!): Int
+  durationWorkedOnProject(from: Date!, projectId: ID!, to: Date): Int!
   id: ID!
   image: String
   name: String
 
   """
-  Role of the user in a team
+  Role of the user in a project
   """
-  role(teamSlug: String!): Role!
+  role(projectId: ID!): Role!
 }
 
 type WorkHour {

@@ -20,7 +20,8 @@
       "dependsOn": ["^fake"]
     },
     "e2e-tests": {
-      "dependsOn": ["^fake"]
+      "dependsOn": ["^fake"],
+      "cache": false
     },
     "migrate-db": {
       "inputs": ["**/migration.sql"],
@@ -37,5 +38,6 @@
       "inputs": [],
       "outputs": []
     }
-  }
+  },
+  "globalEnv": ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "NODE_ENV", "SECRET"]
 }

@@ -43,6 +43,7 @@ model ProjectMembership {
   invitedAt        DateTime? @default(now())
   inviteAcceptedAt DateTime?
   updatedAt        DateTime  @updatedAt
+  role             Role      @default(MEMBER)
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -124,7 +125,6 @@ model User {
 
   // Relations outside of next-auth:
   workhours          WorkHour[]
-  teamMemberships    TeamMembership[]
   projectMemberships ProjectMembership[]
 }
 
@@ -134,42 +134,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Team {
-  id         String    @id @default(cuid())
-  title      String
-  slug       String    @unique
-  theme      Theme     @default(BLUE)
-  inviteKey  String    @unique @default(cuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  archivedAt DateTime?
-
-  teamMemberships TeamMembership[]
-}
-
-enum Theme {
-  GRAY
-  RED
-  YELLOW
-  GREEN
-  BLUE
-  INDIGO
-  PURPLE
-  PINK
-}
-
-model TeamMembership {
-  id                      String   @id @default(cuid())
-  memberSince             DateTime @default(now())
-  userId                  String
-  teamId                  String
-  role                    Role     @default(MEMBER)
-  availableMinutesPerWeek Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, teamId])
 }

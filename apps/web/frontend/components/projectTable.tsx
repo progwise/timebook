@@ -11,17 +11,27 @@ import {
   TableHeadRow,
 } from '@progwise/timebook-ui'
 
-import { ProjectFragment } from '../generated/graphql'
+import { FragmentType, graphql, useFragment } from '../generated/gql'
+
+export const ProjectTableItemFragment = graphql(`
+  fragment ProjectTableItem on Project {
+    id
+    title
+    startDate
+    endDate
+  }
+`)
 
 interface ProjectTableProps {
-  projects: Array<ProjectFragment>
+  projects: FragmentType<typeof ProjectTableItemFragment>[]
 }
 
 export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   const router = useRouter()
+  const projects = useFragment(ProjectTableItemFragment, props.projects)
 
-  const handleProjectDetails = async (project: ProjectFragment) => {
-    await router.push(`/projects/${project.id}`)
+  const handleProjectDetails = async (projectId: string) => {
+    await router.push(`/projects/${projectId}`)
   }
 
   return (
@@ -34,7 +44,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
         </TableHeadRow>
       </TableHead>
       <TableBody>
-        {props.projects.map((project) => {
+        {projects.map((project) => {
           return (
             <TableRow key={project.id}>
               <TableCell>{project.title}</TableCell>
@@ -42,7 +52,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                 {project.startDate} - {project.endDate}
               </TableCell>
               <TableCell>
-                <Button variant="tertiary" onClick={() => handleProjectDetails(project)}>
+                <Button variant="tertiary" onClick={() => handleProjectDetails(project.id)}>
                   Details
                 </Button>
               </TableCell>

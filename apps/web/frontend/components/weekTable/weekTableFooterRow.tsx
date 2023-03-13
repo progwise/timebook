@@ -1,14 +1,24 @@
-import { FormattedDuration, TableCell, TableFootRow } from '@progwise/timebook-ui'
 import { eachDayOfInterval, isSameDay, isToday, parseISO } from 'date-fns'
-import { SimpleWorkHourFragment } from '../../generated/graphql'
+
+import { FormattedDuration, TableCell, TableFootRow } from '@progwise/timebook-ui'
+
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { classNameMarkDay } from './classNameMarkDay'
+
+const WeekTableFooterFragment = graphql(`
+  fragment WeekTableFooter on WorkHour {
+    duration
+    date
+  }
+`)
 
 interface WeekTableFooterRowProps {
   interval: { start: Date; end: Date }
-  workHours: SimpleWorkHourFragment[]
+  workHours: FragmentType<typeof WeekTableFooterFragment>[]
 }
 
-export const WeekTableFooterRow = ({ interval, workHours }: WeekTableFooterRowProps) => {
+export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: WeekTableFooterRowProps) => {
+  const workHours = useFragment(WeekTableFooterFragment, workHoursFragment)
   const sumOfDurationsOfTheWeek = workHours
     .map((workHour) => workHour.duration)
     .reduce((previous, current) => previous + current, 0)

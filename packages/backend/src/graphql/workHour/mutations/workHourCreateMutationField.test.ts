@@ -53,7 +53,7 @@ describe('workHourCreateMutationField', () => {
             title: 'Task 1',
           },
         },
-        projectMemberships: { create: { userId: '1' } },
+        projectMemberships: { create: { userId: '1', role: 'ADMIN' } },
       },
     })
   })

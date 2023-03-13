@@ -23,6 +23,7 @@ builder.mutationField('projectCreate', (t) =>
               inviteAcceptedAt: now,
               invitedAt: now,
               userId: context.session.user.id,
+              role: 'ADMIN',
             },
           },
         },
