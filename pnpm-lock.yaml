@@ -22,6 +22,7 @@ importers:
     specifiers:
       '@babel/core': ^7.21.0
       '@floating-ui/react-dom': ^1.0.0
+      '@graphql-codegen/add': ^4.0.1
       '@graphql-codegen/cli': ^3.2.2
       '@graphql-codegen/client-preset': ^2.1.1
       '@graphql-codegen/typescript-msw': ^1.1.6
@@ -113,6 +114,7 @@ importers:
       zod: 3.20.3
     devDependencies:
       '@babel/core': 7.21.0
+      '@graphql-codegen/add': 4.0.1_graphql@16.6.0
       '@graphql-codegen/cli': 3.2.2_hz4vfa46kigeg3rrvec257khhm
       '@graphql-codegen/client-preset': 2.1.1_graphql@16.6.0
       '@graphql-codegen/typescript-msw': 1.1.6_graphql@16.6.0
