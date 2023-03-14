@@ -1,5 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
+import { isProjectLocked } from './isProjectLocked'
 
 builder.mutationField('workHourDelete', (t) =>
   t.prismaField({
@@ -19,6 +20,23 @@ builder.mutationField('workHourDelete', (t) =>
         hasUserId: workHour.userId,
       }
     },
-    resolve: (query, _source, { id }) => prisma.workHour.delete({ ...query, where: { id: id.toString() } }),
+    resolve: async (query, _source, { id }) => {
+      const workHour = await prisma.workHour.findUniqueOrThrow({
+        select: { task: { select: { projectId: true } }, userId: true, date: true },
+        where: { id: id.toString() },
+      })
+
+      if (
+        await isProjectLocked({
+          projectId: workHour.task.projectId,
+          date: workHour.date,
+          userId: workHour.userId,
+        })
+      ) {
+        throw new Error('project is locked by report')
+      }
+
+      return prisma.workHour.delete({ ...query, where: { id: id.toString() } })
+    },
   }),
 )

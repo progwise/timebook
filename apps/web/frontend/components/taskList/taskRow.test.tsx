@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { Client, Provider } from 'urql'
@@ -65,6 +65,6 @@ describe('TaskCell', () => {
     const confirmDeleteButton = screen.getByRole('button', { name: 'Delete' })
     await userEvent.click(confirmDeleteButton)
 
-    expect(confirmDeleteButton).not.toBeInTheDocument()
+    await waitFor(() => expect(confirmDeleteButton).not.toBeInTheDocument())
   })
 })

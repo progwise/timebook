@@ -13,6 +13,9 @@ const WeekTableTaskRowFragment = graphql(`
       duration
       date
     }
+    project {
+      id
+    }
   }
 `)
 
@@ -36,7 +39,15 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
           .map((workHour) => workHour.duration)
         const duration = durations.reduce((previous, current) => previous + current, 0)
 
-        return <WeekTableTaskDayCell day={day} taskId={task.id} duration={duration} key={day.toDateString()} />
+        return (
+          <WeekTableTaskDayCell
+            day={day}
+            taskId={task.id}
+            duration={duration}
+            key={day.toDateString()}
+            projectId={task.project.id}
+          />
+        )
       })}
       <TableCell>
         <FormattedDuration minutes={taskDurations} title="" />
