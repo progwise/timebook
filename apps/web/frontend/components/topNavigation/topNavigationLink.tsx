@@ -21,11 +21,9 @@ export const TopNavigationLink: React.FC<TopNavigationLinkProps> = ({
     return (
       <Link href={href} passHref>
         {href && router.asPath.startsWith(href) ? (
-          <span className={`text-blue-500 underline  ${className}`}>{children}</span>
+          <a className={`text-blue-500 underline  ${className}`}>{children}</a>
         ) : (
-          <span className={`cursor-pointer text-gray-500 hover:text-blue-500  dark:text-white ${className}`}>
-            {children}
-          </span>
+          <a className={`cursor-pointer text-gray-500 hover:text-blue-500  dark:text-white ${className}`}>{children}</a>
         )}
       </Link>
     )
