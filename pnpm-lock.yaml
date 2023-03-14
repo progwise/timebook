@@ -22,9 +22,12 @@ importers:
     specifiers:
       '@babel/core': ^7.21.0
       '@floating-ui/react-dom': ^1.0.0
+      '@graphql-codegen/add': ^4.0.1
       '@graphql-codegen/cli': ^3.2.2
       '@graphql-codegen/client-preset': ^2.1.1
+      '@graphql-codegen/typescript': ^3.0.2
       '@graphql-codegen/typescript-msw': ^1.1.6
+      '@graphql-codegen/typescript-operations': ^3.0.2
       '@graphql-typed-document-node/core': ^3.1.2
       '@headlessui/react': ^1.7.2
       '@hookform/error-message': ^2.0.0
@@ -113,9 +116,12 @@ importers:
       zod: 3.20.3
     devDependencies:
       '@babel/core': 7.21.0
+      '@graphql-codegen/add': 4.0.1_graphql@16.6.0
       '@graphql-codegen/cli': 3.2.2_hz4vfa46kigeg3rrvec257khhm
       '@graphql-codegen/client-preset': 2.1.1_graphql@16.6.0
+      '@graphql-codegen/typescript': 3.0.2_graphql@16.6.0
       '@graphql-codegen/typescript-msw': 1.1.6_graphql@16.6.0
+      '@graphql-codegen/typescript-operations': 3.0.2_graphql@16.6.0
       '@testing-library/dom': 9.0.0
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 14.0.0_biqbaboplfbrettd7655fr4n2y
