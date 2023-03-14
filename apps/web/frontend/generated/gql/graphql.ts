@@ -35,6 +35,8 @@ export type Mutation = {
   projectMembershipDelete: Project
   /** Update a project */
   projectUpdate: Project
+  reportLock: Report
+  reportUnlock: Report
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
@@ -73,6 +75,20 @@ export type MutationProjectMembershipDeleteArgs = {
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
+}
+
+export type MutationReportLockArgs = {
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  year: Scalars['Int']
+}
+
+export type MutationReportUnlockArgs = {
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  year: Scalars['Int']
 }
 
 export type MutationTaskArchiveArgs = {
@@ -176,10 +192,10 @@ export type QueryProjectsCountArgs = {
 }
 
 export type QueryReportArgs = {
-  from: Scalars['Date']
+  month: Scalars['Int']
   projectId: Scalars['ID']
-  to: Scalars['Date']
   userId?: InputMaybe<Scalars['ID']>
+  year: Scalars['Int']
 }
 
 export type QueryTaskArgs = {
@@ -201,6 +217,8 @@ export type Report = {
   groupedByDate: Array<ReportGroupedByDate>
   groupedByTask: Array<ReportGroupedByTask>
   groupedByUser: Array<ReportGroupedByUser>
+  /** If set to true the work hours can not be updated */
+  isLocked: Scalars['Boolean']
 }
 
 export type ReportGroupedByDate = {
@@ -384,8 +402,8 @@ export type ReportProjectsQuery = {
 
 export type ReportQueryVariables = Exact<{
   projectId: Scalars['ID']
-  from: Scalars['Date']
-  to: Scalars['Date']
+  month: Scalars['Int']
+  year: Scalars['Int']
   userId?: InputMaybe<Scalars['ID']>
   groupByUser: Scalars['Boolean']
 }>
@@ -394,6 +412,7 @@ export type ReportQuery = {
   __typename?: 'Query'
   report: {
     __typename?: 'Report'
+    isLocked: boolean
     groupedByDate: Array<{
       __typename?: 'ReportGroupedByDate'
       date: string
@@ -417,6 +436,27 @@ export type ReportQuery = {
       user: { __typename?: 'User'; id: string; name?: string | null }
     }>
   }
+}
+
+export type ReportLockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportLockMutation = { __typename?: 'Mutation'; reportLock: { __typename?: 'Report'; isLocked: boolean } }
+
+export type ReportUnlockMutationVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ReportUnlockMutation = {
+  __typename?: 'Mutation'
+  reportUnlock: { __typename?: 'Report'; isLocked: boolean }
 }
 
 export type ReportUserFragment = {
@@ -531,11 +571,21 @@ export type WorkHourUpdateMutation = {
   workHourUpdate: { __typename?: 'WorkHour'; id: string }
 }
 
+export type IsLockedQueryVariables = Exact<{
+  year: Scalars['Int']
+  month: Scalars['Int']
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type IsLockedQuery = { __typename?: 'Query'; report: { __typename?: 'Report'; isLocked: boolean } }
+
 export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+  project: { __typename?: 'Project'; id: string }
 } & { ' $fragmentName'?: 'WeekTableTaskRowFragment' }
 
 export type ProjectQueryVariables = Exact<{
@@ -981,6 +1031,14 @@ export const WeekTableTaskRowFragmentDoc = {
               ],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
         ],
       },
     },
@@ -1042,6 +1100,14 @@ export const WeekTableProjectRowGroupFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
               ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
         ],
@@ -1126,6 +1192,14 @@ export const WeekTableProjectFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
               ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
         ],
@@ -1372,13 +1446,13 @@ export const ReportDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
         },
         {
           kind: 'VariableDefinition',
@@ -1405,13 +1479,13 @@ export const ReportDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'from' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                name: { kind: 'Name', value: 'month' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'to' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                name: { kind: 'Name', value: 'year' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
               },
               {
                 kind: 'Argument',
@@ -1515,6 +1589,7 @@ export const ReportDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -1523,6 +1598,140 @@ export const ReportDocument = {
     },
   ],
 } as unknown as DocumentNode<ReportQuery, ReportQueryVariables>
+export const ReportLockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'reportLock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'reportLock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'year' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'month' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ReportLockMutation, ReportLockMutationVariables>
+export const ReportUnlockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'reportUnlock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'reportUnlock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'year' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'month' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ReportUnlockMutation, ReportUnlockMutationVariables>
 export const ReportUsersDocument = {
   kind: 'Document',
   definitions: [
@@ -1847,6 +2056,73 @@ export const WorkHourUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>
+export const IsLockedDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'isLocked' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'report' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'year' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'month' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<IsLockedQuery, IsLockedQueryVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [
@@ -2358,6 +2634,14 @@ export const WeekTableDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
               ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
         ],

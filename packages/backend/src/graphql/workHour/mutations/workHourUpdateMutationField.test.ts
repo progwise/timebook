@@ -26,6 +26,7 @@ const workHourUpdateMutation = gql`
 
 describe('workHourUpdateMutationField', () => {
   beforeEach(async () => {
+    await prisma.report.deleteMany()
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
@@ -152,6 +153,48 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
+
+  it('should throw error when a report is locking the previous work hour', async () => {
+    await prisma.report.create({ data: { year: 2022, month: 0, projectId: 'P1', userId: '1' } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2023-02-01',
+          duration: 120,
+          taskId: 'T1',
+        },
+        date: '2022-01-01',
+        taskId: 'T1',
+      },
+    })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
+  })
+
+  it('should throw error when a report is locking the new date', async () => {
+    await prisma.report.create({ data: { year: 2023, month: 1, projectId: 'P1', userId: '1' } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2023-02-01',
+          duration: 120,
+          taskId: 'T1',
+        },
+        date: '2022-01-01',
+        taskId: 'T1',
+      },
+    })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
   })
 
   it('should create a new work hour if not exist', async () => {
