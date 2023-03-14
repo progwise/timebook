@@ -29,7 +29,13 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
             <TableRow key={user.id}>
               <TableCell className="flex items-center gap-2">
                 {user.image ? (
-                  <Image className="rounded-full" width={64} height={64} src={user.image} />
+                  <Image
+                    className="rounded-full"
+                    width={64}
+                    height={64}
+                    src={user.image}
+                    alt={user.name ?? 'image of the user'}
+                  />
                 ) : (
                   <div className="h-16 w-16 rounded-full bg-gray-300" />
                 )}

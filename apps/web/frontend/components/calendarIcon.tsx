@@ -34,7 +34,7 @@ const CalendarIcon = ({
       className={`flex cursor-pointer items-center ${childPosition === 'left' ? 'flex-row' : 'flex-row-reverse'}`}
     >
       <div>{children}</div>
-      <Image className={classNames} src={src} width={size} height={size} />
+      <Image alt="calendar icon" className={classNames} src={src} width={size} height={size} />
     </div>
   )
 }
