@@ -45,5 +45,5 @@ export const TableFoot: React.FC<DefaultTableComponentProps> = ({ children, clas
 }
 
 export const TableFootRow: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <tr className={className}>{children}</tr>
+  return <tr className={`dark:bg-slate-800${className}`}>{children}</tr>
 }
