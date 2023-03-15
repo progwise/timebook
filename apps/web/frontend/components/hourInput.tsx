@@ -1,5 +1,5 @@
 import { parse } from 'date-fns'
-import { FocusEventHandler, useRef, useState } from 'react'
+import { KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
 
 export interface IWorkDuration {
   hours: number
@@ -68,8 +68,8 @@ export const HourInput = (props: {
   const [workHour, setWorkHour] = useState<string>(getFormattedWorkHours(props.workHours))
   const previousValue = useRef<string>(getFormattedWorkHours(props.workHours))
 
-  const handlerSubmit: FocusEventHandler<HTMLInputElement> = (event) => {
-    const formattedValue = getFormattedWorkHours(parseWorkHours(event.target.value))
+  const handlerSubmit = (event: SyntheticEvent<HTMLInputElement>) => {
+    const formattedValue = getFormattedWorkHours(parseWorkHours(event.currentTarget.value))
 
     if (previousValue.current !== formattedValue) {
       const parsedDate = parse(formattedValue, 'HH:mm', new Date())
@@ -84,6 +84,12 @@ export const HourInput = (props: {
     previousValue.current = formattedValue
   }
 
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.code === 'Enter') {
+      handlerSubmit(event)
+    }
+  }
+
   return (
     <input
       value={workHour}
@@ -94,6 +100,7 @@ export const HourInput = (props: {
       size={5}
       placeholder="0:00"
       onBlur={handlerSubmit}
+      onKeyDown={handleKeyDown}
     />
   )
 }
