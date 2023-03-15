@@ -61,6 +61,11 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
     }
   }, [data])
 
+  if (!data) {
+    // eslint-disable-next-line unicorn/no-null
+    return null
+  }
+
   return (
     <ComboBox<ReportUserFragmentType>
       key={JSON.stringify(data)}
@@ -69,6 +74,7 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
       noOptionLabel={`All Users (${formatDuration(allDurations)})`}
       onChange={(newUserId) => onUserChange(newUserId ?? undefined)}
       options={allUsers}
+      label="user"
     />
   )
 }

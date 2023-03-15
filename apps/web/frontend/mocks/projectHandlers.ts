@@ -18,7 +18,10 @@ export const projectHandlers = [
       context.data({
         __typename: 'Query',
         projects: [
-          { ...testProject1, tasks: [{ id: 'task1', title: 'Task 1', workHours: [] }] },
+          {
+            ...testProject1,
+            tasks: [{ id: 'task1', title: 'Task 1', workHours: [], project: { id: testProject1.id } }],
+          },
           { ...testProject2, tasks: [] },
         ],
       }),

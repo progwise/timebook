@@ -1,6 +1,7 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { WorkHourInput } from '../workHourInput'
+import { isProjectLocked } from './isProjectLocked'
 
 builder.mutationField('workHourCreate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -10,7 +11,16 @@ builder.mutationField('workHourCreate', (t) =>
       data: t.arg({ type: WorkHourInput }),
     },
     authScopes: (_source, { data: { taskId } }) => ({ isMemberByTask: taskId.toString() }),
-    resolve: (query, _source, { data: { date, duration, taskId } }, context) => {
+    resolve: async (query, _source, { data: { date, duration, taskId } }, context) => {
+      const task = await prisma.task.findUniqueOrThrow({
+        select: { projectId: true },
+        where: { id: taskId.toString() },
+      })
+
+      if (await isProjectLocked({ date, userId: context.session.user.id, projectId: task.projectId })) {
+        throw new Error('project is locked by report')
+      }
+
       const workHourKey = {
         date,
         taskId: taskId.toString(),

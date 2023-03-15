@@ -64,6 +64,7 @@ export const HourInput = (props: {
   className?: string
   onBlur?: (workHours: number) => void
   readOnly?: boolean
+  disabled?: boolean
 }): JSX.Element => {
   const [workHour, setWorkHour] = useState<string>(getFormattedWorkHours(props.workHours))
   const previousValue = useRef<string>(getFormattedWorkHours(props.workHours))
@@ -101,6 +102,7 @@ export const HourInput = (props: {
       placeholder="0:00"
       onBlur={handlerSubmit}
       onKeyDown={handleKeyDown}
+      disabled={props.disabled}
     />
   )
 }

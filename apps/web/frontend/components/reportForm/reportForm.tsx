@@ -1,4 +1,4 @@
-import { endOfMonth, format, formatISO, parse, startOfMonth } from 'date-fns'
+import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 import { useQuery } from 'urql'
@@ -8,6 +8,7 @@ import { FormattedDuration } from '@progwise/timebook-ui'
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter, ReportProjectFragment as ReportProjectFragmentType } from '../../generated/gql/graphql'
 import { ComboBox } from '../combobox/combobox'
+import { ReportLockButton } from './reportLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
 const ReportProjectFragment = graphql(`
@@ -26,8 +27,8 @@ const ReportProjectsQueryDocument = graphql(`
 `)
 
 const ReportQueryDocument = graphql(`
-  query report($projectId: ID!, $from: Date!, $to: Date!, $userId: ID, $groupByUser: Boolean!) {
-    report(projectId: $projectId, from: $from, to: $to, userId: $userId) {
+  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {
+    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {
       groupedByDate {
         date
         duration
@@ -56,6 +57,7 @@ const ReportQueryDocument = graphql(`
         }
         duration
       }
+      isLocked
     }
   }
 `)
@@ -65,6 +67,8 @@ export const ReportForm = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const [date, setDate] = useState(new Date())
+  const year = getYear(date)
+  const month = getMonth(date)
   const from = startOfMonth(date)
   const to = endOfMonth(date)
   const fromString = formatISO(from, { representation: 'date' })
@@ -80,8 +84,8 @@ export const ReportForm = () => {
     query: ReportQueryDocument,
     variables: {
       projectId: selectedProjectId ?? '',
-      from: fromString,
-      to: endString,
+      year,
+      month,
       userId: selectedUserId,
       groupByUser: !selectedUserId,
     },
@@ -111,6 +115,7 @@ export const ReportForm = () => {
               noOptionLabel="No Project"
               onChange={handleChange}
               options={projects ?? []}
+              label="project"
             />
             {selectedProjectId && (
               <ReportUserSelect
@@ -136,6 +141,17 @@ export const ReportForm = () => {
             />
           </div>
         </div>
+
+        {selectedProjectId && reportGroupedData && selectedUserId && (
+          <ReportLockButton
+            year={year}
+            month={month}
+            projectId={selectedProjectId}
+            userId={selectedUserId}
+            isLocked={reportGroupedData.report.isLocked}
+          />
+        )}
+
         {selectedProject && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">

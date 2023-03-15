@@ -103,5 +103,19 @@ export const Report = builder.objectType('Report', {
         }))
       },
     }),
+    isLocked: t.boolean({
+      description: 'If set to true the work hours can not be updated',
+      resolve: async ({ userId, month, year, projectId }) => {
+        if (!userId) {
+          return false
+        }
+
+        const report = await prisma.report.findUnique({
+          where: { projectId_userId_year_month: { month, year, projectId, userId } },
+        })
+
+        return !!report
+      },
+    }),
   }),
 })

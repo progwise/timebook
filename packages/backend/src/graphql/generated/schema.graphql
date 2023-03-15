@@ -50,6 +50,8 @@ type Mutation {
     """
     id: ID!
   ): Project!
+  reportLock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
+  reportUnlock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
 
   """
   Archive a task
@@ -170,18 +172,18 @@ type Query {
   Returns a monthly project report
   """
   report(
-    from: Date!
+    month: Int!
 
     """
     Project identifier
     """
     projectId: ID!
-    to: Date!
 
     """
     if not set all users will be included in the report
     """
     userId: ID
+    year: Int!
   ): Report!
 
   """
@@ -229,6 +231,11 @@ type Report {
   groupedByDate: [ReportGroupedByDate!]!
   groupedByTask: [ReportGroupedByTask!]!
   groupedByUser: [ReportGroupedByUser!]!
+
+  """
+  If set to true the work hours can not be updated
+  """
+  isLocked: Boolean!
 }
 
 type ReportGroupedByDate {
