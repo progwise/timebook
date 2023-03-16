@@ -14,6 +14,8 @@ import * as types from './graphql'
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+  '\n  mutation projectMembershipCreateByEmail($email: String!, $projectId: ID!) {\n    projectMembershipCreateByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n':
+    types.ProjectMembershipCreateByEmailDocument,
   '\n  fragment DeleteProjectModal on Project {\n    id\n    title\n  }\n': types.DeleteProjectModalFragmentDoc,
   '\n  mutation projectDelete($id: ID!) {\n    projectDelete(id: $id) {\n      id\n    }\n  }\n':
     types.ProjectDeleteDocument,
@@ -93,6 +95,12 @@ const documents = {
  */
 export function graphql(source: string): unknown
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectMembershipCreateByEmail($email: String!, $projectId: ID!) {\n    projectMembershipCreateByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n',
+): typeof documents['\n  mutation projectMembershipCreateByEmail($email: String!, $projectId: ID!) {\n    projectMembershipCreateByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

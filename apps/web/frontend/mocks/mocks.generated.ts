@@ -33,6 +33,8 @@ export type Mutation = {
   projectDelete: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipCreateByEmail: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
   /** Update a project */
@@ -67,6 +69,11 @@ export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
   role?: Role
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipCreateByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectMembershipDeleteArgs = {
@@ -326,6 +333,20 @@ export type WorkHourInput = {
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type ProjectMembershipCreateByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreateByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
 }
 
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
@@ -682,6 +703,29 @@ export type WeekTableQuery = {
     }>
   }>
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipCreateByEmailMutation((req, res, ctx) => {
+ *   const { email, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipCreateByEmail })
+ *   )
+ * })
+ */
+export const mockProjectMembershipCreateByEmailMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipCreateByEmailMutationVariables>,
+    GraphQLContext<ProjectMembershipCreateByEmailMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipCreateByEmailMutation, ProjectMembershipCreateByEmailMutationVariables>(
+    'projectMembershipCreateByEmail',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

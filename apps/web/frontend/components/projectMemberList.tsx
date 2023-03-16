@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { Button, Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
+import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Role } from '../generated/gql/graphql'
@@ -17,6 +17,7 @@ const ProjectMemberListUserFragment = graphql(`
 
 interface ProjectMemberListProps {
   users: FragmentType<typeof ProjectMemberListUserFragment>[]
+  projectId: string
 }
 
 export const ProjectMemberList = (props: ProjectMemberListProps) => {
@@ -27,18 +28,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell>
-              <AddProjectMember />
-            </TableCell>
-            <TableCell className="relative">
-              <Button
-                className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
-                variant="secondary"
-                onClick={console.log}
-                tooltip="Copies a link with which member can join the project"
-              >
-                Invitation link
-              </Button>
+            <TableCell className="flex items-center gap-2">
+              <AddProjectMember projectId={props.projectId} />
             </TableCell>
           </TableRow>
           {users.map((user) => (

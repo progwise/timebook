@@ -31,6 +31,8 @@ export type Mutation = {
   projectDelete: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipCreateByEmail: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
   /** Update a project */
@@ -65,6 +67,11 @@ export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
   role?: Role
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipCreateByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectMembershipDeleteArgs = {
@@ -324,6 +331,20 @@ export type WorkHourInput = {
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type ProjectMembershipCreateByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreateByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
 }
 
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
@@ -1242,6 +1263,63 @@ export const WeekTableProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekTableProjectFragment, unknown>
+export const ProjectMembershipCreateByEmailDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipCreateByEmail' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipCreateByEmail' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipCreateByEmailMutation, ProjectMembershipCreateByEmailMutationVariables>
 export const ProjectDeleteDocument = {
   kind: 'Document',
   definitions: [
