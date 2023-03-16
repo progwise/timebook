@@ -44,7 +44,7 @@ const createUserSession = async (options: { browser: Browser; user: User }): Pro
 
   const page = await options.browser.newPage()
   await page.goto(signInUrl)
-  await page.waitForURL('http://localhost:3000/home')
+  await page.waitForURL('http://localhost:3000/week')
   await page.context().storageState({ path: options.user.storageStatePath })
 }
 

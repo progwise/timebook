@@ -8,10 +8,11 @@ interface ComboBoxProps<TOption extends { id: TIdType }, TIdType extends string>
   onChange: (id: TIdType | null) => void
   displayValue: (option: TOption) => string
   onBlur?: () => void
-  options: TOption[]
+  options: ReadonlyArray<TOption>
   noOptionLabel?: string
   onCreateNew?: (title: string) => Promise<TOption>
   isCreating?: boolean
+  label?: string
 }
 
 type NewOption = 'newOption'
@@ -28,6 +29,7 @@ export const ComboBox = <TOption extends { id: TIdType }, TIdType extends string
   noOptionLabel,
   onCreateNew,
   isCreating,
+  label,
 }: ComboBoxProps<TOption, TIdType>): JSX.Element => {
   const [inputQuery, setInputQuery] = useState('')
 
@@ -89,6 +91,7 @@ export const ComboBox = <TOption extends { id: TIdType }, TIdType extends string
             displayValue={generateLabel}
             onChange={(event) => setInputQuery(event.target.value)}
             onBlur={onBlur}
+            aria-label={label}
           />
           <HUCombobox.Button className="inset-y-0 right-0 flex items-center pr-2">
             <HiSelector className="h-5 w-5 text-gray-400" aria-hidden="true" />

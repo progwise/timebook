@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { useQuery } from 'urql'
 
 import { Button, Spinner } from '@progwise/timebook-ui'
 
@@ -8,7 +9,26 @@ import { ComboBox } from '../../frontend/components/combobox/combobox'
 import { ProjectList } from '../../frontend/components/projectList/projectList'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { ProjectFilter, useMyProjectsQuery, useProjectCountsQuery } from '../../frontend/generated/graphql'
+import { graphql } from '../../frontend/generated/gql'
+import { ProjectFilter } from '../../frontend/generated/gql/graphql'
+
+const MyProjectsQueryDocument = graphql(`
+  query myProjects($from: Date!, $filter: ProjectFilter) {
+    projects(from: $from, filter: $filter) {
+      ...ProjectTableItem
+      ...ProjectListItem
+    }
+  }
+`)
+
+const projectCountsQueryDocument = graphql(`
+  query projectCounts($from: Date!, $to: Date) {
+    allCounts: projectsCount(from: $from, to: $to, filter: ALL)
+    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
+    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
+    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+  }
+`)
 
 const projectFilters = Object.values(ProjectFilter).map((projectFilter) => ({ id: projectFilter }))
 
@@ -17,11 +37,16 @@ const Projects = (): JSX.Element => {
   const [selectedProjectFilter, setSelectedProjectFilter] = useState(ProjectFilter.Active)
   const router = useRouter()
   const from = format(new Date(), 'yyyy-MM-dd')
-  const [{ data, error, fetching: projectsLoading }] = useMyProjectsQuery({
+  const [{ data, error, fetching: projectsLoading }] = useQuery({
+    query: MyProjectsQueryDocument,
     context,
     variables: { from, filter: selectedProjectFilter },
   })
-  const [{ data: projectCountsData }] = useProjectCountsQuery({ context, variables: { from } })
+  const [{ data: projectCountsData }] = useQuery({
+    query: projectCountsQueryDocument,
+    context,
+    variables: { from },
+  })
 
   const projectFilterKeyToLabel: Record<ProjectFilter, string> = {
     ALL: `all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,

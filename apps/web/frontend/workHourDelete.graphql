@@ -1,5 +1,0 @@
-mutation workHourDelete($id: ID!) {
-  workHourDelete(id: $id) {
-    id
-  }
-}

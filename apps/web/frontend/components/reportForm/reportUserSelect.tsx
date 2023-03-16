@@ -1,8 +1,29 @@
 import { format } from 'date-fns'
 import { useEffect, useMemo } from 'react'
+import { useQuery } from 'urql'
 
-import { ReportUserFragment, useReportUsersQuery } from '../../generated/graphql'
+import { graphql, useFragment } from '../../generated/gql'
+import { ReportUserFragment as ReportUserFragmentType } from '../../generated/gql/graphql'
 import { ComboBox } from '../combobox/combobox'
+
+const ReportUserFragment = graphql(`
+  fragment ReportUser on User {
+    id
+    name
+    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
+  }
+`)
+
+const ReportUsersQueryDocument = graphql(`
+  query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {
+    project(projectId: $projectId) {
+      id
+      members(includePastMembers: true) {
+        ...ReportUser
+      }
+    }
+  }
+`)
 
 interface ReportUserSelectProps {
   projectId: string
@@ -20,12 +41,13 @@ const formatDuration = (durationInMinutes: number) => {
 
 export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from, to }: ReportUserSelectProps) => {
   const context = useMemo(() => ({ __additionalTypnames: ['User'] }), [])
-  const [{ data }] = useReportUsersQuery({
+  const [{ data }] = useQuery({
+    query: ReportUsersQueryDocument,
     variables: { projectId, from: format(from, 'yyyy-MM-dd'), to: format(to, 'yyyy-MM-dd') },
     context,
   })
 
-  const allUsers = data?.project.members ?? []
+  const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
   const allDurations = allUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
   const selectedUser = allUsers.find((user) => user.id === selectedUserId)
 
@@ -39,14 +61,20 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
     }
   }, [data])
 
+  if (!data) {
+    // eslint-disable-next-line unicorn/no-null
+    return null
+  }
+
   return (
-    <ComboBox<ReportUserFragment>
+    <ComboBox<ReportUserFragmentType>
       key={JSON.stringify(data)}
       value={selectedUser}
       displayValue={(user) => `${user.name ?? user.id} (${formatDuration(user.durationWorkedOnProject)})`}
       noOptionLabel={`All Users (${formatDuration(allDurations)})`}
       onChange={(newUserId) => onUserChange(newUserId ?? undefined)}
       options={allUsers}
+      label="user"
     />
   )
 }
