@@ -1,9 +1,10 @@
 import Image from 'next/image'
 
-import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
+import { Button, Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Role } from '../generated/gql/graphql'
+import { AddProjectMember } from './addProjectMember'
 
 const ProjectMemberListUserFragment = graphql(`
   fragment ProjectMemberListUser on User {
@@ -59,9 +60,6 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
               <TableCell>{user.role === Role.Admin && 'Admin'}</TableCell>
             </TableRow>
           ))}
-          <TableRow>
-            <AddProjectMember />
-          </TableRow>
         </TableBody>
       </Table>
     </>
