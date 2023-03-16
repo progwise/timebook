@@ -48,7 +48,12 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
 
   return (
     <div>
-      <select aria-label="week" onChange={handleWeekChange} value={selectedWeek}>
+      <select
+        className="dark:bg-slate-800 dark:text-white"
+        aria-label="week"
+        onChange={handleWeekChange}
+        value={selectedWeek}
+      >
         {weeksOfSelectedYear.map((startOfWeekDate) => {
           const weekNumber = getWeek(startOfWeekDate, { firstWeekContainsDate: 7 })
           const monday = startOfWeekDate
@@ -63,7 +68,12 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
         })}
       </select>
 
-      <select aria-label="year" onChange={handleYearChange} value={selectedYear}>
+      <select
+        className="dark:bg-slate-800 dark:text-white"
+        aria-label="year"
+        onChange={handleYearChange}
+        value={selectedYear}
+      >
         {years.map((year) => (
           <option value={year} key={year}>
             {year}
