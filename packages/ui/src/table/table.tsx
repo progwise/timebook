@@ -35,8 +35,16 @@ export const TableRow: React.FC<DefaultTableComponentProps> = ({ children, class
   )
 }
 
-export const TableCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <td className={` p-2 ${className}`}>{children}</td>
+export const TableCell: React.FC<DefaultTableComponentProps & { colSpan?: number }> = ({
+  children,
+  className = '',
+  colSpan,
+}) => {
+  return (
+    <td className={` p-2 ${className}`} colSpan={colSpan}>
+      {children}
+    </td>
+  )
 }
 
 // Footer:

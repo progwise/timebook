@@ -19,7 +19,7 @@ interface TimebookProps {
 
 const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
-    <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
+    <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-5 dark:bg-slate-800 dark:text-white">
       <TopNavigation />
     </header>
     <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white">

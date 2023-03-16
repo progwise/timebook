@@ -1,3 +1,5 @@
+import { getMonth, getYear } from 'date-fns'
+
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
@@ -48,6 +50,29 @@ export const Task = builder.prismaObject('Task', {
           where: { userId_projectId: { projectId: task.projectId, userId: context.session.user.id } },
         })
         return projectMembership?.role === 'ADMIN'
+      },
+    }),
+    tracking: t.withAuth({ isLoggedIn: true }).prismaField({
+      select: { id: true },
+      type: 'Tracking',
+      nullable: true,
+      resolve: (query, task, _argument, context) =>
+        prisma.tracking.findFirst({ ...query, where: { userId: context.session.user.id, taskId: task.id } }),
+    }),
+    isLocked: t.withAuth({ isLoggedIn: true }).boolean({
+      select: { projectId: true },
+      resolve: async (task, _arguments, context) => {
+        const now = new Date()
+        const year = getYear(now)
+        const month = getMonth(now)
+
+        const report = await prisma.report.findUnique({
+          where: {
+            projectId_userId_year_month: { projectId: task.projectId, year, month, userId: context.session.user.id },
+          },
+        })
+
+        return !!report
       },
     }),
   }),
