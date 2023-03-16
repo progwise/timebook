@@ -19,7 +19,7 @@ export const LiveDuration = ({ start }: LiveDurationProps) => {
 
     const interval = setInterval(calculateDuration, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [start])
 
   if (difference === undefined) {
     // eslint-disable-next-line unicorn/no-null
