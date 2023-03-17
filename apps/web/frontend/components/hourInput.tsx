@@ -87,15 +87,17 @@ export const HourInput = (props: {
 
   return (
     <input
+      disabled={props.disabled}
       value={workHour}
       readOnly={props.readOnly}
       onChange={(event) => setWorkHour(event.target.value)}
       onFocus={(event) => event.target.select()}
-      className={`rounded-md p-1 text-center dark:bg-slate-800 ${props.className ?? ''}`}
+      className={`rounded-md p-1 text-center 
+      disabled:cursor-not-allowed disabled:text-gray-400/50
+       dark:bg-slate-800 ${props.className ?? ''}`}
       size={5}
       placeholder="0:00"
       onBlur={handlerSubmit}
-      disabled={props.disabled}
     />
   )
 }

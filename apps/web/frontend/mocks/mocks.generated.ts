@@ -379,14 +379,6 @@ export type ProjectFormFragment = {
   id: string
 }
 
-export type ProjectListItemFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  startDate?: string | null
-  endDate?: string | null
-}
-
 export type ProjectMemberListUserFragment = {
   __typename?: 'User'
   id: string
@@ -612,7 +604,7 @@ export type WeekTableProjectFragment = {
     title: string
     isLocked: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
+    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     tracking?: {
       __typename?: 'Tracking'
       start: string
@@ -632,8 +624,8 @@ export type WeekTableProjectRowGroupFragment = {
     id: string
     title: string
     isLocked: boolean
+    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
     tracking?: {
       __typename?: 'Tracking'
       start: string
@@ -667,8 +659,8 @@ export type WeekTableTaskRowFragment = {
   id: string
   title: string
   isLocked: boolean
+  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-  project: { __typename?: 'Project'; id: string }
   tracking?: {
     __typename?: 'Tracking'
     start: string
@@ -760,7 +752,7 @@ export type WeekTableQuery = {
       title: string
       isLocked: boolean
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-      project: { __typename?: 'Project'; id: string }
+      project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
       tracking?: {
         __typename?: 'Tracking'
         start: string
