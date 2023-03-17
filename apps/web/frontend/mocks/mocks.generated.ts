@@ -17,6 +17,8 @@ export type Scalars = {
   Float: number
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  DateTime: string
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -47,6 +49,12 @@ export type Mutation = {
   taskDelete: Task
   /** Update a task */
   taskUpdate: Task
+  /** The ongoing time tracking will be deleted */
+  trackingCancel?: Maybe<Tracking>
+  /** Start time tracking for a task. When a tracking for the same task is already running the tracking keeps untouched. When a tracking for a different task is running, the on going tracking will be stopped and converted to work hours. */
+  trackingStart: Tracking
+  /** The ongoing time tracking will be stopped and converted to work hours */
+  trackingStop: Array<WorkHour>
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -110,6 +118,10 @@ export type MutationTaskUpdateArgs = {
   id: Scalars['ID']
 }
 
+export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
+}
+
 export type MutationWorkHourCreateArgs = {
   data: WorkHourInput
 }
@@ -162,6 +174,7 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  currentTracking?: Maybe<Tracking>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -264,9 +277,11 @@ export type Task = ModifyInterface & {
   hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
+  isLocked: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
+  tracking?: Maybe<Tracking>
   workHours: Array<WorkHour>
 }
 
@@ -285,6 +300,12 @@ export type TaskUpdateInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
+}
+
+export type Tracking = {
+  __typename?: 'Tracking'
+  start: Scalars['DateTime']
+  task: Task
 }
 
 export type User = {
@@ -531,6 +552,48 @@ export type WorkHoursQuery = {
   }>
 }
 
+export type CurrentTrackingQueryVariables = Exact<{ [key: string]: never }>
+
+export type CurrentTrackingQuery = {
+  __typename?: 'Query'
+  currentTracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; title: string; id: string; project: { __typename?: 'Project'; title: string } }
+  } | null
+}
+
+export type TrackingButtonsTrackingFragment = {
+  __typename?: 'Tracking'
+  start: string
+  task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+}
+
+export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string; isLocked: boolean }
+
+export type TrackingStartMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type TrackingStartMutation = {
+  __typename?: 'Mutation'
+  trackingStart: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } }
+}
+
+export type TrackingStopMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingStopMutation = {
+  __typename?: 'Mutation'
+  trackingStop: Array<{ __typename?: 'WorkHour'; id: string; task: { __typename?: 'Task'; id: string } }>
+}
+
+export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingCancelMutation = {
+  __typename?: 'Mutation'
+  trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
+}
+
 export type WeekTableProjectFragment = {
   __typename?: 'Project'
   id: string
@@ -539,8 +602,14 @@ export type WeekTableProjectFragment = {
     __typename?: 'Task'
     id: string
     title: string
+    isLocked: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
   }>
 }
 
@@ -554,8 +623,14 @@ export type WeekTableProjectRowGroupFragment = {
     __typename?: 'Task'
     id: string
     title: string
+    isLocked: boolean
     project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
   }>
 }
 
@@ -583,8 +658,14 @@ export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
+  isLocked: boolean
   project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+  tracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+  } | null
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -669,8 +750,14 @@ export type WeekTableQuery = {
       __typename?: 'Task'
       id: string
       title: string
+      isLocked: boolean
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
       project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+      tracking?: {
+        __typename?: 'Tracking'
+        start: string
+        task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+      } | null
     }>
   }>
 }
@@ -828,6 +915,71 @@ export const mockTaskUpdateMutation = (
 export const mockWorkHoursQuery = (
   resolver: ResponseResolver<GraphQLRequest<WorkHoursQueryVariables>, GraphQLContext<WorkHoursQuery>, any>,
 ) => graphql.query<WorkHoursQuery, WorkHoursQueryVariables>('workHours', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCurrentTrackingQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ currentTracking })
+ *   )
+ * })
+ */
+export const mockCurrentTrackingQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CurrentTrackingQueryVariables>, GraphQLContext<CurrentTrackingQuery>, any>,
+) => graphql.query<CurrentTrackingQuery, CurrentTrackingQueryVariables>('currentTracking', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingStartMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ trackingStart })
+ *   )
+ * })
+ */
+export const mockTrackingStartMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TrackingStartMutationVariables>,
+    GraphQLContext<TrackingStartMutation>,
+    any
+  >,
+) => graphql.mutation<TrackingStartMutation, TrackingStartMutationVariables>('trackingStart', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingStopMutation((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ trackingStop })
+ *   )
+ * })
+ */
+export const mockTrackingStopMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TrackingStopMutationVariables>, GraphQLContext<TrackingStopMutation>, any>,
+) => graphql.mutation<TrackingStopMutation, TrackingStopMutationVariables>('trackingStop', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingCancelMutation((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ trackingCancel })
+ *   )
+ * })
+ */
+export const mockTrackingCancelMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TrackingCancelMutationVariables>,
+    GraphQLContext<TrackingCancelMutation>,
+    any
+  >,
+) => graphql.mutation<TrackingCancelMutation, TrackingCancelMutationVariables>('trackingCancel', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

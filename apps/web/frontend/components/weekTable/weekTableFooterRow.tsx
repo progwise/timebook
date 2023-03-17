@@ -26,6 +26,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
   return (
     <TableFootRow>
       <TableCell />
+      <TableCell />
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
