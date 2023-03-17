@@ -358,14 +358,6 @@ export type ProjectFormFragment = {
   id: string
 }
 
-export type ProjectListItemFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  startDate?: string | null
-  endDate?: string | null
-}
-
 export type ProjectMemberListUserFragment = {
   __typename?: 'User'
   id: string

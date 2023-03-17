@@ -106,7 +106,7 @@ export const ReportForm = () => {
           <h1 className="my-4 text-2xl font-bold">
             Detailed time report: {fromString} - {endString}
           </h1>
-          <Button variant="secondary" className="px-6 print:hidden" onClick={print}>
+          <Button variant="secondary" className="px-6 print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
           </Button>
         </div>

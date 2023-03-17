@@ -361,14 +361,6 @@ export type ProjectFormFragment = ({
   ' $fragmentName'?: 'ProjectFormFragment'
 }
 
-export type ProjectListItemFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  startDate?: string | null
-  endDate?: string | null
-} & { ' $fragmentName'?: 'ProjectListItemFragment' }
-
 export type ProjectMemberListUserFragment = {
   __typename?: 'User'
   id: string
@@ -620,12 +612,7 @@ export type MyProjectsQueryVariables = Exact<{
 export type MyProjectsQuery = {
   __typename?: 'Query'
   projects: Array<
-    { __typename?: 'Project' } & {
-      ' $fragmentRefs'?: {
-        ProjectTableItemFragment: ProjectTableItemFragment
-        ProjectListItemFragment: ProjectListItemFragment
-      }
-    }
+    { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
   >
 }
 
@@ -709,25 +696,6 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
-export const ProjectListItemFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectListItemFragment, unknown>
 export const ProjectMemberListUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2360,10 +2328,7 @@ export const MyProjectsDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectListItem' } },
-              ],
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
             },
           },
         ],
@@ -2372,20 +2337,6 @@ export const MyProjectsDocument = {
     {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProjectTableItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectListItem' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
