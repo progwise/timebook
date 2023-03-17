@@ -31,8 +31,8 @@ builder.mutationField('projectMembershipInviteByEmail', (t) =>
 
       const projectMembership = await prisma.projectMembership.create({
         data: {
-          user: { connect: { id: userId } },
-          project: { connect: { id: projectId.toString() } },
+          userId,
+          projectId: projectId.toString(),
         },
         select: { project: query },
       })
