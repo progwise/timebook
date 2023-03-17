@@ -1,14 +1,19 @@
-import { eachDayOfInterval, isSameDay, parseISO } from 'date-fns'
+import { eachDayOfInterval, isSameDay, parseISO, isBefore, isAfter } from 'date-fns'
 
 import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { TrackingButtons } from '../trackingButtons/trackingButtons'
 import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
 
 const WeekTableTaskRowFragment = graphql(`
   fragment WeekTableTaskRow on Task {
     id
     title
+    project {
+      startDate
+      endDate
+    }
     workHours(from: $from, to: $to) {
       duration
       date
@@ -16,6 +21,10 @@ const WeekTableTaskRowFragment = graphql(`
     project {
       id
     }
+    tracking {
+      ...TrackingButtonsTracking
+    }
+    ...TrackingButtonsTask
   }
 `)
 
@@ -32,6 +41,9 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
 
   return (
     <TableRow>
+      <TableCell className="flex gap-1">
+        <TrackingButtons tracking={task.tracking} taskToTrack={task} />
+      </TableCell>
       <TableCell>{task.title}</TableCell>
       {eachDayOfInterval(interval).map((day) => {
         const durations = task.workHours
@@ -42,9 +54,13 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
         return (
           <WeekTableTaskDayCell
             day={day}
+            disabled={
+              (task.project.startDate ? isBefore(day, parseISO(task.project.startDate)) : false) ||
+              (task.project.endDate ? isAfter(day, parseISO(task.project.endDate)) : false)
+            }
             taskId={task.id}
             duration={duration}
-            key={day.toDateString()}
+            key={day.toDateString() + duration}
             projectId={task.project.id}
           />
         )

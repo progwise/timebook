@@ -4,6 +4,11 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 scalar Date
 
 """
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+"""
 Adds the information whether the user can edit the entity
 """
 interface ModifyInterface {
@@ -96,6 +101,21 @@ type Mutation {
   ): Task!
 
   """
+  The ongoing time tracking will be deleted
+  """
+  trackingCancel: Tracking
+
+  """
+  Start time tracking for a task. When a tracking for the same task is already running the tracking keeps untouched. When a tracking for a different task is running, the on going tracking will be stopped and converted to work hours.
+  """
+  trackingStart(taskId: ID!): Tracking!
+
+  """
+  The ongoing time tracking will be stopped and converted to work hours
+  """
+  trackingStop: [WorkHour!]!
+
+  """
   Create a new WorkHour
   """
   workHourCreate(data: WorkHourInput!): WorkHour!
@@ -157,6 +177,8 @@ input ProjectInput {
 }
 
 type Query {
+  currentTracking: Tracking
+
   """
   Returns a single project
   """
@@ -300,12 +322,14 @@ type Task implements ModifyInterface {
   Identifies the task
   """
   id: ID!
+  isLocked: Boolean!
   project: Project!
 
   """
   The user can identify the task in the UI
   """
   title: String!
+  tracking: Tracking
   workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
@@ -319,6 +343,11 @@ input TaskUpdateInput {
   hourlyRate: Float
   projectId: ID
   title: String
+}
+
+type Tracking {
+  start: DateTime!
+  task: Task!
 }
 
 type User {

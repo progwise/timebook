@@ -27,7 +27,7 @@ const config: CodegenConfig = {
   },
   hooks: { afterOneFileWrite: ['prettier --write'] },
   config: {
-    scalars: { Date: 'string' },
+    scalars: { Date: 'string', DateTime: 'string' },
   },
 }
 

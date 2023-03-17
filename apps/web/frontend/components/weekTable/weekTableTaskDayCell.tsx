@@ -29,9 +29,10 @@ interface WeekTableTaskDayCellProps {
   taskId: string
   projectId: string
   day: Date
+  disabled: boolean
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -61,7 +62,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekT
           })
         }}
         workHours={duration / 60}
-        disabled={isLockedByReport}
+        disabled={isLockedByReport || disabled}
       />
     </TableCell>
   )

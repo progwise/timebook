@@ -11,6 +11,7 @@ interface WeekTableDateHeaderRowProps {
 export const WeekTableDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps) => (
   <TableHeadRow>
     <TableHeadCell />
+    <TableHeadCell />
     {eachDayOfInterval(interval).map((day) => (
       <TableHeadCell className={isToday(day) ? classNameMarkDay : ''} key={day.toString()}>
         {format(day, 'EEE')}

@@ -38,6 +38,10 @@ export const builder = new SchemaBuilder<{
       Input: Date
       Output: Date
     }
+    DateTime: {
+      Input: Date
+      Output: Date
+    }
   }
   Objects: {
     Report: {
