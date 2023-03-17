@@ -31,10 +31,10 @@ export type Mutation = {
   projectDelete: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
-  /** Assign user to a project by e-mail. */
-  projectMembershipCreateByEmail: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
   /** Update a project */
   projectUpdate: Project
   reportLock: Report
@@ -69,14 +69,14 @@ export type MutationProjectMembershipCreateArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationProjectMembershipCreateByEmailArgs = {
-  email: Scalars['String']
-  projectId: Scalars['ID']
-}
-
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -333,14 +333,14 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
-export type ProjectMembershipCreateByEmailMutationVariables = Exact<{
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
   email: Scalars['String']
   projectId: Scalars['ID']
 }>
 
-export type ProjectMembershipCreateByEmailMutation = {
+export type ProjectMembershipInviteByEmailMutation = {
   __typename?: 'Mutation'
-  projectMembershipCreateByEmail: {
+  projectMembershipInviteByEmail: {
     __typename?: 'Project'
     title: string
     members: Array<{ __typename?: 'User'; name?: string | null }>
@@ -1263,13 +1263,13 @@ export const WeekTableProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekTableProjectFragment, unknown>
-export const ProjectMembershipCreateByEmailDocument = {
+export const ProjectMembershipInviteByEmailDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'projectMembershipCreateByEmail' },
+      name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -1287,7 +1287,7 @@ export const ProjectMembershipCreateByEmailDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'projectMembershipCreateByEmail' },
+            name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
             arguments: [
               {
                 kind: 'Argument',
@@ -1319,7 +1319,7 @@ export const ProjectMembershipCreateByEmailDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<ProjectMembershipCreateByEmailMutation, ProjectMembershipCreateByEmailMutationVariables>
+} as unknown as DocumentNode<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>
 export const ProjectDeleteDocument = {
   kind: 'Document',
   definitions: [

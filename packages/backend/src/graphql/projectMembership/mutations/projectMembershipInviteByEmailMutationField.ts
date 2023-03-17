@@ -1,7 +1,7 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
-builder.mutationField('projectMembershipCreateByEmail', (t) =>
+builder.mutationField('projectMembershipInviteByEmail', (t) =>
   t.prismaField({
     type: 'Project',
     description: 'Assign user to a project by e-mail.',
@@ -19,10 +19,9 @@ builder.mutationField('projectMembershipCreateByEmail', (t) =>
       }
       const userId = user.id
 
-      const existingMembership = await prisma.projectMembership.findFirst({
+      const existingMembership = await prisma.projectMembership.findUnique({
         where: {
-          userId: userId,
-          projectId: projectId.toString(),
+          userId_projectId: { userId, projectId: projectId.toString() },
         },
       })
 
@@ -30,14 +29,12 @@ builder.mutationField('projectMembershipCreateByEmail', (t) =>
         throw new Error(`User is already a member of the project`)
       }
 
-      const projectMembership = await prisma.projectMembership.upsert({
-        select: { project: query },
-        where: { userId_projectId: { userId, projectId: projectId.toString() } },
-        create: {
-          userId,
-          projectId: projectId.toString(),
+      const projectMembership = await prisma.projectMembership.create({
+        data: {
+          user: { connect: { id: userId } },
+          project: { connect: { id: projectId.toString() } },
         },
-        update: {},
+        select: { project: query },
       })
 
       return projectMembership.project

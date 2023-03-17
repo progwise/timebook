@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Role } from '../generated/gql/graphql'
-import { AddProjectMember } from './addProjectMember'
+import { AddProjectMemberForm } from './addProjectMemberForm'
 
 const ProjectMemberListUserFragment = graphql(`
   fragment ProjectMemberListUser on User {
@@ -28,8 +28,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell className="flex items-center gap-2">
-              <AddProjectMember projectId={props.projectId} />
+            <TableCell>
+              <AddProjectMemberForm projectId={props.projectId} />
             </TableCell>
           </TableRow>
           {users.map((user) => (

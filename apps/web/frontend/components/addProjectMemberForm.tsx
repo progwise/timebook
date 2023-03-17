@@ -8,17 +8,17 @@ import { Button, InputField } from '@progwise/timebook-ui'
 
 import { graphql } from '../generated/gql'
 
-interface AddProjectMemberProps {
+interface AddProjectMemberFormProps {
   projectId: string
 }
 
-interface FormState {
+interface InviteFormState {
   email: string
 }
 
-const ProjectMembershipCreateByEmailDocument = graphql(`
-  mutation projectMembershipCreateByEmail($email: String!, $projectId: ID!) {
-    projectMembershipCreateByEmail(email: $email, projectId: $projectId) {
+const projectMembershipInviteByEmailMutationFieldDocument = graphql(`
+  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {
+    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {
       title
       members {
         name
@@ -31,20 +31,20 @@ const formSchema = z.object({
   email: z.string().trim().email().min(1).max(50),
 })
 
-export const AddProjectMember = (props: AddProjectMemberProps) => {
+export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<FormState>({
+  } = useForm<InviteFormState>({
     defaultValues: { email: '' },
     resolver: zodResolver(formSchema),
   })
-  const [, addProjectMember] = useMutation(ProjectMembershipCreateByEmailDocument)
+  const [, addProjectMember] = useMutation(projectMembershipInviteByEmailMutationFieldDocument)
 
-  const handleUserInviteSubmit = async (data: FormState) => {
+  const handleUserInviteSubmit = async (data: InviteFormState) => {
     const result = await addProjectMember({ email: data.email, projectId: props.projectId })
 
     if (result.error) {
@@ -57,8 +57,8 @@ export const AddProjectMember = (props: AddProjectMemberProps) => {
 
   return (
     <form className="flex w-full items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
-      <Button type="submit" disabled={isSubmitting} variant="primary" className=" flex h-16 w-16 rounded-full">
-        <AiOutlinePlus className="fill-white" size="2.5em" />
+      <Button type="submit" disabled={isSubmitting} variant="primary" className="h-16 w-16 rounded-full">
+        <AiOutlinePlus className="h-10 w-10 fill-white" />
       </Button>
       <InputField
         {...register('email')}
@@ -66,7 +66,7 @@ export const AddProjectMember = (props: AddProjectMemberProps) => {
         errorMessage={errors.email?.message}
         type="email"
         variant="primary"
-        placeholder="Enter a email address to join a Member to the project"
+        placeholder="Email address to invite someone"
         className=" dark:bg-slate-800 dark:text-white"
       />
     </form>

@@ -7,9 +7,9 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const projectMembershipCreateByEmail = gql`
-  mutation projectMembershipCreateByEmail($email: String!, $projectId: ID!) {
-    projectMembershipCreateByEmail(email: $email, projectId: $projectId) {
+const projectMembershipInviteByEmail = gql`
+  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {
+    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {
       title
       members {
         name
@@ -57,7 +57,7 @@ afterEach(async () => {
 it('should throw error when user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -70,7 +70,7 @@ it('should throw error when user is unauthorized', async () => {
 it('should throw error when user is not a project member', async () => {
   const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -83,7 +83,7 @@ it('should throw error when user is not a project member', async () => {
 it('should throw error when user is a project member but has role=Member', async () => {
   const testServer = getTestServer({ userId: '3' })
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -97,7 +97,7 @@ it('should throw error when email not exist', async () => {
   const testServer = getTestServer({ userId: '1' })
 
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -120,7 +120,7 @@ it('should throw error when user is already member', async () => {
   const testServer = getTestServer({ userId: '1' })
 
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -135,7 +135,7 @@ it('should add a new member when email exist and role=Asmin', async () => {
 
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
-    query: projectMembershipCreateByEmail,
+    query: projectMembershipInviteByEmail,
     variables: {
       email: 'test@test.com',
       projectId: 'project1',
@@ -143,7 +143,7 @@ it('should add a new member when email exist and role=Asmin', async () => {
   })
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    projectMembershipCreateByEmail: {
+    projectMembershipInviteByEmail: {
       members: [
         { name: 'new user' },
         { name: 'User with project membership (role=admin)' },
