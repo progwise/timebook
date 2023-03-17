@@ -37,14 +37,10 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
 
   return (
     <TableRow>
-      <TableCell>
-        <div className="flex gap-1">
-          <TrackingButtons tracking={task.tracking} taskToTrack={task} />
-        </div>
+      <TableCell className="flex gap-1">
+        <TrackingButtons tracking={task.tracking} taskToTrack={task} />
       </TableCell>
-      <TableCell>
-        <div>{task.title}</div>
-      </TableCell>
+      <TableCell>{task.title}</TableCell>
       {eachDayOfInterval(interval).map((day) => {
         const durations = task.workHours
           .filter((workHour) => isSameDay(parseISO(workHour.date), day))
