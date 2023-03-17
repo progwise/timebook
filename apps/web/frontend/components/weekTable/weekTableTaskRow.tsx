@@ -17,6 +17,9 @@ const WeekTableTaskRowFragment = graphql(`
       duration
       date
     }
+    project {
+      id
+    }
   }
 `)
 
@@ -50,6 +53,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
             taskId={task.id}
             duration={duration}
             key={day.toDateString()}
+            projectId={task.project.id}
           />
         )
       })}

@@ -98,6 +98,7 @@ export const HourInput = (props: {
       size={5}
       placeholder="0:00"
       onBlur={handlerSubmit}
+      disabled={props.disabled}
     />
   )
 }

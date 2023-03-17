@@ -1,5 +1,6 @@
+import { startOfMonth, endOfMonth } from 'date-fns'
+
 import { builder } from '../../builder'
-import { DateScalar } from '../../scalars'
 
 builder.queryField('report', (t) =>
   t.field({
@@ -8,14 +9,16 @@ builder.queryField('report', (t) =>
     authScopes: (_source, { projectId }) => ({ isMemberByProject: projectId.toString() }),
     args: {
       projectId: t.arg.id({ description: 'Project identifier' }),
-      from: t.arg({ type: DateScalar }),
-      to: t.arg({ type: DateScalar }),
+      year: t.arg.int(),
+      month: t.arg.int(),
       userId: t.arg.id({ required: false, description: 'if not set all users will be included in the report' }),
     },
-    resolve: (_source, { projectId, from, to, userId }) => ({
+    resolve: (_source, { projectId, year, month, userId }) => ({
       projectId: projectId.toString(),
-      from,
-      to,
+      from: startOfMonth(new Date(year, month)),
+      to: endOfMonth(new Date(year, month)),
+      year,
+      month,
       userId: userId?.toString() ?? undefined,
     }),
   }),

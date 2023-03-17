@@ -19,21 +19,21 @@ interface TimebookProps {
 
 const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
-    <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white">
+    <header className="fixed top-0 w-full border-b-2 bg-gray-200 px-8 py-3 dark:bg-slate-800 dark:text-white print:hidden">
       <TopNavigation />
     </header>
-    <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white">
+    <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white print:m-0 print:p-0">
       <Component {...pageProps} />
     </main>
-    <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800">
-      <Link href="/impress">
-        <a className=" hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Impress</a>
+    <footer className="fixed bottom-0 flex h-10 w-full flex-row items-center justify-around bg-gray-200 dark:bg-slate-800 print:hidden">
+      <Link href="/impress" className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">
+        Impress
       </Link>
-      <Link href="/privacy">
-        <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Privacy Policy</a>
+      <Link href="/privacy" className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">
+        Privacy Policy
       </Link>
-      <Link href="/privacy">
-        <a className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">Conditions</a>
+      <Link href="/privacy" className="hover:text-blue-500 hover:underline dark:bg-slate-800 dark:text-white">
+        Conditions
       </Link>
     </footer>
     <TimebookToaster />
