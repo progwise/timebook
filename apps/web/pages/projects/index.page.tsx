@@ -6,7 +6,6 @@ import { useQuery } from 'urql'
 import { Button, Spinner } from '@progwise/timebook-ui'
 
 import { ComboBox } from '../../frontend/components/combobox/combobox'
-import { ProjectList } from '../../frontend/components/projectList/projectList'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -16,7 +15,6 @@ const MyProjectsQueryDocument = graphql(`
   query myProjects($from: Date!, $filter: ProjectFilter) {
     projects(from: $from, filter: $filter) {
       ...ProjectTableItem
-      ...ProjectListItem
     }
   }
 `)
@@ -87,16 +85,7 @@ const Projects = (): JSX.Element => {
         {error && <span>{error.message}</span>}
         {projectsLoading && <Spinner />}
         {data && (
-          <>
-            {data.projects.length === 0 ? (
-              <div>No projects found</div>
-            ) : (
-              <>
-                <ProjectList className="mb-6 " projects={data.projects} />
-                <ProjectTable projects={data.projects} />
-              </>
-            )}
-          </>
+          <>{data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />}</>
         )}
       </article>
     </ProtectedPage>
