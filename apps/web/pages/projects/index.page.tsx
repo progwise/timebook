@@ -84,9 +84,8 @@ const Projects = (): JSX.Element => {
 
         {error && <span>{error.message}</span>}
         {projectsLoading && <Spinner />}
-        {data && (
-          <>{data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />}</>
-        )}
+        {data &&
+          (data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />)}
       </article>
     </ProtectedPage>
   )
