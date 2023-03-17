@@ -14,7 +14,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ className }) => {
   return (
     <div className={`flex flex-row items-center  ${className}`}>
       <Menu as="div" className="relative inline-block text-left">
-        <Menu.Button className="flex gap-2">
+        <Menu.Button className="flex items-center gap-2">
           {session.data?.user.image && (
             <>
               <Image

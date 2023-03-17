@@ -64,6 +64,7 @@ model Task {
 
   project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   workHours WorkHour[]
+  trackings Tracking[]
 }
 
 model WorkHour {
@@ -128,6 +129,7 @@ model User {
   workhours          WorkHour[]
   projectMemberships ProjectMembership[]
   reports            Report[]
+  tracking           Tracking?
 }
 
 model VerificationToken {
@@ -148,4 +150,13 @@ model Report {
   user    User    @relation(fields: [userId], references: [id])
 
   @@id([projectId, userId, year, month])
+}
+
+model Tracking {
+  userId String   @id
+  taskId String
+  start  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  task Task @relation(fields: [taskId], references: [id])
 }
