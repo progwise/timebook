@@ -540,7 +540,7 @@ export type WeekTableProjectFragment = {
     id: string
     title: string
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
+    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   }>
 }
 
@@ -554,8 +554,8 @@ export type WeekTableProjectRowGroupFragment = {
     __typename?: 'Task'
     id: string
     title: string
+    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
   }>
 }
 
@@ -583,8 +583,8 @@ export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
+  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-  project: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -670,7 +670,7 @@ export type WeekTableQuery = {
       id: string
       title: string
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-      project: { __typename?: 'Project'; id: string }
+      project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     }>
   }>
 }

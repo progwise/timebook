@@ -61,7 +61,7 @@ const documents = {
     types.WorkHourUpdateDocument,
   '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
     types.IsLockedDocument,
-  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n':
+  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n':
     types.ProjectDocument,
@@ -245,8 +245,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n',
-): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n']
+  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n',
+): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
