@@ -17,7 +17,7 @@ export interface InputFieldProps {
   errorMessage?: string
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
-  type?: 'number' | 'text'
+  type?: 'number' | 'text' | 'email'
   form?: string
   hideLabel?: boolean
 }
