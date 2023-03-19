@@ -37,6 +37,8 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
   /** Update a project */
   projectUpdate: Project
   reportLock: Report
@@ -80,6 +82,11 @@ export type MutationProjectMembershipCreateArgs = {
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -347,6 +354,20 @@ export type WorkHourInput = {
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInviteByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInviteByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
 }
 
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
@@ -761,6 +782,29 @@ export type WeekTableQuery = {
     }>
   }>
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipInviteByEmailMutation((req, res, ctx) => {
+ *   const { email, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipInviteByEmail })
+ *   )
+ * })
+ */
+export const mockProjectMembershipInviteByEmailMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipInviteByEmailMutationVariables>,
+    GraphQLContext<ProjectMembershipInviteByEmailMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>(
+    'projectMembershipInviteByEmail',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

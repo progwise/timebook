@@ -45,6 +45,11 @@ type Mutation {
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
   """
+  Assign user to a project by e-mail.
+  """
+  projectMembershipInviteByEmail(email: String!, projectId: ID!): Project!
+
+  """
   Update a project
   """
   projectUpdate(
