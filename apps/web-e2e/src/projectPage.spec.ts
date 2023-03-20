@@ -19,7 +19,7 @@ test.describe('project page', () => {
     await page.fill('text="Start"', startDate)
     await page.fill('text="End"', endDate)
 
-    await page.click('text=Save')
+    await page.click('text=Create')
 
     await expect(page).toHaveURL('/projects')
 
