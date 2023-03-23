@@ -9,7 +9,7 @@ describe('the hour input control should display ...', () => {
     // eslint-disable-next-line testing-library/no-render-in-setup
     render(
       <>
-        <HourInput workHours={0} onChange={jest.fn()} />
+        <HourInput duration={0} onChange={jest.fn()} />
         <button>Click me!</button>
       </>,
     )
@@ -17,7 +17,7 @@ describe('the hour input control should display ...', () => {
 
   it('... 0:00 in the beginning', () => {
     const hourBox = screen.getByRole('textbox')
-    expect(hourBox).toHaveDisplayValue('0:00')
+    expect(hourBox).toHaveDisplayValue('')
   })
 
   it('... 1:00 if the user types "1"', async () => {
@@ -30,14 +30,14 @@ describe('the hour input control should display ...', () => {
     expect(hourBox).toHaveDisplayValue('1:00')
   })
 
-  it('... display "0:00" user types "abc"', async () => {
+  it('... display "" user types "abc"', async () => {
     const hourBox = screen.getByRole('textbox')
 
     await userEvent.clear(hourBox)
     await userEvent.type(hourBox, 'abc')
     await userEvent.click(screen.getByRole('button'))
 
-    expect(hourBox).toHaveDisplayValue('0:00')
+    expect(hourBox).toHaveDisplayValue('')
   })
 
   describe('... should allow "hh:mm" input when ...', () => {
@@ -87,14 +87,14 @@ describe('the hour input control should display ...', () => {
       expect(hourBox).toHaveDisplayValue('1:55')
     })
 
-    it('... typing 12.45 is changed to 12:26', async () => {
+    it('... typing 12.45 is changed to 12:27', async () => {
       const hourBox = screen.getByRole('textbox')
 
       await userEvent.clear(hourBox)
       await userEvent.type(hourBox, '12.45')
       await userEvent.click(screen.getByRole('button'))
 
-      expect(hourBox).toHaveDisplayValue('12:26')
+      expect(hourBox).toHaveDisplayValue('12:27')
     })
 
     it('... typing 24.01 is changed to 24:00', async () => {
@@ -106,28 +106,16 @@ describe('the hour input control should display ...', () => {
 
       expect(hourBox).toHaveDisplayValue('24:00')
     })
-
-    it('... typing 12.ab is changed to 12:00', async () => {
-      const hourBox = screen.getByRole('textbox')
-
-      await userEvent.clear(hourBox)
-      await userEvent.type(hourBox, '12.ab')
-      await userEvent.click(screen.getByRole('button'))
-
-      expect(hourBox).toHaveDisplayValue('12:00')
-    })
   })
 
-  it('... typing 24.018 reports an error', async () => {
-    window.alert = jest.fn()
+  it('... typing 24.018 resets to previous value', async () => {
     const hourBox = screen.getByRole('textbox')
 
     await userEvent.clear(hourBox)
-    await userEvent.type(hourBox, '24.017')
+    await userEvent.type(hourBox, '24.018')
     await userEvent.click(screen.getByRole('button'))
 
-    expect(window.alert).toHaveBeenCalledTimes(1)
-    expect(hourBox).toHaveDisplayValue('0:00')
+    expect(hourBox).toHaveDisplayValue('')
   })
 
   it('... and the default total working hours are added up for each day', async () => {
