@@ -102,7 +102,8 @@ jobs:
           version: 7
           run_install: true
       - name: Install Playwright Browsers
-        run: pnpx playwright install --with-deps
+        working-directory: ./apps/web-e2e
+        run: pnpm exec playwright install --with-deps
       - name: Start postgres docker image
         run: docker-compose -f ./docker-compose.yml up -d
       - name: Migrate database
