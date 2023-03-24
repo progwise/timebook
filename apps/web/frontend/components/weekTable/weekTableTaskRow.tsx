@@ -65,7 +65,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
           />
         )
       })}
-      <TableCell>
+      <TableCell className="text-center">
         <FormattedDuration minutes={taskDurations} title="" />
       </TableCell>
     </TableRow>

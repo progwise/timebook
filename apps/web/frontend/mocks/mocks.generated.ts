@@ -439,6 +439,7 @@ export type ReportQueryVariables = Exact<{
 
 export type ReportQuery = {
   __typename?: 'Query'
+  project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
     isLocked: boolean
@@ -862,7 +863,7 @@ export const mockReportProjectsQuery = (
  * mockReportQuery((req, res, ctx) => {
  *   const { projectId, month, year, userId, groupByUser } = req.variables;
  *   return res(
- *     ctx.data({ report })
+ *     ctx.data({ project, report })
  *   )
  * })
  */
