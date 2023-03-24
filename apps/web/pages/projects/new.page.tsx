@@ -24,7 +24,8 @@ const NewProjectPage = (): JSX.Element => {
       if (result.error) {
         throw new Error('graphql error')
       }
-      await router.push('/projects')
+      const projectId = result.data?.projectCreate.id
+      await router.push(`/projects/${projectId}`)
     } catch {}
   }
 

@@ -198,8 +198,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           Cancel
         </Button>
         {!isProjectFormReadOnly && (
-          <Button type="submit" variant="primary" disabled={formState.isSubmitting} tooltip="Save changes">
-            Save
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={formState.isSubmitting}
+            tooltip={isNewProject ? 'Create' : 'Save'}
+          >
+            {isNewProject ? 'Create' : 'Save'}
           </Button>
         )}
         {project ? (
