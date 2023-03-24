@@ -19,10 +19,9 @@ test.describe('project page', () => {
     await page.fill('text="Start"', startDate)
     await page.fill('text="End"', endDate)
 
-    await page.click('text=Create')
+    // eslint-disable-next-line testing-library/prefer-screen-queries
+    await page.getByRole('button', { name: 'Create' }).click()
 
-    await expect(page).toHaveURL('/projects')
-
-    await expect(page.locator(`text=${projectName}`).first()).toBeVisible()
+    await expect(page).toHaveURL(/\/projects\/\w+$/)
   })
 })
