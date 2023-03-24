@@ -29,7 +29,7 @@ describe('projectForm', () => {
     const nameInput = screen.getByRole('textbox', { name: /name/i })
     const startInput = screen.getByRole('textbox', { name: /start/i })
     const endInput = screen.getByRole('textbox', { name: /end/i })
-    const submitButton = screen.getByRole('button', { name: /save/i })
+    const submitButton = screen.getByRole('button', { name: /create/i })
 
     await userEvent.type(nameInput, 'new project')
     await userEvent.type(startInput, '2022-04-12')

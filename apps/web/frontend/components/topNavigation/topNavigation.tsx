@@ -40,7 +40,7 @@ export const TopNavigation = (): JSX.Element => {
         </Link>
       </h1>
       {data?.currentTracking && (
-        <div className="-m-3 flex items-center gap-2 rounded-lg bg-gray-50 p-2">
+        <div className="-m-3 flex items-center gap-2 rounded-lg bg-gray-50 p-2 dark:bg-gray-900">
           <div className="flex flex-col text-sm">
             {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
             <div className="flex items-center gap-1 text-xs">
@@ -60,7 +60,7 @@ export const TopNavigation = (): JSX.Element => {
         <div className="my-1 w-px self-stretch bg-gray-400 dark:bg-blue-400" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
-        <ProfileMenu className="ml-3 dark:text-white " />
+        <ProfileMenu className="ml-3 dark:text-white" />
       </nav>
     </section>
   )
