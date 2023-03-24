@@ -37,6 +37,8 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
   /** Update a project */
   projectUpdate: Project
   reportLock: Report
@@ -80,6 +82,11 @@ export type MutationProjectMembershipCreateArgs = {
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -349,6 +356,20 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInviteByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInviteByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
+}
+
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectDeleteMutationVariables = Exact<{
@@ -418,6 +439,7 @@ export type ReportQueryVariables = Exact<{
 
 export type ReportQuery = {
   __typename?: 'Query'
+  project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
     isLocked: boolean
@@ -766,6 +788,29 @@ export type WeekTableQuery = {
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockProjectMembershipInviteByEmailMutation((req, res, ctx) => {
+ *   const { email, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipInviteByEmail })
+ *   )
+ * })
+ */
+export const mockProjectMembershipInviteByEmailMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipInviteByEmailMutationVariables>,
+    GraphQLContext<ProjectMembershipInviteByEmailMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>(
+    'projectMembershipInviteByEmail',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockProjectDeleteMutation((req, res, ctx) => {
  *   const { id } = req.variables;
  *   return res(
@@ -818,7 +863,7 @@ export const mockReportProjectsQuery = (
  * mockReportQuery((req, res, ctx) => {
  *   const { projectId, month, year, userId, groupByUser } = req.variables;
  *   return res(
- *     ctx.data({ report })
+ *     ctx.data({ project, report })
  *   )
  * })
  */

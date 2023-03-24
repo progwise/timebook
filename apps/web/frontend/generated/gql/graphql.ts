@@ -35,6 +35,8 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
   /** Update a project */
   projectUpdate: Project
   reportLock: Report
@@ -78,6 +80,11 @@ export type MutationProjectMembershipCreateArgs = {
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -347,6 +354,20 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInviteByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInviteByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
+}
+
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
   ' $fragmentName'?: 'DeleteProjectModalFragment'
 }
@@ -423,6 +444,7 @@ export type ReportQueryVariables = Exact<{
 
 export type ReportQuery = {
   __typename?: 'Query'
+  project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
     isLocked: boolean
@@ -1522,6 +1544,63 @@ export const WeekTableProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekTableProjectFragment, unknown>
+export const ProjectMembershipInviteByEmailDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>
 export const ProjectDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -1748,6 +1827,21 @@ export const ReportDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'report' },
