@@ -84,7 +84,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
 
   return (
     <TableRow>
-      <TableCell className="mt-1 flex items-center">
+      <TableCell className="flex items-center">
         <InputField
           variant="primary"
           {...register('title', { required: true })}
