@@ -77,7 +77,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
 
   return (
     <section className={className}>
-      <Table className="min-w-full  dark:bg-slate-800">
+      <Table className="min-w-full dark:bg-slate-800">
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
