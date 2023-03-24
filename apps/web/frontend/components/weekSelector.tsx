@@ -1,17 +1,10 @@
-import {
-  eachWeekOfInterval,
-  endOfWeek,
-  endOfYear,
-  format,
-  getWeek,
-  getYear,
-  isSameYear,
-  isThisWeek,
-  setWeek,
-  setYear,
-  startOfWeek,
-  startOfYear,
-} from 'date-fns'
+import { endOfWeek, format, getWeek, getYear, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
+import { enGB } from 'date-fns/locale'
+import { useState } from 'react'
+import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
+import { BsCalendarCheck } from 'react-icons/bs'
+
+import { CalendarSelector } from './calendarSelector'
 
 interface WeekSelectorProps {
   value: Date
@@ -19,67 +12,58 @@ interface WeekSelectorProps {
 }
 
 export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
-  const selectedDay = startOfWeek(value, { weekStartsOn: 1 })
-  const selectedYear = getYear(selectedDay)
-  const selectedWeek = getWeek(selectedDay, { weekStartsOn: 1, firstWeekContainsDate: 7 })
+  const [selectedWeek, setSelectedWeek] = useState({
+    startDate: startOfWeek(value, { locale: enGB }),
+    endDate: endOfWeek(value, { locale: enGB }),
+    year: getYear(value),
+    key: 'selection',
+  })
+  const selectedCalendarWeek = getWeek(selectedWeek.startDate, { locale: enGB })
+  const isCurrentWeek = isThisWeek(selectedWeek.startDate, { weekStartsOn: 1 })
 
-  const startOfSelectedYear = startOfYear(selectedDay)
-  const endOfSelectedYear = endOfYear(selectedDay)
-
-  const weeksOfSelectedYear = eachWeekOfInterval(
-    { start: startOfSelectedYear, end: endOfSelectedYear },
-    { weekStartsOn: 1 },
-  ).filter((startOfWeekDate) => isSameYear(startOfWeekDate, selectedDay))
-
-  const thisYear = getYear(new Date())
-  const years = [thisYear, thisYear - 1, thisYear - 2]
-
-  const handleWeekChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newWeek = Number.parseInt(event.target.value)
-    const newDay = setWeek(selectedDay, newWeek, { weekStartsOn: 1, firstWeekContainsDate: 7 })
-    onChange(newDay)
+  const getDaysOfWeek = (date: Date) => {
+    const monday = startOfWeek(date, { locale: enGB })
+    const sunday = endOfWeek(date, { locale: enGB })
+    const year = getYear(date)
+    setSelectedWeek({ startDate: monday, endDate: sunday, year, key: 'selection' })
+    onChange(monday)
   }
 
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newYear = Number.parseInt(event.target.value)
-    const newDay = setYear(selectedDay, newYear)
-    onChange(newDay)
+  const handleWeekSelect = (newDate: Date) => {
+    getDaysOfWeek(newDate ?? value)
   }
 
   return (
-    <div>
-      <select
-        className="dark:bg-slate-800 dark:text-white"
-        aria-label="week"
-        onChange={handleWeekChange}
-        value={selectedWeek}
-      >
-        {weeksOfSelectedYear.map((startOfWeekDate) => {
-          const weekNumber = getWeek(startOfWeekDate, { firstWeekContainsDate: 7 })
-          const monday = startOfWeekDate
-          const sunday = endOfWeek(startOfWeekDate, { weekStartsOn: 1 })
-          const isCurrentWeek = isThisWeek(startOfWeekDate, { weekStartsOn: 1 })
-
-          return (
-            <option value={weekNumber} key={weekNumber}>
-              Week {weekNumber} ({format(monday, 'yyyy-MM-dd')} - {format(sunday, 'yyyy-MM-dd')}) {isCurrentWeek && '*'}
-            </option>
-          )
-        })}
-      </select>
-
-      <select
-        className="dark:bg-slate-800 dark:text-white"
-        aria-label="year"
-        onChange={handleYearChange}
-        value={selectedYear}
-      >
-        {years.map((year) => (
-          <option value={year} key={year}>
-            {year}
-          </option>
-        ))}
-      </select>
+    <div className="flex flex-col items-center">
+      <div className="flex gap-5">
+        <BiLeftArrow
+          className="h-12 w-12 cursor-pointer fill-cyan-400 drop-shadow-lg hover:fill-cyan-600"
+          onClick={() => getDaysOfWeek(previousMonday(selectedWeek.startDate))}
+        />
+        <div className="flex w-40 flex-col items-center">
+          <span className="font-bold">
+            Week {selectedCalendarWeek}/{selectedWeek.year}
+          </span>
+          <span className="font-medium">
+            {format(selectedWeek.startDate, 'dd.MM')} - {format(selectedWeek.endDate, 'dd.MM.yyyy')}
+            {isCurrentWeek && '*'}
+          </span>
+        </div>
+        <BiRightArrow
+          className="h-12 w-12 cursor-pointer fill-cyan-400 drop-shadow-lg hover:fill-cyan-600 "
+          onClick={() => getDaysOfWeek(nextMonday(selectedWeek.startDate))}
+        />
+      </div>
+      <div className="flex gap-5 text-sm text-gray-400">
+        <div className="flex cursor-pointer items-center gap-1" onClick={() => getDaysOfWeek(new Date())}>
+          <BsCalendarCheck className="h-4 w-4" />
+          today
+        </div>
+        <div className="flex cursor-pointer items-center gap-1">
+          <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} />
+          select
+        </div>
+      </div>
     </div>
   )
 }

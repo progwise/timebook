@@ -46,6 +46,7 @@ beforeAll(() => {
     mockReportQuery((_request, response, context) =>
       response(
         context.data({
+          project: { canModify: true },
           report: { groupedByDate: [], groupedByTask: [], groupedByUser: [], isLocked, __typename: 'Report' },
           __typename: 'Query',
         }),

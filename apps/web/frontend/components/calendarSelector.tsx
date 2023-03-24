@@ -106,7 +106,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{selectedDate.toLocaleDateString()}</span>}
-          <AiOutlineCalendar className="ml-2" size="1.3em" title="Calendar icon" />
+          <AiOutlineCalendar className="ml-2 h-5 w-5" title="Calendar icon" />
         </Popover.Button>
 
         <Transition
@@ -130,11 +130,11 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                 data-testid="calendar-popover"
               >
                 <header className="flex justify-between p-0 pb-2 font-bold">
-                  <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
+                  <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={30} />
                   <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>
                     <h2 className="ml-2">{monthTitle}</h2>
                   </CalendarIcon>
-                  <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} size={20} />
+                  <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} size={30} />
                 </header>
                 <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-3">
                   <div className="border-b border-gray-800 p-1 text-center">Mon</div>
