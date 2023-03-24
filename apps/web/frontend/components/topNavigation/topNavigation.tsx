@@ -60,7 +60,7 @@ export const TopNavigation = (): JSX.Element => {
         <div className="my-1 w-px self-stretch bg-gray-400 dark:bg-blue-400" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
-        <ProfileMenu className="ml-3 dark:text-white " />
+        <ProfileMenu className="ml-3 dark:text-white" />
       </nav>
     </section>
   )
