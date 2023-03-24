@@ -43,16 +43,16 @@ describe('TaskList', () => {
   })
 
   describe('Task form', () => {
-    it('should display an error message when submitting a new task with less then 4 characters', async () => {
+    it('should display an error message when submitting a task without a title', async () => {
       render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
       const titleInput = screen.getByPlaceholderText('Enter Taskname')
 
-      await userEvent.type(titleInput, 'abc')
+      await userEvent.type(titleInput, ' ')
       await userEvent.click(submitButton)
 
-      const errorMessage = await screen.findByText('title must be at least 4 characters')
+      const errorMessage = await screen.findByText('title must be at least 1 character')
       expect(errorMessage).toBeInTheDocument()
     })
 
