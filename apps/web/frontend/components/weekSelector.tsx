@@ -37,7 +37,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
     <div className="flex flex-col items-center">
       <div className="flex gap-5">
         <BiLeftArrow
-          className="h-12 w-12 cursor-pointer fill-cyan-400 drop-shadow-lg hover:fill-cyan-600"
+          className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600"
           onClick={() => getDaysOfWeek(previousMonday(selectedWeek.startDate))}
         />
         <div className="flex w-40 flex-col items-center">
@@ -50,7 +50,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           </span>
         </div>
         <BiRightArrow
-          className="h-12 w-12 cursor-pointer fill-cyan-400 drop-shadow-lg hover:fill-cyan-600 "
+          className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600 "
           onClick={() => getDaysOfWeek(nextMonday(selectedWeek.startDate))}
         />
       </div>
