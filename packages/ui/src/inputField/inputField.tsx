@@ -5,7 +5,7 @@ import { Spinner } from '../spinner'
 export interface InputFieldProps {
   name?: string
   value?: string
-  onBlur?: (event: React.FocusEvent) => void
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
   variant: 'primary'
   placeholder?: string
   disabled?: boolean
@@ -13,13 +13,15 @@ export interface InputFieldProps {
   readOnly?: boolean
   size?: number
   className?: string
+  inputClassName?: string
   label?: string
   errorMessage?: string
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
-  type?: 'number' | 'text'
+  type?: 'number' | 'text' | 'email'
   form?: string
   hideLabel?: boolean
+  onFocus?: React.FocusEventHandler<HTMLInputElement>
 }
 
 export const InputField = React.forwardRef(
@@ -36,12 +38,14 @@ export const InputField = React.forwardRef(
       readOnly,
       size,
       className = '',
+      inputClassName = '',
       label,
       errorMessage,
       loading,
       type,
       form,
       hideLabel = false,
+      onFocus,
     }: InputFieldProps,
     // eslint-disable-next-line unicorn/prevent-abbreviations
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -58,12 +62,12 @@ export const InputField = React.forwardRef(
             {label}
           </label>
         )}
-        <span className="relative">
+        <span>
           <input
             aria-label={label}
             className={`w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''
-            }`}
+            } ${inputClassName}`}
             type={type}
             placeholder={placeholder}
             disabled={disabled}
@@ -76,6 +80,7 @@ export const InputField = React.forwardRef(
             name={name}
             size={size}
             form={form}
+            onFocus={onFocus}
           />
 
           {loading && (

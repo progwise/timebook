@@ -82,7 +82,7 @@ const ProjectDetails = (): JSX.Element => {
       />
       <TaskList className="mt-10" project={selectedProject} />
       <InviteLink />
-      <ProjectMemberList users={selectedProject.members} />
+      <ProjectMemberList users={selectedProject.members} projectId={selectedProject.id} />
     </ProtectedPage>
   )
 }

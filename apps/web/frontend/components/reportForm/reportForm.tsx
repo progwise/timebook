@@ -29,6 +29,9 @@ const ReportProjectsQueryDocument = graphql(`
 
 const ReportQueryDocument = graphql(`
   query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {
+    project(projectId: $projectId) {
+      canModify
+    }
     report(projectId: $projectId, month: $month, year: $year, userId: $userId) {
       groupedByDate {
         date
@@ -106,7 +109,7 @@ export const ReportForm = () => {
           <h1 className="my-4 text-2xl font-bold">
             Detailed time report: {fromString} - {endString}
           </h1>
-          <Button variant="secondary" className="px-6 print:hidden" onClick={print}>
+          <Button variant="secondary" className="px-6 print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
           </Button>
         </div>
@@ -148,7 +151,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProjectId && reportGroupedData && selectedUserId && (
+        {selectedProjectId && reportGroupedData?.project.canModify && selectedUserId && (
           <ReportLockButton
             year={year}
             month={month}

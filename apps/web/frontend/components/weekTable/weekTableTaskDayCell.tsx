@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'urql'
 import { TableCell } from '@progwise/timebook-ui'
 
 import { graphql } from '../../generated/gql'
-import { HourInput } from '../hourInput'
+import { HourInput } from '../hourInput/hourInput'
 import { classNameMarkDay } from './classNameMarkDay'
 
 const WorkHourUpdateMutationDocument = graphql(`
@@ -29,9 +29,10 @@ interface WeekTableTaskDayCellProps {
   taskId: string
   projectId: string
   day: Date
+  disabled: boolean
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -60,8 +61,8 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekT
             taskId,
           })
         }}
-        workHours={duration / 60}
-        disabled={isLockedByReport}
+        duration={duration}
+        disabled={isLockedByReport || disabled}
       />
     </TableCell>
   )

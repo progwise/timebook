@@ -27,7 +27,9 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
   return (
     <>
       <TableRow>
-        <TableCell className="font-bold">{project.title}</TableCell>
+        <TableCell className="font-bold" colSpan={2}>
+          {project.title}
+        </TableCell>
         {eachDayOfInterval(interval).map((day) => (
           <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''} />
         ))}

@@ -15,6 +15,8 @@ export type Scalars = {
   Float: number
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  DateTime: string
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -33,6 +35,8 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
   /** Update a project */
   projectUpdate: Project
   reportLock: Report
@@ -45,6 +49,12 @@ export type Mutation = {
   taskDelete: Task
   /** Update a task */
   taskUpdate: Task
+  /** The ongoing time tracking will be deleted */
+  trackingCancel?: Maybe<Tracking>
+  /** Start time tracking for a task. When a tracking for the same task is already running the tracking keeps untouched. When a tracking for a different task is running, the on going tracking will be stopped and converted to work hours. */
+  trackingStart: Tracking
+  /** The ongoing time tracking will be stopped and converted to work hours */
+  trackingStop: Array<WorkHour>
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -70,6 +80,11 @@ export type MutationProjectMembershipCreateArgs = {
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUpdateArgs = {
@@ -106,6 +121,10 @@ export type MutationTaskDeleteArgs = {
 export type MutationTaskUpdateArgs = {
   data: TaskUpdateInput
   id: Scalars['ID']
+}
+
+export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
 }
 
 export type MutationWorkHourCreateArgs = {
@@ -160,6 +179,7 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  currentTracking?: Maybe<Tracking>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -262,9 +282,11 @@ export type Task = ModifyInterface & {
   hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
+  isLocked: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
+  tracking?: Maybe<Tracking>
   workHours: Array<WorkHour>
 }
 
@@ -283,6 +305,12 @@ export type TaskUpdateInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
+}
+
+export type Tracking = {
+  __typename?: 'Tracking'
+  start: Scalars['DateTime']
+  task: Task
 }
 
 export type User = {
@@ -326,6 +354,20 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInviteByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInviteByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
+}
+
 export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
   ' $fragmentName'?: 'DeleteProjectModalFragment'
 }
@@ -360,14 +402,6 @@ export type ProjectFormFragment = ({
 } & { ' $fragmentRefs'?: { DeleteProjectModalFragment: DeleteProjectModalFragment } }) & {
   ' $fragmentName'?: 'ProjectFormFragment'
 }
-
-export type ProjectListItemFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  startDate?: string | null
-  endDate?: string | null
-} & { ' $fragmentName'?: 'ProjectListItemFragment' }
 
 export type ProjectMemberListUserFragment = {
   __typename?: 'User'
@@ -410,6 +444,7 @@ export type ReportQueryVariables = Exact<{
 
 export type ReportQuery = {
   __typename?: 'Query'
+  project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
     isLocked: boolean
@@ -532,6 +567,52 @@ export type WorkHoursQuery = {
   >
 }
 
+export type CurrentTrackingQueryVariables = Exact<{ [key: string]: never }>
+
+export type CurrentTrackingQuery = {
+  __typename?: 'Query'
+  currentTracking?:
+    | ({
+        __typename?: 'Tracking'
+        start: string
+        task: { __typename?: 'Task'; title: string; project: { __typename?: 'Project'; title: string } }
+      } & { ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment } })
+    | null
+}
+
+export type TrackingButtonsTrackingFragment = {
+  __typename?: 'Tracking'
+  start: string
+  task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+} & { ' $fragmentName'?: 'TrackingButtonsTrackingFragment' }
+
+export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string; isLocked: boolean } & {
+  ' $fragmentName'?: 'TrackingButtonsTaskFragment'
+}
+
+export type TrackingStartMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type TrackingStartMutation = {
+  __typename?: 'Mutation'
+  trackingStart: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } }
+}
+
+export type TrackingStopMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingStopMutation = {
+  __typename?: 'Mutation'
+  trackingStop: Array<{ __typename?: 'WorkHour'; id: string; task: { __typename?: 'Task'; id: string } }>
+}
+
+export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingCancelMutation = {
+  __typename?: 'Mutation'
+  trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
+}
+
 export type WeekTableProjectFragment = ({
   __typename?: 'Project'
   id: string
@@ -580,13 +661,20 @@ export type IsLockedQueryVariables = Exact<{
 
 export type IsLockedQuery = { __typename?: 'Query'; report: { __typename?: 'Report'; isLocked: boolean } }
 
-export type WeekTableTaskRowFragment = {
+export type WeekTableTaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
+  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-  project: { __typename?: 'Project'; id: string }
-} & { ' $fragmentName'?: 'WeekTableTaskRowFragment' }
+  tracking?:
+    | ({ __typename?: 'Tracking' } & {
+        ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment }
+      })
+    | null
+} & { ' $fragmentRefs'?: { TrackingButtonsTaskFragment: TrackingButtonsTaskFragment } }) & {
+  ' $fragmentName'?: 'WeekTableTaskRowFragment'
+}
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -620,12 +708,7 @@ export type MyProjectsQueryVariables = Exact<{
 export type MyProjectsQuery = {
   __typename?: 'Query'
   projects: Array<
-    { __typename?: 'Project' } & {
-      ' $fragmentRefs'?: {
-        ProjectTableItemFragment: ProjectTableItemFragment
-        ProjectListItemFragment: ProjectListItemFragment
-      }
-    }
+    { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
   >
 }
 
@@ -709,25 +792,6 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
-export const ProjectListItemFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectListItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectListItemFragment, unknown>
 export const ProjectMemberListUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -996,6 +1060,58 @@ export const WeekTableFooterFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekTableFooterFragment, unknown>
+export const TrackingButtonsTrackingFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackingButtonsTrackingFragment, unknown>
+export const TrackingButtonsTaskFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackingButtonsTaskFragment, unknown>
 export const WeekTableTaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1008,6 +1124,17 @@ export const WeekTableTaskRowFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+              ],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'workHours' },
@@ -1039,6 +1166,57 @@ export const WeekTableTaskRowFragmentDoc = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
         ],
       },
     },
@@ -1072,6 +1250,48 @@ export const WeekTableProjectRowGroupFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -1079,6 +1299,17 @@ export const WeekTableProjectRowGroupFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+              ],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'workHours' },
@@ -1110,6 +1341,15 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
         ],
       },
     },
@@ -1164,6 +1404,48 @@ export const WeekTableProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -1171,6 +1453,17 @@ export const WeekTableProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+              ],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'workHours' },
@@ -1202,6 +1495,15 @@ export const WeekTableProjectFragmentDoc = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
         ],
       },
     },
@@ -1242,6 +1544,63 @@ export const WeekTableProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekTableProjectFragment, unknown>
+export const ProjectMembershipInviteByEmailDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipInviteByEmail' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'email' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'email' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>
 export const ProjectDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -1468,6 +1827,21 @@ export const ReportDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'report' },
@@ -1999,6 +2373,193 @@ export const WorkHoursDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHoursQuery, WorkHoursQueryVariables>
+export const CurrentTrackingDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'currentTracking' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'currentTracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'project' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CurrentTrackingQuery, CurrentTrackingQueryVariables>
+export const TrackingStartDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'trackingStart' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'trackingStart' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'taskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackingStartMutation, TrackingStartMutationVariables>
+export const TrackingStopDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'trackingStop' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'trackingStop' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackingStopMutation, TrackingStopMutationVariables>
+export const TrackingCancelDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'trackingCancel' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'trackingCancel' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TrackingCancelMutation, TrackingCancelMutationVariables>
 export const WorkHourUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -2360,10 +2921,7 @@ export const MyProjectsDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectListItem' } },
-              ],
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
             },
           },
         ],
@@ -2372,20 +2930,6 @@ export const MyProjectsDocument = {
     {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProjectTableItem' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectListItem' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -2606,6 +3150,48 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -2613,6 +3199,17 @@ export const WeekTableDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+              ],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'workHours' },
@@ -2644,6 +3241,15 @@ export const WeekTableDocument = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
         ],
       },
     },
