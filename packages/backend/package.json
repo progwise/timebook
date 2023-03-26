@@ -27,7 +27,7 @@
     "graphql-scalars": "^1.14.1",
     "jest-environment-node": "^29.2.2",
     "micro": "^10.0.0",
-    "nanoid": "3.3.4",
+    "nanoid": "3.3.6",
     "zod": "^3.20.3"
   },
   "devDependencies": {
