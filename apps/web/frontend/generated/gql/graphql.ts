@@ -148,6 +148,7 @@ export type Project = ModifyInterface & {
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
+  inviteKey: Scalars['String']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
@@ -392,6 +393,12 @@ export type TaskDeleteMutation = {
   taskDelete?: { __typename?: 'Task'; id: string }
   taskArchive?: { __typename?: 'Task'; id: string }
 }
+
+export type ProjectInviteKeyQueryVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectInviteKeyQuery = { __typename?: 'Query'; project: { __typename?: 'Project'; inviteKey: string } }
 
 export type ProjectFormFragment = ({
   __typename?: 'Project'
@@ -1721,6 +1728,43 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
+export const ProjectInviteKeyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'ProjectInviteKey' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectInviteKeyQuery, ProjectInviteKeyQueryVariables>
 export const ReportProjectsDocument = {
   kind: 'Document',
   definitions: [

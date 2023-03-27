@@ -150,6 +150,7 @@ export type Project = ModifyInterface & {
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
+  inviteKey: Scalars['String']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
@@ -390,6 +391,12 @@ export type TaskDeleteMutation = {
   taskDelete?: { __typename?: 'Task'; id: string }
   taskArchive?: { __typename?: 'Task'; id: string }
 }
+
+export type ProjectInviteKeyQueryVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectInviteKeyQuery = { __typename?: 'Query'; project: { __typename?: 'Project'; inviteKey: string } }
 
 export type ProjectFormFragment = {
   __typename?: 'Project'
@@ -840,6 +847,25 @@ export const mockProjectDeleteMutation = (
 export const mockTaskDeleteMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
 ) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectInviteKeyQuery((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ project })
+ *   )
+ * })
+ */
+export const mockProjectInviteKeyQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectInviteKeyQueryVariables>,
+    GraphQLContext<ProjectInviteKeyQuery>,
+    any
+  >,
+) => graphql.query<ProjectInviteKeyQuery, ProjectInviteKeyQueryVariables>('ProjectInviteKey', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

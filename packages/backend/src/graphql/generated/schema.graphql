@@ -147,6 +147,7 @@ type Project implements ModifyInterface {
   identifies the project
   """
   id: ID!
+  inviteKey: String!
 
   """
   List of users that are member of the project
