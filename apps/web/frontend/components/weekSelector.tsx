@@ -1,6 +1,5 @@
 import { endOfWeek, format, getWeek, getYear, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
 import { enGB } from 'date-fns/locale'
-import { useState } from 'react'
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 import { BsCalendarCheck } from 'react-icons/bs'
 
@@ -12,50 +11,40 @@ interface WeekSelectorProps {
 }
 
 export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
-  const [selectedWeek, setSelectedWeek] = useState({
-    startDate: startOfWeek(value, { locale: enGB }),
-    endDate: endOfWeek(value, { locale: enGB }),
-    year: getYear(value),
-    key: 'selection',
-  })
-  const selectedCalendarWeek = getWeek(selectedWeek.startDate, { locale: enGB })
-  const isCurrentWeek = isThisWeek(selectedWeek.startDate, { weekStartsOn: 1 })
-
-  const getDaysOfWeek = (date: Date) => {
-    const monday = startOfWeek(date, { locale: enGB })
-    const sunday = endOfWeek(date, { locale: enGB })
-    const year = getYear(date)
-    setSelectedWeek({ startDate: monday, endDate: sunday, year, key: 'selection' })
-    onChange(monday)
-  }
+  const weekStartDate = startOfWeek(value, { locale: enGB })
+  const selectedCalendarWeek = getWeek(weekStartDate, { locale: enGB })
+  const isCurrentWeek = isThisWeek(weekStartDate, { weekStartsOn: 1 })
 
   const handleWeekSelect = (newDate: Date) => {
-    getDaysOfWeek(newDate ?? value)
+    const monday = startOfWeek(newDate, { locale: enGB })
+    onChange(monday)
   }
 
   return (
     <div className="flex flex-col items-center">
       <div className="flex gap-5">
         <BiLeftArrow
+          aria-label="Previous week"
           className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600"
-          onClick={() => getDaysOfWeek(previousMonday(selectedWeek.startDate))}
+          onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
         />
         <div className="flex w-40 flex-col items-center">
           <span className="font-bold">
-            Week {selectedCalendarWeek}/{selectedWeek.year}
+            Week {selectedCalendarWeek}/{getYear(weekStartDate)}
           </span>
           <span className="font-medium">
-            {format(selectedWeek.startDate, 'dd.MM')} - {format(selectedWeek.endDate, 'dd.MM.yyyy')}
+            {format(weekStartDate, 'dd.MM')} - {format(endOfWeek(weekStartDate, { locale: enGB }), 'dd.MM.yyyy')}
             {isCurrentWeek && '*'}
           </span>
         </div>
         <BiRightArrow
+          aria-label="Next week"
           className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600 "
-          onClick={() => getDaysOfWeek(nextMonday(selectedWeek.startDate))}
+          onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
         />
       </div>
       <div className="flex gap-5 text-sm text-gray-400">
-        <div className="flex cursor-pointer items-center gap-1" onClick={() => getDaysOfWeek(new Date())}>
+        <div className="flex cursor-pointer items-center gap-1" onClick={() => handleWeekSelect(new Date())}>
           <BsCalendarCheck className="h-4 w-4" />
           today
         </div>
