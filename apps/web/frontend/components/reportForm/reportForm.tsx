@@ -1,6 +1,6 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
@@ -84,6 +84,7 @@ export const ReportForm = () => {
   })
   const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
+  const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [{ data: reportGroupedData }] = useQuery({
     query: ReportQueryDocument,
     variables: {
@@ -93,6 +94,7 @@ export const ReportForm = () => {
       userId: selectedUserId,
       groupByUser: !selectedUserId,
     },
+    context,
     pause: !router.isReady || !selectedProjectId,
   })
 
