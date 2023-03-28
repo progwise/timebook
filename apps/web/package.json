@@ -62,7 +62,7 @@
     "@types/react-input-mask": "^3.0.1",
     "@types/testing-library__jest-dom": "^5.14.5",
     "autoprefixer": "^10.4.2",
-    "concurrently": "^7.6.0",
+    "concurrently": "^8.0.0",
     "eslint": "^8.6.0",
     "eslint-config-custom": "workspace:*",
     "eslint-plugin-tailwindcss": "^3.6.2",
