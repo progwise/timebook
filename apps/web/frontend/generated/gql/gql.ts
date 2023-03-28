@@ -23,7 +23,7 @@ const documents = {
     types.DeleteTaskModalFragmentDoc,
   '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n':
     types.TaskDeleteDocument,
-  '\n  query ProjectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n':
+  '\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n':
     types.ProjectInviteKeyDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    ...DeleteProjectModal\n  }\n':
     types.ProjectFormFragmentDoc,
@@ -140,8 +140,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query ProjectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n',
-): typeof documents['\n  query ProjectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n']
+  source: '\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n',
+): typeof documents['\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

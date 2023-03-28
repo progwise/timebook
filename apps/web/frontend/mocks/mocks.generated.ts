@@ -865,7 +865,7 @@ export const mockProjectInviteKeyQuery = (
     GraphQLContext<ProjectInviteKeyQuery>,
     any
   >,
-) => graphql.query<ProjectInviteKeyQuery, ProjectInviteKeyQueryVariables>('ProjectInviteKey', resolver)
+) => graphql.query<ProjectInviteKeyQuery, ProjectInviteKeyQueryVariables>('projectInviteKey', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -1734,7 +1734,7 @@ export const ProjectInviteKeyDocument = {
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'ProjectInviteKey' },
+      name: { kind: 'Name', value: 'projectInviteKey' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',

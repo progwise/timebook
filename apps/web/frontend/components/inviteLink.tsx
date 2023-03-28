@@ -8,9 +8,8 @@ interface InviteLinkProps {
   projectId: string
 }
 
-// {projects(from: "2023-03-24") {title,inviteKey}}
 const ProjectInviteKeyQueryDocument = graphql(`
-  query project($projectId: ID!) {
+  query projectInviteKey($projectId: ID!) {
     project(projectId: $projectId) {
       inviteKey
     }
@@ -23,8 +22,11 @@ export const InviteLink = (props: InviteLinkProps) => {
     variables: { projectId: props.projectId },
   })
 
-  const inviteKey = data?.project?.inviteKey
-  console.log('inviteKey: ', inviteKey)
+  const inviteKey = `/projects/join/${data?.project?.inviteKey}`
+
+  const copyInviteLink = async () => {
+    await navigator.clipboard.writeText(inviteKey)
+  }
 
   return (
     <div className="flex items-center gap-2">

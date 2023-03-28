@@ -2,8 +2,6 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
 
-import { InputField } from '@progwise/timebook-ui'
-
 import { InviteLink } from '../../frontend/components/inviteLink'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProjectMemberList } from '../../frontend/components/projectMemberList'
