@@ -4,11 +4,10 @@ import { Fragment, useMemo, useState } from 'react'
 import { BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
-import { Button, FormattedDuration } from '@progwise/timebook-ui'
+import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 
 import { graphql, useFragment } from '../../generated/gql'
-import { ProjectFilter, ReportProjectFragment as ReportProjectFragmentType } from '../../generated/gql/graphql'
-import { ComboBox } from '../combobox/combobox'
+import { ProjectFilter } from '../../generated/gql/graphql'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
@@ -100,10 +99,6 @@ export const ReportForm = () => {
 
   const selectedProject = projects?.find((project) => project.id === selectedProjectId)
 
-  const handleChange = (selectedProjectId: string | null) => {
-    setSelectedProjectId(selectedProjectId ?? undefined)
-  }
-
   return (
     <>
       <div>
@@ -120,13 +115,13 @@ export const ReportForm = () => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row items-start gap-4">
-            <ComboBox<ReportProjectFragmentType>
+            <ListboxWithUnselect
               value={selectedProject}
-              displayValue={(project) => project.title}
-              noOptionLabel="No Project"
-              onChange={handleChange}
+              getLabel={(project) => project.title}
+              getKey={(project) => project.id}
+              onChange={(project) => setSelectedProjectId(project?.id)}
               options={projects ?? []}
-              label="project"
+              noOptionLabel="Select Project"
             />
             <input
               className="rounded-lg border-none py-2 pl-3 text-sm leading-5  shadow-md dark:bg-slate-700"

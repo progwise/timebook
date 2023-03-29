@@ -67,13 +67,13 @@ it('should be possible to lock and unlock a report', async () => {
   const user = userEvent.setup()
   render(<ReportForm />, { wrapper })
 
-  const projectSelect = await screen.findByRole('combobox')
-  await user.clear(projectSelect)
+  const projectSelect = await screen.findByRole('button', { name: 'Select Project' })
+  await user.click(projectSelect)
   const project1Option = await screen.findByRole('option', { name: 'Project 1' })
   await user.click(project1Option)
 
-  const userSelect = await screen.findByRole('combobox', { name: 'user' })
-  await user.clear(userSelect)
+  const userSelect = await screen.findByRole('button', { name: 'All Users (0:00)' })
+  await user.click(userSelect)
   const user1Option = await screen.findByRole('option', { name: 'User 1 (0:00)' })
   await user.click(user1Option)
 
