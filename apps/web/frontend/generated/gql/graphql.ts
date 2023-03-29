@@ -16,7 +16,7 @@ export type Scalars = {
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  DateTime: any
+  DateTime: string
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -574,7 +574,7 @@ export type CurrentTrackingQuery = {
   currentTracking?:
     | ({
         __typename?: 'Tracking'
-        start: any
+        start: string
         task: { __typename?: 'Task'; title: string; project: { __typename?: 'Project'; title: string } }
       } & { ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment } })
     | null
@@ -582,7 +582,7 @@ export type CurrentTrackingQuery = {
 
 export type TrackingButtonsTrackingFragment = {
   __typename?: 'Tracking'
-  start: any
+  start: string
   task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
 } & { ' $fragmentName'?: 'TrackingButtonsTrackingFragment' }
 
@@ -596,7 +596,7 @@ export type TrackingStartMutationVariables = Exact<{
 
 export type TrackingStartMutation = {
   __typename?: 'Mutation'
-  trackingStart: { __typename?: 'Tracking'; start: any; task: { __typename?: 'Task'; id: string } }
+  trackingStart: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } }
 }
 
 export type TrackingStopMutationVariables = Exact<{ [key: string]: never }>
@@ -610,7 +610,7 @@ export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
 
 export type TrackingCancelMutation = {
   __typename?: 'Mutation'
-  trackingCancel?: { __typename?: 'Tracking'; start: any; task: { __typename?: 'Task'; id: string } } | null
+  trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
 export type WeekTableProjectFragment = ({
