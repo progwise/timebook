@@ -3,9 +3,8 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'urql'
 
-import { Button, Spinner } from '@progwise/timebook-ui'
+import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
 
-import { ComboBox } from '../../frontend/components/combobox/combobox'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -27,8 +26,6 @@ const projectCountsQueryDocument = graphql(`
     pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
   }
 `)
-
-const projectFilters = Object.values(ProjectFilter).map((projectFilter) => ({ id: projectFilter }))
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
@@ -57,12 +54,6 @@ const Projects = (): JSX.Element => {
     await router.push('/projects/new')
   }
 
-  const handleProjectFilterChange = (newProjectFilter: ProjectFilter | null) => {
-    if (newProjectFilter) {
-      setSelectedProjectFilter(newProjectFilter)
-    }
-  }
-
   return (
     <ProtectedPage>
       <article>
@@ -74,11 +65,12 @@ const Projects = (): JSX.Element => {
         </div>
 
         <div className="mb-6 flex">
-          <ComboBox<{ id: ProjectFilter }, ProjectFilter>
-            value={projectFilters.find((filter) => filter.id === selectedProjectFilter)}
-            displayValue={(project) => projectFilterKeyToLabel[project.id]}
-            onChange={handleProjectFilterChange}
-            options={projectFilters}
+          <Listbox
+            value={selectedProjectFilter}
+            getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
+            getKey={(projectFilter) => projectFilter}
+            onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
+            options={Object.values(ProjectFilter)}
           />
         </div>
 
