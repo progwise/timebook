@@ -47,21 +47,18 @@ export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.p
 export interface TaskListProps {
   project: FragmentType<typeof TaskListProjectFragment>
   className?: string
-  isDirty?: boolean
 }
 
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting, errors, isDirty },
-  } = useForm<TaskFormData>({
+  const { register, handleSubmit, reset, formState } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
     defaultValues: { title: '', hourlyRate: undefined },
   })
+
+  const { isSubmitting, errors, isDirty, dirtyFields } = formState
+
   const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -102,10 +99,10 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   <InputField
                     variant="primary"
                     placeholder="Enter task name"
-                    className=" dark:bg-slate-800 dark:text-white"
+                    className="dark:bg-slate-800 dark:text-white"
                     {...register('title')}
                     errorMessage={errors.title?.message}
-                    isDirty={isDirty}
+                    isDirty={isDirty && dirtyFields.title}
                   />
                 </form>
               </TableCell>
@@ -113,12 +110,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <InputField
                   variant="primary"
                   placeholder="Enter hourly rate"
-                  className=" dark:bg-slate-800 dark:text-white"
+                  className="dark:bg-slate-800 dark:text-white"
                   {...register('hourlyRate')}
                   errorMessage={errors.hourlyRate?.message}
                   type="number"
                   form="form-create-task"
-                  isDirty={isDirty}
+                  isDirty={isDirty && dirtyFields.hourlyRate}
                 />
               </TableCell>
               <TableCell>

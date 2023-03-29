@@ -47,13 +47,13 @@ export const InputField = React.forwardRef(
       form,
       hideLabel = false,
       onFocus,
+      isDirty = false,
     }: InputFieldProps,
-    // eslint-disable-next-line unicorn/prevent-abbreviations
-    ref: React.ForwardedRef<HTMLInputElement>,
+    reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
       primary:
-        'border border-gray-600 px-2 py-1 focus:bg-yellow-50 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
+        'border border-gray-600 px-2 py-1 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
     }[variant]
 
     return (
@@ -66,7 +66,9 @@ export const InputField = React.forwardRef(
         <span>
           <input
             aria-label={label}
-            className={`w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+            className={`w-full rounded-md ${
+              isDirty ? 'bg-yellow-50' : ''
+            } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''
             } ${inputClassName}`}
             type={type}
@@ -76,7 +78,7 @@ export const InputField = React.forwardRef(
             onChange={onChange}
             onBlur={onBlur}
             value={value}
-            ref={ref}
+            ref={reference}
             onKeyPress={onKeyPress}
             name={name}
             size={size}
