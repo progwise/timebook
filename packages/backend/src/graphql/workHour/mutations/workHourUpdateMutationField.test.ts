@@ -26,7 +26,7 @@ const workHourUpdateMutation = gql`
 
 describe('workHourUpdateMutationField', () => {
   beforeEach(async () => {
-    await prisma.report.deleteMany()
+    await prisma.lockedMonth.deleteMany()
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
@@ -155,8 +155,8 @@ describe('workHourUpdateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when a report is locking the previous work hour', async () => {
-    await prisma.report.create({ data: { year: 2022, month: 0, projectId: 'P1', userId: '1' } })
+  it('should throw error when a locked month is locking the previous work hour', async () => {
+    await prisma.lockedMonth.create({ data: { year: 2022, month: 0, projectId: 'P1' } })
 
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
@@ -173,11 +173,11 @@ describe('workHourUpdateMutationField', () => {
     })
 
     expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
+    expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
   })
 
-  it('should throw error when a report is locking the new date', async () => {
-    await prisma.report.create({ data: { year: 2023, month: 1, projectId: 'P1', userId: '1' } })
+  it('should throw error when a locked month is locking the new date', async () => {
+    await prisma.lockedMonth.create({ data: { year: 2023, month: 1, projectId: 'P1' } })
 
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
@@ -194,7 +194,7 @@ describe('workHourUpdateMutationField', () => {
     })
 
     expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
+    expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
   })
 
   it('should create a new work hour if not exist', async () => {
