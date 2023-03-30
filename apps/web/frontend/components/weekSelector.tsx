@@ -1,5 +1,4 @@
 import { endOfWeek, format, getWeek, getYear, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
-import { enGB } from 'date-fns/locale'
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 import { BsCalendarCheck } from 'react-icons/bs'
 
@@ -11,12 +10,12 @@ interface WeekSelectorProps {
 }
 
 export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
-  const weekStartDate = startOfWeek(value, { locale: enGB })
-  const selectedCalendarWeek = getWeek(weekStartDate, { locale: enGB })
-  const isCurrentWeek = isThisWeek(weekStartDate, { weekStartsOn: 1 })
+  const weekStartDate = startOfWeek(value)
+  const selectedCalendarWeek = getWeek(weekStartDate)
+  const isCurrentWeek = isThisWeek(weekStartDate)
 
   const handleWeekSelect = (newDate: Date) => {
-    const monday = startOfWeek(newDate, { locale: enGB })
+    const monday = startOfWeek(newDate)
     onChange(monday)
   }
 
@@ -33,7 +32,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
             Week {selectedCalendarWeek}/{getYear(weekStartDate)}
           </span>
           <span className="font-medium">
-            {format(weekStartDate, 'dd.MM')} - {format(endOfWeek(weekStartDate, { locale: enGB }), 'dd.MM.yyyy')}
+            {format(weekStartDate, 'dd.MM')} - {format(endOfWeek(weekStartDate), 'dd.MM.yyyy')}
             {isCurrentWeek && '*'}
           </span>
         </div>

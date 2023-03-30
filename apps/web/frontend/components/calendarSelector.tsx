@@ -76,8 +76,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthStart = startOfMonth(selectedDate)
   const monthEnd = endOfMonth(selectedDate)
-  const startFirstWeek = startOfWeek(monthStart, { weekStartsOn: 1 })
-  const endLastWeek = endOfWeek(monthEnd, { weekStartsOn: 1 })
+  const startFirstWeek = startOfWeek(monthStart)
+  const endLastWeek = endOfWeek(monthEnd)
   const daysToRender = eachDayOfInterval({ start: startFirstWeek, end: endLastWeek })
 
   const gotoPreviousMonth = () => {
