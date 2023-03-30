@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 /* eslint-disable unicorn/prefer-module */
-import { execSync } from 'child_process'
+import { exec as nativeExec } from 'child_process'
 import { TestEnvironment } from 'jest-environment-node'
 import { nanoid } from 'nanoid'
 import path from 'path'
 import Postgres from 'pg'
+import { promisify } from 'util'
+
+const exec = promisify(nativeExec)
 
 const prismaBinary = path.join('./node_modules/.bin/', 'prisma2')
 
@@ -28,11 +31,11 @@ class PrismaTestEnvironment extends TestEnvironment {
 
     // Run the migrations to ensure our schema has the required structure
     try {
-      execSync(`${prismaBinary} migrate deploy`)
+      await exec(`${prismaBinary} migrate deploy`)
     } catch {
       // eslint-disable-next-line no-console
       console.warn('migrate error for 1st try')
-      execSync(`${prismaBinary} migrate deploy`)
+      await exec(`${prismaBinary} migrate deploy`)
     }
 
     return super.setup()
