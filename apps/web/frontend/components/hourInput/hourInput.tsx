@@ -62,7 +62,7 @@ export const HourInput = (props: {
       className="min-w-max items-center"
       inputClassName="text-center"
       onBlur={handleBlur}
-      isDirty={formattedDuration !== ''}
+      isDirty={formattedDuration !== getFormattedDuration(props.duration)}
     />
   )
 }

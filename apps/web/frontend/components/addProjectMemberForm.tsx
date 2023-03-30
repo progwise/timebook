@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { useMutation } from 'urql'
@@ -37,7 +38,7 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
     resolver: zodResolver(formSchema),
   })
 
-  const { isSubmitting, errors, isDirty } = formState
+  const { isSubmitting, errors, isDirty, isSubmitSuccessful } = formState
 
   const [, addProjectMember] = useMutation(projectMembershipInviteByEmailMutationFieldDocument)
 
@@ -48,9 +49,14 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
       setError('email', { message: result.error.graphQLErrors.at(0)?.message ?? result.error.message })
       return
     }
-
     reset()
   }
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
 
   return (
     <form className="flex w-full items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>

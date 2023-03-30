@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
@@ -37,7 +37,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
   const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
-  const { setError, register, handleSubmit, formState } = useForm<TaskUpdateInput>({
+  const { setError, register, handleSubmit, formState, reset } = useForm<TaskUpdateInput>({
     mode: 'onChange',
     defaultValues: {
       title: task.title,
@@ -46,7 +46,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     resolver: zodResolver(taskInputValidations.pick({ title: true, hourlyRate: true })),
   })
 
-  const { errors, isDirty, dirtyFields } = formState
+  const { errors, isDirty, dirtyFields, isSubmitSuccessful } = formState
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
@@ -71,6 +71,12 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
 
     if (result.error) setError('hourlyRate', { message: 'Network error' })
   }
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
 
   return (
     <TableRow>
