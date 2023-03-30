@@ -118,7 +118,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         {...register('title')}
         placeholder="Enter project name"
         size={30}
-        className="rounded read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
         errorMessage={errors.title?.message}
         isDirty={isDirty}
       />
