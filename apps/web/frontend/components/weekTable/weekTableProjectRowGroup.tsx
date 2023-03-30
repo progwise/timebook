@@ -34,6 +34,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
           <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''} />
         ))}
         <TableCell />
+        <TableCell />
       </TableRow>
       {project.tasks.map((task) => (
         <WeekTableTaskRow interval={interval} task={task} key={task.id} />

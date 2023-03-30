@@ -59,8 +59,18 @@ export const Task = builder.prismaObject('Task', {
       resolve: (query, task, _argument, context) =>
         prisma.tracking.findFirst({ ...query, where: { userId: context.session.user.id, taskId: task.id } }),
     }),
+    isLockedByUser: t.withAuth({ isLoggedIn: true }).boolean({
+      select: { id: true },
+      description: 'Is the task locked by the user',
+      resolve: async (task, _arguments, context) => {
+        const lockedTask = await prisma.lockedTask.findUnique({
+          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
+        })
+        return !!lockedTask
+      },
+    }),
     isLocked: t.withAuth({ isLoggedIn: true }).boolean({
-      select: { projectId: true },
+      select: { projectId: true, id: true },
       resolve: async (task, _arguments, context) => {
         const now = new Date()
         const year = getYear(now)
@@ -72,7 +82,14 @@ export const Task = builder.prismaObject('Task', {
           },
         })
 
-        return !!report
+        if (report) {
+          return true
+        }
+
+        const lockedTask = await prisma.lockedTask.findUnique({
+          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
+        })
+        return !!lockedTask
       },
     }),
   }),

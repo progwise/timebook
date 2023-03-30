@@ -17,9 +17,12 @@ const WorkHourUpdateMutationDocument = graphql(`
 `)
 
 const IsLockedQueryDocument = graphql(`
-  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {
     report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
       isLocked
+    }
+    task(taskId: $taskId) {
+      isLockedByUser
     }
   }
 `)
@@ -42,10 +45,12 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
 
   const [{ data }] = useQuery({
     query: IsLockedQueryDocument,
-    variables: { year, month, userId: userId ?? '', projectId },
+    variables: { year, month, userId: userId ?? '', projectId, taskId },
     pause: !userId,
   })
   const isLockedByReport = data?.report.isLocked ?? false
+  const isLockedByUser = data?.task.isLockedByUser ?? false
+  const isLocked = isLockedByReport || isLockedByUser
 
   return (
     <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>
@@ -62,7 +67,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
           })
         }}
         duration={duration}
-        disabled={isLockedByReport || disabled}
+        disabled={isLocked || disabled}
       />
     </TableCell>
   )
