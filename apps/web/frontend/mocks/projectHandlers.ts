@@ -20,7 +20,16 @@ export const projectHandlers = [
         projects: [
           {
             ...testProject1,
-            tasks: [{ id: 'task1', title: 'Task 1', workHours: [], project: { id: testProject1.id }, isLocked: false }],
+            tasks: [
+              {
+                id: 'task1',
+                title: 'Task 1',
+                workHours: [],
+                project: { id: testProject1.id },
+                isLocked: false,
+                isLockedByUser: false,
+              },
+            ],
           },
           { ...testProject2, tasks: [] },
         ],
