@@ -256,20 +256,20 @@ importers:
   packages/backend:
     dependencies:
       '@pothos/core':
-        specifier: ^3.27.1
-        version: 3.27.1(graphql@16.6.0)
+        specifier: ^3.29.0
+        version: 3.29.0(graphql@16.6.0)
       '@pothos/plugin-prisma':
-        specifier: ^3.41.3
-        version: 3.47.0(@pothos/core@3.27.1)(@prisma/client@4.8.1)(graphql@16.6.0)(typescript@4.8.4)
+        specifier: ^3.47.0
+        version: 3.47.0(@pothos/core@3.29.0)(@prisma/client@4.8.1)(graphql@16.6.0)(typescript@4.8.4)
       '@pothos/plugin-scope-auth':
-        specifier: ^3.18.0
-        version: 3.18.0(@pothos/core@3.27.1)(graphql@16.6.0)
+        specifier: ^3.19.0
+        version: 3.19.0(@pothos/core@3.29.0)(graphql@16.6.0)
       '@pothos/plugin-simple-objects':
         specifier: ^3.6.7
-        version: 3.6.7(@pothos/core@3.27.1)(graphql@16.6.0)
+        version: 3.6.7(@pothos/core@3.29.0)(graphql@16.6.0)
       '@pothos/plugin-validation':
         specifier: ^3.9.0
-        version: 3.9.0(@pothos/core@3.27.1)(graphql@16.6.0)(zod@3.20.3)
+        version: 3.9.0(@pothos/core@3.29.0)(graphql@16.6.0)(zod@3.20.3)
       '@prisma/client':
         specifier: ^4.8.1
         version: 4.8.1(prisma@4.8.1)
@@ -3872,15 +3872,15 @@ packages:
       fsevents: 2.3.2
     dev: false
 
-  /@pothos/core@3.27.1(graphql@16.6.0):
-    resolution: {integrity: sha512-cvnF3eoVTF7Dw5obRYUGdC4sK62rGiM4EHQOb3z1nVIY6gutYoG2eEVZGR7yQXmsTBQp6tIW5w66JHfXwU/kiA==}
+  /@pothos/core@3.29.0(graphql@16.6.0):
+    resolution: {integrity: sha512-6LcrnZ3QRQrbWvKLfdSvfrk1nyezLaDAT8yIhQXLOhhtm3iK+knIpdGbNfKiTgxbdSDkK69IcXNV4ifcq23bIQ==}
     peerDependencies:
       graphql: '>=15.1.0'
     dependencies:
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-prisma@3.47.0(@pothos/core@3.27.1)(@prisma/client@4.8.1)(graphql@16.6.0)(typescript@4.8.4):
+  /@pothos/plugin-prisma@3.47.0(@pothos/core@3.29.0)(@prisma/client@4.8.1)(graphql@16.6.0)(typescript@4.8.4):
     resolution: {integrity: sha512-uG0FTTciSfP08RnNHswPSTPvnHds192EkotlBfPAHy9CqHTEe1E3PnvQ5595pXbiNK/UfeiLHy7RW8UNiRvsag==}
     hasBin: true
     peerDependencies:
@@ -3889,7 +3889,7 @@ packages:
       graphql: '>=15.1.0'
       typescript: '>=4.7.2'
     dependencies:
-      '@pothos/core': 3.27.1(graphql@16.6.0)
+      '@pothos/core': 3.29.0(graphql@16.6.0)
       '@prisma/client': 4.8.1(prisma@4.8.1)
       '@prisma/generator-helper': 4.11.0
       graphql: 16.6.0
@@ -3898,34 +3898,34 @@ packages:
       - supports-color
     dev: false
 
-  /@pothos/plugin-scope-auth@3.18.0(@pothos/core@3.27.1)(graphql@16.6.0):
-    resolution: {integrity: sha512-HIVjLyYY85Yea6lRMJoWE3BpVUIuOLXZ8Ux3y8SW0T+nSaf+GmAedP2khGwFETnOy3UCcEwNJmwccF+ldiifQw==}
+  /@pothos/plugin-scope-auth@3.19.0(@pothos/core@3.29.0)(graphql@16.6.0):
+    resolution: {integrity: sha512-1NjjUh3SrKbXmcZRmJ7NaAy1GZufGwOfO+Cn8zP/IrKzrGCKoyXa+3NfIOF2q6Z+wRKivnnnzT2/Hzin2K13Sg==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
     dependencies:
-      '@pothos/core': 3.27.1(graphql@16.6.0)
+      '@pothos/core': 3.29.0(graphql@16.6.0)
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-simple-objects@3.6.7(@pothos/core@3.27.1)(graphql@16.6.0):
+  /@pothos/plugin-simple-objects@3.6.7(@pothos/core@3.29.0)(graphql@16.6.0):
     resolution: {integrity: sha512-2ME7NSJZMh7MFAsTScHRiZusrLd5qpMBT/zgfmlGSGZgTFOUj38fWkQGYTFbFxTP4uClEcf9GW3aAkwLmH2ATw==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
     dependencies:
-      '@pothos/core': 3.27.1(graphql@16.6.0)
+      '@pothos/core': 3.29.0(graphql@16.6.0)
       graphql: 16.6.0
     dev: false
 
-  /@pothos/plugin-validation@3.9.0(@pothos/core@3.27.1)(graphql@16.6.0)(zod@3.20.3):
+  /@pothos/plugin-validation@3.9.0(@pothos/core@3.29.0)(graphql@16.6.0)(zod@3.20.3):
     resolution: {integrity: sha512-w2Q52l8JnhceKfDzuX1zOfspTZPc3gxxixgt10y1bB/h/kD2n/xwYXmAOLqyIN+TTr0Bi8/udYUDAAtWn9Q67A==}
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=15.1.0'
       zod: '*'
     dependencies:
-      '@pothos/core': 3.27.1(graphql@16.6.0)
+      '@pothos/core': 3.29.0(graphql@16.6.0)
       graphql: 16.6.0
       zod: 3.20.3
     dev: false
