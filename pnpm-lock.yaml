@@ -51,7 +51,7 @@ importers:
       apollo-server-core: ^3.10.2
       apollo-server-micro: ^3.6.7
       autoprefixer: ^10.4.2
-      concurrently: ^7.6.0
+      concurrently: ^8.0.0
       csstype: ^3.0.10
       date-fns: ^2.28.0
       eslint: ^8.6.0
@@ -135,7 +135,7 @@ importers:
       '@types/react-input-mask': 3.0.1
       '@types/testing-library__jest-dom': 5.14.5
       autoprefixer: 10.4.12_postcss@8.4.14
-      concurrently: 7.6.0
+      concurrently: 8.0.0
       eslint: 8.24.0
       eslint-config-custom: link:../../packages/eslint-config-custom
       eslint-plugin-tailwindcss: 3.6.2_ts-node@10.9.1
@@ -290,7 +290,7 @@ importers:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@types/testing-library__jest-dom': ^5.14.5
-      concurrently: ^7.5.0
+      concurrently: ^8.0.0
       csstype: ^3.0.10
       eslint: ^8.24.0
       eslint-config-custom: workspace:*
@@ -328,7 +328,7 @@ importers:
       '@types/react': 18.0.21
       '@types/react-dom': 18.0.11
       '@types/testing-library__jest-dom': 5.14.5
-      concurrently: 7.5.0
+      concurrently: 8.0.0
       eslint: 8.24.0
       eslint-config-custom: link:../eslint-config-custom
       jest: 29.1.2
@@ -6900,36 +6900,20 @@ packages:
       typedarray: 0.0.6
     dev: true
 
-  /concurrently/7.5.0:
-    resolution: {integrity: sha512-5E3mwiS+i2JYBzr5BpXkFxOnleZTMsG+WnE/dCG4/P+oiVXrbmrBwJ2ozn4SxwB2EZDrKR568X+puVohxz3/Mg==}
-    engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
+  /concurrently/8.0.0:
+    resolution: {integrity: sha512-1fjagjL+RgPRAx9Wi8Yv866Whtx34MRdk9qf6wwxpQoYL2mD+lUZMOe9RXYULC6eBl6e4sde6cu8bpyg9Rd9/w==}
+    engines: {node: ^14.13.0 || >=16.0.0}
     hasBin: true
     dependencies:
       chalk: 4.1.2
       date-fns: 2.29.3
       lodash: 4.17.21
-      rxjs: 7.5.7
+      rxjs: 7.8.0
       shell-quote: 1.7.4
       spawn-command: 0.0.2-1
       supports-color: 8.1.1
       tree-kill: 1.2.2
-      yargs: 17.6.0
-    dev: true
-
-  /concurrently/7.6.0:
-    resolution: {integrity: sha512-BKtRgvcJGeZ4XttiDiNcFiRlxoAeZOseqUvyYRUp/Vtd+9p1ULmeoSqGsDA+2ivdeDFpqrJvGvmI+StKfKl5hw==}
-    engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
-    hasBin: true
-    dependencies:
-      chalk: 4.1.2
-      date-fns: 2.29.3
-      lodash: 4.17.21
-      rxjs: 7.5.7
-      shell-quote: 1.7.4
-      spawn-command: 0.0.2-1
-      supports-color: 8.1.1
-      tree-kill: 1.2.2
-      yargs: 17.6.0
+      yargs: 17.7.1
     dev: true
 
   /console-control-strings/1.1.0:
@@ -9021,7 +9005,7 @@ packages:
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
-      rxjs: 7.5.7
+      rxjs: 7.8.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
       through: 2.3.8
@@ -9556,7 +9540,7 @@ packages:
       jest-util: 29.1.2
       jest-validate: 29.1.2
       prompts: 2.4.2
-      yargs: 17.6.0
+      yargs: 17.7.1
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
@@ -9584,7 +9568,7 @@ packages:
       jest-util: 29.1.2
       jest-validate: 29.1.2
       prompts: 2.4.2
-      yargs: 17.6.0
+      yargs: 17.7.1
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
@@ -10421,7 +10405,7 @@ packages:
       log-update: 4.0.0
       p-map: 4.0.0
       rfdc: 1.3.0
-      rxjs: 7.5.7
+      rxjs: 7.8.0
       through: 2.3.8
       wrap-ansi: 7.0.0
     dev: true
@@ -12450,8 +12434,8 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
 
-  /rxjs/7.5.7:
-    resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
+  /rxjs/7.8.0:
+    resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
       tslib: 2.5.0
     dev: true
@@ -14222,6 +14206,19 @@ packages:
 
   /yargs/17.6.0:
     resolution: {integrity: sha512-8H/wTDqlSwoSnScvV2N/JHfLWOKuh5MVla9hqLjK3nsfyy6Y4kDSYSvkU5YCUEPOSnRXfIyx3Sq+B/IWudTo4g==}
+    engines: {node: '>=12'}
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.1.1
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
+    dev: true
+
+  /yargs/17.7.1:
+    resolution: {integrity: sha512-cwiTb08Xuv5fqF4AovYacTFNxk62th7LKJ6BL9IGUpTJrWoU7/7WdQGTP2SjKf1dUNBGzDd28p/Yfs/GI6JrLw==}
     engines: {node: '>=12'}
     dependencies:
       cliui: 8.0.1

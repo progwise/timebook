@@ -28,7 +28,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/testing-library__jest-dom": "^5.14.5",
-    "concurrently": "^7.5.0",
+    "concurrently": "^8.0.0",
     "eslint": "^8.24.0",
     "eslint-config-custom": "workspace:*",
     "jest": "^29.1.2",
