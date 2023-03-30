@@ -106,7 +106,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       {isNewProject ? (
         <h2 className="w-full text-lg font-semibold text-gray-400 dark:text-white">Create new project</h2>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-400 ">
+        <h2 className="w-full text-lg font-semibold text-gray-800 ">
           {isProjectFormReadOnly ? 'View' : 'Edit'} project
         </h2>
       )}
@@ -124,7 +124,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       />
 
       <div className="flex flex-col">
-        <label htmlFor="start" className="w-full text-sm text-gray-700 dark:text-white">
+        <label htmlFor="start" className="text-sm font-semibold">
           Start
         </label>
         <Controller
@@ -157,7 +157,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         <ErrorMessage name="start" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mb-6 flex flex-col">
-        <label htmlFor="end" className="w-full text-sm text-gray-700 dark:text-white">
+        <label htmlFor="end" className="text-sm font-semibold">
           End
         </label>
         <Controller
