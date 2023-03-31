@@ -48,8 +48,8 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           today
         </div>
         <div className="flex cursor-pointer items-center gap-1">
-          <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} />
-          select
+          <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} selectLabel />
+          {/* select */}
         </div>
       </div>
     </div>

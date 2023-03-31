@@ -59,6 +59,7 @@ const DayItem = ({ day, selectedDate, onClick }: DayItemProps): JSX.Element => {
 
 export interface CalendarSelectorProps {
   onSelectedDateChange?: (newDate: Date) => void
+  selectLabel?: boolean
   hideLabel?: boolean
   className?: string
   disabled?: boolean
@@ -102,11 +103,12 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         <Popover.Button
           ref={reference}
           aria-label="select date"
-          className="flex disabled:opacity-50"
+          className="flex gap-1 disabled:opacity-50"
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{selectedDate.toLocaleDateString()}</span>}
           <AiOutlineCalendar className="ml-2 h-5 w-5" title="Calendar icon" />
+          {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
         <Transition
