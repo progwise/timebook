@@ -42,6 +42,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
       <TableCell className="text-center">
         <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
       </TableCell>
+      <TableCell />
     </TableFootRow>
   )
 }

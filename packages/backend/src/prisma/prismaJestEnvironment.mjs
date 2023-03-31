@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable unicorn/prefer-module */
 
-const { Client } = require('pg')
-const NodeEnvironment = require('jest-environment-node').TestEnvironment
-const { nanoid } = require('nanoid')
-const { promisify } = require('util')
-const path = require('path')
-const exec = promisify(require('child_process').exec)
+/* eslint-disable unicorn/prefer-module */
+import { exec as nativeExec } from 'child_process'
+import { TestEnvironment } from 'jest-environment-node'
+import { nanoid } from 'nanoid'
+import path from 'path'
+import Postgres from 'pg'
+import { promisify } from 'util'
+
+const exec = promisify(nativeExec)
 
 const prismaBinary = path.join('./node_modules/.bin/', 'prisma2')
 
-class PrismaTestEnvironment extends NodeEnvironment {
+class PrismaTestEnvironment extends TestEnvironment {
   constructor(config) {
     super(config)
 
@@ -41,7 +43,7 @@ class PrismaTestEnvironment extends NodeEnvironment {
 
   async teardown() {
     // Drop the schema after the tests have completed
-    const client = new Client({
+    const client = new Postgres.Client({
       connectionString: this.connectionString,
     })
     await client.connect()
@@ -50,4 +52,4 @@ class PrismaTestEnvironment extends NodeEnvironment {
   }
 }
 
-module.exports = PrismaTestEnvironment
+export default PrismaTestEnvironment

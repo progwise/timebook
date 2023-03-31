@@ -1,26 +1,26 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
-import { Button, FormattedDuration } from '@progwise/timebook-ui'
+import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 
 import { graphql, useFragment } from '../../generated/gql'
-import { ProjectFilter, ReportProjectFragment as ReportProjectFragmentType } from '../../generated/gql/graphql'
-import { ComboBox } from '../combobox/combobox'
-import { ReportLockButton } from './reportLockButton'
+import { ProjectFilter } from '../../generated/gql/graphql'
+import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
-const ReportProjectFragment = graphql(`
+export const ReportProjectFragment = graphql(`
   fragment ReportProject on Project {
     id
     title
+    isLocked(date: $date)
   }
 `)
 
 const ReportProjectsQueryDocument = graphql(`
-  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {
+  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {
     projects(from: $from, to: $to, filter: $filter) {
       ...ReportProject
     }
@@ -61,7 +61,6 @@ const ReportQueryDocument = graphql(`
         }
         duration
       }
-      isLocked
     }
   }
 `)
@@ -80,10 +79,11 @@ export const ReportForm = () => {
 
   const [{ data: projectsData }] = useQuery({
     query: ReportProjectsQueryDocument,
-    variables: { from: fromString, filter: ProjectFilter.All },
+    variables: { from: fromString, filter: ProjectFilter.All, date: { year, month } },
   })
   const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
+  const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
   const [{ data: reportGroupedData }] = useQuery({
     query: ReportQueryDocument,
     variables: {
@@ -93,14 +93,11 @@ export const ReportForm = () => {
       userId: selectedUserId,
       groupByUser: !selectedUserId,
     },
+    context,
     pause: !router.isReady || !selectedProjectId,
   })
 
   const selectedProject = projects?.find((project) => project.id === selectedProjectId)
-
-  const handleChange = (selectedProjectId: string | null) => {
-    setSelectedProjectId(selectedProjectId ?? undefined)
-  }
 
   return (
     <>
@@ -117,26 +114,15 @@ export const ReportForm = () => {
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div className="flex flex-row gap-4">
-            <ComboBox<ReportProjectFragmentType>
+          <div className="flex flex-row items-start gap-4">
+            <ListboxWithUnselect
               value={selectedProject}
-              displayValue={(project) => project.title}
-              noOptionLabel="No Project"
-              onChange={handleChange}
+              getLabel={(project) => project.title}
+              getKey={(project) => project.id}
+              onChange={(project) => setSelectedProjectId(project?.id)}
               options={projects ?? []}
-              label="project"
+              noOptionLabel="Select Project"
             />
-            {selectedProjectId && (
-              <ReportUserSelect
-                projectId={selectedProjectId}
-                selectedUserId={selectedUserId}
-                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
-                from={from}
-                to={to}
-              />
-            )}
-          </div>
-          <div>
             <input
               className="rounded-lg border-none py-2 pl-3 text-sm leading-5  shadow-md dark:bg-slate-700"
               type="month"
@@ -148,18 +134,20 @@ export const ReportForm = () => {
                 }
               }}
             />
+            {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
+          </div>
+          <div>
+            {selectedProjectId && (
+              <ReportUserSelect
+                projectId={selectedProjectId}
+                selectedUserId={selectedUserId}
+                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
+                from={from}
+                to={to}
+              />
+            )}
           </div>
         </div>
-
-        {selectedProjectId && reportGroupedData?.project.canModify && selectedUserId && (
-          <ReportLockButton
-            year={year}
-            month={month}
-            projectId={selectedProjectId}
-            userId={selectedUserId}
-            isLocked={reportGroupedData.report.isLocked}
-          />
-        )}
 
         {selectedProject && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">

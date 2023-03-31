@@ -26,7 +26,7 @@ const trackingStopMutation = gql`
 beforeEach(async () => {
   await prisma.tracking.deleteMany()
   await prisma.workHour.deleteMany()
-  await prisma.report.deleteMany()
+  await prisma.lockedMonth.deleteMany()
   await prisma.task.deleteMany()
   await prisma.project.deleteMany()
   await prisma.user.deleteMany()
@@ -54,14 +54,14 @@ it('should throw error when user is unauthorized', async () => {
   expect(response.data).toBeNull()
 })
 
-it('should throw error when a report is locking the project', async () => {
+it('should throw error when project is locked for the current month', async () => {
   const now = new Date()
   await prisma.tracking.create({ data: { userId: '1', taskId: 'T1', start: now } })
-  await prisma.report.create({ data: { projectId: 'P1', userId: '1', year: getYear(now), month: getMonth(now) } })
+  await prisma.lockedMonth.create({ data: { projectId: 'P1', year: getYear(now), month: getMonth(now) } })
 
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({ query: trackingStopMutation })
-  expect(response.errors).toEqual([new GraphQLError('A report is locking the project')])
+  expect(response.errors).toEqual([new GraphQLError('Project is locked for the current month')])
   expect(response.data).toBeNull()
 })
 

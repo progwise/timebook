@@ -58,7 +58,7 @@ export const InputField = React.forwardRef(
     return (
       <div className={`flex w-full flex-col gap-1 ${className}`}>
         {label && !hideLabel && (
-          <label htmlFor={name} className="text-sm font-semibold text-gray-500">
+          <label htmlFor={name} className="text-sm font-semibold">
             {label}
           </label>
         )}

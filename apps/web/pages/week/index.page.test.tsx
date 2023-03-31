@@ -24,6 +24,7 @@ beforeEach(() => {
       response(
         context.data({
           report: { isLocked: request.variables.month === 1, __typename: 'Report' },
+          task: { isLockedByUser: false, __typename: 'Task' },
           __typename: 'Query',
         }),
       ),

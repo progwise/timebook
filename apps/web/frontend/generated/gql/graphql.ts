@@ -25,28 +25,37 @@ export type ModifyInterface = {
   canModify: Scalars['Boolean']
 }
 
+export type MonthInput = {
+  month: Scalars['Int']
+  year: Scalars['Int']
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
   /** Unassign user to Project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
   projectMembershipInviteByEmail: Project
+  projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
-  reportLock: Report
-  reportUnlock: Report
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
+  /** Lock a task for the current user */
+  taskLock: Task
+  /** Unlock a task for the current user */
+  taskUnlock: Task
   /** Update a task */
   taskUpdate: Task
   /** The ongoing time tracking will be deleted */
@@ -71,6 +80,11 @@ export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
 }
 
+export type MutationProjectLockArgs = {
+  date: MonthInput
+  projectId: Scalars['ID']
+}
+
 export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
   role?: Role
@@ -87,23 +101,14 @@ export type MutationProjectMembershipInviteByEmailArgs = {
   projectId: Scalars['ID']
 }
 
+export type MutationProjectUnlockArgs = {
+  date: MonthInput
+  projectId: Scalars['ID']
+}
+
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
-}
-
-export type MutationReportLockArgs = {
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-  year: Scalars['Int']
-}
-
-export type MutationReportUnlockArgs = {
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-  year: Scalars['Int']
 }
 
 export type MutationTaskArchiveArgs = {
@@ -116,6 +121,14 @@ export type MutationTaskCreateArgs = {
 
 export type MutationTaskDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationTaskLockArgs = {
+  taskId: Scalars['ID']
+}
+
+export type MutationTaskUnlockArgs = {
+  taskId: Scalars['ID']
 }
 
 export type MutationTaskUpdateArgs = {
@@ -148,12 +161,18 @@ export type Project = ModifyInterface & {
   endDate?: Maybe<Scalars['Date']>
   /** identifies the project */
   id: Scalars['ID']
+  /** Is the project locked for the given month */
+  isLocked: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
   tasks: Array<Task>
   title: Scalars['String']
   workHours: Array<WorkHour>
+}
+
+export type ProjectIsLockedArgs = {
+  date?: InputMaybe<MonthInput>
 }
 
 export type ProjectMembersArgs = {
@@ -283,6 +302,8 @@ export type Task = ModifyInterface & {
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
+  /** Is the task locked by the user */
+  isLockedByUser: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
@@ -419,7 +440,27 @@ export type ProjectTableItemFragment = {
   endDate?: string | null
 } & { ' $fragmentName'?: 'ProjectTableItemFragment' }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string } & {
+export type ProjectLockMutationVariables = Exact<{
+  date: MonthInput
+  projectId: Scalars['ID']
+}>
+
+export type ProjectLockMutation = {
+  __typename?: 'Mutation'
+  projectLock: { __typename?: 'Project'; isLocked: boolean }
+}
+
+export type ProjectUnlockMutationVariables = Exact<{
+  date: MonthInput
+  projectId: Scalars['ID']
+}>
+
+export type ProjectUnlockMutation = {
+  __typename?: 'Mutation'
+  projectUnlock: { __typename?: 'Project'; isLocked: boolean }
+}
+
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean } & {
   ' $fragmentName'?: 'ReportProjectFragment'
 }
 
@@ -427,6 +468,7 @@ export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
   filter?: InputMaybe<ProjectFilter>
+  date: MonthInput
 }>
 
 export type ReportProjectsQuery = {
@@ -447,7 +489,6 @@ export type ReportQuery = {
   project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
-    isLocked: boolean
     groupedByDate: Array<{
       __typename?: 'ReportGroupedByDate'
       date: string
@@ -471,27 +512,6 @@ export type ReportQuery = {
       user: { __typename?: 'User'; id: string; name?: string | null }
     }>
   }
-}
-
-export type ReportLockMutationVariables = Exact<{
-  year: Scalars['Int']
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type ReportLockMutation = { __typename?: 'Mutation'; reportLock: { __typename?: 'Report'; isLocked: boolean } }
-
-export type ReportUnlockMutationVariables = Exact<{
-  year: Scalars['Int']
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type ReportUnlockMutation = {
-  __typename?: 'Mutation'
-  reportUnlock: { __typename?: 'Report'; isLocked: boolean }
 }
 
 export type ReportUserFragment = {
@@ -613,6 +633,28 @@ export type TrackingCancelMutation = {
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
+export type TaskLockButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean } & {
+  ' $fragmentName'?: 'TaskLockButtonFragment'
+}
+
+export type LockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type LockTaskMutation = {
+  __typename?: 'Mutation'
+  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
+export type UnlockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type UnlockTaskMutation = {
+  __typename?: 'Mutation'
+  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
 export type WeekTableProjectFragment = ({
   __typename?: 'Project'
   id: string
@@ -657,9 +699,14 @@ export type IsLockedQueryVariables = Exact<{
   month: Scalars['Int']
   projectId: Scalars['ID']
   userId: Scalars['ID']
+  taskId: Scalars['ID']
 }>
 
-export type IsLockedQuery = { __typename?: 'Query'; report: { __typename?: 'Report'; isLocked: boolean } }
+export type IsLockedQuery = {
+  __typename?: 'Query'
+  report: { __typename?: 'Report'; isLocked: boolean }
+  task: { __typename?: 'Task'; isLockedByUser: boolean }
+}
 
 export type WeekTableTaskRowFragment = ({
   __typename?: 'Task'
@@ -672,9 +719,12 @@ export type WeekTableTaskRowFragment = ({
         ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment }
       })
     | null
-} & { ' $fragmentRefs'?: { TrackingButtonsTaskFragment: TrackingButtonsTaskFragment } }) & {
-  ' $fragmentName'?: 'WeekTableTaskRowFragment'
-}
+} & {
+  ' $fragmentRefs'?: {
+    TrackingButtonsTaskFragment: TrackingButtonsTaskFragment
+    TaskLockButtonFragment: TaskLockButtonFragment
+  }
+}) & { ' $fragmentName'?: 'WeekTableTaskRowFragment' }
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -852,6 +902,17 @@ export const ReportProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'isLocked' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+            ],
+          },
         ],
       },
     },
@@ -1112,6 +1173,23 @@ export const TrackingButtonsTaskFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TrackingButtonsTaskFragment, unknown>
+export const TaskLockButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TaskLockButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskLockButtonFragment, unknown>
 export const WeekTableTaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1175,6 +1253,7 @@ export const WeekTableTaskRowFragmentDoc = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -1217,6 +1296,18 @@ export const WeekTableTaskRowFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TaskLockButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
         ],
       },
     },
@@ -1292,6 +1383,18 @@ export const WeekTableProjectRowGroupFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TaskLockButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -1350,6 +1453,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -1446,6 +1550,18 @@ export const WeekTableProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TaskLockButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -1504,6 +1620,7 @@ export const WeekTableProjectFragmentDoc = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -1721,6 +1838,124 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
+export const ProjectLockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectLock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'MonthInput' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectLock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'isLocked' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'date' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectLockMutation, ProjectLockMutationVariables>
+export const ProjectUnlockDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectUnlock' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'MonthInput' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUnlock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'isLocked' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'date' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectUnlockMutation, ProjectUnlockMutationVariables>
 export const ReportProjectsDocument = {
   kind: 'Document',
   definitions: [
@@ -1743,6 +1978,11 @@ export const ReportProjectsDocument = {
           kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'ProjectFilter' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'MonthInput' } } },
         },
       ],
       selectionSet: {
@@ -1785,6 +2025,17 @@ export const ReportProjectsDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'isLocked' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+            ],
+          },
         ],
       },
     },
@@ -1963,7 +2214,6 @@ export const ReportDocument = {
                     ],
                   },
                 },
-                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -1972,140 +2222,6 @@ export const ReportDocument = {
     },
   ],
 } as unknown as DocumentNode<ReportQuery, ReportQueryVariables>
-export const ReportLockDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'reportLock' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'reportLock' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'year' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'month' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'userId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ReportLockMutation, ReportLockMutationVariables>
-export const ReportUnlockDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'reportUnlock' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'reportUnlock' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'year' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'year' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'month' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'month' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'userId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ReportUnlockMutation, ReportUnlockMutationVariables>
 export const ReportUsersDocument = {
   kind: 'Document',
   definitions: [
@@ -2560,6 +2676,86 @@ export const TrackingCancelDocument = {
     },
   ],
 } as unknown as DocumentNode<TrackingCancelMutation, TrackingCancelMutationVariables>
+export const LockTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'lockTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'taskLock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'taskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LockTaskMutation, LockTaskMutationVariables>
+export const UnlockTaskDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'unlockTask' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'taskUnlock' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'taskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UnlockTaskMutation, UnlockTaskMutationVariables>
 export const WorkHourUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -2645,6 +2841,11 @@ export const IsLockedDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -2677,6 +2878,21 @@ export const IsLockedDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLocked' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'taskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } }],
             },
           },
         ],
@@ -3192,6 +3408,18 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TaskLockButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekTableTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -3250,6 +3478,7 @@ export const WeekTableDocument = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },

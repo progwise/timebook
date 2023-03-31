@@ -18,6 +18,11 @@ interface ModifyInterface {
   canModify: Boolean!
 }
 
+input MonthInput {
+  month: Int!
+  year: Int!
+}
+
 type Mutation {
   """
   Create a new project
@@ -33,6 +38,7 @@ type Mutation {
     """
     id: ID!
   ): Project!
+  projectLock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Assign user to a project. This mutation can also be used for updating the role of a project member
@@ -48,6 +54,7 @@ type Mutation {
   Assign user to a project by e-mail.
   """
   projectMembershipInviteByEmail(email: String!, projectId: ID!): Project!
+  projectUnlock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Update a project
@@ -60,8 +67,6 @@ type Mutation {
     """
     id: ID!
   ): Project!
-  reportLock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
-  reportUnlock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
 
   """
   Archive a task
@@ -87,6 +92,16 @@ type Mutation {
     """
     id: ID!
   ): Task!
+
+  """
+  Lock a task for the current user
+  """
+  taskLock(taskId: ID!): Task!
+
+  """
+  Unlock a task for the current user
+  """
+  taskUnlock(taskId: ID!): Task!
 
   """
   Update a task
@@ -147,6 +162,16 @@ type Project implements ModifyInterface {
   identifies the project
   """
   id: ID!
+
+  """
+  Is the project locked for the given month
+  """
+  isLocked(
+    """
+    The month to check. If empty the current month is used.
+    """
+    date: MonthInput
+  ): Boolean!
 
   """
   List of users that are member of the project
@@ -323,6 +348,11 @@ type Task implements ModifyInterface {
   """
   id: ID!
   isLocked: Boolean!
+
+  """
+  Is the task locked by the user
+  """
+  isLockedByUser: Boolean!
   project: Project!
 
   """
