@@ -30,10 +30,9 @@ builder.mutationField('workHourDelete', (t) =>
         await isProjectLocked({
           projectId: workHour.task.projectId,
           date: workHour.date,
-          userId: workHour.userId,
         })
       ) {
-        throw new Error('project is locked by report')
+        throw new Error('project is locked for the given month')
       }
 
       return prisma.workHour.delete({ ...query, where: { id: id.toString() } })
