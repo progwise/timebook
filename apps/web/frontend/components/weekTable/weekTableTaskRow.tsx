@@ -4,6 +4,7 @@ import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
+import { TaskLockButton } from './taskLockButton'
 import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
 
 const WeekTableTaskRowFragment = graphql(`
@@ -25,6 +26,7 @@ const WeekTableTaskRowFragment = graphql(`
       ...TrackingButtonsTracking
     }
     ...TrackingButtonsTask
+    ...TaskLockButton
   }
 `)
 
@@ -67,6 +69,9 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
       })}
       <TableCell className="text-center">
         <FormattedDuration minutes={taskDurations} title="" />
+      </TableCell>
+      <TableCell>
+        <TaskLockButton task={task} />
       </TableCell>
     </TableRow>
   )
