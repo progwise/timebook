@@ -17,8 +17,8 @@ builder.mutationField('workHourCreate', (t) =>
         where: { id: taskId.toString() },
       })
 
-      if (await isProjectLocked({ date, userId: context.session.user.id, projectId: task.projectId })) {
-        throw new Error('project is locked by report')
+      if (await isProjectLocked({ date, projectId: task.projectId })) {
+        throw new Error('project is locked for the given month')
       }
 
       const workHourKey = {

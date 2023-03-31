@@ -1,3 +1,5 @@
 import './projectCreateMutationField'
 import './projectDeleteMutationField'
+import './projectLockMutationField'
+import './projectUnlockMutationField'
 import './projectUpdateMutationField'
