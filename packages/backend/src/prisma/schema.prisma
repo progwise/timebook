@@ -29,7 +29,7 @@ model Project {
 
   projectMemberships ProjectMembership[]
   tasks              Task[]
-  reports            Report[]
+  reports            LockedMonth[]
 }
 
 enum Role {
@@ -129,7 +129,6 @@ model User {
   // Relations outside of next-auth:
   workhours          WorkHour[]
   projectMemberships ProjectMembership[]
-  reports            Report[]
   tracking           Tracking?
   lockedTasks        LockedTask[]
 }
@@ -142,16 +141,14 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Report {
+model LockedMonth {
   projectId String
-  userId    String
   year      Int
   month     Int
 
   project Project @relation(fields: [projectId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
 
-  @@id([projectId, userId, year, month])
+  @@id([projectId, year, month])
 }
 
 model Tracking {

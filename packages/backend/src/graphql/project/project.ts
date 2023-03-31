@@ -1,7 +1,10 @@
+import { getMonth, getYear } from 'date-fns'
+
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
 import { WorkHour } from '../workHour'
+import { MonthInputType } from './monthInputType'
 
 export const Project = builder.prismaObject('Project', {
   select: {},
@@ -65,6 +68,28 @@ export const Project = builder.prismaObject('Project', {
         })
 
         return projectMembership?.role === 'ADMIN'
+      },
+    }),
+    isLocked: t.withAuth({ isLoggedIn: true }).boolean({
+      select: { id: true },
+      args: {
+        date: t.arg({
+          type: MonthInputType,
+          required: false,
+          description: 'The month to check. If empty the current month is used.',
+        }),
+      },
+      description: 'Is the project locked for the given month',
+      resolve: async (project, { date }) => {
+        const now = new Date()
+        const year = date?.year ?? getYear(now)
+        const month = date?.month ?? getMonth(now)
+
+        const lockedMonth = await prisma.lockedMonth.findUnique({
+          where: { projectId_year_month: { projectId: project.id, month, year } },
+        })
+
+        return !!lockedMonth
       },
     }),
   }),

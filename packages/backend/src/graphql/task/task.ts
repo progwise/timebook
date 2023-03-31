@@ -76,13 +76,13 @@ export const Task = builder.prismaObject('Task', {
         const year = getYear(now)
         const month = getMonth(now)
 
-        const report = await prisma.report.findUnique({
+        const lockedMonth = await prisma.lockedMonth.findUnique({
           where: {
-            projectId_userId_year_month: { projectId: task.projectId, year, month, userId: context.session.user.id },
+            projectId_year_month: { projectId: task.projectId, year, month },
           },
         })
 
-        if (report) {
+        if (lockedMonth) {
           return true
         }
 
