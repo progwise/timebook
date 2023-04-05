@@ -1,7 +1,9 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import { getWeek, getYear } from 'date-fns'
+import { userEvent } from '@testing-library/user-event/dist/types/setup'
+import { getWeek, getYear, isSameWeek, startOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
+import { WeekSelector } from '../../frontend/components/weekSelector'
 import { mockServer } from '../../frontend/mocks/mockServer'
 import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
 import TimePage from './index.page'
@@ -33,17 +35,44 @@ beforeEach(() => {
 })
 
 describe('The time page...', () => {
-  it('...renders the week selector with today', () => {
-    render(<TimePage />, { wrapper })
-    const weekCombo = screen.getByRole('combobox', {
-      name: /week/i,
-    })
-    const yearCombo = screen.getByRole('combobox', {
-      name: /year/i,
-    })
-    expect(weekCombo).toHaveValue(weekNumber.toString())
-    expect(yearCombo).toHaveValue(yearNumber.toString())
+  it('...displays the correct week, start and end dates', () => {
+    const now = new Date()
+    const handleWeekSelect = jest.fn()
+    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
+
+    const weekDisplay = screen.getByText(/week \d+\/\d{4}/i)
+    const dateRangeDisplay = screen.getByText(/\d{2}\.\d{2} - (?:\d{2}\.){2}\d{4}/i)
+
+    expect(weekDisplay).toBeInTheDocument()
+    expect(dateRangeDisplay).toBeInTheDocument()
   })
+
+  it('...changes to the previous week when the left arrow is clicked', () => {
+    const now = new Date()
+    const handleWeekSelect = jest.fn()
+    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
+
+    const leftArrow = screen.getByLabelText(/previous week/i)
+    userEvent.click(leftArrow)
+
+    expect(handleWeekSelect).toHaveBeenCalledTimes(1)
+    const newDate = handleWeekSelect.mock.calls[0][0]
+    expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
+  })
+
+  it('...changes to the next week when the right arrow is clicked', () => {
+    const now = new Date()
+    const handleWeekSelect = jest.fn()
+    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
+
+    const rightArrow = screen.getByLabelText(/next week/i)
+    userEvent.click(rightArrow)
+
+    expect(handleWeekSelect).toHaveBeenCalledTimes(1)
+    const newDate = handleWeekSelect.mock.calls[0][0]
+    expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
+  })
+
   it('...renders the current projects table', async () => {
     render(<TimePage />, { wrapper })
     const table = await screen.findByRole('table')
