@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event/dist/types/setup'
-import { getWeek, getYear, isSameWeek, startOfWeek } from 'date-fns'
+import userEvent from '@testing-library/user-event'
+import { isSameWeek, startOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
 import { WeekSelector } from '../../frontend/components/weekSelector'
@@ -9,8 +9,6 @@ import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
 import TimePage from './index.page'
 
 const now = new Date()
-const weekNumber = getWeek(now, { firstWeekContainsDate: 7, weekStartsOn: 1 })
-const yearNumber = getYear(now)
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
@@ -36,7 +34,6 @@ beforeEach(() => {
 
 describe('The time page...', () => {
   it('...displays the correct week, start and end dates', () => {
-    const now = new Date()
     const handleWeekSelect = jest.fn()
     render(<WeekSelector value={now} onChange={handleWeekSelect} />)
 
@@ -48,7 +45,6 @@ describe('The time page...', () => {
   })
 
   it('...changes to the previous week when the left arrow is clicked', () => {
-    const now = new Date()
     const handleWeekSelect = jest.fn()
     render(<WeekSelector value={now} onChange={handleWeekSelect} />)
 
@@ -61,7 +57,6 @@ describe('The time page...', () => {
   })
 
   it('...changes to the next week when the right arrow is clicked', () => {
-    const now = new Date()
     const handleWeekSelect = jest.fn()
     render(<WeekSelector value={now} onChange={handleWeekSelect} />)
 
