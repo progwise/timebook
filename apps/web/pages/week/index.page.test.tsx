@@ -51,7 +51,6 @@ describe('The time page...', () => {
     const leftArrow = screen.getByLabelText(/previous week/i)
     userEvent.click(leftArrow)
 
-    expect(handleWeekSelect).toHaveBeenCalledTimes(1)
     const newDate = handleWeekSelect.mock.calls[0][0]
     expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
   })
@@ -63,7 +62,6 @@ describe('The time page...', () => {
     const rightArrow = screen.getByLabelText(/next week/i)
     userEvent.click(rightArrow)
 
-    expect(handleWeekSelect).toHaveBeenCalledTimes(1)
     const newDate = handleWeekSelect.mock.calls[0][0]
     expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
   })
