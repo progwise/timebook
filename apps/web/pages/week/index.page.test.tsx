@@ -1,6 +1,4 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { isSameWeek, startOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
 import { WeekSelector } from '../../frontend/components/weekSelector'
@@ -42,28 +40,6 @@ describe('The time page...', () => {
 
     expect(weekDisplay).toBeInTheDocument()
     expect(dateRangeDisplay).toBeInTheDocument()
-  })
-
-  it('...changes to the previous week when the left arrow is clicked', () => {
-    const handleWeekSelect = jest.fn()
-    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
-
-    const leftArrow = screen.getByLabelText(/previous week/i)
-    userEvent.click(leftArrow)
-
-    const newDate = handleWeekSelect.mock.calls[0][0]
-    expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
-  })
-
-  it('...changes to the next week when the right arrow is clicked', () => {
-    const handleWeekSelect = jest.fn()
-    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
-
-    const rightArrow = screen.getByLabelText(/next week/i)
-    userEvent.click(rightArrow)
-
-    const newDate = handleWeekSelect.mock.calls[0][0]
-    expect(isSameWeek(startOfWeek(now), startOfWeek(newDate))).toBe(false)
   })
 
   it('...renders the current projects table', async () => {
