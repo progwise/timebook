@@ -22,11 +22,13 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex gap-5">
-        <BiLeftArrow
-          aria-label="Previous week"
-          className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600"
-          onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
-        />
+        <button>
+          <BiLeftArrow
+            aria-label="Previous week"
+            className="h-12 w-12 fill-blue-400 drop-shadow-lg hover:fill-blue-600"
+            onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
+          />
+        </button>
         <div className="flex w-40 flex-col items-center">
           <span className="font-bold">
             Week {selectedCalendarWeek}/{getYear(weekStartDate)}
@@ -36,21 +38,22 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
             {isCurrentWeek && '*'}
           </span>
         </div>
-        <BiRightArrow
-          aria-label="Next week"
-          className="h-12 w-12 cursor-pointer fill-blue-400 drop-shadow-lg hover:fill-blue-600 "
-          onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
-        />
+        <button>
+          <BiRightArrow
+            aria-label="Next week"
+            className="h-12 w-12 fill-blue-400 drop-shadow-lg hover:fill-blue-600 "
+            onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
+          />
+        </button>
       </div>
       <div className="flex gap-5 text-sm text-gray-400">
-        <div className="flex cursor-pointer items-center gap-1" onClick={() => handleWeekSelect(new Date())}>
+        <button className="flex items-center gap-1" onClick={() => handleWeekSelect(new Date())}>
           <BsCalendarCheck className="h-4 w-4" />
           today
-        </div>
-        <div className="flex cursor-pointer items-center gap-1">
+        </button>
+        <button className="flex items-center gap-1">
           <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} selectLabel />
-          {/* select */}
-        </div>
+        </button>
       </div>
     </div>
   )

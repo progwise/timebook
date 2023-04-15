@@ -1,5 +1,4 @@
 import { setDefaultOptions } from 'date-fns'
-import { de } from 'date-fns/locale'
 import { NextPageContext } from 'next'
 import { Session } from 'next-auth'
 import { getSession, SessionProvider } from 'next-auth/react'
@@ -12,8 +11,7 @@ import { TopNavigation } from '../frontend/components/topNavigation/topNavigatio
 import '../frontend/styles/globals.css'
 
 setDefaultOptions({
-  weekStartsOn: 1, // Montag als Wochenstart
-  locale: de, // Deutsche Lokalisierung
+  weekStartsOn: 1, // start weeks on monday
 })
 
 interface TimebookProps {

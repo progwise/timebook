@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
+import { format, getWeek, getYear, startOfWeek, endOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
-import { WeekSelector } from '../../frontend/components/weekSelector'
 import { mockServer } from '../../frontend/mocks/mockServer'
 import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
 import TimePage from './index.page'
@@ -32,11 +32,15 @@ beforeEach(() => {
 
 describe('The time page...', () => {
   it('...displays the correct week, start and end dates', () => {
-    const handleWeekSelect = jest.fn()
-    render(<WeekSelector value={now} onChange={handleWeekSelect} />)
+    render(<TimePage day={new Date(now)} />, { wrapper })
 
-    const weekDisplay = screen.getByText(/week \d+\/\d{4}/i)
-    const dateRangeDisplay = screen.getByText(/\d{2}\.\d{2} - (?:\d{2}\.){2}\d{4}/i)
+    const weekNumber = getWeek(now)
+    const yearNumber = getYear(now)
+    const weekStartDate = startOfWeek(now)
+    const weekEndDate = endOfWeek(now)
+
+    const weekDisplay = `Week ${weekNumber}/${yearNumber}`
+    const dateRangeDisplay = `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}`
 
     expect(weekDisplay).toBeInTheDocument()
     expect(dateRangeDisplay).toBeInTheDocument()
