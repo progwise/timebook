@@ -31,6 +31,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
             <TableCell>
               <AddProjectMemberForm projectId={props.projectId} />
             </TableCell>
+            <TableCell />
           </TableRow>
           {users.map((user) => (
             <TableRow key={user.id}>
