@@ -7,6 +7,11 @@ import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
 import TimePage from './index.page'
 
 const now = new Date()
+const weekNumber = getWeek(now)
+const yearNumber = getYear(now)
+const weekStartDate = startOfWeek(now)
+const weekEndDate = endOfWeek(now)
+
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
@@ -34,14 +39,10 @@ describe('The time page...', () => {
   it('...displays the correct week, start and end dates', () => {
     render(<TimePage day={new Date(now)} />, { wrapper })
 
-    const weekNumber = getWeek(now)
-    const yearNumber = getYear(now)
-    const weekStartDate = startOfWeek(now)
-    const weekEndDate = endOfWeek(now)
-
-    const weekDisplay = `Week ${weekNumber}/${yearNumber}`
-    const dateRangeDisplay = `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}`
-
+    const weekDisplay = screen.getByText(`Week ${weekNumber}/${yearNumber}`)
+    const dateRangeDisplay = screen.getByText(
+      `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}`,
+    )
     expect(weekDisplay).toBeInTheDocument()
     expect(dateRangeDisplay).toBeInTheDocument()
   })
