@@ -26,7 +26,7 @@ const workHourCreateMutation = gql`
 `
 describe('workHourCreateMutationField', () => {
   beforeEach(async () => {
-    await prisma.report.deleteMany()
+    await prisma.lockedMonth.deleteMany()
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
@@ -92,8 +92,8 @@ describe('workHourCreateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw when a report exist', async () => {
-    await prisma.report.create({ data: { year: 2022, month: 0, projectId: 'P1', userId: '1' } })
+  it('should throw when the project is locked for the given month', async () => {
+    await prisma.lockedMonth.create({ data: { year: 2022, month: 0, projectId: 'P1' } })
 
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
@@ -107,7 +107,7 @@ describe('workHourCreateMutationField', () => {
       },
     })
     expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
+    expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
   })
 
   it('should create a new work hour', async () => {

@@ -25,17 +25,16 @@ export const trackingStartMutationField = builder.mutationField('trackingStart',
       }
 
       const now = new Date()
-      const reportCount = await prisma.report.count({
+      const lockedMonthCount = await prisma.lockedMonth.count({
         where: {
           year: getYear(now),
           month: getMonth(now),
-          userId,
           project: { tasks: { some: { id: taskId } } },
         },
       })
 
-      if (reportCount > 0) {
-        throw new Error('Report is locking the task')
+      if (lockedMonthCount > 0) {
+        throw new Error('Project is locked for this month')
       }
 
       if (currentTracking) {

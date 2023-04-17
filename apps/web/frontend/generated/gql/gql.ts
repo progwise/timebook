@@ -31,15 +31,16 @@ const documents = {
     types.ProjectMemberListUserFragmentDoc,
   '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n':
     types.ProjectTableItemFragmentDoc,
-  '\n  fragment ReportProject on Project {\n    id\n    title\n  }\n': types.ReportProjectFragmentDoc,
-  '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n':
+  '\n  mutation projectLock($date: MonthInput!, $projectId: ID!) {\n    projectLock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
+    types.ProjectLockDocument,
+  '\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
+    types.ProjectUnlockDocument,
+  '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n':
+    types.ReportProjectFragmentDoc,
+  '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n':
     types.ReportProjectsDocument,
-  '\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n      isLocked\n    }\n  }\n':
+  '\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n    }\n  }\n':
     types.ReportDocument,
-  '\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
-    types.ReportLockDocument,
-  '\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
-    types.ReportUnlockDocument,
   '\n  fragment ReportUser on User {\n    id\n    name\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n':
     types.ReportUserFragmentDoc,
   '\n  query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {\n    project(projectId: $projectId) {\n      id\n      members(includePastMembers: true) {\n        ...ReportUser\n      }\n    }\n  }\n':
@@ -67,6 +68,11 @@ const documents = {
     types.TrackingStopDocument,
   '\n  mutation trackingCancel {\n    trackingCancel {\n      start\n      task {\n        id\n      }\n    }\n  }\n':
     types.TrackingCancelDocument,
+  '\n  fragment TaskLockButton on Task {\n    id\n    isLockedByUser\n  }\n': types.TaskLockButtonFragmentDoc,
+  '\n  mutation lockTask($taskId: ID!) {\n    taskLock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n':
+    types.LockTaskDocument,
+  '\n  mutation unlockTask($taskId: ID!) {\n    taskUnlock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n':
+    types.UnlockTaskDocument,
   '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n':
     types.WeekTableProjectFragmentDoc,
   '\n  fragment WeekTableFooter on WorkHour {\n    duration\n    date\n  }\n': types.WeekTableFooterFragmentDoc,
@@ -74,9 +80,9 @@ const documents = {
     types.WeekTableProjectRowGroupFragmentDoc,
   '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
-  '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n':
+  '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n    }\n  }\n':
     types.IsLockedDocument,
-  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n  }\n':
+  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n':
     types.ProjectDocument,
@@ -164,32 +170,32 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ReportProject on Project {\n    id\n    title\n  }\n',
-): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n  }\n']
+  source: '\n  mutation projectLock($date: MonthInput!, $projectId: ID!) {\n    projectLock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n',
+): typeof documents['\n  mutation projectLock($date: MonthInput!, $projectId: ID!) {\n    projectLock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n',
-): typeof documents['\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n']
+  source: '\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n',
+): typeof documents['\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n      isLocked\n    }\n  }\n',
-): typeof documents['\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n      isLocked\n    }\n  }\n']
+  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n',
+): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n',
-): typeof documents['\n  mutation reportLock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportLock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n']
+  source: '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n',
+): typeof documents['\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n',
-): typeof documents['\n  mutation reportUnlock($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    reportUnlock(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n']
+  source: '\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n    }\n  }\n',
+): typeof documents['\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          user {\n            name\n          }\n          task {\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -278,6 +284,24 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
+  source: '\n  fragment TaskLockButton on Task {\n    id\n    isLockedByUser\n  }\n',
+): typeof documents['\n  fragment TaskLockButton on Task {\n    id\n    isLockedByUser\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation lockTask($taskId: ID!) {\n    taskLock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n',
+): typeof documents['\n  mutation lockTask($taskId: ID!) {\n    taskLock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation unlockTask($taskId: ID!) {\n    taskUnlock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n',
+): typeof documents['\n  mutation unlockTask($taskId: ID!) {\n    taskUnlock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
   source: '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n',
 ): typeof documents['\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n']
 /**
@@ -302,14 +326,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n',
-): typeof documents['\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n  }\n']
+  source: '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n    }\n  }\n',
+): typeof documents['\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n  }\n',
-): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n  }\n']
+  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n',
+): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
