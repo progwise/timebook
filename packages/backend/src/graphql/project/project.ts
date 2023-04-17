@@ -19,14 +19,22 @@ export const Project = builder.prismaObject('Project', {
       select: { tasks: { select: { workHours: { select: { id: true } } } } },
       resolve: (project) => project.tasks.flatMap((task) => task.workHours),
     }),
-    tasks: t.relation('tasks', {
+    tasks: t.withAuth({ isLoggedIn: true }).relation('tasks', {
+      description:
+        'List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned.',
       args: {
         showArchived: t.arg.boolean({ defaultValue: false }),
       },
-      query: ({ showArchived }) => ({
+      query: ({ showArchived }, context) => ({
         where: {
           // eslint-disable-next-line unicorn/no-null
           archivedAt: showArchived ? undefined : null,
+          OR: [
+            // the user is project member:
+            { project: { projectMemberships: { some: { userId: context.session.user.id } } } },
+            // the user booked work hours on the task:
+            { workHours: { some: { userId: context.session.user.id } } },
+          ],
         },
         orderBy: { title: 'asc' },
       }),
@@ -90,6 +98,17 @@ export const Project = builder.prismaObject('Project', {
         })
 
         return !!lockedMonth
+      },
+    }),
+    isProjectMember: t.withAuth({ isLoggedIn: true }).boolean({
+      description: 'Is the user member of the project',
+      select: { id: true },
+      resolve: async (project, _arguments, context) => {
+        const projectMembership = await prisma.projectMembership.findUnique({
+          where: { userId_projectId: { projectId: project.id, userId: context.session.user.id } },
+        })
+
+        return !!projectMembership
       },
     }),
   }),

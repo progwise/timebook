@@ -163,9 +163,12 @@ export type Project = ModifyInterface & {
   id: Scalars['ID']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
+  /** Is the user member of the project */
+  isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
+  /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
   workHours: Array<WorkHour>
@@ -221,6 +224,7 @@ export type QueryProjectArgs = {
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
+  includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -712,7 +716,13 @@ export type WeekTableTaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
-  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+  project: {
+    __typename?: 'Project'
+    startDate?: string | null
+    endDate?: string | null
+    id: string
+    isProjectMember: boolean
+  }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?:
     | ({ __typename?: 'Tracking' } & {
@@ -1241,7 +1251,10 @@ export const WeekTableTaskRowFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -1441,7 +1454,10 @@ export const WeekTableProjectRowGroupFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -1608,7 +1624,10 @@ export const WeekTableProjectFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -3343,6 +3362,11 @@ export const WeekTableDocument = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'includeProjectsWhereUserBookedWorkHours' },
+                value: { kind: 'BooleanValue', value: true },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -3466,7 +3490,10 @@ export const WeekTableDocument = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
