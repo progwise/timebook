@@ -41,7 +41,7 @@ describe('The time page...', () => {
 
     const weekDisplay = screen.getByText(`Week ${weekNumber}/${yearNumber}`)
     const dateRangeDisplay = screen.getByText(
-      `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}`,
+      `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}*`,
     )
     expect(weekDisplay).toBeInTheDocument()
     expect(dateRangeDisplay).toBeInTheDocument()
