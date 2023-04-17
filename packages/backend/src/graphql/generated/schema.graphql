@@ -194,7 +194,6 @@ type Project implements ModifyInterface {
   """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {

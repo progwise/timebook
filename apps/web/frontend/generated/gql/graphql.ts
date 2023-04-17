@@ -171,7 +171,6 @@ export type Project = ModifyInterface & {
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
-  workHours: Array<WorkHour>
 }
 
 export type ProjectIsLockedArgs = {
