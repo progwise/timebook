@@ -1,15 +1,14 @@
-import { builder } from "../../builder"
+import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
-builder.mutationField('joinProjectByInviteKey', (t) =>
-  t.prismaField({
+builder.mutationField('projectMembershipJoin', (t) =>
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Project',
     description: 'Add a user to a project using the invite key.',
     args: {
       inviteKey: t.arg.string(),
     },
-    resolve: async (query, _source, { inviteKey }) => {
-      // Find the project using the invite key
+    resolve: async (query, _source, { inviteKey }, context) => {
       const project = await prisma.project.findUnique({
         where: { inviteKey },
       })
@@ -18,24 +17,18 @@ builder.mutationField('joinProjectByInviteKey', (t) =>
         throw new Error('Invalid invite key')
       }
 
-      //TODO: Get the current user's ID. 
-      const currentUserId = getCurrentUserId()
-
       // Add the user to the project
-      const projectMembership = await prisma.projectMembership.create({
-        data: {
-          userId: currentUserId,
+      const projectMembership = await prisma.projectMembership.upsert({
+        select: { project: query },
+        where: { userId_projectId: { userId: context.session.user.id, projectId: project.id } },
+        create: {
+          userId: context.session.user.id,
           projectId: project.id,
         },
-        select: { project: query },
+        update: {},
       })
 
       return projectMembership.project
     },
   }),
 )
-
-
-
-
-

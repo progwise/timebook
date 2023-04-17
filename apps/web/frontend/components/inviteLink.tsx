@@ -22,7 +22,7 @@ export const InviteLink = (props: InviteLinkProps) => {
     variables: { projectId: props.projectId },
   })
 
-  const inviteKey = `/projects/join/${data?.project?.inviteKey}`
+  const inviteKey = `${process.env.NEXTAUTH_URL}/projects/join/${data?.project?.inviteKey}`
 
   const copyInviteLink = async () => {
     await navigator.clipboard.writeText(inviteKey)

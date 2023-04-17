@@ -1,14 +1,16 @@
 import { useRouter } from 'next/router'
-import { useMutation } from 'urql'
 import { useEffect } from 'react'
+import { useMutation } from 'urql'
 
-const JoinProjectByInviteKeyMutation = `
-  mutation JoinProjectByInviteKey($inviteKey: String!) {
-    joinProjectByInviteKey(inviteKey: $inviteKey) {
+import { graphql } from '../../../frontend/generated/gql'
+
+const JoinProjectByInviteKeyMutation = graphql(`
+  mutation projectMembershipJoin($inviteKey: String!) {
+    projectMembershipJoin(inviteKey: $inviteKey) {
       id
     }
   }
-`
+`)
 
 const JoinProject = () => {
   const router = useRouter()
@@ -18,7 +20,7 @@ const JoinProject = () => {
 
   useEffect(() => {
     if (inviteKey) {
-      joinProject({ inviteKey }).then(() => {
+      joinProject({ inviteKey: inviteKey.toString() }).then(() => {
         router.push('/projects') // Redirect the user to the projects page after successfully joining the project.
       })
     }

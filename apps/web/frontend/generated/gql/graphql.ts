@@ -43,6 +43,8 @@ export type Mutation = {
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
   projectMembershipInviteByEmail: Project
+  /** Add a user to a project using the invite key. */
+  projectMembershipJoin: Project
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
@@ -99,6 +101,10 @@ export type MutationProjectMembershipDeleteArgs = {
 export type MutationProjectMembershipInviteByEmailArgs = {
   email: Scalars['String']
   projectId: Scalars['ID']
+}
+
+export type MutationProjectMembershipJoinArgs = {
+  inviteKey: Scalars['String']
 }
 
 export type MutationProjectUnlockArgs = {
@@ -780,6 +786,15 @@ export type ProjectCountsQuery = {
   activeCounts: number
   futureCounts: number
   pastCounts: number
+}
+
+export type ProjectMembershipJoinMutationVariables = Exact<{
+  inviteKey: Scalars['String']
+}>
+
+export type ProjectMembershipJoinMutation = {
+  __typename?: 'Mutation'
+  projectMembershipJoin: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectCreateMutationVariables = Exact<{
@@ -3314,6 +3329,43 @@ export const ProjectCountsDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectCountsQuery, ProjectCountsQueryVariables>
+export const ProjectMembershipJoinDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipJoin' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'inviteKey' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipJoin' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'inviteKey' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'inviteKey' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipJoinMutation, ProjectMembershipJoinMutationVariables>
 export const ProjectCreateDocument = {
   kind: 'Document',
   definitions: [
