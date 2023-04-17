@@ -37,16 +37,27 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
   const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
-  const { setError, register, handleSubmit, formState, reset } = useForm<TaskUpdateInput>({
+  const {
+    setError,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty, dirtyFields, isSubmitSuccessful },
+  } = useForm<Pick<TaskUpdateInput, 'title'>>({
     mode: 'onChange',
     defaultValues: {
       title: task.title,
-      hourlyRate: task.hourlyRate,
     },
-    resolver: zodResolver(taskInputValidations.pick({ title: true, hourlyRate: true })),
+    resolver: zodResolver(taskInputValidations.pick({ title: true })),
   })
 
-  const { errors, isDirty, dirtyFields, isSubmitSuccessful } = formState
+  const hourlyRateForm = useForm<Pick<TaskUpdateInput, 'hourlyRate'>>({
+    mode: 'onChange',
+    defaultValues: {
+      hourlyRate: task.hourlyRate,
+    },
+    resolver: zodResolver(taskInputValidations.pick({ hourlyRate: true })),
+  })
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
@@ -69,7 +80,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
       },
     })
 
-    if (result.error) setError('hourlyRate', { message: 'Network error' })
+    if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
   }
 
   useEffect(() => {
@@ -95,14 +106,14 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
         <InputField
           variant="primary"
           type="number"
-          {...register('hourlyRate', { required: true })}
-          onBlur={handleSubmit(handleHourlyRateSubmit)}
+          {...hourlyRateForm.register('hourlyRate', { required: true })}
+          onBlur={hourlyRateForm.handleSubmit(handleHourlyRateSubmit)}
           loading={fetchingHourlyRate}
-          errorMessage={errors.hourlyRate?.message}
+          errorMessage={hourlyRateForm.formState.errors.hourlyRate?.message}
           label="hourly rate"
           hideLabel
           disabled={!task.canModify}
-          isDirty={isDirty && dirtyFields.hourlyRate}
+          isDirty={isDirty && hourlyRateForm.formState.dirtyFields.hourlyRate}
         />
       </TableCell>
       <TableCell>
