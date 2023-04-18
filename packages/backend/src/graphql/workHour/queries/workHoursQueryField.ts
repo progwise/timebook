@@ -22,13 +22,6 @@ builder.queryField('workHours', (t) =>
       prisma.workHour.findMany({
         ...query,
         where: {
-          task: {
-            project: {
-              projectMemberships: {
-                some: { userId: context.session.user.id },
-              },
-            },
-          },
           userId: { in: userIds?.map((id) => id.toString()) ?? [context.session.user.id] },
           date: {
             gte: from,

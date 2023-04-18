@@ -25,7 +25,7 @@ export const projectHandlers = [
                 id: 'task1',
                 title: 'Task 1',
                 workHours: [],
-                project: { id: testProject1.id },
+                project: { id: testProject1.id, isProjectMember: true },
                 isLocked: false,
                 isLockedByUser: false,
                 isLockedByAdmin: false,
