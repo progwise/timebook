@@ -51,9 +51,9 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           <BsCalendarCheck className="h-4 w-4" />
           today
         </button>
-        <button className="flex items-center gap-1">
+        <div className="flex items-center gap-1">
           <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} selectLabel />
-        </button>
+        </div>
       </div>
     </div>
   )

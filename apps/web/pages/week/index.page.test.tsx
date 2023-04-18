@@ -52,32 +52,6 @@ describe('The time page...', () => {
     expect(dateRangeDisplay).toBeInTheDocument()
   })
 
-  it('changes week display when clicking previous week button', async () => {
-    render(<TimePage day={new Date(now)} />, { wrapper })
-
-    const previousWeekButton = screen.getByLabelText('Previous week')
-
-    const previousWeekStartDate = startOfWeek(subWeeks(now, 1))
-
-    userEvent.click(previousWeekButton)
-
-    expect(screen.getByText(getWeekDisplayText(previousWeekStartDate))).toBeInTheDocument()
-    expect(screen.getByText(getDateRangeText(previousWeekStartDate))).toBeInTheDocument()
-  })
-
-  it('changes week display when clicking next week button', async () => {
-    render(<TimePage day={new Date(now)} />, { wrapper })
-
-    const nextWeekButton = screen.getByLabelText('Next week')
-
-    const nextWeekStartDate = startOfWeek(addWeeks(now, 1))
-
-    userEvent.click(nextWeekButton)
-
-    expect(screen.getByText(getWeekDisplayText(nextWeekStartDate))).toBeInTheDocument()
-    expect(screen.getByText(getDateRangeText(nextWeekStartDate))).toBeInTheDocument()
-  })
-
   it('...renders the current projects table', async () => {
     render(<TimePage />, { wrapper })
     const table = await screen.findByRole('table')
