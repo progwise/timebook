@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import { format, getWeek, getYear, startOfWeek, endOfWeek } from 'date-fns'
+import userEvent from '@testing-library/user-event'
+import { format, getWeek, getYear, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns'
 import { Client, Provider } from 'urql'
 
 import { mockServer } from '../../frontend/mocks/mockServer'
@@ -11,6 +12,10 @@ const weekNumber = getWeek(now)
 const yearNumber = getYear(now)
 const weekStartDate = startOfWeek(now)
 const weekEndDate = endOfWeek(now)
+
+const getWeekDisplayText = (date: Date) => `Week ${getWeek(date)}/${getYear(date)}`
+const getDateRangeText = (startDate: Date) =>
+  `${format(startDate, 'dd.MM')} - ${format(endOfWeek(startDate), 'dd.MM.yyyy')}`
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -45,6 +50,32 @@ describe('The time page...', () => {
     )
     expect(weekDisplay).toBeInTheDocument()
     expect(dateRangeDisplay).toBeInTheDocument()
+  })
+
+  it('changes week display when clicking previous week button', async () => {
+    render(<TimePage day={new Date(now)} />, { wrapper })
+
+    const previousWeekButton = screen.getByLabelText('Previous week')
+
+    const previousWeekStartDate = startOfWeek(subWeeks(now, 1))
+
+    userEvent.click(previousWeekButton)
+
+    expect(screen.getByText(getWeekDisplayText(previousWeekStartDate))).toBeInTheDocument()
+    expect(screen.getByText(getDateRangeText(previousWeekStartDate))).toBeInTheDocument()
+  })
+
+  it('changes week display when clicking next week button', async () => {
+    render(<TimePage day={new Date(now)} />, { wrapper })
+
+    const nextWeekButton = screen.getByLabelText('Next week')
+
+    const nextWeekStartDate = startOfWeek(addWeeks(now, 1))
+
+    userEvent.click(nextWeekButton)
+
+    expect(screen.getByText(getWeekDisplayText(nextWeekStartDate))).toBeInTheDocument()
+    expect(screen.getByText(getDateRangeText(nextWeekStartDate))).toBeInTheDocument()
   })
 
   it('...renders the current projects table', async () => {
