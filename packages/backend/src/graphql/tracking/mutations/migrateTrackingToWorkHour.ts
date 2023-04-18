@@ -50,6 +50,11 @@ export const migrateTrackingToWorkHours = async (tracking: Tracking, workHourQue
     throw new Error('User is no longer a project member')
   }
 
+  const task = await prisma.task.findUniqueOrThrow({ select: { isLocked: true }, where: { id: tracking.taskId } })
+  if (task.isLocked) {
+    throw new Error('task is locked')
+  }
+
   const [, ...workHours] = await prisma.$transaction([
     prisma.tracking.delete({ where: { userId: tracking.userId } }),
     ...eachDayOfInterval(interval).map((startOfTheDay) => {

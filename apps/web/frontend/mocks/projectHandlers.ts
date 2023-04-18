@@ -28,6 +28,7 @@ export const projectHandlers = [
                 project: { id: testProject1.id },
                 isLocked: false,
                 isLockedByUser: false,
+                isLockedByAdmin: false,
               },
             ],
           },

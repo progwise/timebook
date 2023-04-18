@@ -25,6 +25,7 @@ const project = makeFragmentData(
             id: '1',
             canModify: true,
             title: 'Task 1',
+            isLockedByAdmin: false,
           },
           TaskRowFragment,
         ),

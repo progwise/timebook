@@ -10,6 +10,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
+import { LockSwitch } from './lockSwitch'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
@@ -17,6 +18,7 @@ export const TaskRowFragment = graphql(`
     title
     hourlyRate
     canModify
+    isLockedByAdmin
     ...DeleteTaskModal
   }
 `)
@@ -37,6 +39,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
   const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
+  const [{ fetching: fetchingIsLocked }, updateIsLocked] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
     register,
@@ -82,6 +85,10 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
   }
 
+  const handleLockChange = async (isLocked: boolean) => {
+    await updateIsLocked({ id: task.id, data: { isLocked } })
+  }
+
   return (
     <TableRow>
       <TableCell className="flex items-center">
@@ -106,6 +113,9 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           hideLabel
           disabled={!task.canModify}
         />
+      </TableCell>
+      <TableCell>
+        <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
       </TableCell>
       <TableCell>
         {task.canModify && (

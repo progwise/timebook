@@ -302,6 +302,8 @@ export type Task = ModifyInterface & {
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
+  /** Is the task locked by an admin */
+  isLockedByAdmin: Scalars['Boolean']
   /** Is the task locked by the user */
   isLockedByUser: Scalars['Boolean']
   project: Project
@@ -318,12 +320,14 @@ export type TaskWorkHoursArgs = {
 
 export type TaskInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
 }
@@ -555,6 +559,7 @@ export type TaskRowFragment = ({
   title: string
   hourlyRate?: number | null
   canModify: boolean
+  isLockedByAdmin: boolean
 } & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
   ' $fragmentName'?: 'TaskRowFragment'
 }
@@ -705,13 +710,14 @@ export type IsLockedQueryVariables = Exact<{
 export type IsLockedQuery = {
   __typename?: 'Query'
   report: { __typename?: 'Report'; isLocked: boolean }
-  task: { __typename?: 'Task'; isLockedByUser: boolean }
+  task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
 }
 
 export type WeekTableTaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
+  isLockedByAdmin: boolean
   project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?:
@@ -988,6 +994,7 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -1057,6 +1064,7 @@ export const TaskListProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -1252,6 +1260,7 @@ export const WeekTableTaskRowFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -1452,6 +1461,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -1619,6 +1629,7 @@ export const WeekTableProjectFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -2892,7 +2903,10 @@ export const IsLockedDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+              ],
             },
           },
         ],
@@ -2971,6 +2985,7 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -3477,6 +3492,7 @@ export const WeekTableDocument = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
