@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
@@ -41,7 +41,8 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     setError,
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty, dirtyFields, isSubmitSuccessful },
   } = useForm<Pick<TaskUpdateInput, 'title'>>({
     mode: 'onChange',
     defaultValues: {
@@ -82,6 +83,12 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
   }
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
+
   return (
     <TableRow>
       <TableCell className="flex items-center">
@@ -92,6 +99,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           loading={fetchingTitle}
           errorMessage={errors.title?.message}
           disabled={!task.canModify}
+          isDirty={isDirty && dirtyFields.title}
         />
       </TableCell>
       <TableCell>
@@ -105,6 +113,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           label="hourly rate"
           hideLabel
           disabled={!task.canModify}
+          isDirty={isDirty && hourlyRateForm.formState.dirtyFields.hourlyRate}
         />
       </TableCell>
       <TableCell>
