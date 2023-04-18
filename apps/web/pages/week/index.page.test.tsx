@@ -1,6 +1,5 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { format, getWeek, getYear, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns'
+import { format, getWeek, getYear, startOfWeek, endOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
 import { mockServer } from '../../frontend/mocks/mockServer'
@@ -12,10 +11,6 @@ const weekNumber = getWeek(now)
 const yearNumber = getYear(now)
 const weekStartDate = startOfWeek(now)
 const weekEndDate = endOfWeek(now)
-
-const getWeekDisplayText = (date: Date) => `Week ${getWeek(date)}/${getYear(date)}`
-const getDateRangeText = (startDate: Date) =>
-  `${format(startDate, 'dd.MM')} - ${format(endOfWeek(startDate), 'dd.MM.yyyy')}`
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
