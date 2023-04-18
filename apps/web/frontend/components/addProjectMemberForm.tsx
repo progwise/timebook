@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { useMutation } from 'urql'
@@ -32,16 +33,13 @@ const formSchema = z.object({
 })
 
 export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-    setError,
-  } = useForm<InviteFormState>({
+  const { register, handleSubmit, reset, formState, setError } = useForm<InviteFormState>({
     defaultValues: { email: '' },
     resolver: zodResolver(formSchema),
   })
+
+  const { isSubmitting, errors, isDirty, isSubmitSuccessful } = formState
+
   const [, addProjectMember] = useMutation(projectMembershipInviteByEmailMutationFieldDocument)
 
   const handleUserInviteSubmit = async (data: InviteFormState) => {
@@ -51,9 +49,14 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
       setError('email', { message: result.error.graphQLErrors.at(0)?.message ?? result.error.message })
       return
     }
-
     reset()
   }
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
 
   return (
     <form className="flex w-full items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
@@ -68,6 +71,7 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
         variant="primary"
         placeholder="Email address to invite someone"
         className=" dark:bg-slate-800 dark:text-white"
+        isDirty={isDirty}
       />
     </form>
   )
