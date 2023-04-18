@@ -165,9 +165,12 @@ export type Project = ModifyInterface & {
   id: Scalars['ID']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
+  /** Is the user member of the project */
+  isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
+  /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
   workHours: Array<WorkHour>
@@ -223,6 +226,7 @@ export type QueryProjectArgs = {
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
+  includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -667,7 +671,13 @@ export type WeekTableProjectFragment = {
     isLocked: boolean
     isLockedByUser: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+    }
     tracking?: {
       __typename?: 'Tracking'
       start: string
@@ -688,7 +698,13 @@ export type WeekTableProjectRowGroupFragment = {
     title: string
     isLocked: boolean
     isLockedByUser: boolean
-    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+    }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     tracking?: {
       __typename?: 'Tracking'
@@ -729,7 +745,13 @@ export type WeekTableTaskRowFragment = {
   title: string
   isLocked: boolean
   isLockedByUser: boolean
-  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+  project: {
+    __typename?: 'Project'
+    startDate?: string | null
+    endDate?: string | null
+    id: string
+    isProjectMember: boolean
+  }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?: {
     __typename?: 'Tracking'
@@ -823,7 +845,13 @@ export type WeekTableQuery = {
       isLocked: boolean
       isLockedByUser: boolean
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-      project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+      project: {
+        __typename?: 'Project'
+        startDate?: string | null
+        endDate?: string | null
+        id: string
+        isProjectMember: boolean
+      }
       tracking?: {
         __typename?: 'Tracking'
         start: string
