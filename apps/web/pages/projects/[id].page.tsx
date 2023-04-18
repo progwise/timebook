@@ -14,6 +14,7 @@ const ProjectQueryDocument = graphql(`
   query project($projectId: ID!) {
     project(projectId: $projectId) {
       id
+      inviteKey
       ...TaskListProject
       members {
         ...ProjectMemberListUser
@@ -79,7 +80,7 @@ const ProjectDetails = (): JSX.Element => {
         hasError={!!projectUpdateResult.error}
       />
       <TaskList className="mt-10" project={selectedProject} />
-      <InviteLink projectId={selectedProject.id} />
+      <InviteLink projectId={selectedProject.id} inviteKey={selectedProject.inviteKey} />
       <ProjectMemberList users={selectedProject.members} projectId={selectedProject.id} />
     </ProtectedPage>
   )

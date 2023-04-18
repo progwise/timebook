@@ -23,8 +23,6 @@ const documents = {
     types.DeleteTaskModalFragmentDoc,
   '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n':
     types.TaskDeleteDocument,
-  '\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n':
-    types.ProjectInviteKeyDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    ...DeleteProjectModal\n  }\n':
     types.ProjectFormFragmentDoc,
   '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n':
@@ -84,7 +82,7 @@ const documents = {
     types.IsLockedDocument,
   '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
-  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n':
+  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      inviteKey\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n':
     types.ProjectDocument,
   '\n  mutation projectUpdate($id: ID!, $data: ProjectInput!) {\n    projectUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.ProjectUpdateDocument,
@@ -144,12 +142,6 @@ export function graphql(
 export function graphql(
   source: '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n',
 ): typeof documents['\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n',
-): typeof documents['\n  query projectInviteKey($projectId: ID!) {\n    project(projectId: $projectId) {\n      inviteKey\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -340,8 +332,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n',
-): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n']
+  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      inviteKey\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n',
+): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      inviteKey\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
