@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
 
+import { InviteLink } from '../../frontend/components/inviteLink'
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProjectMemberList } from '../../frontend/components/projectMemberList'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
@@ -16,6 +17,7 @@ const ProjectQueryDocument = graphql(`
       ...TaskListProject
       ...ProjectForm
       ...ProjectMemberListProject
+      ...InviteLinkProjectFragment
     }
   }
 `)
@@ -76,6 +78,7 @@ const ProjectDetails = (): JSX.Element => {
         hasError={!!projectUpdateResult.error}
       />
       <TaskList className="mt-10" project={selectedProject} />
+      <InviteLink project={selectedProject} />
       <ProjectMemberList project={selectedProject} />
     </ProtectedPage>
   )
