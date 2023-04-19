@@ -10,14 +10,18 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const projectsQuery = gql`
-  query projects($from: Date!, $includePastMembers: Boolean, $includeProjectsWhereUserBookedWorkHours: Boolean) {
+  query projects(
+    $from: Date!
+    $includePastMembers: Boolean
+    $includeProjectsWhereUserBookedWorkHours: Boolean! = false
+  ) {
     projects(from: $from, includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours) {
       id
       title
       startDate
       endDate
       isProjectMember
-      members(includePastMembers: $includePastMembers) {
+      members(includePastMembers: $includePastMembers) @skip(if: $includeProjectsWhereUserBookedWorkHours) {
         id
         name
       }

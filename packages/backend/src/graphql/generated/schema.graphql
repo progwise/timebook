@@ -46,7 +46,7 @@ type Mutation {
   projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
-  Unassign user to Project
+  Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
@@ -194,7 +194,6 @@ type Project implements ModifyInterface {
   """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {

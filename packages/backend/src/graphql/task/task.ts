@@ -22,7 +22,8 @@ export const Task = builder.prismaObject('Task', {
       resolve: (task) => !!task.archivedAt,
     }),
     hasWorkHours: t.boolean({
-      select: { _count: { select: { workHours: true } } },
+      select: { id: true, _count: { select: { workHours: true } } },
+      authScopes: (task) => ({ isMemberByTask: task.id }),
       resolve: (task) => task._count.workHours > 0,
     }),
     project: t.relation('project'),

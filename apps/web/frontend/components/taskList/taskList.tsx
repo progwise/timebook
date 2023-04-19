@@ -57,13 +57,13 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting, errors },
-    control,
-  } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
+  const { register, handleSubmit, reset, formState, control } = useForm<TaskFormData>({
+    resolver: zodResolver(taskInputSchema),
+    defaultValues: { title: '', hourlyRate: undefined },
+  })
+
+  const { isSubmitting, errors, isDirty, dirtyFields } = formState
+
   const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -104,22 +104,24 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     variant="primary"
-                    placeholder="Enter Taskname"
-                    className=" dark:bg-slate-800 dark:text-white"
+                    placeholder="Enter task name"
+                    className="dark:bg-slate-800 dark:text-white"
                     {...register('title')}
                     errorMessage={errors.title?.message}
+                    isDirty={isDirty && dirtyFields.title}
                   />
                 </form>
               </TableCell>
               <TableCell>
                 <InputField
                   variant="primary"
-                  placeholder="Enter Hourly Rate"
-                  className=" dark:bg-slate-800 dark:text-white"
+                  placeholder="Enter hourly rate"
+                  className="dark:bg-slate-800 dark:text-white"
                   {...register('hourlyRate')}
                   errorMessage={errors.hourlyRate?.message}
                   type="number"
                   form="form-create-task"
+                  isDirty={isDirty && dirtyFields.hourlyRate}
                 />
               </TableCell>
               <TableCell>
@@ -132,7 +134,22 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 />
               </TableCell>
               <TableCell>
-                <Button variant="secondary" type="submit" disabled={isSubmitting} form="form-create-task">
+                <Controller
+                  control={control}
+                  name="isLocked"
+                  render={({ field: { onChange, value } }) => (
+                    <LockSwitch locked={value ?? false} onChange={onChange} />
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="secondary"
+                  className="h-8"
+                  type="submit"
+                  disabled={isSubmitting}
+                  form="form-create-task"
+                >
                   Add task
                 </Button>
               </TableCell>

@@ -48,7 +48,7 @@ describe('TaskList', () => {
       render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
-      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+      const titleInput = screen.getByPlaceholderText('Enter task name')
 
       await userEvent.type(titleInput, ' ')
       await userEvent.click(submitButton)
@@ -61,7 +61,7 @@ describe('TaskList', () => {
       render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
-      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+      const titleInput = screen.getByPlaceholderText('Enter task name')
 
       await userEvent.type(titleInput, 'New Task')
       await userEvent.click(submitButton)
