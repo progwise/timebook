@@ -52,7 +52,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           today
         </button>
         <div className="flex items-center gap-1">
-          <CalendarSelector hideLabel onSelectedDateChange={handleWeekSelect} selectLabel />
+          <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
         </div>
       </div>
     </div>
