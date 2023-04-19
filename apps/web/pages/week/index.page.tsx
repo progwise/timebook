@@ -10,7 +10,7 @@ import { graphql } from '../../frontend/generated/gql'
 
 const weekTableQueryDocument = graphql(`
   query weekTable($from: Date!, $to: Date) {
-    projects(from: $from, to: $to) {
+    projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {
       ...WeekTableProject
     }
   }

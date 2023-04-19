@@ -90,6 +90,16 @@ describe('workHourDeleteMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
   })
 
+  it('should throw error when task is locked by admin', async () => {
+    await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  })
+
   it('should delete when work hour belongs to the user', async () => {
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })

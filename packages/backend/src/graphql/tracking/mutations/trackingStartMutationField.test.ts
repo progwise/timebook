@@ -79,6 +79,25 @@ it('should throw error when project is locked', async () => {
   expect(response.data).toBeNull()
 })
 
+it('should throw error when task of ongoing tracking is locked', async () => {
+  await prisma.tracking.create({ data: { taskId: 'T1', userId: '1', start: new Date('2023-01-01') } })
+  await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T2' } })
+  expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  expect(response.data).toBeNull()
+})
+
+it('should throw error when task of new tracking is locked', async () => {
+  await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T1' } })
+  expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  expect(response.data).toBeNull()
+})
+
 it('should start tracking when tracking is running', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T1' } })

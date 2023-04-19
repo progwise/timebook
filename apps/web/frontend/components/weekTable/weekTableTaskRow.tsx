@@ -21,10 +21,12 @@ const WeekTableTaskRowFragment = graphql(`
     }
     project {
       id
+      isProjectMember
     }
     tracking {
       ...TrackingButtonsTracking
     }
+    isLockedByAdmin
     ...TrackingButtonsTask
     ...TaskLockButton
   }
@@ -44,7 +46,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
   return (
     <TableRow>
       <TableCell className="flex gap-1">
-        <TrackingButtons tracking={task.tracking} taskToTrack={task} />
+        {!task.isLockedByAdmin && <TrackingButtons tracking={task.tracking} taskToTrack={task} />}
       </TableCell>
       <TableCell>{task.title}</TableCell>
       {eachDayOfInterval(interval).map((day) => {
@@ -57,6 +59,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
           <WeekTableTaskDayCell
             day={day}
             disabled={
+              !task.project.isProjectMember ||
               (task.project.startDate ? isBefore(day, parseISO(task.project.startDate)) : false) ||
               (task.project.endDate ? isAfter(day, parseISO(task.project.endDate)) : false)
             }
@@ -70,9 +73,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
       <TableCell className="text-center">
         <FormattedDuration minutes={taskDurations} title="" />
       </TableCell>
-      <TableCell>
-        <TaskLockButton task={task} />
-      </TableCell>
+      <TableCell>{task.project.isProjectMember && !task.isLockedByAdmin && <TaskLockButton task={task} />}</TableCell>
     </TableRow>
   )
 }
