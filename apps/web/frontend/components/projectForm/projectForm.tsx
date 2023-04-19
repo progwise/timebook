@@ -86,6 +86,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     resolver: zodResolver(projectInputSchema),
   })
 
+  const { isSubmitting, errors, isDirty } = formState
+
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
       ...data,
@@ -111,12 +113,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       <InputField
         label="Name"
         variant="primary"
-        disabled={formState.isSubmitting}
+        disabled={isSubmitting}
         readOnly={isProjectFormReadOnly}
         {...register('title')}
         placeholder="Enter project name"
         size={30}
-        errorMessage={formState.errors.title?.message}
+        errorMessage={errors.title?.message}
+        isDirty={isDirty}
       />
 
       <div className="flex flex-col">
@@ -130,7 +133,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           render={({ field: { onChange, onBlur, value } }) => (
             <div className="flex items-center ">
               <InputMask
-                disabled={formState.isSubmitting}
+                disabled={isSubmitting}
                 mask="9999-99-99"
                 onBlur={onBlur}
                 onChange={onChange}
@@ -142,15 +145,16 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting || isProjectFormReadOnly}
+                disabled={isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
+                date={getDate(value)}
                 hideLabel={true}
-                onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
               />
             </div>
           )}
         />
-        <ErrorMessage name="start" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
+        <ErrorMessage name="start" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mb-6 flex flex-col">
         <label htmlFor="end" className="text-sm font-semibold">
@@ -164,7 +168,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             <div className="flex items-center">
               <InputMask
                 mask="9999-99-99"
-                disabled={formState.isSubmitting}
+                disabled={isSubmitting}
                 onBlur={onBlur}
                 readOnly={isProjectFormReadOnly}
                 onChange={onChange}
@@ -175,16 +179,17 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
               />
               <CalendarSelector
-                disabled={formState.isSubmitting || isProjectFormReadOnly}
+                disabled={isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
+                date={getDate(value)}
                 hideLabel={true}
-                onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
               />
             </div>
           )}
         />
 
-        <ErrorMessage name="end" errors={formState.errors} as={<span role="alert" className="whitespace-nowrap" />} />
+        <ErrorMessage name="end" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mt-8 flex w-full justify-center gap-2">
         {project?.canModify && (
@@ -193,16 +198,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             <BiTrash />
           </Button>
         )}
-        <Button disabled={formState.isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
+        <Button disabled={isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
         {!isProjectFormReadOnly && (
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={formState.isSubmitting}
-            tooltip={isNewProject ? 'Create' : 'Save'}
-          >
+          <Button type="submit" variant="primary" disabled={isSubmitting} tooltip={isNewProject ? 'Create' : 'Save'}>
             {isNewProject ? 'Create' : 'Save'}
           </Button>
         )}

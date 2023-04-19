@@ -23,6 +23,7 @@ const IsLockedQueryDocument = graphql(`
     }
     task(taskId: $taskId) {
       isLockedByUser
+      isLockedByAdmin
     }
   }
 `)
@@ -50,7 +51,8 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
   })
   const isLockedByReport = data?.report.isLocked ?? false
   const isLockedByUser = data?.task.isLockedByUser ?? false
-  const isLocked = isLockedByReport || isLockedByUser
+  const isLockedByAdmin = data?.task.isLockedByAdmin ?? false
+  const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
     <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>

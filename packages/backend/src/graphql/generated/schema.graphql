@@ -46,7 +46,7 @@ type Mutation {
   projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
-  Unassign user to Project
+  Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
@@ -174,6 +174,11 @@ type Project implements ModifyInterface {
   ): Boolean!
 
   """
+  Is the user member of the project
+  """
+  isProjectMember: Boolean!
+
+  """
   List of users that are member of the project
   """
   members(
@@ -183,9 +188,12 @@ type Project implements ModifyInterface {
     includePastMembers: Boolean! = false
   ): [User!]!
   startDate: Date
+
+  """
+  List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned.
+  """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {
@@ -217,7 +225,16 @@ type Query {
   """
   Returns all project of the signed in user that are active
   """
-  projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
+  projects(
+    filter: ProjectFilter! = ACTIVE
+    from: Date!
+
+    """
+    If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.
+    """
+    includeProjectsWhereUserBookedWorkHours: Boolean! = false
+    to: Date
+  ): [Project!]!
   projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 
   """
@@ -350,6 +367,11 @@ type Task implements ModifyInterface {
   isLocked: Boolean!
 
   """
+  Is the task locked by an admin
+  """
+  isLockedByAdmin: Boolean!
+
+  """
   Is the task locked by the user
   """
   isLockedByUser: Boolean!
@@ -365,12 +387,14 @@ type Task implements ModifyInterface {
 
 input TaskInput {
   hourlyRate: Float
+  isLocked: Boolean = false
   projectId: ID!
   title: String!
 }
 
 input TaskUpdateInput {
   hourlyRate: Float
+  isLocked: Boolean
   projectId: ID
   title: String
 }

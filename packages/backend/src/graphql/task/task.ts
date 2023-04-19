@@ -22,7 +22,8 @@ export const Task = builder.prismaObject('Task', {
       resolve: (task) => !!task.archivedAt,
     }),
     hasWorkHours: t.boolean({
-      select: { _count: { select: { workHours: true } } },
+      select: { id: true, _count: { select: { workHours: true } } },
+      authScopes: (task) => ({ isMemberByTask: task.id }),
       resolve: (task) => task._count.workHours > 0,
     }),
     project: t.relation('project'),
@@ -69,9 +70,14 @@ export const Task = builder.prismaObject('Task', {
         return !!lockedTask
       },
     }),
+    isLockedByAdmin: t.exposeBoolean('isLocked', { description: 'Is the task locked by an admin' }),
     isLocked: t.withAuth({ isLoggedIn: true }).boolean({
-      select: { projectId: true, id: true },
+      select: { projectId: true, id: true, isLocked: true },
       resolve: async (task, _arguments, context) => {
+        if (task.isLocked) {
+          return true
+        }
+
         const now = new Date()
         const year = getYear(now)
         const month = getMonth(now)

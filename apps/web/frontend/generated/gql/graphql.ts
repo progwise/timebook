@@ -39,7 +39,7 @@ export type Mutation = {
   projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
-  /** Unassign user to Project */
+  /** Unassign user from a project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
   projectMembershipInviteByEmail: Project
@@ -163,12 +163,14 @@ export type Project = ModifyInterface & {
   id: Scalars['ID']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
+  /** Is the user member of the project */
+  isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
   startDate?: Maybe<Scalars['Date']>
+  /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
-  workHours: Array<WorkHour>
 }
 
 export type ProjectIsLockedArgs = {
@@ -221,6 +223,7 @@ export type QueryProjectArgs = {
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
+  includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -302,6 +305,8 @@ export type Task = ModifyInterface & {
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
+  /** Is the task locked by an admin */
+  isLockedByAdmin: Scalars['Boolean']
   /** Is the task locked by the user */
   isLockedByUser: Scalars['Boolean']
   project: Project
@@ -318,12 +323,14 @@ export type TaskWorkHoursArgs = {
 
 export type TaskInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
 }
@@ -424,13 +431,36 @@ export type ProjectFormFragment = ({
   ' $fragmentName'?: 'ProjectFormFragment'
 }
 
-export type ProjectMemberListUserFragment = {
-  __typename?: 'User'
+export type ProjectMemberListProjectFragment = ({
+  __typename?: 'Project'
   id: string
-  image?: string | null
-  name?: string | null
-  role: Role
-} & { ' $fragmentName'?: 'ProjectMemberListUserFragment' }
+  canModify: boolean
+  members: Array<
+    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
+      ' $fragmentRefs'?: { RemoveUserFromProjectButtonUserFragment: RemoveUserFromProjectButtonUserFragment }
+    }
+  >
+} & {
+  ' $fragmentRefs'?: { RemoveUserFromProjectButtonProjectFragment: RemoveUserFromProjectButtonProjectFragment }
+}) & { ' $fragmentName'?: 'ProjectMemberListProjectFragment' }
+
+export type RemoveUserFromProjectButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null } & {
+  ' $fragmentName'?: 'RemoveUserFromProjectButtonUserFragment'
+}
+
+export type RemoveUserFromProjectButtonProjectFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'RemoveUserFromProjectButtonProjectFragment'
+}
+
+export type ProjectMembershipDeleteMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipDeleteMutation = {
+  __typename?: 'Mutation'
+  projectMembershipDelete: { __typename?: 'Project'; id: string }
+}
 
 export type ProjectTableItemFragment = {
   __typename?: 'Project'
@@ -555,6 +585,7 @@ export type TaskRowFragment = ({
   title: string
   hourlyRate?: number | null
   canModify: boolean
+  isLockedByAdmin: boolean
 } & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
   ' $fragmentName'?: 'TaskRowFragment'
 }
@@ -705,14 +736,21 @@ export type IsLockedQueryVariables = Exact<{
 export type IsLockedQuery = {
   __typename?: 'Query'
   report: { __typename?: 'Report'; isLocked: boolean }
-  task: { __typename?: 'Task'; isLockedByUser: boolean }
+  task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
 }
 
 export type WeekTableTaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
-  project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
+  isLockedByAdmin: boolean
+  project: {
+    __typename?: 'Project'
+    startDate?: string | null
+    endDate?: string | null
+    id: string
+    isProjectMember: boolean
+  }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?:
     | ({ __typename?: 'Tracking' } & {
@@ -732,14 +770,12 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = {
   __typename?: 'Query'
-  project: {
-    __typename?: 'Project'
-    id: string
-    members: Array<
-      { __typename?: 'User' } & { ' $fragmentRefs'?: { ProjectMemberListUserFragment: ProjectMemberListUserFragment } }
-    >
-  } & {
-    ' $fragmentRefs'?: { TaskListProjectFragment: TaskListProjectFragment; ProjectFormFragment: ProjectFormFragment }
+  project: { __typename?: 'Project'; id: string } & {
+    ' $fragmentRefs'?: {
+      TaskListProjectFragment: TaskListProjectFragment
+      ProjectFormFragment: ProjectFormFragment
+      ProjectMemberListProjectFragment: ProjectMemberListProjectFragment
+    }
   }
 }
 
@@ -842,35 +878,106 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
-export const ProjectMemberListUserFragmentDoc = {
+export const RemoveUserFromProjectButtonProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectMemberListUser' },
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveUserFromProjectButtonProjectFragment, unknown>
+export const RemoveUserFromProjectButtonUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'role' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-            ],
-          },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<ProjectMemberListUserFragment, unknown>
+} as unknown as DocumentNode<RemoveUserFromProjectButtonUserFragment, unknown>
+export const ProjectMemberListProjectFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectMemberListProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'role' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'projectId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                    },
+                  ],
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMemberListProjectFragment, unknown>
 export const ProjectTableItemFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -988,6 +1095,7 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -1057,6 +1165,7 @@ export const TaskListProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -1241,7 +1350,10 @@ export const WeekTableTaskRowFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -1252,6 +1364,7 @@ export const WeekTableTaskRowFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -1441,7 +1554,10 @@ export const WeekTableProjectRowGroupFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -1452,6 +1568,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -1608,7 +1725,10 @@ export const WeekTableProjectFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -1619,6 +1739,7 @@ export const WeekTableProjectFragmentDoc = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
@@ -1838,6 +1959,53 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
+export const ProjectMembershipDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>
 export const ProjectLockDocument = {
   kind: 'Document',
   definitions: [
@@ -2892,7 +3060,10 @@ export const IsLockedDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+              ],
             },
           },
         ],
@@ -2932,15 +3103,8 @@ export const ProjectDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskListProject' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectMemberListUser' } }],
-                  },
-                },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectForm' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectMemberListProject' } },
               ],
             },
           },
@@ -2971,6 +3135,7 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -2984,6 +3149,30 @@ export const ProjectDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
         ],
       },
     },
@@ -3012,30 +3201,6 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectMemberListUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'role' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProjectForm' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -3046,6 +3211,43 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectMemberListProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'role' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'projectId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                    },
+                  ],
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3343,6 +3545,11 @@ export const WeekTableDocument = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'includeProjectsWhereUserBookedWorkHours' },
+                value: { kind: 'BooleanValue', value: true },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -3466,7 +3673,10 @@ export const WeekTableDocument = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+              ],
             },
           },
           {
@@ -3477,6 +3687,7 @@ export const WeekTableDocument = {
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
             },
           },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
