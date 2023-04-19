@@ -24,7 +24,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableFootRow>
+    <TableFootRow className="text-lg">
       <TableCell />
       <TableCell />
       {eachDayOfInterval(interval).map((day) => {
@@ -39,7 +39,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
           </TableCell>
         )
       })}
-      <TableCell className="text-center">
+      <TableCell className="text-center font-bold">
         <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
       </TableCell>
     </TableFootRow>

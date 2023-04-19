@@ -9,7 +9,7 @@ interface WeekTableDateHeaderRowProps {
 }
 
 export const WeekTableDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps) => (
-  <TableHeadRow>
+  <TableHeadRow className="text-lg">
     <TableHeadCell />
     <TableHeadCell />
     {eachDayOfInterval(interval).map((day) => (

@@ -646,8 +646,8 @@ export type WeekTableProjectRowGroupFragment = {
     id: string
     title: string
     isLocked: boolean
-    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    project: { __typename?: 'Project'; startDate?: string | null; endDate?: string | null; id: string }
     tracking?: {
       __typename?: 'Tracking'
       start: string
