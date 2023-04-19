@@ -147,8 +147,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
+                date={getDate(value)}
                 hideLabel={true}
-                onSelectedDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
               />
             </div>
           )}
@@ -180,8 +181,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
                 className="shrink-0"
+                date={getDate(value)}
                 hideLabel={true}
-                onSelectedDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
               />
             </div>
           )}

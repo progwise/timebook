@@ -1,84 +1,90 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
+import { format, startOfDay } from 'date-fns'
+import React, { useState } from 'react'
 
 import { CalendarSelector } from './calendarSelector'
 
-describe('the custom calendar should ...', () => {
-  beforeEach(() => {
+it('should display the given date', () => {
+  render(<CalendarSelector date={new Date('2021-01-01')} onDateChange={jest.fn()} />)
+
+  const selectButton = screen.getByRole('button', { name: /select date/i })
+  expect(selectButton).toHaveTextContent('1/1/2021')
+})
+
+it('should update the date when the props updates', async () => {
+  const CalenderSelectorHelper = () => {
+    const [date, setDate] = useState(new Date('2021-01-01'))
+    return (
+      <>
+        <CalendarSelector date={date} onDateChange={jest.fn()} />
+        <button onClick={() => setDate(new Date('2021-12-24'))}>update date</button>
+      </>
+    )
+  }
+
+  render(<CalenderSelectorHelper />)
+
+  const selectButton = screen.getByRole('button', { name: /select date/i })
+  const updateButton = screen.getByRole('button', { name: /update date/i })
+  expect(selectButton).toHaveTextContent('1/1/2021')
+
+  await userEvent.click(updateButton)
+  await userEvent.click(selectButton)
+  expect(selectButton).toHaveTextContent('12/24/2021')
+
+  const heading = screen.getByRole('heading')
+  expect(heading).toHaveTextContent('Dec 2021')
+})
+
+describe('when opening the popup', () => {
+  const onDateChange = jest.fn()
+
+  beforeEach(async () => {
     // eslint-disable-next-line testing-library/no-render-in-setup
-    render(<CalendarSelector />)
+    render(<CalendarSelector date={new Date('2021-01-01')} onDateChange={onDateChange} />)
+    const button = screen.getByRole('button')
+    await userEvent.click(button)
   })
 
-  it('... a heading showing the current date', () => {
-    const todayAsString = new Date().toLocaleDateString()
-    expect(screen.getByText(todayAsString)).toBeInTheDocument()
+  it('should render the given month in the heading', async () => {
+    const heading = screen.getByRole('heading')
+    expect(heading).toHaveTextContent('Jan 2021')
   })
 
-  describe('...if click on the field', () => {
-    beforeEach(async () => {
-      await userEvent.click(screen.getByTitle('Calendar icon'))
-    })
+  it('should marks the given date as selected', async () => {
+    const selectedDayElement = screen.getByTitle(/^selected day/i)
+    expect(selectedDayElement).toHaveTextContent('1')
+  })
 
-    it('...it renders the current month', () => {
-      const currentMonth = new Date().getMonth()
-      const currentYear = new Date().getFullYear()
-      const expectedMonthHeader = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][
-        currentMonth
-      ]
+  it('should be possible to selected a different date', async () => {
+    const day14 = screen.getByRole('button', { name: '14' })
+    await userEvent.click(day14)
 
-      const header = screen.getByRole('heading', { name: `${expectedMonthHeader} ${currentYear}` })
-      expect(header).toBeInTheDocument()
-    })
+    const expectedDay = startOfDay(new Date('2021-01-14'))
+    expect(onDateChange).toHaveBeenCalledWith(expectedDay)
+  })
 
-    it('... expand button shows text from Mon to Sun', () => {
-      expect(screen.getByText('Mon')).toBeInTheDocument()
-      expect(screen.getByText('Tue')).toBeInTheDocument()
-      expect(screen.getByText('Wed')).toBeInTheDocument()
-      expect(screen.getByText('Thu')).toBeInTheDocument()
-      expect(screen.getByText('Fri')).toBeInTheDocument()
-      expect(screen.getByText('Sat')).toBeInTheDocument()
-      expect(screen.getByText('Sun')).toBeInTheDocument()
-    })
-    it('... today is selected', () => {
-      const today = new Date().getDate()
-      const selectedDayElement = screen.getByTitle(/^Selected Day/)
-      expect(selectedDayElement).toHaveTextContent(today.toString())
-    })
+  it('should display previous/next month when clicking on prev/next icons', async () => {
+    const previousMonthIcon = screen.getByRole('button', { name: /go to previous month/i })
+    const nextMonthIcon = screen.getByRole('button', { name: /go to next month/i })
+    const heading = screen.getByRole('heading')
+    expect(heading).toHaveTextContent('Jan 2021')
 
-    describe('...and select the 15th of the current month', () => {
-      beforeEach(async () => {
-        await userEvent.click(screen.getByText(/^15$/))
-        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
-      })
+    await userEvent.click(previousMonthIcon)
+    expect(heading).toHaveTextContent('Dec 2020')
 
-      it('...the 15th is selected', () => {
-        const selectedDayElement = screen.getByTitle(/^selected day/i)
-        expect(selectedDayElement).toHaveTextContent(/15/)
-        const valueElement = screen.getByTitle(/display value/i)
-        expect(valueElement).toHaveTextContent(/15/)
-      })
+    await userEvent.click(nextMonthIcon)
+    expect(heading).toHaveTextContent('Jan 2021')
+  })
 
-      it('...and select the 14th of the current month', async () => {
-        await userEvent.click(screen.getByText(/^14$/))
-        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
-        const selectedDayElement = screen.getByTitle(/^selected day/i)
-        expect(selectedDayElement).toHaveTextContent(/14/)
-        const valueElement = screen.getByTitle(/display value/i)
-        expect(valueElement).toHaveTextContent(/14/)
-      })
+  it('should display the current month when clicking on the home icon', async () => {
+    const heading = screen.getByRole('heading')
+    const homeIcon = screen.getByRole('button', { name: /go to today/i })
+    expect(heading).toHaveTextContent('Jan 2021')
 
-      it('...and click the goto today button', async () => {
-        await userEvent.click(screen.getByText(/^16$/))
-        await userEvent.click(screen.getByRole('button', { name: /select date/i }))
-        let selectedDayElement = screen.getByTitle(/^selected day/i)
-        expect(selectedDayElement).toHaveTextContent(/16/)
-        await userEvent.click(screen.getByTitle(/Goto today/))
-        const today = new Date()
-        const todayOfMonth = today.getDate()
-        selectedDayElement = screen.getByTitle(/^selected day/i)
-        expect(selectedDayElement).toHaveTextContent(todayOfMonth.toString())
-      })
-    })
+    await userEvent.click(homeIcon)
+    const expectedMonthTitle = format(new Date(), 'MMM yyyy')
+    expect(heading).toHaveTextContent(expectedMonthTitle)
   })
 })
