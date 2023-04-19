@@ -428,6 +428,10 @@ export type TaskDeleteMutation = {
   taskArchive?: { __typename?: 'Task'; id: string }
 }
 
+export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string } & {
+  ' $fragmentName'?: 'InviteLinkProjectFragmentFragment'
+}
+
 export type ProjectFormFragment = ({
   __typename?: 'Project'
   title: string
@@ -777,11 +781,12 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = {
   __typename?: 'Query'
-  project: { __typename?: 'Project'; id: string; inviteKey: string } & {
+  project: { __typename?: 'Project'; id: string } & {
     ' $fragmentRefs'?: {
       TaskListProjectFragment: TaskListProjectFragment
       ProjectFormFragment: ProjectFormFragment
       ProjectMemberListProjectFragment: ProjectMemberListProjectFragment
+      InviteLinkProjectFragmentFragment: InviteLinkProjectFragmentFragment
     }
   }
 }
@@ -845,6 +850,23 @@ export type WeekTableQuery = {
   >
 }
 
+export const InviteLinkProjectFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InviteLinkProjectFragmentFragment, unknown>
 export const DeleteProjectModalFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -3118,10 +3140,10 @@ export const ProjectDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskListProject' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectForm' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectMemberListProject' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InviteLinkProjectFragment' } },
               ],
             },
           },
@@ -3265,6 +3287,18 @@ export const ProjectDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
         ],
       },
     },

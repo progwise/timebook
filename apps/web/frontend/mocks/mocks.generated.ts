@@ -426,6 +426,8 @@ export type TaskDeleteMutation = {
   taskArchive?: { __typename?: 'Task'; id: string }
 }
 
+export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
+
 export type ProjectFormFragment = {
   __typename?: 'Project'
   title: string
@@ -798,11 +800,11 @@ export type ProjectQuery = {
   project: {
     __typename?: 'Project'
     id: string
-    inviteKey: string
     canModify: boolean
     title: string
     startDate?: string | null
     endDate?: string | null
+    inviteKey: string
     tasks: Array<{
       __typename?: 'Task'
       id: string

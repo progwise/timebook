@@ -1,12 +1,21 @@
 import { Button, InputField } from '@progwise/timebook-ui'
 
+import { FragmentType, graphql, useFragment } from '../generated/gql'
+
 interface InviteLinkProps {
-  projectId: string
-  inviteKey: string
+  project: FragmentType<typeof InviteLinkProjectFragment>
 }
 
+const InviteLinkProjectFragment = graphql(`
+  fragment InviteLinkProjectFragment on Project {
+    id
+    inviteKey
+  }
+`)
+
 export const InviteLink = (props: InviteLinkProps) => {
-  const inviteLink = `${process.env.NEXTAUTH_URL}/projects/join/${props.inviteKey}`
+  const project = useFragment(InviteLinkProjectFragment, props.project)
+  const inviteLink = `${process.env.NEXTAUTH_URL}/projects/join/${project.inviteKey}`
 
   const copyInviteLink = async () => {
     await navigator.clipboard.writeText(inviteLink)
