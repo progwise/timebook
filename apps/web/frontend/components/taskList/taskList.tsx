@@ -134,15 +134,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 />
               </TableCell>
               <TableCell>
-                <Controller
-                  control={control}
-                  name="isLocked"
-                  render={({ field: { onChange, value } }) => (
-                    <LockSwitch locked={value ?? false} onChange={onChange} />
-                  )}
-                />
-              </TableCell>
-              <TableCell>
                 <Button
                   variant="secondary"
                   className="h-8"
