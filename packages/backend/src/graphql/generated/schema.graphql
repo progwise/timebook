@@ -54,6 +54,11 @@ type Mutation {
   Assign user to a project by e-mail.
   """
   projectMembershipInviteByEmail(email: String!, projectId: ID!): Project!
+
+  """
+  Add a user to a project using the invite key.
+  """
+  projectMembershipJoin(inviteKey: String!): Project!
   projectUnlock(date: MonthInput!, projectId: ID!): Project!
 
   """
@@ -162,6 +167,7 @@ type Project implements ModifyInterface {
   identifies the project
   """
   id: ID!
+  inviteKey: String!
 
   """
   Is the project locked for the given month
