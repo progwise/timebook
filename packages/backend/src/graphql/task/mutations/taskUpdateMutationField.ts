@@ -24,11 +24,16 @@ builder.mutationField('taskUpdate', (t) =>
 
       return { isAdminByProject: oldProjectId }
     },
-    resolve: (query, _source, { id, data: { title, projectId, hourlyRate } }) =>
+    resolve: (query, _source, { id, data: { title, projectId, hourlyRate, isLocked } }) =>
       prisma.task.update({
         ...query,
         where: { id: id.toString() },
-        data: { title: title ?? undefined, projectId: projectId?.toString(), hourlyRate },
+        data: {
+          title: title ?? undefined,
+          projectId: projectId?.toString(),
+          hourlyRate,
+          isLocked: isLocked ?? undefined,
+        },
       }),
   }),
 )

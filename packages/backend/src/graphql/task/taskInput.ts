@@ -10,5 +10,6 @@ export const TaskInput = builder.inputType('TaskInput', {
     hourlyRate: t.float({
       required: false,
     }),
+    isLocked: t.boolean({ required: false, defaultValue: false }),
   }),
 })

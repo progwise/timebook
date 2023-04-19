@@ -37,6 +37,11 @@ export const trackingStartMutationField = builder.mutationField('trackingStart',
         throw new Error('Project is locked for this month')
       }
 
+      const task = await prisma.task.findUniqueOrThrow({ where: { id: taskId }, select: { isLocked: true } })
+      if (task.isLocked) {
+        throw new Error('task is locked')
+      }
+
       if (currentTracking) {
         await migrateTrackingToWorkHours(currentTracking)
       }

@@ -17,6 +17,7 @@ const testTask = makeFragmentData(
     id: 'task1',
     title: 'Task 1',
     canModify: true,
+    isLockedByAdmin: false,
   },
   TaskRowFragment,
 )

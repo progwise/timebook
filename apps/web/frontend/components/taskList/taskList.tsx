@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -19,6 +19,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskInput } from '../../generated/gql/graphql'
+import { LockSwitch } from './lockSwitch'
 import { TaskRow } from './taskRow'
 
 export const TaskListProjectFragment = graphql(`
@@ -40,9 +41,13 @@ const TaskCreateMutationDocument = graphql(`
   }
 `)
 
-export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
+export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title' | 'isLocked'>
 
-export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true, hourlyRate: true })
+export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({
+  title: true,
+  hourlyRate: true,
+  isLocked: true,
+})
 
 export interface TaskListProps {
   project: FragmentType<typeof TaskListProjectFragment>
@@ -52,7 +57,7 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const { register, handleSubmit, reset, formState } = useForm<TaskFormData>({
+  const { register, handleSubmit, reset, formState, control } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
     defaultValues: { title: '', hourlyRate: undefined },
   })
@@ -83,6 +88,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
             <TableHeadCell>Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell>Locked</TableHeadCell>
             <TableHeadCell />
           </TableHeadRow>
         </TableHead>
@@ -116,6 +122,15 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   type="number"
                   form="form-create-task"
                   isDirty={isDirty && dirtyFields.hourlyRate}
+                />
+              </TableCell>
+              <TableCell>
+                <Controller
+                  control={control}
+                  name="isLocked"
+                  render={({ field: { onChange, value } }) => (
+                    <LockSwitch locked={value ?? false} onChange={onChange} />
+                  )}
                 />
               </TableCell>
               <TableCell>

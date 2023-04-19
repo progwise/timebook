@@ -57,6 +57,7 @@ model Task {
   title      String   @db.VarChar(255)
   hourlyRate Decimal? @db.Money
   projectId  String
+  isLocked   Boolean  @default(false)
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
