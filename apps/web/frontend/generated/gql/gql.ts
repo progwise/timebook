@@ -25,8 +25,14 @@ const documents = {
     types.TaskDeleteDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    ...DeleteProjectModal\n  }\n':
     types.ProjectFormFragmentDoc,
-  '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n':
-    types.ProjectMemberListUserFragmentDoc,
+  '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
+    types.ProjectMemberListProjectFragmentDoc,
+  '\n  fragment RemoveUserFromProjectButtonUser on User {\n    id\n    name\n  }\n':
+    types.RemoveUserFromProjectButtonUserFragmentDoc,
+  '\n  fragment RemoveUserFromProjectButtonProject on Project {\n    id\n    title\n  }\n':
+    types.RemoveUserFromProjectButtonProjectFragmentDoc,
+  '\n  mutation projectMembershipDelete($projectId: ID!, $userId: ID!) {\n    projectMembershipDelete(projectId: $projectId, userId: $userId) {\n      id\n    }\n  }\n':
+    types.ProjectMembershipDeleteDocument,
   '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n':
     types.ProjectTableItemFragmentDoc,
   '\n  mutation projectLock($date: MonthInput!, $projectId: ID!) {\n    projectLock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
@@ -82,7 +88,7 @@ const documents = {
     types.IsLockedDocument,
   '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n      isProjectMember\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
-  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n':
+  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
     types.ProjectDocument,
   '\n  mutation projectUpdate($id: ID!, $data: ProjectInput!) {\n    projectUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.ProjectUpdateDocument,
@@ -150,8 +156,26 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n',
-): typeof documents['\n  fragment ProjectMemberListUser on User {\n    id\n    image\n    name\n    role(projectId: $projectId)\n  }\n']
+  source: '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n',
+): typeof documents['\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment RemoveUserFromProjectButtonUser on User {\n    id\n    name\n  }\n',
+): typeof documents['\n  fragment RemoveUserFromProjectButtonUser on User {\n    id\n    name\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment RemoveUserFromProjectButtonProject on Project {\n    id\n    title\n  }\n',
+): typeof documents['\n  fragment RemoveUserFromProjectButtonProject on Project {\n    id\n    title\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectMembershipDelete($projectId: ID!, $userId: ID!) {\n    projectMembershipDelete(projectId: $projectId, userId: $userId) {\n      id\n    }\n  }\n',
+): typeof documents['\n  mutation projectMembershipDelete($projectId: ID!, $userId: ID!) {\n    projectMembershipDelete(projectId: $projectId, userId: $userId) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -330,8 +354,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n',
-): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      members {\n        ...ProjectMemberListUser\n      }\n      ...ProjectForm\n    }\n  }\n']
+  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n',
+): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
