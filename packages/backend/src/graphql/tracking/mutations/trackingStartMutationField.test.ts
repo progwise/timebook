@@ -79,6 +79,38 @@ it('should throw error when project is locked', async () => {
   expect(response.data).toBeNull()
 })
 
+it('should throw error when ongoing tracking is from an archived project', async () => {
+  await prisma.project.create({
+    data: {
+      id: 'P2',
+      title: 'Project 2',
+      archivedAt: new Date(),
+      tasks: {
+        create: {
+          id: 'T3',
+          title: 'Task 3',
+          trackings: { create: { start: new Date(), userId: '1' } },
+        },
+      },
+      projectMemberships: { create: { userId: '1' } },
+    },
+  })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T1' } })
+  expect(response.errors).toEqual([new GraphQLError('project is archived')])
+  expect(response.data).toBeNull()
+})
+
+it('should throw error when trying to start tracking on an archived project', async () => {
+  await prisma.project.update({ where: { id: 'P1' }, data: { archivedAt: new Date() } })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T1' } })
+  expect(response.errors).toEqual([new GraphQLError('project is archived')])
+  expect(response.data).toBeNull()
+})
+
 it('should start tracking when tracking is running', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({ query: trackingStartMutation, variables: { taskId: 'T1' } })

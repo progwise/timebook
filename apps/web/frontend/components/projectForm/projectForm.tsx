@@ -2,9 +2,7 @@
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format, isValid, parse, parseISO } from 'date-fns'
-import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { BiTrash } from 'react-icons/bi'
 import InputMask from 'react-input-mask'
 import { z } from 'zod'
 
@@ -14,7 +12,7 @@ import { projectInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
-import { DeleteProjectModal } from '../deleteProjectModal'
+import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
   if (!dateString) {
@@ -62,7 +60,8 @@ export const ProjectFormFragment = graphql(`
     startDate
     endDate
     canModify
-    ...DeleteProjectModal
+    hasWorkHours
+    ...DeleteOrArchiveProjectButton
   }
 `)
 
@@ -76,7 +75,6 @@ interface ProjectFormProps {
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const project = useFragment(ProjectFormFragment, props.project)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
@@ -190,12 +188,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         <ErrorMessage name="end" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
       <div className="mt-8 flex w-full justify-center gap-2">
-        {project?.canModify && (
-          <Button variant="tertiary" onClick={() => setIsDeleteModalOpen(true)}>
-            Delete
-            <BiTrash />
-          </Button>
-        )}
+        {project?.canModify && <DeleteOrArchiveProjectButton project={project} />}
         <Button disabled={isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
           Cancel
         </Button>
@@ -204,9 +197,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             {isNewProject ? 'Create' : 'Save'}
           </Button>
         )}
-        {project ? (
-          <DeleteProjectModal open={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} project={project} />
-        ) : undefined}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       </div>
     </form>

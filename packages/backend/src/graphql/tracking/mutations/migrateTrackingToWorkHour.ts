@@ -23,6 +23,14 @@ export const migrateTrackingToWorkHours = async (tracking: Tracking, workHourQue
   const now = new Date()
   const interval = { start: tracking.start, end: now }
 
+  const task = await prisma.task.findUniqueOrThrow({
+    select: { project: { select: { archivedAt: true } } },
+    where: { id: tracking.taskId },
+  })
+  if (task.project.archivedAt) {
+    throw new Error('project is archived')
+  }
+
   const lockedMonthCount = await Promise.all(
     eachMonthOfInterval(interval).map((date) =>
       prisma.lockedMonth.count({

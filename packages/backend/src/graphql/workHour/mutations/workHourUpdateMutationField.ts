@@ -50,9 +50,13 @@ builder.mutationField('workHourUpdate', (t) =>
       }
 
       const newAssignedTask = await prisma.task.findUniqueOrThrow({
-        select: { projectId: true },
+        select: { projectId: true, project: { select: { archivedAt: true } } },
         where: { id: data.taskId.toString() },
       })
+
+      if (newAssignedTask.project.archivedAt) {
+        throw new Error('project is archived')
+      }
 
       if (await isProjectLocked({ projectId: newAssignedTask.projectId, date: data.date })) {
         throw new Error('project is locked for the given month')

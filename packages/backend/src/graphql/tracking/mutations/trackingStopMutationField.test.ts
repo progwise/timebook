@@ -83,6 +83,17 @@ it('should return empty array when there is no ongoing tracking', async () => {
   expect(response.data).toEqual({ trackingStop: [] })
 })
 
+it('should throw error when project is archived', async () => {
+  const now = new Date()
+  await prisma.tracking.create({ data: { userId: '1', taskId: 'T1', start: now } })
+  await prisma.project.update({ where: { id: 'P1' }, data: { archivedAt: now } })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStopMutation })
+  expect(response.errors).toEqual([new GraphQLError('project is archived')])
+  expect(response.data).toBeNull()
+})
+
 it('should create one workHour for a tracking on one day', async () => {
   const now = new Date()
   const start = startOfDay(now)

@@ -24,8 +24,9 @@ model Project {
   startDate DateTime? @db.Date
   endDate   DateTime? @db.Date
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  archivedAt DateTime?
 
   projectMemberships ProjectMembership[]
   tasks              Task[]

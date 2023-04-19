@@ -111,5 +111,16 @@ export const Project = builder.prismaObject('Project', {
         return !!projectMembership
       },
     }),
+    isArchived: t.boolean({
+      select: { archivedAt: true },
+      resolve: (project) => !!project.archivedAt,
+    }),
+    hasWorkHours: t.boolean({
+      select: { id: true },
+      resolve: async (project) => {
+        const workHoursCount = await prisma.workHour.count({ where: { task: { projectId: project.id } } })
+        return workHoursCount > 0
+      },
+    }),
   }),
 })
