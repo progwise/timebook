@@ -49,9 +49,17 @@ describe('workHourUpdateMutationField', () => {
         id: 'P1',
         title: 'Project 1',
         tasks: {
-          create: {
-            id: 'T1',
-            title: 'Task 1',
+          createMany: {
+            data: [
+              {
+                id: 'T1',
+                title: 'Task 1',
+              },
+              {
+                id: 'T3',
+                title: 'Task 3',
+              },
+            ],
           },
         },
         projectMemberships: { create: { userId: '1' } },
@@ -195,6 +203,48 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
+  })
+
+  it('should throw error when old task is locked', async () => {
+    await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2023-02-01',
+          duration: 120,
+          taskId: 'T3',
+        },
+        date: '2022-01-01',
+        taskId: 'T1',
+      },
+    })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  })
+
+  it('should throw error when new task is locked', async () => {
+    await prisma.task.update({ where: { id: 'T3' }, data: { isLocked: true } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2023-02-01',
+          duration: 120,
+          taskId: 'T3',
+        },
+        date: '2022-01-01',
+        taskId: 'T1',
+      },
+    })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('task is locked')])
   })
 
   it('should throw error when project is archived', async () => {

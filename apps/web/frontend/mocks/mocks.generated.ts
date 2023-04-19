@@ -43,7 +43,7 @@ export type Mutation = {
   projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
-  /** Unassign user to Project */
+  /** Unassign user from a project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
   projectMembershipInviteByEmail: Project
@@ -187,7 +187,6 @@ export type Project = ModifyInterface & {
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
-  workHours: Array<WorkHour>
 }
 
 export type ProjectIsLockedArgs = {
@@ -323,6 +322,8 @@ export type Task = ModifyInterface & {
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
+  /** Is the task locked by an admin */
+  isLockedByAdmin: Scalars['Boolean']
   /** Is the task locked by the user */
   isLockedByUser: Scalars['Boolean']
   project: Project
@@ -339,12 +340,14 @@ export type TaskWorkHoursArgs = {
 
 export type TaskInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
   hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
 }
@@ -472,12 +475,26 @@ export type ProjectFormFragment = {
   isArchived: boolean
 }
 
-export type ProjectMemberListUserFragment = {
-  __typename?: 'User'
+export type ProjectMemberListProjectFragment = {
+  __typename?: 'Project'
   id: string
-  image?: string | null
-  name?: string | null
-  role: Role
+  canModify: boolean
+  title: string
+  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+}
+
+export type RemoveUserFromProjectButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null }
+
+export type RemoveUserFromProjectButtonProjectFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectMembershipDeleteMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipDeleteMutation = {
+  __typename?: 'Mutation'
+  projectMembershipDelete: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectTableItemFragment = {
@@ -592,6 +609,7 @@ export type TaskListProjectFragment = {
     title: string
     hourlyRate?: number | null
     canModify: boolean
+    isLockedByAdmin: boolean
     hasWorkHours: boolean
   }>
 }
@@ -608,6 +626,7 @@ export type TaskRowFragment = {
   title: string
   hourlyRate?: number | null
   canModify: boolean
+  isLockedByAdmin: boolean
   hasWorkHours: boolean
 }
 
@@ -716,6 +735,7 @@ export type WeekTableProjectFragment = {
     __typename?: 'Task'
     id: string
     title: string
+    isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
@@ -746,6 +766,7 @@ export type WeekTableProjectRowGroupFragment = {
     __typename?: 'Task'
     id: string
     title: string
+    isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
     project: {
@@ -787,13 +808,14 @@ export type IsLockedQueryVariables = Exact<{
 export type IsLockedQuery = {
   __typename?: 'Query'
   report: { __typename?: 'Report'; isLocked: boolean }
-  task: { __typename?: 'Task'; isLockedByUser: boolean }
+  task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
 }
 
 export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
+  isLockedByAdmin: boolean
   isLocked: boolean
   isLockedByUser: boolean
   project: {
@@ -827,15 +849,16 @@ export type ProjectQuery = {
     endDate?: string | null
     hasWorkHours: boolean
     isArchived: boolean
-    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
     tasks: Array<{
       __typename?: 'Task'
       id: string
       title: string
       hourlyRate?: number | null
       canModify: boolean
+      isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
+    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
 }
 
@@ -898,6 +921,7 @@ export type WeekTableQuery = {
       __typename?: 'Task'
       id: string
       title: string
+      isLockedByAdmin: boolean
       isLocked: boolean
       isLockedByUser: boolean
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
@@ -1012,6 +1036,29 @@ export const mockProjectUnarchiveMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipDeleteMutation((req, res, ctx) => {
+ *   const { projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipDelete })
+ *   )
+ * })
+ */
+export const mockProjectMembershipDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipDeleteMutationVariables>,
+    GraphQLContext<ProjectMembershipDeleteMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    'projectMembershipDelete',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

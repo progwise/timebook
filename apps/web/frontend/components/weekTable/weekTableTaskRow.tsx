@@ -27,6 +27,7 @@ const WeekTableTaskRowFragment = graphql(`
     tracking {
       ...TrackingButtonsTracking
     }
+    isLockedByAdmin
     ...TrackingButtonsTask
     ...TaskLockButton
   }
@@ -46,7 +47,9 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
   return (
     <TableRow>
       <TableCell className="flex gap-1">
-        {!task.project.isArchived && <TrackingButtons tracking={task.tracking} taskToTrack={task} />}
+        {!task.isLockedByAdmin && !task.project.isArchived && (
+          <TrackingButtons tracking={task.tracking} taskToTrack={task} />
+        )}
       </TableCell>
       <TableCell>{task.title}</TableCell>
       {eachDayOfInterval(interval).map((day) => {
@@ -75,7 +78,9 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
         <FormattedDuration minutes={taskDurations} title="" />
       </TableCell>
       <TableCell>
-        {task.project.isProjectMember && !task.project.isArchived && <TaskLockButton task={task} />}
+        {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
+          <TaskLockButton task={task} />
+        )}
       </TableCell>
     </TableRow>
   )

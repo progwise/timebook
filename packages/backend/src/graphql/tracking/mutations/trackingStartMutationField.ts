@@ -24,15 +24,6 @@ export const trackingStartMutationField = builder.mutationField('trackingStart',
         return prisma.tracking.findUniqueOrThrow({ ...query, where: { userId } })
       }
 
-      const task = await prisma.task.findUniqueOrThrow({
-        select: { project: { select: { archivedAt: true } } },
-        where: { id: taskId },
-      })
-
-      if (task.project.archivedAt) {
-        throw new Error('project is archived')
-      }
-
       const now = new Date()
       const lockedMonthCount = await prisma.lockedMonth.count({
         where: {
@@ -44,6 +35,18 @@ export const trackingStartMutationField = builder.mutationField('trackingStart',
 
       if (lockedMonthCount > 0) {
         throw new Error('Project is locked for this month')
+      }
+
+      const task = await prisma.task.findUniqueOrThrow({
+        where: { id: taskId },
+        select: { isLocked: true, project: { select: { archivedAt: true } } },
+      })
+      if (task.isLocked) {
+        throw new Error('task is locked')
+      }
+
+      if (task.project.archivedAt) {
+        throw new Error('project is archived')
       }
 
       if (currentTracking) {

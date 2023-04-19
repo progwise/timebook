@@ -3,7 +3,6 @@ import { getMonth, getYear } from 'date-fns'
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
-import { WorkHour } from '../workHour'
 import { MonthInputType } from './monthInputType'
 
 export const Project = builder.prismaObject('Project', {
@@ -14,11 +13,6 @@ export const Project = builder.prismaObject('Project', {
     title: t.exposeString('title'),
     startDate: t.expose('startDate', { type: 'Date', nullable: true }),
     endDate: t.expose('endDate', { type: 'Date', nullable: true }),
-    workHours: t.field({
-      type: [WorkHour],
-      select: { tasks: { select: { workHours: { select: { id: true } } } } },
-      resolve: (project) => project.tasks.flatMap((task) => task.workHours),
-    }),
     tasks: t.withAuth({ isLoggedIn: true }).relation('tasks', {
       description:
         'List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned.',
@@ -42,6 +36,7 @@ export const Project = builder.prismaObject('Project', {
     members: t.prismaField({
       description: 'List of users that are member of the project',
       select: { id: true },
+      authScopes: (project) => ({ isMemberByProject: project.id }),
       type: ['User'],
       args: {
         includePastMembers: t.arg.boolean({

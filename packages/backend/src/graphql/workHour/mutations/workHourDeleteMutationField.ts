@@ -23,12 +23,16 @@ builder.mutationField('workHourDelete', (t) =>
     resolve: async (query, _source, { id }) => {
       const workHour = await prisma.workHour.findUniqueOrThrow({
         select: {
-          task: { select: { projectId: true, project: { select: { archivedAt: true } } } },
+          task: { select: { projectId: true, isLocked: true, project: { select: { archivedAt: true } } } },
           userId: true,
           date: true,
         },
         where: { id: id.toString() },
       })
+
+      if (workHour.task.isLocked) {
+        throw new Error('task is locked')
+      }
 
       if (workHour.task.project.archivedAt) {
         throw new Error('project is archived')

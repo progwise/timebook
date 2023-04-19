@@ -51,7 +51,7 @@ type Mutation {
   projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
-  Unassign user to Project
+  Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
@@ -206,7 +206,6 @@ type Project implements ModifyInterface {
   """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {
@@ -381,6 +380,11 @@ type Task implements ModifyInterface {
   isLocked: Boolean!
 
   """
+  Is the task locked by an admin
+  """
+  isLockedByAdmin: Boolean!
+
+  """
   Is the task locked by the user
   """
   isLockedByUser: Boolean!
@@ -396,12 +400,14 @@ type Task implements ModifyInterface {
 
 input TaskInput {
   hourlyRate: Float
+  isLocked: Boolean = false
   projectId: ID!
   title: String!
 }
 
 input TaskUpdateInput {
   hourlyRate: Float
+  isLocked: Boolean
   projectId: ID
   title: String
 }
