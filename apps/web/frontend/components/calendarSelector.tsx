@@ -14,30 +14,29 @@ import {
   startOfWeek,
   subMonths,
 } from 'date-fns'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AiOutlineCalendar } from 'react-icons/ai'
+import { BiHome, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
-import backIcon from '../assets/backIcon.svg'
-import forwardIcon from '../assets/forwardIcon.svg'
-import home from '../assets/home.svg'
 import CalendarIcon from './calendarIcon'
 
 interface DayItemProps {
   day: Date
-  selectedDate: Date
+  selectedDate?: Date
+  shownDate: Date
   onClick: () => void
 }
 
-const DayItem = ({ day, selectedDate, onClick }: DayItemProps): JSX.Element => {
+const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
   const classNames = ['text-center border cursor-pointer p-0']
 
-  if (!isSameMonth(day, selectedDate)) {
+  if (!isSameMonth(day, shownDate)) {
     classNames.push('italic')
   }
 
   let title = format(day, 'do MMM yyyy')
 
-  if (isSameDay(day, selectedDate)) {
+  if (selectedDate && isSameDay(day, selectedDate)) {
     classNames.push('border-red-700')
     title = `Selected Day, ${title}`
   }
@@ -46,7 +45,7 @@ const DayItem = ({ day, selectedDate, onClick }: DayItemProps): JSX.Element => {
     classNames.push('text-green-600')
   }
 
-  if (!isWeekend(day) && isSameMonth(day, selectedDate)) {
+  if (!isWeekend(day) && isSameMonth(day, shownDate)) {
     classNames.push('font-bold')
   }
 
@@ -58,37 +57,37 @@ const DayItem = ({ day, selectedDate, onClick }: DayItemProps): JSX.Element => {
 }
 
 export interface CalendarSelectorProps {
-  onSelectedDateChange?: (newDate: Date) => void
+  onDateChange: (newDate: Date) => void
+  date?: Date
   hideLabel?: boolean
   className?: string
   disabled?: boolean
 }
 
 export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
-  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [shownDate, setShownDate] = useState(props.date ?? new Date())
 
-  const selectNewDate = (targetDate: Date): void => {
-    setSelectedDate(targetDate)
-    props.onSelectedDateChange?.(targetDate)
-  }
+  useEffect(() => {
+    setShownDate(props.date ?? new Date())
+  }, [props.date, setShownDate])
 
-  const goToToday = () => setSelectedDate(new Date())
+  const goToToday = () => setShownDate(new Date())
 
-  const monthStart = startOfMonth(selectedDate)
-  const monthEnd = endOfMonth(selectedDate)
+  const monthStart = startOfMonth(shownDate)
+  const monthEnd = endOfMonth(shownDate)
   const startFirstWeek = startOfWeek(monthStart, { weekStartsOn: 1 })
   const endLastWeek = endOfWeek(monthEnd, { weekStartsOn: 1 })
   const daysToRender = eachDayOfInterval({ start: startFirstWeek, end: endLastWeek })
 
   const gotoPreviousMonth = () => {
-    setSelectedDate((oldDate) => subMonths(oldDate, 1))
+    setShownDate((oldDate) => subMonths(oldDate, 1))
   }
 
   const gotoNextMonth = () => {
-    setSelectedDate((oldDate) => addMonths(oldDate, 1))
+    setShownDate((oldDate) => addMonths(oldDate, 1))
   }
 
-  const monthTitle = format(selectedDate, 'MMM yyyy')
+  const monthTitle = format(shownDate, 'MMM yyyy')
 
   const { x, y, reference, floating, strategy } = useFloating({
     placement: 'bottom',
@@ -105,7 +104,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           className="flex disabled:opacity-50"
           disabled={props.disabled ?? false}
         >
-          {!props.hideLabel && <span title="Display value">{selectedDate.toLocaleDateString()}</span>}
+          {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
           <AiOutlineCalendar className="ml-2" size="1.3em" title="Calendar icon" />
         </Popover.Button>
 
@@ -130,11 +129,18 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                 data-testid="calendar-popover"
               >
                 <header className="flex justify-between p-0 pb-2 font-bold">
-                  <CalendarIcon title="Goto previous month" onClick={gotoPreviousMonth} src={backIcon} size={20} />
-                  <CalendarIcon title="Goto today" onClick={goToToday} src={home} size={20}>
-                    <h2 className="ml-2">{monthTitle}</h2>
+                  <CalendarIcon label="Go to previous month" onClick={gotoPreviousMonth}>
+                    <BiLeftArrow />
                   </CalendarIcon>
-                  <CalendarIcon title="Goto next month" onClick={gotoNextMonth} src={forwardIcon} size={20} />
+                  <div className="flex gap-2">
+                    <CalendarIcon label="Go to today" onClick={goToToday}>
+                      <BiHome />
+                    </CalendarIcon>
+                    <h2>{monthTitle}</h2>
+                  </div>
+                  <CalendarIcon label="Go to next month" onClick={gotoNextMonth}>
+                    <BiRightArrow />
+                  </CalendarIcon>
                 </header>
                 <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-3">
                   <div className="border-b border-gray-800 p-1 text-center">Mon</div>
@@ -148,9 +154,10 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     <DayItem
                       key={day.toString()}
                       day={day}
-                      selectedDate={selectedDate}
+                      selectedDate={props.date}
+                      shownDate={shownDate}
                       onClick={() => {
-                        selectNewDate(day)
+                        props.onDateChange(day)
                         close()
                       }}
                     />
