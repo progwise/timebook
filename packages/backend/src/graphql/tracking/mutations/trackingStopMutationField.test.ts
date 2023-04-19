@@ -76,6 +76,17 @@ it('should throw error when user is not a project member', async () => {
   expect(response.data).toBeNull()
 })
 
+it('should throw error when task of ongoing tracking is locked', async () => {
+  await prisma.tracking.create({ data: { userId: '1', taskId: 'T1', start: new Date() } })
+  await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: trackingStopMutation })
+
+  expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  expect(response.data).toBeNull()
+})
+
 it('should return empty array when there is no ongoing tracking', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({ query: trackingStopMutation })
