@@ -4,7 +4,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook'
 
 import { Spinner } from '@progwise/timebook-ui'
 
-import { PageHeading } from '../PageHeading'
+import { PageHeading } from '../pageHeading'
 import { SheetMonth } from './sheetMonth'
 
 export const WorkHoursSheet = (): JSX.Element => {
@@ -32,10 +32,6 @@ export const WorkHoursSheet = (): JSX.Element => {
     <div className="flex flex-col">
       <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
         <article className="contents border-y text-lg">
-          {/* <strong>Project</strong>
-          <strong>Task</strong>
-          <strong>Person</strong>
-          <strong>Hours</strong> */}
           <PageHeading>Project</PageHeading>
           <PageHeading>Task</PageHeading>
           <PageHeading>Person</PageHeading>

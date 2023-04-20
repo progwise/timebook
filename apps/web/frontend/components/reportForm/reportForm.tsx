@@ -8,7 +8,7 @@ import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebo
 
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
-import { PageHeading } from '../PageHeading'
+import { PageHeading } from '../pageHeading'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 

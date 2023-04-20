@@ -5,7 +5,7 @@ import { useQuery } from 'urql'
 
 import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
 
-import { PageHeading } from '../../frontend/components/PageHeading'
+import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'

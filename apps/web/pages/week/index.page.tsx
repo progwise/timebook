@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
-import { PageHeading } from '../../frontend/components/PageHeading'
+import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
