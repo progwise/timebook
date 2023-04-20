@@ -1,8 +1,10 @@
 import { eachDayOfInterval, isToday } from 'date-fns'
-import { useState } from 'react'
-import { BiArrowFromBottom, BiArrowFromTop, BiArrowToBottom, BiArrowToTop, BiUpArrow } from 'react-icons/bi'
+import { useEffect, useState } from 'react'
+// <-- import useLocalStorage
+import { BiArrowToBottom, BiArrowToTop } from 'react-icons/bi'
+import { useLocalStorage } from 'react-use'
 
-import { FormattedDuration, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
+import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { classNameMarkDay } from './classNameMarkDay'
@@ -29,7 +31,12 @@ interface WeekTableProjectRowGroupProps {
 
 export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }: WeekTableProjectRowGroupProps) => {
   const project = useFragment(WeekTableProjectRowGroupFragment, projectFragment)
-  const [isExpanded, setIsExpanded] = useState(true)
+
+  const [isExpanded, setIsExpanded] = useLocalStorage(`isExpanded-${project.id}`, true)
+  const [readFromLocalStorage, setReadFromLocalStorage] = useState(false)
+  useEffect(() => {
+    setReadFromLocalStorage(true)
+  }, [])
 
   const workHours = project.tasks.flatMap((task) => task.workHours)
   const projectDuration = workHours.reduce((accumulator, workHour) => accumulator + workHour.duration, 0)
