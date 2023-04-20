@@ -5,6 +5,7 @@ export enum ProjectFilter {
   ACTIVE,
   PAST,
   FUTURE,
+  ARCHIVED,
 }
 
 export const ProjectFilterEnum = builder.enumType(ProjectFilter, { name: 'ProjectFilter' })

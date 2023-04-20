@@ -34,6 +34,8 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Archive a project */
+  projectArchive: Project
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
@@ -47,6 +49,8 @@ export type Mutation = {
   projectMembershipInviteByEmail: Project
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
+  /** Unarchive a project */
+  projectUnarchive: Project
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
@@ -74,6 +78,10 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationProjectArchiveArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectCreateArgs = {
@@ -107,6 +115,10 @@ export type MutationProjectMembershipInviteByEmailArgs = {
 
 export type MutationProjectMembershipJoinArgs = {
   inviteKey: Scalars['String']
+}
+
+export type MutationProjectUnarchiveArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUnlockArgs = {
@@ -167,9 +179,11 @@ export type Project = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   endDate?: Maybe<Scalars['Date']>
+  hasWorkHours: Scalars['Boolean']
   /** identifies the project */
   id: Scalars['ID']
   inviteKey: Scalars['String']
+  isArchived: Scalars['Boolean']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
   /** Is the user member of the project */
@@ -197,6 +211,7 @@ export type ProjectTasksArgs = {
 export enum ProjectFilter {
   Active = 'ACTIVE',
   All = 'ALL',
+  Archived = 'ARCHIVED',
   Future = 'FUTURE',
   Past = 'PAST',
 }
@@ -405,14 +420,6 @@ export type ProjectMembershipInviteByEmailMutation = {
   }
 }
 
-export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
-
-export type ProjectDeleteMutationVariables = Exact<{
-  id: Scalars['ID']
-}>
-
-export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
-
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
 
 export type TaskDeleteMutationVariables = Exact<{
@@ -428,13 +435,53 @@ export type TaskDeleteMutation = {
 
 export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
 
+export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectArchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectArchiveMutation = {
+  __typename?: 'Mutation'
+  projectArchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
+export type DeleteOrArchiveProjectButtonFragment = {
+  __typename?: 'Project'
+  id: string
+  hasWorkHours: boolean
+  isArchived: boolean
+  title: string
+}
+
+export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
+
+export type UnarchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectUnarchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectUnarchiveMutation = {
+  __typename?: 'Mutation'
+  projectUnarchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
 export type ProjectFormFragment = {
   __typename?: 'Project'
   title: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
+  hasWorkHours: boolean
   id: string
+  isArchived: boolean
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -692,6 +739,7 @@ export type WeekTableProjectFragment = {
   __typename?: 'Project'
   id: string
   title: string
+  isArchived: boolean
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -706,6 +754,7 @@ export type WeekTableProjectFragment = {
       endDate?: string | null
       id: string
       isProjectMember: boolean
+      isArchived: boolean
     }
     tracking?: {
       __typename?: 'Tracking'
@@ -721,6 +770,7 @@ export type WeekTableProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
+  isArchived: boolean
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -734,6 +784,7 @@ export type WeekTableProjectRowGroupFragment = {
       endDate?: string | null
       id: string
       isProjectMember: boolean
+      isArchived: boolean
     }
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     tracking?: {
@@ -782,6 +833,7 @@ export type WeekTableTaskRowFragment = {
     endDate?: string | null
     id: string
     isProjectMember: boolean
+    isArchived: boolean
   }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?: {
@@ -804,7 +856,9 @@ export type ProjectQuery = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    hasWorkHours: boolean
     inviteKey: string
+    isArchived: boolean
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -852,6 +906,7 @@ export type ProjectCountsQuery = {
   activeCounts: number
   futureCounts: number
   pastCounts: number
+  archivedCounts: number
 }
 
 export type ProjectMembershipJoinMutationVariables = Exact<{
@@ -880,6 +935,7 @@ export type WeekTableQuery = {
     __typename?: 'Project'
     id: string
     title: string
+    isArchived: boolean
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -894,6 +950,7 @@ export type WeekTableQuery = {
         endDate?: string | null
         id: string
         isProjectMember: boolean
+        isArchived: boolean
       }
       tracking?: {
         __typename?: 'Tracking'
@@ -931,6 +988,40 @@ export const mockProjectMembershipInviteByEmailMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockTaskDeleteMutation((req, res, ctx) => {
+ *   const { id, hasWorkHours } = req.variables;
+ *   return res(
+ *     ctx.data({ taskDelete, taskArchive })
+ *   )
+ * })
+ */
+export const mockTaskDeleteMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
+) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectArchiveMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectArchive })
+ *   )
+ * })
+ */
+export const mockProjectArchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectArchiveMutationVariables>,
+    GraphQLContext<ProjectArchiveMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectArchiveMutation, ProjectArchiveMutationVariables>('projectArchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockProjectDeleteMutation((req, res, ctx) => {
  *   const { id } = req.variables;
  *   return res(
@@ -950,16 +1041,20 @@ export const mockProjectDeleteMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockTaskDeleteMutation((req, res, ctx) => {
- *   const { id, hasWorkHours } = req.variables;
+ * mockProjectUnarchiveMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
  *   return res(
- *     ctx.data({ taskDelete, taskArchive })
+ *     ctx.data({ projectUnarchive })
  *   )
  * })
  */
-export const mockTaskDeleteMutation = (
-  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
-) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+export const mockProjectUnarchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectUnarchiveMutationVariables>,
+    GraphQLContext<ProjectUnarchiveMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1293,7 +1388,7 @@ export const mockMyProjectsQuery = (
  * mockProjectCountsQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
- *     ctx.data({ projectsCount, projectsCount, projectsCount, projectsCount })
+ *     ctx.data({ projectsCount, projectsCount, projectsCount, projectsCount, projectsCount })
  *   )
  * })
  */
