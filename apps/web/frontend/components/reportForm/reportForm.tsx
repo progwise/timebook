@@ -8,6 +8,7 @@ import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebo
 
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
+import { PageHeading } from '../PageHeading'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
@@ -103,9 +104,9 @@ export const ReportForm = () => {
     <>
       <div>
         <div className="flex items-center justify-between">
-          <h1 className="my-4 text-2xl font-bold">
+          <PageHeading>
             Detailed time report: {fromString} - {endString}
-          </h1>
+          </PageHeading>
           <Button variant="secondary" className="px-6 print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
           </Button>

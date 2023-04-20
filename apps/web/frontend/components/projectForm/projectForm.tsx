@@ -104,7 +104,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       onSubmit={handleSubmit(handleSubmitHelper)}
     >
       {isNewProject ? (
-        <h2 className="w-full text-lg font-semibold text-gray-400 dark:text-white">Create new project</h2>
+        <h2 className="w-full text-lg font-semibold text-black dark:text-white">Create new project</h2>
       ) : (
         <h2 className="w-full text-lg font-semibold text-gray-800 ">
           {isProjectFormReadOnly ? 'View' : 'Edit'} project

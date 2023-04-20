@@ -5,6 +5,7 @@ import { useQuery } from 'urql'
 
 import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
 
+import { PageHeading } from '../../frontend/components/PageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -58,7 +59,7 @@ const Projects = (): JSX.Element => {
     <ProtectedPage>
       <article>
         <div className="flex justify-between">
-          <h2 className="text-lg font-semibold text-gray-400 dark:text-white">Projects</h2>
+          <PageHeading>Projects</PageHeading>
           <Button variant="primary" onClick={handleAddProject}>
             Add
           </Button>
