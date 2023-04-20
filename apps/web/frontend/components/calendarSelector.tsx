@@ -59,6 +59,7 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
 export interface CalendarSelectorProps {
   onDateChange: (newDate: Date) => void
   date?: Date
+  selectLabel?: boolean
   hideLabel?: boolean
   className?: string
   disabled?: boolean
@@ -75,8 +76,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthStart = startOfMonth(shownDate)
   const monthEnd = endOfMonth(shownDate)
-  const startFirstWeek = startOfWeek(monthStart, { weekStartsOn: 1 })
-  const endLastWeek = endOfWeek(monthEnd, { weekStartsOn: 1 })
+  const startFirstWeek = startOfWeek(monthStart)
+  const endLastWeek = endOfWeek(monthEnd)
   const daysToRender = eachDayOfInterval({ start: startFirstWeek, end: endLastWeek })
 
   const gotoPreviousMonth = () => {
@@ -101,11 +102,12 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         <Popover.Button
           ref={reference}
           aria-label="select date"
-          className="flex disabled:opacity-50"
+          className="flex gap-1 disabled:opacity-50"
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <AiOutlineCalendar className="ml-2" size="1.3em" title="Calendar icon" />
+          <AiOutlineCalendar className="h-5 w-5" title="Calendar icon" />
+          {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
         <Transition
