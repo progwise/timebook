@@ -13,12 +13,16 @@ builder.mutationField('workHourCreate', (t) =>
     authScopes: (_source, { data: { taskId } }) => ({ isMemberByTask: taskId.toString() }),
     resolve: async (query, _source, { data: { date, duration, taskId } }, context) => {
       const task = await prisma.task.findUniqueOrThrow({
-        select: { projectId: true, isLocked: true },
+        select: { projectId: true, isLocked: true, project: { select: { archivedAt: true } } },
         where: { id: taskId.toString() },
       })
 
       if (task.isLocked) {
         throw new Error('task is locked')
+      }
+
+      if (task.project.archivedAt) {
+        throw new Error('project is archived')
       }
 
       if (await isProjectLocked({ date, projectId: task.projectId })) {

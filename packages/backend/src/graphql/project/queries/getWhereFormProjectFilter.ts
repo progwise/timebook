@@ -13,6 +13,7 @@ export const getWhereFromProjectFilter = (
       return {}
     case ProjectFilter.ACTIVE:
       return {
+        archivedAt: null,
         AND: [
           {
             OR: [
@@ -45,8 +46,10 @@ export const getWhereFromProjectFilter = (
         ],
       }
     case ProjectFilter.PAST:
-      return { endDate: { lte: from } }
+      return { archivedAt: null, endDate: { lte: from } }
     case ProjectFilter.FUTURE:
-      return { startDate: { gte: to ?? from } }
+      return { archivedAt: null, startDate: { gte: to ?? from } }
+    case ProjectFilter.ARCHIVED:
+      return { archivedAt: { not: null } }
   }
 }
