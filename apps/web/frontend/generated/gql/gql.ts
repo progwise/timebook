@@ -20,6 +20,8 @@ const documents = {
     types.DeleteTaskModalFragmentDoc,
   '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n':
     types.TaskDeleteDocument,
+  '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n':
+    types.InviteLinkProjectFragmentFragmentDoc,
   '\n  fragment ArchiveProjectModal on Project {\n    id\n    title\n  }\n': types.ArchiveProjectModalFragmentDoc,
   '\n  mutation projectArchive($projectId: ID!) {\n    projectArchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectArchiveDocument,
@@ -96,7 +98,7 @@ const documents = {
     types.IsLockedDocument,
   '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
-  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
+  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n      ...InviteLinkProjectFragment\n    }\n  }\n':
     types.ProjectDocument,
   '\n  mutation projectUpdate($id: ID!, $data: ProjectInput!) {\n    projectUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.ProjectUpdateDocument,
@@ -104,6 +106,8 @@ const documents = {
     types.MyProjectsDocument,
   '\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n':
     types.ProjectCountsDocument,
+  '\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n':
+    types.ProjectMembershipJoinDocument,
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
   '\n  query weekTable($from: Date!, $to: Date) {\n    projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {\n      ...WeekTableProject\n    }\n  }\n':
@@ -142,6 +146,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n',
 ): typeof documents['\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n',
+): typeof documents['\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -392,8 +402,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n',
-): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n']
+  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n      ...InviteLinkProjectFragment\n    }\n  }\n',
+): typeof documents['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n      ...InviteLinkProjectFragment\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -412,6 +422,12 @@ export function graphql(
 export function graphql(
   source: '\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n',
 ): typeof documents['\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n',
+): typeof documents['\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
