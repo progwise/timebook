@@ -106,7 +106,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <AiOutlineCalendar className="ml-2 h-5 w-5" title="Calendar icon" />
+          <AiOutlineCalendar className="h-5 w-5" title="Calendar icon" />
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
