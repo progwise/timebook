@@ -128,6 +128,24 @@ describe('workHourCreateMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('task is locked')])
   })
 
+  it('should throw when the project is archived', async () => {
+    await prisma.project.update({ where: { id: 'P1' }, data: { archivedAt: new Date() } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourCreateMutation,
+      variables: {
+        data: {
+          date: '2022-01-01',
+          duration: 120,
+          taskId: 'T1',
+        },
+      },
+    })
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('project is archived')])
+  })
+
   it('should create a new work hour', async () => {
     const testServer = getTestServer()
     const response = await testServer.executeOperation({

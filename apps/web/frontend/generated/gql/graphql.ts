@@ -32,6 +32,8 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Archive a project */
+  projectArchive: Project
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
@@ -45,6 +47,8 @@ export type Mutation = {
   projectMembershipInviteByEmail: Project
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
+  /** Unarchive a project */
+  projectUnarchive: Project
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
@@ -72,6 +76,10 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationProjectArchiveArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectCreateArgs = {
@@ -105,6 +113,10 @@ export type MutationProjectMembershipInviteByEmailArgs = {
 
 export type MutationProjectMembershipJoinArgs = {
   inviteKey: Scalars['String']
+}
+
+export type MutationProjectUnarchiveArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUnlockArgs = {
@@ -165,9 +177,11 @@ export type Project = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   endDate?: Maybe<Scalars['Date']>
+  hasWorkHours: Scalars['Boolean']
   /** identifies the project */
   id: Scalars['ID']
   inviteKey: Scalars['String']
+  isArchived: Scalars['Boolean']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
   /** Is the user member of the project */
@@ -195,6 +209,7 @@ export type ProjectTasksArgs = {
 export enum ProjectFilter {
   Active = 'ACTIVE',
   All = 'ALL',
+  Archived = 'ARCHIVED',
   Future = 'FUTURE',
   Past = 'PAST',
 }
@@ -403,16 +418,6 @@ export type ProjectMembershipInviteByEmailMutation = {
   }
 }
 
-export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
-  ' $fragmentName'?: 'DeleteProjectModalFragment'
-}
-
-export type ProjectDeleteMutationVariables = Exact<{
-  id: Scalars['ID']
-}>
-
-export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
-
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string } & {
   ' $fragmentName'?: 'DeleteTaskModalFragment'
 }
@@ -432,13 +437,63 @@ export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: st
   ' $fragmentName'?: 'InviteLinkProjectFragmentFragment'
 }
 
+export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'ArchiveProjectModalFragment'
+}
+
+export type ProjectArchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectArchiveMutation = {
+  __typename?: 'Mutation'
+  projectArchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
+export type DeleteOrArchiveProjectButtonFragment = ({
+  __typename?: 'Project'
+  id: string
+  hasWorkHours: boolean
+  isArchived: boolean
+} & {
+  ' $fragmentRefs'?: {
+    DeleteProjectModalFragment: DeleteProjectModalFragment
+    UnarchiveProjectModalFragment: UnarchiveProjectModalFragment
+    ArchiveProjectModalFragment: ArchiveProjectModalFragment
+  }
+}) & { ' $fragmentName'?: 'DeleteOrArchiveProjectButtonFragment' }
+
+export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'DeleteProjectModalFragment'
+}
+
+export type ProjectDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
+
+export type UnarchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'UnarchiveProjectModalFragment'
+}
+
+export type ProjectUnarchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectUnarchiveMutation = {
+  __typename?: 'Mutation'
+  projectUnarchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
 export type ProjectFormFragment = ({
   __typename?: 'Project'
   title: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
-} & { ' $fragmentRefs'?: { DeleteProjectModalFragment: DeleteProjectModalFragment } }) & {
+  hasWorkHours: boolean
+} & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
   ' $fragmentName'?: 'ProjectFormFragment'
 }
 
@@ -720,6 +775,7 @@ export type WeekTableProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
+  isArchived: boolean
   tasks: Array<
     { __typename?: 'Task'; id: string } & { ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment } }
   >
@@ -761,6 +817,7 @@ export type WeekTableTaskRowFragment = ({
     endDate?: string | null
     id: string
     isProjectMember: boolean
+    isArchived: boolean
   }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
   tracking?:
@@ -821,6 +878,7 @@ export type ProjectCountsQuery = {
   activeCounts: number
   futureCounts: number
   pastCounts: number
+  archivedCounts: number
 }
 
 export type ProjectMembershipJoinMutationVariables = Exact<{
@@ -884,6 +942,97 @@ export const DeleteProjectModalFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<DeleteProjectModalFragment, unknown>
+export const UnarchiveProjectModalFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UnarchiveProjectModalFragment, unknown>
+export const ArchiveProjectModalFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ArchiveProjectModalFragment, unknown>
+export const DeleteOrArchiveProjectButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'DeleteProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteOrArchiveProjectButtonFragment, unknown>
 export const ProjectFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -898,7 +1047,8 @@ export const ProjectFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
         ],
       },
     },
@@ -911,6 +1061,46 @@ export const ProjectFormFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
         ],
       },
     },
@@ -1391,6 +1581,7 @@ export const WeekTableTaskRowFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -1476,6 +1667,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -1595,6 +1787,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -1766,6 +1959,7 @@ export const WeekTableProjectFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -1804,6 +1998,7 @@ export const WeekTableProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -1877,43 +2072,6 @@ export const ProjectMembershipInviteByEmailDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>
-export const ProjectDeleteDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'projectDelete' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'projectDelete' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectDeleteMutation, ProjectDeleteMutationVariables>
 export const TaskDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -1997,6 +2155,123 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
+export const ProjectArchiveDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectArchive' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectArchive' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectArchiveMutation, ProjectArchiveMutationVariables>
+export const ProjectDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectDeleteMutation, ProjectDeleteMutationVariables>
+export const ProjectUnarchiveDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectUnarchive' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectUnarchive' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>
 export const ProjectMembershipDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -3193,6 +3468,46 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -3249,7 +3564,8 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
         ],
       },
     },
@@ -3518,6 +3834,28 @@ export const ProjectCountsDocument = {
               },
             ],
           },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'archivedCounts' },
+            name: { kind: 'Name', value: 'projectsCount' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'EnumValue', value: 'ARCHIVED' },
+              },
+            ],
+          },
         ],
       },
     },
@@ -3764,6 +4102,7 @@ export const WeekTableDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -3790,6 +4129,7 @@ export const WeekTableDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
