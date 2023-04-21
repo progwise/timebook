@@ -43,7 +43,7 @@ const WeekPage = (props: WeekPageProps) => {
     <ProtectedPage>
       <h2>Week entries</h2>
       <WeekSelector value={day} onChange={handleWeekChange} />
-      {!fetching ? (
+      {fetching ? (
         <div className="flex justify-center">
           <Spinner size="medium" />
         </div>
