@@ -32,7 +32,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
   const project = useFragment(WeekTableProjectRowGroupFragment, projectFragment)
 
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
-    defaultValue: true,
+    defaultValue: false,
     initializeWithValue: false,
   })
 
