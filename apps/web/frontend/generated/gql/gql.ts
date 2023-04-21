@@ -63,7 +63,7 @@ const documents = {
     types.TaskListProjectFragmentDoc,
   '\n  mutation taskCreate($data: TaskInput!) {\n    taskCreate(data: $data) {\n      id\n    }\n  }\n':
     types.TaskCreateDocument,
-  '\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n':
+  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n':
     types.TaskRowFragmentDoc,
   '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.TaskUpdateDocument,
@@ -288,8 +288,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n',
-): typeof documents['\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n']
+  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n',
+): typeof documents['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

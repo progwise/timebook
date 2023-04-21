@@ -322,8 +322,6 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
-  /** For calculating the money spent */
-  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
@@ -344,14 +342,12 @@ export type TaskWorkHoursArgs = {
 }
 
 export type TaskInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
@@ -649,7 +645,6 @@ export type TaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
-  hourlyRate?: number | null
   canModify: boolean
   isLockedByAdmin: boolean
 } & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
@@ -1321,7 +1316,6 @@ export const TaskRowFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
@@ -1391,7 +1385,6 @@ export const TaskListProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
@@ -3447,7 +3440,6 @@ export const ProjectDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
