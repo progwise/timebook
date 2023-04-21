@@ -1,7 +1,7 @@
 import { mockMyProjectsQuery, mockWeekTableQuery } from './mocks.generated'
 
-const testProject1 = { id: 'project1', title: 'Project 1' }
-const testProject2 = { id: 'project2', title: 'Project 2' }
+const testProject1 = { id: 'project1', title: 'Project 1', isArchived: false }
+const testProject2 = { id: 'project2', title: 'Project 2', isArchived: false }
 
 export const projectHandlers = [
   mockMyProjectsQuery((request, response, context) => {
@@ -25,7 +25,7 @@ export const projectHandlers = [
                 id: 'task1',
                 title: 'Task 1',
                 workHours: [],
-                project: { id: testProject1.id, isProjectMember: true },
+                project: { id: testProject1.id, isProjectMember: true, isArchived: false },
                 isLocked: false,
                 isLockedByUser: false,
                 isLockedByAdmin: false,

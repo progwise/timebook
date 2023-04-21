@@ -23,10 +23,10 @@ builder.queryField('projects', (t) =>
         ...query,
         where: includeProjectsWhereUserBookedWorkHours
           ? {
-              ...getWhereFromProjectFilter(filter, from, to ?? from),
               OR: [
                 // get projects where user is member
                 {
+                  ...getWhereFromProjectFilter(filter, from, to ?? from),
                   projectMemberships: {
                     some: {
                       userId: context.session.user.id,

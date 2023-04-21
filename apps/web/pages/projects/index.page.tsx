@@ -25,6 +25,7 @@ const projectCountsQueryDocument = graphql(`
     activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
     futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
     pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)
   }
 `)
 
@@ -45,10 +46,11 @@ const Projects = (): JSX.Element => {
   })
 
   const projectFilterKeyToLabel: Record<ProjectFilter, string> = {
-    ALL: `all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
-    ACTIVE: `current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
-    FUTURE: `upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
-    PAST: `finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ALL: `🔍 all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
+    ACTIVE: `🏃‍♂️ current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
+    FUTURE: `🚀 upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
+    PAST: `🏁 finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ARCHIVED: `🗄️ archived projects ${projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}`,
   }
 
   const handleAddProject = async () => {

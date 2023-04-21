@@ -72,9 +72,9 @@ export const Task = builder.prismaObject('Task', {
     }),
     isLockedByAdmin: t.exposeBoolean('isLocked', { description: 'Is the task locked by an admin' }),
     isLocked: t.withAuth({ isLoggedIn: true }).boolean({
-      select: { projectId: true, id: true, isLocked: true },
+      select: { projectId: true, id: true, isLocked: true, project: { select: { archivedAt: true } } },
       resolve: async (task, _arguments, context) => {
-        if (task.isLocked) {
+        if (task.isLocked || task.project.archivedAt) {
           return true
         }
 

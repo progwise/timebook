@@ -25,6 +25,11 @@ input MonthInput {
 
 type Mutation {
   """
+  Archive a project
+  """
+  projectArchive(projectId: ID!): Project!
+
+  """
   Create a new project
   """
   projectCreate(data: ProjectInput!): Project!
@@ -59,6 +64,11 @@ type Mutation {
   Add a user to a project using the invite key.
   """
   projectMembershipJoin(inviteKey: String!): Project!
+
+  """
+  Unarchive a project
+  """
+  projectUnarchive(projectId: ID!): Project!
   projectUnlock(date: MonthInput!, projectId: ID!): Project!
 
   """
@@ -162,12 +172,14 @@ type Project implements ModifyInterface {
   """
   canModify: Boolean!
   endDate: Date
+  hasWorkHours: Boolean!
 
   """
   identifies the project
   """
   id: ID!
   inviteKey: String!
+  isArchived: Boolean!
 
   """
   Is the project locked for the given month
@@ -205,6 +217,7 @@ type Project implements ModifyInterface {
 enum ProjectFilter {
   ACTIVE
   ALL
+  ARCHIVED
   FUTURE
   PAST
 }

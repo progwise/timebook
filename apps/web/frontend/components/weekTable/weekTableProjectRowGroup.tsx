@@ -10,6 +10,7 @@ export const WeekTableProjectRowGroupFragment = graphql(`
   fragment WeekTableProjectRowGroup on Project {
     id
     title
+    isArchived
     tasks {
       id
       ...WeekTableTaskRow
@@ -28,7 +29,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
     <>
       <TableRow>
         <TableCell className="font-bold" colSpan={2}>
-          {project.title}
+          {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </TableCell>
         {eachDayOfInterval(interval).map((day) => (
           <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''} />

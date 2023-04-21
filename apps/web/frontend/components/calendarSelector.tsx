@@ -59,6 +59,7 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
 export interface CalendarSelectorProps {
   onDateChange: (newDate: Date) => void
   date?: Date
+  selectLabel?: boolean
   hideLabel?: boolean
   className?: string
   disabled?: boolean
@@ -75,8 +76,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthStart = startOfMonth(shownDate)
   const monthEnd = endOfMonth(shownDate)
-  const startFirstWeek = startOfWeek(monthStart, { weekStartsOn: 1 })
-  const endLastWeek = endOfWeek(monthEnd, { weekStartsOn: 1 })
+  const startFirstWeek = startOfWeek(monthStart)
+  const endLastWeek = endOfWeek(monthEnd)
   const daysToRender = eachDayOfInterval({ start: startFirstWeek, end: endLastWeek })
 
   const gotoPreviousMonth = () => {
@@ -101,34 +102,34 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         <Popover.Button
           ref={reference}
           aria-label="select date"
-          className="flex disabled:opacity-50"
+          className="flex gap-1 disabled:opacity-50"
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <AiOutlineCalendar className="ml-2" size="1.3em" title="Calendar icon" />
+          <AiOutlineCalendar className="h-5 w-5" title="Calendar icon" />
+          {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
         <Transition
+          className="z-10 w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"
           leave="transition duration-100 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-75 opacity-0"
+          style={{
+            position: strategy,
+            top: y ?? 0,
+            left: x ?? 0,
+          }}
+          ref={floating}
+          data-testid="calendar-popover"
         >
-          <Popover.Panel className="absolute z-10">
+          <Popover.Panel>
             {({ close }) => (
-              <section
-                ref={floating}
-                style={{
-                  position: strategy,
-                  top: y ?? 0,
-                  left: x ?? 0,
-                }}
-                className="w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
-                data-testid="calendar-popover"
-              >
-                <header className="flex justify-between p-0 pb-2 font-bold">
+              <>
+                <header className="flex justify-between pb-2 font-bold">
                   <CalendarIcon label="Go to previous month" onClick={gotoPreviousMonth}>
                     <BiLeftArrow />
                   </CalendarIcon>
@@ -163,7 +164,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     />
                   ))}
                 </div>
-              </section>
+              </>
             )}
           </Popover.Panel>
         </Transition>
