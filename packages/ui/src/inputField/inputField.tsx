@@ -63,7 +63,7 @@ export const InputField = React.forwardRef(
             {label}
           </label>
         )}
-        <span>
+        <span className="relative">
           <input
             aria-label={label}
             className={`w-full rounded-md ${

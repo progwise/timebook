@@ -111,26 +111,25 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         </Popover.Button>
 
         <Transition
+          className="z-10 w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"
           leave="transition duration-100 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-75 opacity-0"
+          style={{
+            position: strategy,
+            top: y ?? 0,
+            left: x ?? 0,
+          }}
+          ref={floating}
+          data-testid="calendar-popover"
         >
-          <Popover.Panel className="absolute z-10">
+          <Popover.Panel>
             {({ close }) => (
-              <section
-                ref={floating}
-                style={{
-                  position: strategy,
-                  top: y ?? 0,
-                  left: x ?? 0,
-                }}
-                className="w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
-                data-testid="calendar-popover"
-              >
-                <header className="flex justify-between p-0 pb-2 font-bold">
+              <>
+                <header className="flex justify-between pb-2 font-bold">
                   <CalendarIcon label="Go to previous month" onClick={gotoPreviousMonth}>
                     <BiLeftArrow />
                   </CalendarIcon>
@@ -165,7 +164,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     />
                   ))}
                 </div>
-              </section>
+              </>
             )}
           </Popover.Panel>
         </Transition>
