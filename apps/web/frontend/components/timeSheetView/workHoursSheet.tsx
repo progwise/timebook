@@ -31,13 +31,12 @@ export const WorkHoursSheet = (): JSX.Element => {
   return (
     <div className="flex flex-col">
       <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
-        <article className="contents border-y text-lg">
-          <PageHeading>Project</PageHeading>
-          <PageHeading>Task</PageHeading>
-          <PageHeading>Person</PageHeading>
-          <PageHeading>Hours</PageHeading>
+        <article className="contents border-y text-lg" style={{ flexWrap: 'wrap' }}>
+          <strong>Project</strong>
+          <strong>Task</strong>
+          <strong>Person</strong>
+          <strong>Hours</strong>
         </article>
-
         {eachMonthOfInterval(interval)
           .reverse()
           .map((startOfMonth) => (
