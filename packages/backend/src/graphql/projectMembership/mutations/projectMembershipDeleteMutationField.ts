@@ -5,7 +5,7 @@ import { isUserTheLastAdminOfProject } from './isUserTheLastAdminOfProject'
 builder.mutationField('projectMembershipDelete', (t) =>
   t.prismaField({
     type: 'Project',
-    description: 'Unassign user to Project',
+    description: 'Unassign user from a project',
     args: {
       userId: t.arg.id(),
       projectId: t.arg.id(),

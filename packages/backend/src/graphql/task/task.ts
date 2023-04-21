@@ -22,7 +22,8 @@ export const Task = builder.prismaObject('Task', {
       resolve: (task) => !!task.archivedAt,
     }),
     hasWorkHours: t.boolean({
-      select: { _count: { select: { workHours: true } } },
+      select: { id: true, _count: { select: { workHours: true } } },
+      authScopes: (task) => ({ isMemberByTask: task.id }),
       resolve: (task) => task._count.workHours > 0,
     }),
     project: t.relation('project'),
@@ -59,20 +60,42 @@ export const Task = builder.prismaObject('Task', {
       resolve: (query, task, _argument, context) =>
         prisma.tracking.findFirst({ ...query, where: { userId: context.session.user.id, taskId: task.id } }),
     }),
-    isLocked: t.withAuth({ isLoggedIn: true }).boolean({
-      select: { projectId: true },
+    isLockedByUser: t.withAuth({ isLoggedIn: true }).boolean({
+      select: { id: true },
+      description: 'Is the task locked by the user',
       resolve: async (task, _arguments, context) => {
+        const lockedTask = await prisma.lockedTask.findUnique({
+          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
+        })
+        return !!lockedTask
+      },
+    }),
+    isLockedByAdmin: t.exposeBoolean('isLocked', { description: 'Is the task locked by an admin' }),
+    isLocked: t.withAuth({ isLoggedIn: true }).boolean({
+      select: { projectId: true, id: true, isLocked: true, project: { select: { archivedAt: true } } },
+      resolve: async (task, _arguments, context) => {
+        if (task.isLocked || task.project.archivedAt) {
+          return true
+        }
+
         const now = new Date()
         const year = getYear(now)
         const month = getMonth(now)
 
-        const report = await prisma.report.findUnique({
+        const lockedMonth = await prisma.lockedMonth.findUnique({
           where: {
-            projectId_userId_year_month: { projectId: task.projectId, year, month, userId: context.session.user.id },
+            projectId_year_month: { projectId: task.projectId, year, month },
           },
         })
 
-        return !!report
+        if (lockedMonth) {
+          return true
+        }
+
+        const lockedTask = await prisma.lockedTask.findUnique({
+          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
+        })
+        return !!lockedTask
       },
     }),
   }),

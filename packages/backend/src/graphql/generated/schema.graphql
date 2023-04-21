@@ -18,7 +18,17 @@ interface ModifyInterface {
   canModify: Boolean!
 }
 
+input MonthInput {
+  month: Int!
+  year: Int!
+}
+
 type Mutation {
+  """
+  Archive a project
+  """
+  projectArchive(projectId: ID!): Project!
+
   """
   Create a new project
   """
@@ -33,6 +43,7 @@ type Mutation {
     """
     id: ID!
   ): Project!
+  projectLock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Assign user to a project. This mutation can also be used for updating the role of a project member
@@ -40,7 +51,7 @@ type Mutation {
   projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
-  Unassign user to Project
+  Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
@@ -48,6 +59,17 @@ type Mutation {
   Assign user to a project by e-mail.
   """
   projectMembershipInviteByEmail(email: String!, projectId: ID!): Project!
+
+  """
+  Add a user to a project using the invite key.
+  """
+  projectMembershipJoin(inviteKey: String!): Project!
+
+  """
+  Unarchive a project
+  """
+  projectUnarchive(projectId: ID!): Project!
+  projectUnlock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Update a project
@@ -60,8 +82,6 @@ type Mutation {
     """
     id: ID!
   ): Project!
-  reportLock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
-  reportUnlock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
 
   """
   Archive a task
@@ -87,6 +107,16 @@ type Mutation {
     """
     id: ID!
   ): Task!
+
+  """
+  Lock a task for the current user
+  """
+  taskLock(taskId: ID!): Task!
+
+  """
+  Unlock a task for the current user
+  """
+  taskUnlock(taskId: ID!): Task!
 
   """
   Update a task
@@ -142,11 +172,29 @@ type Project implements ModifyInterface {
   """
   canModify: Boolean!
   endDate: Date
+  hasWorkHours: Boolean!
 
   """
   identifies the project
   """
   id: ID!
+  inviteKey: String!
+  isArchived: Boolean!
+
+  """
+  Is the project locked for the given month
+  """
+  isLocked(
+    """
+    The month to check. If empty the current month is used.
+    """
+    date: MonthInput
+  ): Boolean!
+
+  """
+  Is the user member of the project
+  """
+  isProjectMember: Boolean!
 
   """
   List of users that are member of the project
@@ -158,14 +206,18 @@ type Project implements ModifyInterface {
     includePastMembers: Boolean! = false
   ): [User!]!
   startDate: Date
+
+  """
+  List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned.
+  """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {
   ACTIVE
   ALL
+  ARCHIVED
   FUTURE
   PAST
 }
@@ -192,7 +244,16 @@ type Query {
   """
   Returns all project of the signed in user that are active
   """
-  projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
+  projects(
+    filter: ProjectFilter! = ACTIVE
+    from: Date!
+
+    """
+    If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.
+    """
+    includeProjectsWhereUserBookedWorkHours: Boolean! = false
+    to: Date
+  ): [Project!]!
   projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 
   """
@@ -323,6 +384,16 @@ type Task implements ModifyInterface {
   """
   id: ID!
   isLocked: Boolean!
+
+  """
+  Is the task locked by an admin
+  """
+  isLockedByAdmin: Boolean!
+
+  """
+  Is the task locked by the user
+  """
+  isLockedByUser: Boolean!
   project: Project!
 
   """
@@ -335,12 +406,14 @@ type Task implements ModifyInterface {
 
 input TaskInput {
   hourlyRate: Float
+  isLocked: Boolean = false
   projectId: ID!
   title: String!
 }
 
 input TaskUpdateInput {
   hourlyRate: Float
+  isLocked: Boolean
   projectId: ID
   title: String
 }

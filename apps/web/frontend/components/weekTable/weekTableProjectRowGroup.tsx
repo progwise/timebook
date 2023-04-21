@@ -12,6 +12,7 @@ export const WeekTableProjectRowGroupFragment = graphql(`
   fragment WeekTableProjectRowGroup on Project {
     id
     title
+    isArchived
     tasks {
       id
       ...WeekTableTaskRow
@@ -43,7 +44,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
       <TableRow onClick={() => setIsCollapsed(!isCollapsed)} className="cursor-pointer text-lg">
         <TableCell colSpan={2}>
           <div className="flex items-center gap-1 font-bold">
-            {project.title}
+            {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
             {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
             {isCollapsed && `${project.tasks.length} tasks`}
           </div>
@@ -54,6 +55,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
         <TableCell className="text-center font-bold">
           <FormattedDuration title="" minutes={projectDuration} />
         </TableCell>
+        <TableCell />
       </TableRow>
       {!isCollapsed && project.tasks.map((task) => <WeekTableTaskRow interval={interval} task={task} key={task.id} />)}
     </>

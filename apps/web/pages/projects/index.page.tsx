@@ -3,9 +3,8 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'urql'
 
-import { Button, Spinner } from '@progwise/timebook-ui'
+import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
 
-import { ComboBox } from '../../frontend/components/combobox/combobox'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -25,10 +24,9 @@ const projectCountsQueryDocument = graphql(`
     activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
     futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
     pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)
   }
 `)
-
-const projectFilters = Object.values(ProjectFilter).map((projectFilter) => ({ id: projectFilter }))
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
@@ -47,20 +45,15 @@ const Projects = (): JSX.Element => {
   })
 
   const projectFilterKeyToLabel: Record<ProjectFilter, string> = {
-    ALL: `all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
-    ACTIVE: `current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
-    FUTURE: `upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
-    PAST: `finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ALL: `🔍 all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
+    ACTIVE: `🏃‍♂️ current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
+    FUTURE: `🚀 upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
+    PAST: `🏁 finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ARCHIVED: `🗄️ archived projects ${projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}`,
   }
 
   const handleAddProject = async () => {
     await router.push('/projects/new')
-  }
-
-  const handleProjectFilterChange = (newProjectFilter: ProjectFilter | null) => {
-    if (newProjectFilter) {
-      setSelectedProjectFilter(newProjectFilter)
-    }
   }
 
   return (
@@ -74,11 +67,12 @@ const Projects = (): JSX.Element => {
         </div>
 
         <div className="mb-6 flex">
-          <ComboBox<{ id: ProjectFilter }, ProjectFilter>
-            value={projectFilters.find((filter) => filter.id === selectedProjectFilter)}
-            displayValue={(project) => projectFilterKeyToLabel[project.id]}
-            onChange={handleProjectFilterChange}
-            options={projectFilters}
+          <Listbox
+            value={selectedProjectFilter}
+            getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
+            getKey={(projectFilter) => projectFilter}
+            onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
+            options={Object.values(ProjectFilter)}
           />
         </div>
 

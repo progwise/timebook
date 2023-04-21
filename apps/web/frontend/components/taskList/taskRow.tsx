@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
@@ -10,6 +10,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
+import { LockSwitch } from './lockSwitch'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
@@ -17,6 +18,7 @@ export const TaskRowFragment = graphql(`
     title
     hourlyRate
     canModify
+    isLockedByAdmin
     ...DeleteTaskModal
   }
 `)
@@ -37,11 +39,13 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
   const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
+  const [{ fetching: fetchingIsLocked }, updateIsLocked] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty, dirtyFields, isSubmitSuccessful },
   } = useForm<Pick<TaskUpdateInput, 'title'>>({
     mode: 'onChange',
     defaultValues: {
@@ -82,6 +86,16 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
   }
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
+
+  const handleLockChange = async (isLocked: boolean) => {
+    await updateIsLocked({ id: task.id, data: { isLocked } })
+  }
+
   return (
     <TableRow>
       <TableCell className="flex items-center">
@@ -92,6 +106,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           loading={fetchingTitle}
           errorMessage={errors.title?.message}
           disabled={!task.canModify}
+          isDirty={isDirty && dirtyFields.title}
         />
       </TableCell>
       <TableCell>
@@ -105,7 +120,11 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           label="hourly rate"
           hideLabel
           disabled={!task.canModify}
+          isDirty={isDirty && hourlyRateForm.formState.dirtyFields.hourlyRate}
         />
+      </TableCell>
+      <TableCell>
+        <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
       </TableCell>
       <TableCell>
         {task.canModify && (

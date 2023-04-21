@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -19,6 +19,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskInput } from '../../generated/gql/graphql'
+import { LockSwitch } from './lockSwitch'
 import { TaskRow } from './taskRow'
 
 export const TaskListProjectFragment = graphql(`
@@ -40,9 +41,13 @@ const TaskCreateMutationDocument = graphql(`
   }
 `)
 
-export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title'>
+export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title' | 'isLocked'>
 
-export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({ title: true, hourlyRate: true })
+export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({
+  title: true,
+  hourlyRate: true,
+  isLocked: true,
+})
 
 export interface TaskListProps {
   project: FragmentType<typeof TaskListProjectFragment>
@@ -52,12 +57,13 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting, errors },
-  } = useForm<TaskFormData>({ resolver: zodResolver(taskInputSchema) })
+  const { register, handleSubmit, reset, formState, control } = useForm<TaskFormData>({
+    resolver: zodResolver(taskInputSchema),
+    defaultValues: { title: '', hourlyRate: undefined },
+  })
+
+  const { isSubmitting, errors, isDirty, dirtyFields } = formState
+
   const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 
   const handleAddTask = async (taskData: TaskFormData) => {
@@ -77,11 +83,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
 
   return (
     <section className={className}>
-      <Table className="min-w-full  dark:bg-slate-800">
+      <Table className="min-w-full dark:bg-slate-800">
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
             <TableHeadCell>Billable / Hourly rate</TableHeadCell>
+            <TableHeadCell>Locked</TableHeadCell>
             <TableHeadCell />
           </TableHeadRow>
         </TableHead>
@@ -97,26 +104,43 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     variant="primary"
-                    placeholder="Enter Taskname"
-                    className=" dark:bg-slate-800 dark:text-white"
+                    placeholder="Enter task name"
+                    className="dark:bg-slate-800 dark:text-white"
                     {...register('title')}
                     errorMessage={errors.title?.message}
+                    isDirty={isDirty && dirtyFields.title}
                   />
                 </form>
               </TableCell>
               <TableCell>
                 <InputField
                   variant="primary"
-                  placeholder="Enter Hourly Rate"
-                  className=" dark:bg-slate-800 dark:text-white"
+                  placeholder="Enter hourly rate"
+                  className="dark:bg-slate-800 dark:text-white"
                   {...register('hourlyRate')}
                   errorMessage={errors.hourlyRate?.message}
                   type="number"
                   form="form-create-task"
+                  isDirty={isDirty && dirtyFields.hourlyRate}
                 />
               </TableCell>
               <TableCell>
-                <Button variant="secondary" type="submit" disabled={isSubmitting} form="form-create-task">
+                <Controller
+                  control={control}
+                  name="isLocked"
+                  render={({ field: { onChange, value } }) => (
+                    <LockSwitch locked={value ?? false} onChange={onChange} />
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="secondary"
+                  className="h-8"
+                  type="submit"
+                  disabled={isSubmitting}
+                  form="form-create-task"
+                >
                   Add task
                 </Button>
               </TableCell>

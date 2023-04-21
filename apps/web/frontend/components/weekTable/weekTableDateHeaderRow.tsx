@@ -20,5 +20,6 @@ export const WeekTableDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps
       </TableHeadCell>
     ))}
     <TableHeadCell />
+    <TableHeadCell />
   </TableHeadRow>
 )

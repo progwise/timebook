@@ -3,8 +3,8 @@ import { useMutation } from 'urql'
 
 import { Button } from '@progwise/timebook-ui'
 
-import { FragmentType, graphql, useFragment } from '../generated/gql'
-import { Modal } from './modal'
+import { FragmentType, graphql, useFragment } from '../../../generated/gql'
+import { Modal } from '../../modal'
 
 export const DeleteProjectModalFragment = graphql(`
   fragment DeleteProjectModal on Project {

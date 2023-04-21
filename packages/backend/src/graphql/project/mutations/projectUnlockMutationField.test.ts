@@ -5,10 +5,10 @@ import { PrismaClient } from '@progwise/timebook-prisma'
 
 import { getTestServer } from '../../../getTestServer'
 
-const reportUnlockMutation = gql`
-  mutation reportUnlock {
-    reportUnlock(year: 2023, month: 0, projectId: "P1", userId: "1") {
-      isLocked
+const projectUnlockMutation = gql`
+  mutation projectUnlock {
+    projectUnlock(date: { year: 2023, month: 0 }, projectId: "P1") {
+      isLocked(date: { year: 2023, month: 0 })
     }
   }
 `
@@ -16,7 +16,7 @@ const reportUnlockMutation = gql`
 const prisma = new PrismaClient()
 
 beforeEach(async () => {
-  await prisma.report.deleteMany()
+  await prisma.lockedMonth.deleteMany()
   await prisma.user.deleteMany()
   await prisma.project.deleteMany()
 
@@ -46,7 +46,7 @@ beforeEach(async () => {
 it('should throw an error when user is unauthenticated', async () => {
   const testServer = getTestServer({ noSession: true })
 
-  const response = await testServer.executeOperation({ query: reportUnlockMutation })
+  const response = await testServer.executeOperation({ query: projectUnlockMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
@@ -55,37 +55,37 @@ it('should throw an error when user is unauthenticated', async () => {
 it('should throw an when user is project member with role=Member', async () => {
   const testServer = getTestServer({ userId: '2' })
 
-  const response = await testServer.executeOperation({ query: reportUnlockMutation })
+  const response = await testServer.executeOperation({ query: projectUnlockMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-it('should delete a report', async () => {
-  await prisma.report.create({ data: { projectId: 'P1', userId: '1', year: 2023, month: 0 } })
+it('should delete a locked month', async () => {
+  await prisma.lockedMonth.create({ data: { projectId: 'P1', year: 2023, month: 0 } })
   const testServer = getTestServer({ userId: '1' })
 
-  const response = await testServer.executeOperation({ query: reportUnlockMutation })
+  const response = await testServer.executeOperation({ query: projectUnlockMutation })
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    reportUnlock: { isLocked: false },
+    projectUnlock: { isLocked: false },
   })
 
-  const allReports = await prisma.report.findMany()
-  expect(allReports).toEqual([])
+  const allLockedMonths = await prisma.lockedMonth.findMany()
+  expect(allLockedMonths).toEqual([])
 })
 
-it('should work when no report exist', async () => {
+it('should work when no locked month exist', async () => {
   const testServer = getTestServer({ userId: '1' })
 
-  const response = await testServer.executeOperation({ query: reportUnlockMutation })
+  const response = await testServer.executeOperation({ query: projectUnlockMutation })
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    reportUnlock: { isLocked: false },
+    projectUnlock: { isLocked: false },
   })
 
-  const allReports = await prisma.report.findMany()
-  expect(allReports).toEqual([])
+  const allLockedMonths = await prisma.lockedMonth.findMany()
+  expect(allLockedMonths).toEqual([])
 })

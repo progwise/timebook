@@ -8,4 +8,5 @@ export const taskInputValidations = z.object({
     // eslint-disable-next-line unicorn/no-null
     .transform((value) => (value === 0 ? null : value))
     .optional(),
+  isLocked: z.boolean().optional(),
 })

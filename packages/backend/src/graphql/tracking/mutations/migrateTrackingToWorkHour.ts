@@ -23,12 +23,11 @@ export const migrateTrackingToWorkHours = async (tracking: Tracking, workHourQue
   const now = new Date()
   const interval = { start: tracking.start, end: now }
 
-  const reportCounts = await Promise.all(
+  const lockedMonthCount = await Promise.all(
     eachMonthOfInterval(interval).map((date) =>
-      prisma.report.count({
+      prisma.lockedMonth.count({
         where: {
           project: { tasks: { some: { id: tracking.taskId } } },
-          userId: tracking.userId,
           year: getYear(date),
           month: getMonth(date),
         },
@@ -36,8 +35,8 @@ export const migrateTrackingToWorkHours = async (tracking: Tracking, workHourQue
     ),
   )
 
-  if (reportCounts.some((count) => count !== 0)) {
-    throw new Error('A report is locking the project')
+  if (lockedMonthCount.some((count) => count !== 0)) {
+    throw new Error('Project is locked for the current month')
   }
 
   const projectMembershipCount = await prisma.projectMembership.count({
@@ -49,6 +48,18 @@ export const migrateTrackingToWorkHours = async (tracking: Tracking, workHourQue
 
   if (projectMembershipCount === 0) {
     throw new Error('User is no longer a project member')
+  }
+
+  const task = await prisma.task.findUniqueOrThrow({
+    select: { isLocked: true, project: { select: { archivedAt: true } } },
+    where: { id: tracking.taskId },
+  })
+  if (task.isLocked) {
+    throw new Error('task is locked')
+  }
+
+  if (task.project.archivedAt) {
+    throw new Error('project is archived')
   }
 
   const [, ...workHours] = await prisma.$transaction([
