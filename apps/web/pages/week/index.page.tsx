@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
+import { Spinner } from '@progwise/timebook-ui'
+
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
@@ -27,7 +29,7 @@ const WeekPage = (props: WeekPageProps) => {
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
 
   const weekTableContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const [{ data: weekTableData }] = useQuery({
+  const [{ fetching, data: weekTableData }] = useQuery({
     query: weekTableQueryDocument,
     variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
     context: weekTableContext,
@@ -41,8 +43,14 @@ const WeekPage = (props: WeekPageProps) => {
     <ProtectedPage>
       <h2>Week entries</h2>
       <WeekSelector value={day} onChange={handleWeekChange} />
-      {weekTableData?.projects && (
-        <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />
+      {!fetching ? (
+        <div className="flex justify-center">
+          <Spinner size="medium" />
+        </div>
+      ) : (
+        weekTableData?.projects && (
+          <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />
+        )
       )}
     </ProtectedPage>
   )
