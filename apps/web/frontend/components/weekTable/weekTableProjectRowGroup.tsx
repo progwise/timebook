@@ -1,8 +1,6 @@
+import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval, isToday } from 'date-fns'
-import { useEffect, useState } from 'react'
-// <-- import useLocalStorage
 import { BiArrowToBottom, BiArrowToTop } from 'react-icons/bi'
-import { useLocalStorage } from 'react-use'
 
 import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 
@@ -32,23 +30,22 @@ interface WeekTableProjectRowGroupProps {
 export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }: WeekTableProjectRowGroupProps) => {
   const project = useFragment(WeekTableProjectRowGroupFragment, projectFragment)
 
-  const [isExpanded, setIsExpanded] = useLocalStorage(`isExpanded-${project.id}`, true)
-  const [readFromLocalStorage, setReadFromLocalStorage] = useState(false)
-  useEffect(() => {
-    setReadFromLocalStorage(true)
-  }, [])
+  const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
+    defaultValue: true,
+    initializeWithValue: false,
+  })
 
   const workHours = project.tasks.flatMap((task) => task.workHours)
   const projectDuration = workHours.reduce((accumulator, workHour) => accumulator + workHour.duration, 0)
 
   return (
     <>
-      <TableRow onClick={() => setIsExpanded(!isExpanded)} className="cursor-pointer text-lg">
+      <TableRow onClick={() => setIsCollapsed(!isCollapsed)} className="cursor-pointer text-lg">
         <TableCell colSpan={2}>
           <div className="flex items-center gap-1 font-bold">
             {project.title}
-            {isExpanded ? <BiArrowToTop /> : <BiArrowToBottom />}
-            {!isExpanded && `${project.tasks.length} tasks`}
+            {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
+            {isCollapsed && `${project.tasks.length} tasks`}
           </div>
         </TableCell>
         {eachDayOfInterval(interval).map((day) => (
@@ -58,7 +55,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
           <FormattedDuration title="" minutes={projectDuration} />
         </TableCell>
       </TableRow>
-      {isExpanded && project.tasks.map((task) => <WeekTableTaskRow interval={interval} task={task} key={task.id} />)}
+      {!isCollapsed && project.tasks.map((task) => <WeekTableTaskRow interval={interval} task={task} key={task.id} />)}
     </>
   )
 }
