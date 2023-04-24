@@ -777,7 +777,9 @@ export type WeekTableProjectRowGroupFragment = {
   title: string
   isArchived: boolean
   tasks: Array<
-    { __typename?: 'Task'; id: string } & { ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment } }
+    { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; duration: number }> } & {
+      ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment }
+    }
   >
 } & { ' $fragmentName'?: 'WeekTableProjectRowGroupFragment' }
 
@@ -1676,6 +1678,26 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },
@@ -2007,6 +2029,26 @@ export const WeekTableProjectFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },
@@ -4138,6 +4180,26 @@ export const WeekTableDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },
