@@ -778,6 +778,7 @@ export type WeekTableProjectRowGroupFragment = {
     isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
+    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     project: {
       __typename?: 'Project'
       startDate?: string | null
@@ -786,7 +787,6 @@ export type WeekTableProjectRowGroupFragment = {
       isProjectMember: boolean
       isArchived: boolean
     }
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
