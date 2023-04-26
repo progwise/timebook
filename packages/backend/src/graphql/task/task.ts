@@ -11,12 +11,6 @@ export const Task = builder.prismaObject('Task', {
   fields: (t) => ({
     id: t.exposeID('id', { description: 'Identifies the task' }),
     title: t.exposeString('title', { description: 'The user can identify the task in the UI' }),
-    hourlyRate: t.float({
-      nullable: true,
-      description: 'For calculating the money spent',
-      select: { hourlyRate: true },
-      resolve: (task) => task.hourlyRate?.toNumber(),
-    }),
     archived: t.boolean({
       select: { archivedAt: true },
       resolve: (task) => !!task.archivedAt,

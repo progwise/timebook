@@ -55,11 +55,10 @@ model ProjectMembership {
 }
 
 model Task {
-  id         String   @id @default(cuid())
-  title      String   @db.VarChar(255)
-  hourlyRate Decimal? @db.Money
-  projectId  String
-  isLocked   Boolean  @default(false)
+  id        String  @id @default(cuid())
+  title     String  @db.VarChar(255)
+  projectId String
+  isLocked  Boolean @default(false)
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt

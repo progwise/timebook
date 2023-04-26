@@ -41,11 +41,10 @@ const TaskCreateMutationDocument = graphql(`
   }
 `)
 
-export type TaskFormData = Pick<TaskInput, 'hourlyRate' | 'title' | 'isLocked'>
+export type TaskFormData = Pick<TaskInput, 'title' | 'isLocked'>
 
 export const taskInputSchema: z.ZodSchema<TaskFormData> = taskInputValidations.pick({
   title: true,
-  hourlyRate: true,
   isLocked: true,
 })
 
@@ -59,7 +58,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   const project = useFragment(TaskListProjectFragment, props.project)
   const { register, handleSubmit, reset, formState, control } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
-    defaultValues: { title: '', hourlyRate: undefined },
+    defaultValues: { title: '' },
   })
 
   const { isSubmitting, errors, isDirty, dirtyFields } = formState
@@ -87,7 +86,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
-            <TableHeadCell>Billable / Hourly rate</TableHeadCell>
             <TableHeadCell>Locked</TableHeadCell>
             <TableHeadCell />
           </TableHeadRow>
@@ -111,18 +109,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                     isDirty={isDirty && dirtyFields.title}
                   />
                 </form>
-              </TableCell>
-              <TableCell>
-                <InputField
-                  variant="primary"
-                  placeholder="Enter hourly rate"
-                  className="dark:bg-slate-800 dark:text-white"
-                  {...register('hourlyRate')}
-                  errorMessage={errors.hourlyRate?.message}
-                  type="number"
-                  form="form-create-task"
-                  isDirty={isDirty && dirtyFields.hourlyRate}
-                />
               </TableCell>
               <TableCell>
                 <Controller
