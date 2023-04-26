@@ -105,9 +105,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       {isNewProject ? (
         <PageHeading>Create new project</PageHeading>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-800 ">
-          {isProjectFormReadOnly ? 'View' : 'Edit'} project
-        </h2>
+        <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
       )}
       <InputField
         label="Name"

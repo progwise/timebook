@@ -111,7 +111,7 @@ export const ReportForm = () => {
             <BiPrinter /> Print
           </Button>
         </div>
-        <h2 className="print:hidden">Select a project</h2>
+        <PageHeading>Select a project</PageHeading>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">

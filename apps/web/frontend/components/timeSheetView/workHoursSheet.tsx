@@ -4,7 +4,6 @@ import useInfiniteScroll from 'react-infinite-scroll-hook'
 
 import { Spinner } from '@progwise/timebook-ui'
 
-import { PageHeading } from '../pageHeading'
 import { SheetMonth } from './sheetMonth'
 
 export const WorkHoursSheet = (): JSX.Element => {
