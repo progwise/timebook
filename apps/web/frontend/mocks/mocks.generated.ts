@@ -324,8 +324,6 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
-  /** For calculating the money spent */
-  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
@@ -346,14 +344,12 @@ export type TaskWorkHoursArgs = {
 }
 
 export type TaskInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
@@ -616,7 +612,6 @@ export type TaskListProjectFragment = {
     __typename?: 'Task'
     id: string
     title: string
-    hourlyRate?: number | null
     canModify: boolean
     isLockedByAdmin: boolean
     hasWorkHours: boolean
@@ -633,7 +628,6 @@ export type TaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
-  hourlyRate?: number | null
   canModify: boolean
   isLockedByAdmin: boolean
   hasWorkHours: boolean
@@ -778,6 +772,7 @@ export type WeekTableProjectRowGroupFragment = {
     isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
+    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     project: {
       __typename?: 'Project'
       startDate?: string | null
@@ -786,7 +781,6 @@ export type WeekTableProjectRowGroupFragment = {
       isProjectMember: boolean
       isArchived: boolean
     }
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
@@ -863,7 +857,6 @@ export type ProjectQuery = {
       __typename?: 'Task'
       id: string
       title: string
-      hourlyRate?: number | null
       canModify: boolean
       isLockedByAdmin: boolean
       hasWorkHours: boolean

@@ -322,8 +322,6 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
-  /** For calculating the money spent */
-  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
   isLocked: Scalars['Boolean']
@@ -344,14 +342,12 @@ export type TaskWorkHoursArgs = {
 }
 
 export type TaskInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
   isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
@@ -649,7 +645,6 @@ export type TaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
-  hourlyRate?: number | null
   canModify: boolean
   isLockedByAdmin: boolean
 } & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
@@ -777,7 +772,9 @@ export type WeekTableProjectRowGroupFragment = {
   title: string
   isArchived: boolean
   tasks: Array<
-    { __typename?: 'Task'; id: string } & { ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment } }
+    { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; duration: number }> } & {
+      ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment }
+    }
   >
 } & { ' $fragmentName'?: 'WeekTableProjectRowGroupFragment' }
 
@@ -1321,7 +1318,6 @@ export const TaskRowFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
@@ -1391,7 +1387,6 @@ export const TaskListProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
@@ -1676,6 +1671,26 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },
@@ -2007,6 +2022,26 @@ export const WeekTableProjectFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },
@@ -3447,7 +3482,6 @@ export const ProjectDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
@@ -4138,6 +4172,26 @@ export const WeekTableDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
               ],
             },
           },

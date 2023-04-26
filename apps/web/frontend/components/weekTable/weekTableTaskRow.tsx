@@ -45,7 +45,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableRow>
+    <TableRow className="border-gray-200 dark:border-gray-700">
       <TableCell className="flex gap-1">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
