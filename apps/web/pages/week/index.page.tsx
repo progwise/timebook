@@ -40,7 +40,7 @@ const WeekPage = (props: WeekPageProps) => {
 
   return (
     <ProtectedPage>
-      <PageHeading>Week enteries</PageHeading>
+      <PageHeading>Week entries</PageHeading>
       <WeekSelector value={day} onChange={handleWeekChange} />
       {weekTableData?.projects && (
         <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />
