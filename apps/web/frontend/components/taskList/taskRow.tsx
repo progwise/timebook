@@ -16,7 +16,6 @@ export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
     id
     title
-    hourlyRate
     canModify
     isLockedByAdmin
     ...DeleteTaskModal
@@ -38,7 +37,6 @@ interface TaskRowProps {
 export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
-  const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
   const [{ fetching: fetchingIsLocked }, updateIsLocked] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
@@ -54,14 +52,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     resolver: zodResolver(taskInputValidations.pick({ title: true })),
   })
 
-  const hourlyRateForm = useForm<Pick<TaskUpdateInput, 'hourlyRate'>>({
-    mode: 'onChange',
-    defaultValues: {
-      hourlyRate: task.hourlyRate,
-    },
-    resolver: zodResolver(taskInputValidations.pick({ hourlyRate: true })),
-  })
-
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
   const handleTitleSubmit = async (taskData: Pick<TaskUpdateInput, 'title'>) => {
@@ -73,17 +63,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     })
 
     if (result.error) setError('title', { message: 'Network error' })
-  }
-
-  const handleHourlyRateSubmit = async (taskData: Pick<TaskUpdateInput, 'hourlyRate'>) => {
-    const result = await updateHourlyRate({
-      id: task.id,
-      data: {
-        hourlyRate: taskData.hourlyRate,
-      },
-    })
-
-    if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
   }
 
   useEffect(() => {
@@ -107,20 +86,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           errorMessage={errors.title?.message}
           disabled={!task.canModify}
           isDirty={isDirty && dirtyFields.title}
-        />
-      </TableCell>
-      <TableCell>
-        <InputField
-          variant="primary"
-          type="number"
-          {...hourlyRateForm.register('hourlyRate', { required: true })}
-          onBlur={hourlyRateForm.handleSubmit(handleHourlyRateSubmit)}
-          loading={fetchingHourlyRate}
-          errorMessage={hourlyRateForm.formState.errors.hourlyRate?.message}
-          label="hourly rate"
-          hideLabel
-          disabled={!task.canModify}
-          isDirty={isDirty && hourlyRateForm.formState.dirtyFields.hourlyRate}
         />
       </TableCell>
       <TableCell>
