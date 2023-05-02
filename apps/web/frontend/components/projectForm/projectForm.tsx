@@ -12,6 +12,7 @@ import { projectInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
+import { PageHeading } from '../pageHeading'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
@@ -102,11 +103,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       onSubmit={handleSubmit(handleSubmitHelper)}
     >
       {isNewProject ? (
-        <h2 className="w-full text-lg font-semibold text-gray-400 dark:text-white">Create new project</h2>
+        <PageHeading>Create new project</PageHeading>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-800 ">
-          {isProjectFormReadOnly ? 'View' : 'Edit'} project
-        </h2>
+        <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
       )}
       <InputField
         label="Name"
