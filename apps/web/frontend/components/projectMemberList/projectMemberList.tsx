@@ -10,9 +10,9 @@ import { RoleLabel } from './roleLabel'
 
 const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
-    id
     canModify
     ...RemoveUserFromProjectButtonProject
+    ...AddProjectMemberForm
     members {
       id
       image
@@ -38,7 +38,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
         <TableBody>
           <TableRow>
             <TableCell>
-              <AddProjectMemberForm projectId={project.id} />
+              <AddProjectMemberForm project={project} />
             </TableCell>
             <TableCell colSpan={2} />
           </TableRow>

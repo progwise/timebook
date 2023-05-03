@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler } from 'react'
+import React, { KeyboardEventHandler, ReactNode } from 'react'
 
 import { Spinner } from '../spinner'
 
@@ -15,7 +15,7 @@ export interface InputFieldProps {
   className?: string
   inputClassName?: string
   label?: string
-  errorMessage?: string
+  errorMessage?: string | ReactNode
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
   type?: 'number' | 'text' | 'email'
