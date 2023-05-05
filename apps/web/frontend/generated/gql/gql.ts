@@ -49,7 +49,7 @@ const documents = {
     types.ProjectLockDocument,
   '\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
     types.ProjectUnlockDocument,
-  '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n':
+  '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n':
     types.ReportProjectFragmentDoc,
   '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n':
     types.ReportProjectsDocument,
@@ -246,8 +246,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n',
-): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n']
+  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n',
+): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

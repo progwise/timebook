@@ -65,7 +65,7 @@ export const InputField = React.forwardRef(
         <span className="relative">
           <input
             aria-label={label}
-            className={`w-full rounded-md ${
+            className={`w-full rounded-md read-only:opacity-70 read-only:dark:text-gray-600 ${
               isDirty ? 'bg-yellow-50' : ''
             } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''

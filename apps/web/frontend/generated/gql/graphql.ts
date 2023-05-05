@@ -188,6 +188,8 @@ export type Project = ModifyInterface & {
   isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
+  /** Can the user modify the entity */
+  role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
@@ -552,9 +554,14 @@ export type ProjectUnlockMutation = {
   projectUnlock: { __typename?: 'Project'; isLocked: boolean }
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean } & {
-  ' $fragmentName'?: 'ReportProjectFragment'
-}
+export type ReportProjectFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  role: string
+  canModify: boolean
+  isLocked: boolean
+} & { ' $fragmentName'?: 'ReportProjectFragment' }
 
 export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
@@ -1234,6 +1241,8 @@ export const ReportProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'isLocked' },
@@ -2541,6 +2550,8 @@ export const ReportProjectsDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'isLocked' },
