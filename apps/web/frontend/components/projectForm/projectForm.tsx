@@ -139,7 +139,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
@@ -173,7 +173,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
