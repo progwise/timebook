@@ -560,6 +560,7 @@ export type ReportProjectFragment = {
   title: string
   role: string
   canModify: boolean
+  isLocked: boolean
 } & { ' $fragmentName'?: 'ReportProjectFragment' }
 
 export type ReportProjectsQueryVariables = Exact<{
@@ -647,9 +648,15 @@ export type TaskCreateMutationVariables = Exact<{
 
 export type TaskCreateMutation = { __typename?: 'Mutation'; taskCreate: { __typename?: 'Task'; id: string } }
 
-export type TaskRowFragment = ({ __typename?: 'Task'; id: string; title: string; canModify: boolean } & {
-  ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment }
-}) & { ' $fragmentName'?: 'TaskRowFragment' }
+export type TaskRowFragment = ({
+  __typename?: 'Task'
+  id: string
+  title: string
+  canModify: boolean
+  isLockedByAdmin: boolean
+} & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
+  ' $fragmentName'?: 'TaskRowFragment'
+}
 
 export type TaskUpdateMutationVariables = Exact<{
   id: Scalars['ID']
@@ -1236,6 +1243,17 @@ export const ReportProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'role' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'isLocked' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+            ],
+          },
         ],
       },
     },
@@ -1310,6 +1328,7 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -1378,6 +1397,7 @@ export const TaskListProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },
@@ -2532,6 +2552,17 @@ export const ReportProjectsDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'role' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'isLocked' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'date' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
+              },
+            ],
+          },
         ],
       },
     },
@@ -3463,6 +3494,7 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
         ],
       },

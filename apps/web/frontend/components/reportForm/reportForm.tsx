@@ -18,6 +18,7 @@ export const ReportProjectFragment = graphql(`
     title
     role
     canModify
+    isLocked(date: $date)
   }
 `)
 

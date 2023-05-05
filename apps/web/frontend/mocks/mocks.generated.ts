@@ -538,6 +538,7 @@ export type ReportProjectFragment = {
   title: string
   role: string
   canModify: boolean
+  isLocked: boolean
 }
 
 export type ReportProjectsQueryVariables = Exact<{
@@ -549,7 +550,14 @@ export type ReportProjectsQueryVariables = Exact<{
 
 export type ReportProjectsQuery = {
   __typename?: 'Query'
-  projects: Array<{ __typename?: 'Project'; id: string; title: string; role: string; canModify: boolean }>
+  projects: Array<{
+    __typename?: 'Project'
+    id: string
+    title: string
+    role: string
+    canModify: boolean
+    isLocked: boolean
+  }>
 }
 
 export type ReportQueryVariables = Exact<{
@@ -616,7 +624,14 @@ export type TaskListProjectFragment = {
   __typename?: 'Project'
   id: string
   canModify: boolean
-  tasks: Array<{ __typename?: 'Task'; id: string; title: string; canModify: boolean; hasWorkHours: boolean }>
+  tasks: Array<{
+    __typename?: 'Task'
+    id: string
+    title: string
+    canModify: boolean
+    isLockedByAdmin: boolean
+    hasWorkHours: boolean
+  }>
 }
 
 export type TaskCreateMutationVariables = Exact<{
@@ -630,6 +645,7 @@ export type TaskRowFragment = {
   id: string
   title: string
   canModify: boolean
+  isLockedByAdmin: boolean
   hasWorkHours: boolean
 }
 
@@ -853,7 +869,14 @@ export type ProjectQuery = {
     hasWorkHours: boolean
     inviteKey: string
     isArchived: boolean
-    tasks: Array<{ __typename?: 'Task'; id: string; title: string; canModify: boolean; hasWorkHours: boolean }>
+    tasks: Array<{
+      __typename?: 'Task'
+      id: string
+      title: string
+      canModify: boolean
+      isLockedByAdmin: boolean
+      hasWorkHours: boolean
+    }>
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
 }
