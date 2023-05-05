@@ -133,6 +133,8 @@ export type Project = ModifyInterface & {
   id: Scalars['ID']
   /** List of users that are member of the project */
   members: Array<User>
+  /** Can the user modify the entity */
+  role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   tasks: Array<Task>
   title: Scalars['String']
@@ -382,7 +384,7 @@ export type ProjectTableItemFragment = {
   endDate?: string | null
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string }
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; role: string }
 
 export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
@@ -392,7 +394,7 @@ export type ReportProjectsQueryVariables = Exact<{
 
 export type ReportProjectsQuery = {
   __typename?: 'Query'
-  projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+  projects: Array<{ __typename?: 'Project'; id: string; title: string; role: string }>
 }
 
 export type ReportQueryVariables = Exact<{

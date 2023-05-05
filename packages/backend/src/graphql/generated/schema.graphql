@@ -132,6 +132,11 @@ type Project implements ModifyInterface {
     """
     includePastMembers: Boolean! = false
   ): [User!]!
+
+  """
+  Can the user modify the entity
+  """
+  role: String!
   startDate: Date
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!

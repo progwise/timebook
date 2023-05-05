@@ -131,6 +131,8 @@ export type Project = ModifyInterface & {
   id: Scalars['ID']
   /** List of users that are member of the project */
   members: Array<User>
+  /** Can the user modify the entity */
+  role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   tasks: Array<Task>
   title: Scalars['String']
@@ -385,7 +387,7 @@ export type ProjectTableItemFragment = {
   endDate?: string | null
 } & { ' $fragmentName'?: 'ProjectTableItemFragment' }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string } & {
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; role: string } & {
   ' $fragmentName'?: 'ReportProjectFragment'
 }
 
@@ -788,6 +790,7 @@ export const ReportProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
         ],
       },
     },
@@ -1426,6 +1429,7 @@ export const ReportProjectsDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
         ],
       },
     },

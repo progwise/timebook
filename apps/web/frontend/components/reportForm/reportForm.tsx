@@ -15,6 +15,7 @@ const ReportProjectFragment = graphql(`
   fragment ReportProject on Project {
     id
     title
+    role
   }
 `)
 
@@ -94,6 +95,7 @@ export const ReportForm = () => {
 
   const selectedProject = projects?.find((project) => project.id === selectedProjectId)
 
+  const userIsAdmin = selectedProject?.role === 'ADMIN'
   const handleChange = (selectedProjectId: string | null) => {
     setSelectedProjectId(selectedProjectId ?? undefined)
   }
@@ -142,7 +144,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProjectId && reportGroupedData && selectedUserId && (
+        {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <ReportLockButton
             year={year}
             month={month}

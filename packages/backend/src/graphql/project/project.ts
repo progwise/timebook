@@ -55,7 +55,7 @@ export const Project = builder.prismaObject('Project', {
           orderBy: { name: 'asc' },
         }),
     }),
-    canModify: t.withAuth({ isLoggedIn: true }).boolean({
+    role: t.withAuth({ isLoggedIn: true }).string({
       description: 'Can the user modify the entity',
       select: { id: true },
       resolve: async (project, _arguments, context) => {
@@ -64,7 +64,7 @@ export const Project = builder.prismaObject('Project', {
           where: { userId_projectId: { projectId: project.id, userId: context.session.user.id } },
         })
 
-        return projectMembership?.role === 'ADMIN'
+        return projectMembership?.role ?? 'NONE'
       },
     }),
   }),
