@@ -10,10 +10,18 @@ const prisma = new PrismaClient()
 const projectMembershipInviteByEmail = gql`
   mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {
     projectMembershipInviteByEmail(email: $email, projectId: $projectId) {
-      title
-      members {
-        name
+      ... on MutationProjectMembershipInviteByEmailSuccess {
+        data {
+          title
+          members {
+            name
+          }
+        }
       }
+      ... on UserNotFoundError {
+        email
+      }
+      __typename
     }
   }
 `
@@ -103,8 +111,10 @@ it('should throw error when email not exist', async () => {
       projectId: 'project1',
     },
   })
-  expect(response.errors).toEqual([new GraphQLError('No user found with email test@test.com')])
-  expect(response.data).toBeNull()
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toEqual({
+    projectMembershipInviteByEmail: { __typename: 'UserNotFoundError', email: 'test@test.com' },
+  })
 })
 
 it('should throw error when user is already member', async () => {
@@ -144,12 +154,15 @@ it('should add a new member when email exist and role=Asmin', async () => {
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
     projectMembershipInviteByEmail: {
-      members: [
-        { name: 'new user' },
-        { name: 'User with project membership (role=admin)' },
-        { name: 'User with project membership (role=member)' },
-      ],
-      title: 'P1',
+      __typename: 'MutationProjectMembershipInviteByEmailSuccess',
+      data: {
+        members: [
+          { name: 'new user' },
+          { name: 'User with project membership (role=admin)' },
+          { name: 'User with project membership (role=member)' },
+        ],
+        title: 'P1',
+      },
     },
   })
 })
