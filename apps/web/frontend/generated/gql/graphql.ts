@@ -554,7 +554,7 @@ export type ProjectUnlockMutation = {
   projectUnlock: { __typename?: 'Project'; isLocked: boolean }
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean } & {
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; role: string } & {
   ' $fragmentName'?: 'ReportProjectFragment'
 }
 
@@ -1236,17 +1236,7 @@ export const ReportProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'isLocked' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'date' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
-              },
-            ],
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
         ],
       },
     },
@@ -2543,17 +2533,7 @@ export const ReportProjectsDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'isLocked' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'date' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
-              },
-            ],
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
         ],
       },
     },

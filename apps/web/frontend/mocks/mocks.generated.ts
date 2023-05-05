@@ -532,7 +532,7 @@ export type ProjectUnlockMutation = {
   projectUnlock: { __typename?: 'Project'; isLocked: boolean }
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean }
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; role: string }
 
 export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
@@ -543,7 +543,7 @@ export type ReportProjectsQueryVariables = Exact<{
 
 export type ReportProjectsQuery = {
   __typename?: 'Query'
-  projects: Array<{ __typename?: 'Project'; id: string; title: string; isLocked: boolean }>
+  projects: Array<{ __typename?: 'Project'; id: string; title: string; role: string }>
 }
 
 export type ReportQueryVariables = Exact<{
