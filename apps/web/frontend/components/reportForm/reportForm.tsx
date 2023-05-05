@@ -17,6 +17,7 @@ export const ReportProjectFragment = graphql(`
     id
     title
     role
+    canModify
   }
 `)
 
