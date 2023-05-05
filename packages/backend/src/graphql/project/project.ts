@@ -62,6 +62,18 @@ export const Project = builder.prismaObject('Project', {
         }),
     }),
     inviteKey: t.exposeString('inviteKey'),
+    role: t.withAuth({ isLoggedIn: true }).string({
+      description: 'Can the user modify the entity',
+      select: { id: true },
+      resolve: async (project, _arguments, context) => {
+        const projectMembership = await prisma.projectMembership.findUnique({
+          select: { role: true },
+          where: { userId_projectId: { projectId: project.id, userId: context.session.user.id } },
+        })
+
+        return projectMembership?.role ?? 'NONE'
+      },
+    }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
       select: { id: true },

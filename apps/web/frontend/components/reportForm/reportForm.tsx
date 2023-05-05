@@ -16,6 +16,8 @@ export const ReportProjectFragment = graphql(`
   fragment ReportProject on Project {
     id
     title
+    role
+    canModify
     isLocked(date: $date)
   }
 `)
@@ -99,6 +101,7 @@ export const ReportForm = () => {
   })
 
   const selectedProject = projects?.find((project) => project.id === selectedProjectId)
+  const userIsAdmin = selectedProject?.role === 'ADMIN'
 
   return (
     <>
@@ -150,7 +153,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProject && (
+        {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
               <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />
