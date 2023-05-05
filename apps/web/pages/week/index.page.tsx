@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
+import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
@@ -10,7 +11,7 @@ import { graphql } from '../../frontend/generated/gql'
 
 const weekTableQueryDocument = graphql(`
   query weekTable($from: Date!, $to: Date) {
-    projects(from: $from, to: $to) {
+    projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {
       ...WeekTableProject
     }
   }
@@ -39,7 +40,7 @@ const WeekPage = (props: WeekPageProps) => {
 
   return (
     <ProtectedPage>
-      <h2>Week entries</h2>
+      <PageHeading>Week entries</PageHeading>
       <WeekSelector value={day} onChange={handleWeekChange} />
       {weekTableData?.projects && (
         <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />

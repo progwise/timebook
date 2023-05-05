@@ -17,6 +17,8 @@ export type Scalars = {
   Float: number
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: string
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  DateTime: string
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -25,28 +27,51 @@ export type ModifyInterface = {
   canModify: Scalars['Boolean']
 }
 
+export type MonthInput = {
+  month: Scalars['Int']
+  year: Scalars['Int']
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Archive a project */
+  projectArchive: Project
   /** Create a new project */
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
-  /** Unassign user to Project */
+  /** Unassign user from a project */
   projectMembershipDelete: Project
+  /** Assign user to a project by e-mail. */
+  projectMembershipInviteByEmail: Project
+  /** Add a user to a project using the invite key. */
+  projectMembershipJoin: Project
+  /** Unarchive a project */
+  projectUnarchive: Project
+  projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
-  reportLock: Report
-  reportUnlock: Report
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
+  /** Lock a task for the current user */
+  taskLock: Task
+  /** Unlock a task for the current user */
+  taskUnlock: Task
   /** Update a task */
   taskUpdate: Task
+  /** The ongoing time tracking will be deleted */
+  trackingCancel?: Maybe<Tracking>
+  /** Start time tracking for a task. When a tracking for the same task is already running the tracking keeps untouched. When a tracking for a different task is running, the on going tracking will be stopped and converted to work hours. */
+  trackingStart: Tracking
+  /** The ongoing time tracking will be stopped and converted to work hours */
+  trackingStop: Array<WorkHour>
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -55,12 +80,21 @@ export type Mutation = {
   workHourUpdate: WorkHour
 }
 
+export type MutationProjectArchiveArgs = {
+  projectId: Scalars['ID']
+}
+
 export type MutationProjectCreateArgs = {
   data: ProjectInput
 }
 
 export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationProjectLockArgs = {
+  date: MonthInput
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectMembershipCreateArgs = {
@@ -74,23 +108,27 @@ export type MutationProjectMembershipDeleteArgs = {
   userId: Scalars['ID']
 }
 
+export type MutationProjectMembershipInviteByEmailArgs = {
+  email: Scalars['String']
+  projectId: Scalars['ID']
+}
+
+export type MutationProjectMembershipJoinArgs = {
+  inviteKey: Scalars['String']
+}
+
+export type MutationProjectUnarchiveArgs = {
+  projectId: Scalars['ID']
+}
+
+export type MutationProjectUnlockArgs = {
+  date: MonthInput
+  projectId: Scalars['ID']
+}
+
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
-}
-
-export type MutationReportLockArgs = {
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-  year: Scalars['Int']
-}
-
-export type MutationReportUnlockArgs = {
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-  year: Scalars['Int']
 }
 
 export type MutationTaskArchiveArgs = {
@@ -105,9 +143,21 @@ export type MutationTaskDeleteArgs = {
   id: Scalars['ID']
 }
 
+export type MutationTaskLockArgs = {
+  taskId: Scalars['ID']
+}
+
+export type MutationTaskUnlockArgs = {
+  taskId: Scalars['ID']
+}
+
 export type MutationTaskUpdateArgs = {
   data: TaskUpdateInput
   id: Scalars['ID']
+}
+
+export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
 }
 
 export type MutationWorkHourCreateArgs = {
@@ -129,16 +179,27 @@ export type Project = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   endDate?: Maybe<Scalars['Date']>
+  hasWorkHours: Scalars['Boolean']
   /** identifies the project */
   id: Scalars['ID']
+  inviteKey: Scalars['String']
+  isArchived: Scalars['Boolean']
+  /** Is the project locked for the given month */
+  isLocked: Scalars['Boolean']
+  /** Is the user member of the project */
+  isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
   /** Can the user modify the entity */
   role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
+  /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
   title: Scalars['String']
-  workHours: Array<WorkHour>
+}
+
+export type ProjectIsLockedArgs = {
+  date?: InputMaybe<MonthInput>
 }
 
 export type ProjectMembersArgs = {
@@ -152,6 +213,7 @@ export type ProjectTasksArgs = {
 export enum ProjectFilter {
   Active = 'ACTIVE',
   All = 'ALL',
+  Archived = 'ARCHIVED',
   Future = 'FUTURE',
   Past = 'PAST',
 }
@@ -164,6 +226,7 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  currentTracking?: Maybe<Tracking>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -186,6 +249,7 @@ export type QueryProjectArgs = {
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
+  includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -262,13 +326,17 @@ export type Task = ModifyInterface & {
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
   hasWorkHours: Scalars['Boolean']
-  /** For calculating the money spent */
-  hourlyRate?: Maybe<Scalars['Float']>
   /** Identifies the task */
   id: Scalars['ID']
+  isLocked: Scalars['Boolean']
+  /** Is the task locked by an admin */
+  isLockedByAdmin: Scalars['Boolean']
+  /** Is the task locked by the user */
+  isLockedByUser: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
+  tracking?: Maybe<Tracking>
   workHours: Array<WorkHour>
 }
 
@@ -278,15 +346,21 @@ export type TaskWorkHoursArgs = {
 }
 
 export type TaskInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId: Scalars['ID']
   title: Scalars['String']
 }
 
 export type TaskUpdateInput = {
-  hourlyRate?: InputMaybe<Scalars['Float']>
+  isLocked?: InputMaybe<Scalars['Boolean']>
   projectId?: InputMaybe<Scalars['ID']>
   title?: InputMaybe<Scalars['String']>
+}
+
+export type Tracking = {
+  __typename?: 'Tracking'
+  start: Scalars['DateTime']
+  task: Task
 }
 
 export type User = {
@@ -330,13 +404,19 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
-export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
-
-export type ProjectDeleteMutationVariables = Exact<{
-  id: Scalars['ID']
+export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
+  email: Scalars['String']
+  projectId: Scalars['ID']
 }>
 
-export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
+export type ProjectMembershipInviteByEmailMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInviteByEmail: {
+    __typename?: 'Project'
+    title: string
+    members: Array<{ __typename?: 'User'; name?: string | null }>
+  }
+}
 
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
 
@@ -351,29 +431,77 @@ export type TaskDeleteMutation = {
   taskArchive?: { __typename?: 'Task'; id: string }
 }
 
+export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
+
+export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectArchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectArchiveMutation = {
+  __typename?: 'Mutation'
+  projectArchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
+export type DeleteOrArchiveProjectButtonFragment = {
+  __typename?: 'Project'
+  id: string
+  hasWorkHours: boolean
+  isArchived: boolean
+  title: string
+}
+
+export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
+
+export type UnarchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectUnarchiveMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectUnarchiveMutation = {
+  __typename?: 'Mutation'
+  projectUnarchive: { __typename?: 'Project'; id: string; isArchived: boolean }
+}
+
 export type ProjectFormFragment = {
   __typename?: 'Project'
   title: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
+  hasWorkHours: boolean
   id: string
+  isArchived: boolean
 }
 
-export type ProjectListItemFragment = {
+export type ProjectMemberListProjectFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
-  startDate?: string | null
-  endDate?: string | null
+  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
 }
 
-export type ProjectMemberListUserFragment = {
-  __typename?: 'User'
-  id: string
-  image?: string | null
-  name?: string | null
-  role: Role
+export type RemoveUserFromProjectButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null }
+
+export type RemoveUserFromProjectButtonProjectFragment = { __typename?: 'Project'; id: string; title: string }
+
+export type ProjectMembershipDeleteMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipDeleteMutation = {
+  __typename?: 'Mutation'
+  projectMembershipDelete: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectTableItemFragment = {
@@ -384,17 +512,38 @@ export type ProjectTableItemFragment = {
   endDate?: string | null
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; role: string }
+export type ProjectLockMutationVariables = Exact<{
+  date: MonthInput
+  projectId: Scalars['ID']
+}>
+
+export type ProjectLockMutation = {
+  __typename?: 'Mutation'
+  projectLock: { __typename?: 'Project'; isLocked: boolean }
+}
+
+export type ProjectUnlockMutationVariables = Exact<{
+  date: MonthInput
+  projectId: Scalars['ID']
+}>
+
+export type ProjectUnlockMutation = {
+  __typename?: 'Mutation'
+  projectUnlock: { __typename?: 'Project'; isLocked: boolean }
+}
+
+export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean }
 
 export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
   filter?: InputMaybe<ProjectFilter>
+  date: MonthInput
 }>
 
 export type ReportProjectsQuery = {
   __typename?: 'Query'
-  projects: Array<{ __typename?: 'Project'; id: string; title: string; role: string }>
+  projects: Array<{ __typename?: 'Project'; id: string; title: string; isLocked: boolean }>
 }
 
 export type ReportQueryVariables = Exact<{
@@ -407,9 +556,9 @@ export type ReportQueryVariables = Exact<{
 
 export type ReportQuery = {
   __typename?: 'Query'
+  project: { __typename?: 'Project'; canModify: boolean }
   report: {
     __typename?: 'Report'
-    isLocked: boolean
     groupedByDate: Array<{
       __typename?: 'ReportGroupedByDate'
       date: string
@@ -433,27 +582,6 @@ export type ReportQuery = {
       user: { __typename?: 'User'; id: string; name?: string | null }
     }>
   }
-}
-
-export type ReportLockMutationVariables = Exact<{
-  year: Scalars['Int']
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type ReportLockMutation = { __typename?: 'Mutation'; reportLock: { __typename?: 'Report'; isLocked: boolean } }
-
-export type ReportUnlockMutationVariables = Exact<{
-  year: Scalars['Int']
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type ReportUnlockMutation = {
-  __typename?: 'Mutation'
-  reportUnlock: { __typename?: 'Report'; isLocked: boolean }
 }
 
 export type ReportUserFragment = {
@@ -486,8 +614,8 @@ export type TaskListProjectFragment = {
     __typename?: 'Task'
     id: string
     title: string
-    hourlyRate?: number | null
     canModify: boolean
+    isLockedByAdmin: boolean
     hasWorkHours: boolean
   }>
 }
@@ -502,8 +630,8 @@ export type TaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
-  hourlyRate?: number | null
   canModify: boolean
+  isLockedByAdmin: boolean
   hasWorkHours: boolean
 }
 
@@ -541,16 +669,94 @@ export type WorkHoursQuery = {
   }>
 }
 
+export type CurrentTrackingQueryVariables = Exact<{ [key: string]: never }>
+
+export type CurrentTrackingQuery = {
+  __typename?: 'Query'
+  currentTracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; title: string; id: string; project: { __typename?: 'Project'; title: string } }
+  } | null
+}
+
+export type TrackingButtonsTrackingFragment = {
+  __typename?: 'Tracking'
+  start: string
+  task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+}
+
+export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string; isLocked: boolean }
+
+export type TrackingStartMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type TrackingStartMutation = {
+  __typename?: 'Mutation'
+  trackingStart: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } }
+}
+
+export type TrackingStopMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingStopMutation = {
+  __typename?: 'Mutation'
+  trackingStop: Array<{ __typename?: 'WorkHour'; id: string; task: { __typename?: 'Task'; id: string } }>
+}
+
+export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
+
+export type TrackingCancelMutation = {
+  __typename?: 'Mutation'
+  trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
+}
+
+export type TaskLockButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+
+export type LockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type LockTaskMutation = {
+  __typename?: 'Mutation'
+  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
+export type UnlockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type UnlockTaskMutation = {
+  __typename?: 'Mutation'
+  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
 export type WeekTableProjectFragment = {
   __typename?: 'Project'
   id: string
   title: string
+  isArchived: boolean
   tasks: Array<{
     __typename?: 'Task'
     id: string
     title: string
+    isLockedByAdmin: boolean
+    isLocked: boolean
+    isLockedByUser: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+      isArchived: boolean
+    }
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
   }>
 }
 
@@ -560,12 +766,28 @@ export type WeekTableProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
+  isArchived: boolean
   tasks: Array<{
     __typename?: 'Task'
     id: string
     title: string
+    isLockedByAdmin: boolean
+    isLocked: boolean
+    isLockedByUser: boolean
     workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: { __typename?: 'Project'; id: string }
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+      isArchived: boolean
+    }
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
   }>
 }
 
@@ -585,16 +807,36 @@ export type IsLockedQueryVariables = Exact<{
   month: Scalars['Int']
   projectId: Scalars['ID']
   userId: Scalars['ID']
+  taskId: Scalars['ID']
 }>
 
-export type IsLockedQuery = { __typename?: 'Query'; report: { __typename?: 'Report'; isLocked: boolean } }
+export type IsLockedQuery = {
+  __typename?: 'Query'
+  report: { __typename?: 'Report'; isLocked: boolean }
+  task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
+}
 
 export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
+  isLockedByAdmin: boolean
+  isLocked: boolean
+  isLockedByUser: boolean
+  project: {
+    __typename?: 'Project'
+    startDate?: string | null
+    endDate?: string | null
+    id: string
+    isProjectMember: boolean
+    isArchived: boolean
+  }
   workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-  project: { __typename?: 'Project'; id: string }
+  tracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+  } | null
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -610,15 +852,18 @@ export type ProjectQuery = {
     title: string
     startDate?: string | null
     endDate?: string | null
-    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+    hasWorkHours: boolean
+    inviteKey: string
+    isArchived: boolean
     tasks: Array<{
       __typename?: 'Task'
       id: string
       title: string
-      hourlyRate?: number | null
       canModify: boolean
+      isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
+    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
 }
 
@@ -656,6 +901,16 @@ export type ProjectCountsQuery = {
   activeCounts: number
   futureCounts: number
   pastCounts: number
+  archivedCounts: number
+}
+
+export type ProjectMembershipJoinMutationVariables = Exact<{
+  inviteKey: Scalars['String']
+}>
+
+export type ProjectMembershipJoinMutation = {
+  __typename?: 'Mutation'
+  projectMembershipJoin: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectCreateMutationVariables = Exact<{
@@ -675,15 +930,88 @@ export type WeekTableQuery = {
     __typename?: 'Project'
     id: string
     title: string
+    isArchived: boolean
     tasks: Array<{
       __typename?: 'Task'
       id: string
       title: string
+      isLockedByAdmin: boolean
+      isLocked: boolean
+      isLockedByUser: boolean
       workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-      project: { __typename?: 'Project'; id: string }
+      project: {
+        __typename?: 'Project'
+        startDate?: string | null
+        endDate?: string | null
+        id: string
+        isProjectMember: boolean
+        isArchived: boolean
+      }
+      tracking?: {
+        __typename?: 'Tracking'
+        start: string
+        task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+      } | null
     }>
   }>
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipInviteByEmailMutation((req, res, ctx) => {
+ *   const { email, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipInviteByEmail })
+ *   )
+ * })
+ */
+export const mockProjectMembershipInviteByEmailMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipInviteByEmailMutationVariables>,
+    GraphQLContext<ProjectMembershipInviteByEmailMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>(
+    'projectMembershipInviteByEmail',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskDeleteMutation((req, res, ctx) => {
+ *   const { id, hasWorkHours } = req.variables;
+ *   return res(
+ *     ctx.data({ taskDelete, taskArchive })
+ *   )
+ * })
+ */
+export const mockTaskDeleteMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
+) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectArchiveMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectArchive })
+ *   )
+ * })
+ */
+export const mockProjectArchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectArchiveMutationVariables>,
+    GraphQLContext<ProjectArchiveMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectArchiveMutation, ProjectArchiveMutationVariables>('projectArchive', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -708,23 +1036,84 @@ export const mockProjectDeleteMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockTaskDeleteMutation((req, res, ctx) => {
- *   const { id, hasWorkHours } = req.variables;
+ * mockProjectUnarchiveMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
  *   return res(
- *     ctx.data({ taskDelete, taskArchive })
+ *     ctx.data({ projectUnarchive })
  *   )
  * })
  */
-export const mockTaskDeleteMutation = (
-  resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
-) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+export const mockProjectUnarchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectUnarchiveMutationVariables>,
+    GraphQLContext<ProjectUnarchiveMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipDeleteMutation((req, res, ctx) => {
+ *   const { projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipDelete })
+ *   )
+ * })
+ */
+export const mockProjectMembershipDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipDeleteMutationVariables>,
+    GraphQLContext<ProjectMembershipDeleteMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipDeleteMutation, ProjectMembershipDeleteMutationVariables>(
+    'projectMembershipDelete',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectLockMutation((req, res, ctx) => {
+ *   const { date, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectLock })
+ *   )
+ * })
+ */
+export const mockProjectLockMutation = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectLockMutationVariables>, GraphQLContext<ProjectLockMutation>, any>,
+) => graphql.mutation<ProjectLockMutation, ProjectLockMutationVariables>('projectLock', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectUnlockMutation((req, res, ctx) => {
+ *   const { date, projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectUnlock })
+ *   )
+ * })
+ */
+export const mockProjectUnlockMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectUnlockMutationVariables>,
+    GraphQLContext<ProjectUnlockMutation>,
+    any
+  >,
+) => graphql.mutation<ProjectUnlockMutation, ProjectUnlockMutationVariables>('projectUnlock', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportProjectsQuery((req, res, ctx) => {
- *   const { from, to, filter } = req.variables;
+ *   const { from, to, filter, date } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
@@ -741,43 +1130,13 @@ export const mockReportProjectsQuery = (
  * mockReportQuery((req, res, ctx) => {
  *   const { projectId, month, year, userId, groupByUser } = req.variables;
  *   return res(
- *     ctx.data({ report })
+ *     ctx.data({ project, report })
  *   )
  * })
  */
 export const mockReportQuery = (
   resolver: ResponseResolver<GraphQLRequest<ReportQueryVariables>, GraphQLContext<ReportQuery>, any>,
 ) => graphql.query<ReportQuery, ReportQueryVariables>('report', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockReportLockMutation((req, res, ctx) => {
- *   const { year, month, projectId, userId } = req.variables;
- *   return res(
- *     ctx.data({ reportLock })
- *   )
- * })
- */
-export const mockReportLockMutation = (
-  resolver: ResponseResolver<GraphQLRequest<ReportLockMutationVariables>, GraphQLContext<ReportLockMutation>, any>,
-) => graphql.mutation<ReportLockMutation, ReportLockMutationVariables>('reportLock', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockReportUnlockMutation((req, res, ctx) => {
- *   const { year, month, projectId, userId } = req.variables;
- *   return res(
- *     ctx.data({ reportUnlock })
- *   )
- * })
- */
-export const mockReportUnlockMutation = (
-  resolver: ResponseResolver<GraphQLRequest<ReportUnlockMutationVariables>, GraphQLContext<ReportUnlockMutation>, any>,
-) => graphql.mutation<ReportUnlockMutation, ReportUnlockMutationVariables>('reportUnlock', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -843,6 +1202,101 @@ export const mockWorkHoursQuery = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCurrentTrackingQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ currentTracking })
+ *   )
+ * })
+ */
+export const mockCurrentTrackingQuery = (
+  resolver: ResponseResolver<GraphQLRequest<CurrentTrackingQueryVariables>, GraphQLContext<CurrentTrackingQuery>, any>,
+) => graphql.query<CurrentTrackingQuery, CurrentTrackingQueryVariables>('currentTracking', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingStartMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ trackingStart })
+ *   )
+ * })
+ */
+export const mockTrackingStartMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TrackingStartMutationVariables>,
+    GraphQLContext<TrackingStartMutation>,
+    any
+  >,
+) => graphql.mutation<TrackingStartMutation, TrackingStartMutationVariables>('trackingStart', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingStopMutation((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ trackingStop })
+ *   )
+ * })
+ */
+export const mockTrackingStopMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TrackingStopMutationVariables>, GraphQLContext<TrackingStopMutation>, any>,
+) => graphql.mutation<TrackingStopMutation, TrackingStopMutationVariables>('trackingStop', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTrackingCancelMutation((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ trackingCancel })
+ *   )
+ * })
+ */
+export const mockTrackingCancelMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<TrackingCancelMutationVariables>,
+    GraphQLContext<TrackingCancelMutation>,
+    any
+  >,
+) => graphql.mutation<TrackingCancelMutation, TrackingCancelMutationVariables>('trackingCancel', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLockTaskMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ taskLock })
+ *   )
+ * })
+ */
+export const mockLockTaskMutation = (
+  resolver: ResponseResolver<GraphQLRequest<LockTaskMutationVariables>, GraphQLContext<LockTaskMutation>, any>,
+) => graphql.mutation<LockTaskMutation, LockTaskMutationVariables>('lockTask', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUnlockTaskMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUnlock })
+ *   )
+ * })
+ */
+export const mockUnlockTaskMutation = (
+  resolver: ResponseResolver<GraphQLRequest<UnlockTaskMutationVariables>, GraphQLContext<UnlockTaskMutation>, any>,
+) => graphql.mutation<UnlockTaskMutation, UnlockTaskMutationVariables>('unlockTask', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
  *   const { data, date, taskId } = req.variables;
  *   return res(
@@ -863,9 +1317,9 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockIsLockedQuery((req, res, ctx) => {
- *   const { year, month, projectId, userId } = req.variables;
+ *   const { year, month, projectId, userId, taskId } = req.variables;
  *   return res(
- *     ctx.data({ report })
+ *     ctx.data({ report, task })
  *   )
  * })
  */
@@ -929,13 +1383,36 @@ export const mockMyProjectsQuery = (
  * mockProjectCountsQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
- *     ctx.data({ projectsCount, projectsCount, projectsCount, projectsCount })
+ *     ctx.data({ projectsCount, projectsCount, projectsCount, projectsCount, projectsCount })
  *   )
  * })
  */
 export const mockProjectCountsQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectCountsQueryVariables>, GraphQLContext<ProjectCountsQuery>, any>,
 ) => graphql.query<ProjectCountsQuery, ProjectCountsQueryVariables>('projectCounts', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipJoinMutation((req, res, ctx) => {
+ *   const { inviteKey } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipJoin })
+ *   )
+ * })
+ */
+export const mockProjectMembershipJoinMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipJoinMutationVariables>,
+    GraphQLContext<ProjectMembershipJoinMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipJoinMutation, ProjectMembershipJoinMutationVariables>(
+    'projectMembershipJoin',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -1,6 +1,7 @@
 export interface DefaultTableComponentProps {
   className?: string
   children?: React.ReactNode
+  onClick?: () => void
 }
 
 export const Table: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
@@ -29,14 +30,27 @@ export const TableBody: React.FC<DefaultTableComponentProps> = ({ children, clas
   return <tbody className={className}>{children}</tbody>
 }
 
-export const TableRow: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
+export const TableRow: React.FC<DefaultTableComponentProps> = ({ children, className = '', onClick }) => {
   return (
-    <tr className={`border-b-2 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-gray-600 ${className}`}>{children}</tr>
+    <tr
+      className={`border-b-2 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-gray-600 ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </tr>
   )
 }
 
-export const TableCell: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <td className={` p-2 ${className}`}>{children}</td>
+export const TableCell: React.FC<DefaultTableComponentProps & { colSpan?: number }> = ({
+  children,
+  className = '',
+  colSpan,
+}) => {
+  return (
+    <td className={` p-2 ${className}`} colSpan={colSpan}>
+      {children}
+    </td>
+  )
 }
 
 // Footer:

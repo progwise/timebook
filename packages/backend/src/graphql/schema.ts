@@ -9,6 +9,7 @@ import './projectMembership'
 import './report'
 import './scalars'
 import './task'
+import './tracking'
 import './user'
 import './workHour'
 

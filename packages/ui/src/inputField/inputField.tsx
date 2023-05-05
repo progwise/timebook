@@ -5,7 +5,7 @@ import { Spinner } from '../spinner'
 export interface InputFieldProps {
   name?: string
   value?: string
-  onBlur?: (event: React.FocusEvent) => void
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
   variant: 'primary'
   placeholder?: string
   disabled?: boolean
@@ -13,13 +13,16 @@ export interface InputFieldProps {
   readOnly?: boolean
   size?: number
   className?: string
+  inputClassName?: string
   label?: string
   errorMessage?: string
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
-  type?: 'number' | 'text'
+  type?: 'number' | 'text' | 'email'
   form?: string
   hideLabel?: boolean
+  onFocus?: React.FocusEventHandler<HTMLInputElement>
+  isDirty?: boolean
 }
 
 export const InputField = React.forwardRef(
@@ -36,34 +39,38 @@ export const InputField = React.forwardRef(
       readOnly,
       size,
       className = '',
+      inputClassName = '',
       label,
       errorMessage,
       loading,
       type,
       form,
       hideLabel = false,
+      onFocus,
+      isDirty = false,
     }: InputFieldProps,
-    // eslint-disable-next-line unicorn/prevent-abbreviations
-    ref: React.ForwardedRef<HTMLInputElement>,
+    reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
       primary:
-        'font-small px-2 py-1 border-b2 border border-gray-600 disabled:bg-gray-100 disabled:opacity-50 read-only:bg-gray-100 read-only:opacity-50',
+        'border border-gray-600 px-2 py-1 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
     }[variant]
 
     return (
       <div className={`flex w-full flex-col gap-1 ${className}`}>
         {label && !hideLabel && (
-          <label htmlFor={name} className="text-sm font-semibold text-gray-500">
+          <label htmlFor={name} className="text-sm font-semibold">
             {label}
           </label>
         )}
         <span className="relative">
           <input
             aria-label={label}
-            className={`w-full rounded-md text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
+            className={`w-full rounded-md ${
+              isDirty ? 'bg-yellow-50' : ''
+            } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''
-            }`}
+            } ${inputClassName}`}
             type={type}
             placeholder={placeholder}
             disabled={disabled}
@@ -71,13 +78,13 @@ export const InputField = React.forwardRef(
             onChange={onChange}
             onBlur={onBlur}
             value={value}
-            ref={ref}
+            ref={reference}
             onKeyPress={onKeyPress}
             name={name}
             size={size}
             form={form}
+            onFocus={onFocus}
           />
-
           {loading && (
             <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
               <Spinner />

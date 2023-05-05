@@ -5,7 +5,7 @@ import { useMutation, useQuery } from 'urql'
 import { TableCell } from '@progwise/timebook-ui'
 
 import { graphql } from '../../generated/gql'
-import { HourInput } from '../hourInput'
+import { HourInput } from '../hourInput/hourInput'
 import { classNameMarkDay } from './classNameMarkDay'
 
 const WorkHourUpdateMutationDocument = graphql(`
@@ -17,9 +17,13 @@ const WorkHourUpdateMutationDocument = graphql(`
 `)
 
 const IsLockedQueryDocument = graphql(`
-  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!) {
+  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {
     report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
       isLocked
+    }
+    task(taskId: $taskId) {
+      isLockedByUser
+      isLockedByAdmin
     }
   }
 `)
@@ -29,9 +33,10 @@ interface WeekTableTaskDayCellProps {
   taskId: string
   projectId: string
   day: Date
+  disabled: boolean
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -41,10 +46,13 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekT
 
   const [{ data }] = useQuery({
     query: IsLockedQueryDocument,
-    variables: { year, month, userId: userId ?? '', projectId },
+    variables: { year, month, userId: userId ?? '', projectId, taskId },
     pause: !userId,
   })
   const isLockedByReport = data?.report.isLocked ?? false
+  const isLockedByUser = data?.task.isLockedByUser ?? false
+  const isLockedByAdmin = data?.task.isLockedByAdmin ?? false
+  const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
     <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>
@@ -60,8 +68,8 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId }: WeekT
             taskId,
           })
         }}
-        workHours={duration / 60}
-        disabled={isLockedByReport}
+        duration={duration}
+        disabled={isLocked || disabled}
       />
     </TableCell>
   )

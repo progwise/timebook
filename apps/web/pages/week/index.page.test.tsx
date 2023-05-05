@@ -1,5 +1,5 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
-import { getWeek, getYear } from 'date-fns'
+import { format, getWeek, getYear, startOfWeek, endOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
 import { mockServer } from '../../frontend/mocks/mockServer'
@@ -7,8 +7,11 @@ import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
 import TimePage from './index.page'
 
 const now = new Date()
-const weekNumber = getWeek(now, { firstWeekContainsDate: 7, weekStartsOn: 1 })
+const weekNumber = getWeek(now)
 const yearNumber = getYear(now)
+const weekStartDate = startOfWeek(now)
+const weekEndDate = endOfWeek(now)
+
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
@@ -24,6 +27,7 @@ beforeEach(() => {
       response(
         context.data({
           report: { isLocked: request.variables.month === 1, __typename: 'Report' },
+          task: { isLockedByUser: false, isLockedByAdmin: false, __typename: 'Task' },
           __typename: 'Query',
         }),
       ),
@@ -32,17 +36,17 @@ beforeEach(() => {
 })
 
 describe('The time page...', () => {
-  it('...renders the week selector with today', () => {
-    render(<TimePage />, { wrapper })
-    const weekCombo = screen.getByRole('combobox', {
-      name: /week/i,
-    })
-    const yearCombo = screen.getByRole('combobox', {
-      name: /year/i,
-    })
-    expect(weekCombo).toHaveValue(weekNumber.toString())
-    expect(yearCombo).toHaveValue(yearNumber.toString())
+  it('...displays the correct week, start and end dates', () => {
+    render(<TimePage day={new Date(now)} />, { wrapper })
+
+    const weekDisplay = screen.getByText(`Week ${weekNumber}/${yearNumber}`)
+    const dateRangeDisplay = screen.getByText(
+      `${format(weekStartDate, 'dd.MM')} - ${format(weekEndDate, 'dd.MM.yyyy')}*`,
+    )
+    expect(weekDisplay).toBeInTheDocument()
+    expect(dateRangeDisplay).toBeInTheDocument()
   })
+
   it('...renders the current projects table', async () => {
     render(<TimePage />, { wrapper })
     const table = await screen.findByRole('table')
