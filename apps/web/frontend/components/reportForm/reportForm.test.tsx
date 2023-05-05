@@ -26,7 +26,9 @@ beforeAll(() => {
     mockReportProjectsQuery((_request, response, context) =>
       response(
         context.data({
-          projects: [{ id: 'project1', title: 'Project 1', __typename: 'Project', isLocked }],
+          projects: [
+            { id: 'project1', title: 'Project 1', __typename: 'Project', isLocked, role: 'NONE', canModify: false },
+          ],
           __typename: 'Query',
         }),
       ),
