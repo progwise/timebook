@@ -52,8 +52,7 @@ export const InputField = React.forwardRef(
     reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
-      primary:
-        'border border-gray-600 px-2 py-1 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
+      primary: 'border border-gray-600 px-2 py-1 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
     }[variant]
 
     return (
