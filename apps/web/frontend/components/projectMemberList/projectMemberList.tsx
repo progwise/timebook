@@ -47,16 +47,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
     await updateProjectMembership({
       projectId: project.id,
       userId,
-      role: Role.Admin === role ? Role.Member : Role.Admin,
+      role,
     })
-  }
-
-  const handleUpgrade = async (userId: string) => {
-    await handleUpdateProjectMembership(userId, Role.Admin)
-  }
-
-  const handleDowngrade = async (userId: string) => {
-    await handleUpdateProjectMembership(userId, Role.Member)
   }
 
   return (
@@ -89,8 +81,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
               <TableCell>
                 <RoleLabel
                   role={user.role}
-                  onUpgrade={() => handleUpgrade(user.id)}
-                  onDowngrade={() => handleDowngrade(user.id)}
+                  onUpgrade={() => handleUpdateProjectMembership(user.id, Role.Admin)}
+                  onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}
                 />
               </TableCell>
               <TableCell>
