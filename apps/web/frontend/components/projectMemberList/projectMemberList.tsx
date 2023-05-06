@@ -1,9 +1,11 @@
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import { useMutation } from 'urql'
 
 import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { Role } from '../../generated/gql/graphql'
 import { AddProjectMemberForm } from '../addProjectMemberForm'
 import { PageHeading } from '../pageHeading'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
@@ -24,6 +26,14 @@ const ProjectMemberListProjectFragment = graphql(`
   }
 `)
 
+const ProjectMembershipUpdateMutationDocument = graphql(`
+  mutation projectMembershipUpdate($projectId: ID!, $userId: ID!, $role: Role!) {
+    projectMembershipCreate(projectId: $projectId, userId: $userId, role: $role) {
+      id
+    }
+  }
+`)
+
 interface ProjectMemberListProps {
   project: FragmentType<typeof ProjectMemberListProjectFragment>
 }
@@ -31,6 +41,23 @@ interface ProjectMemberListProps {
 export const ProjectMemberList = (props: ProjectMemberListProps) => {
   const project = useFragment(ProjectMemberListProjectFragment, props.project)
   const session = useSession()
+  const [, updateProjectMembership] = useMutation(ProjectMembershipUpdateMutationDocument)
+
+  const handleUpdateProjectMembership = async (userId: string, role: Role) => {
+    await updateProjectMembership({
+      projectId: project.id,
+      userId,
+      role: Role.Admin === role ? Role.Member : Role.Admin,
+    })
+  }
+
+  const handleUpgrade = async (userId: string) => {
+    await handleUpdateProjectMembership(userId, Role.Admin)
+  }
+
+  const handleDowngrade = async (userId: string) => {
+    await handleUpdateProjectMembership(userId, Role.Member)
+  }
 
   return (
     <>
@@ -60,7 +87,11 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 {user.name}
               </TableCell>
               <TableCell>
-                <RoleLabel role={user.role} />
+                <RoleLabel
+                  role={user.role}
+                  onUpgrade={() => handleUpgrade(user.id)}
+                  onDowngrade={() => handleDowngrade(user.id)}
+                />
               </TableCell>
               <TableCell>
                 {project.canModify && session.data?.user.id !== user.id && (

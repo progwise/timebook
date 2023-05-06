@@ -47,7 +47,7 @@ export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonPr
 
   return (
     <>
-      <Button variant="danger" onClick={() => setModalOpen(true)}>
+      <Button variant="danger" onClick={() => setModalOpen(true)} tooltip="Remove user from project">
         <BiExit />
       </Button>
       <Modal
