@@ -41,7 +41,7 @@ interface ProjectMemberListProps {
 export const ProjectMemberList = (props: ProjectMemberListProps) => {
   const project = useFragment(ProjectMemberListProjectFragment, props.project)
   const session = useSession()
-  const [, updateProjectMembership] = useMutation(ProjectMembershipUpdateMutationDocument)
+  const [{ fetching }, updateProjectMembership] = useMutation(ProjectMembershipUpdateMutationDocument)
 
   const handleUpdateProjectMembership = async (userId: string, role: Role) => {
     await updateProjectMembership({
@@ -81,6 +81,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
               <TableCell>
                 <RoleLabel
                   role={user.role}
+                  loading={fetching}
                   onUpgrade={() => handleUpdateProjectMembership(user.id, Role.Admin)}
                   onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}
                 />
