@@ -7,7 +7,6 @@ export const TaskUpdateInput = builder.inputType('TaskUpdateInput', {
   fields: (t) => ({
     title: t.string({ required: false }),
     projectId: t.id({ required: false }),
-    hourlyRate: t.float({ required: false }),
     isLocked: t.boolean({ required: false }),
   }),
 })

@@ -116,7 +116,7 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
         type="email"
         variant="primary"
         placeholder="Email address to invite someone"
-        className=" dark:bg-slate-800 dark:text-white"
+        className="dark:bg-slate-800 dark:text-white"
         isDirty={isDirty}
       />
     </form>

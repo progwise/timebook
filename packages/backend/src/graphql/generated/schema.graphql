@@ -211,6 +211,11 @@ type Project implements ModifyInterface {
     """
     includePastMembers: Boolean! = false
   ): [User!]!
+
+  """
+  Can the user modify the entity
+  """
+  role: String!
   startDate: Date
 
   """
@@ -381,11 +386,6 @@ type Task implements ModifyInterface {
   hasWorkHours: Boolean!
 
   """
-  For calculating the money spent
-  """
-  hourlyRate: Float
-
-  """
   Identifies the task
   """
   id: ID!
@@ -411,14 +411,12 @@ type Task implements ModifyInterface {
 }
 
 input TaskInput {
-  hourlyRate: Float
   isLocked: Boolean = false
   projectId: ID!
   title: String!
 }
 
 input TaskUpdateInput {
-  hourlyRate: Float
   isLocked: Boolean
   projectId: ID
   title: String

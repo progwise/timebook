@@ -52,8 +52,7 @@ export const InputField = React.forwardRef(
     reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
     const variantClassName: string = {
-      primary:
-        'border border-gray-600 px-2 py-1 read-only:bg-gray-100 read-only:opacity-50 disabled:bg-gray-100 disabled:opacity-50',
+      primary: 'border border-gray-600 px-2 py-1',
     }[variant]
 
     return (
@@ -66,7 +65,7 @@ export const InputField = React.forwardRef(
         <span className="relative">
           <input
             aria-label={label}
-            className={`w-full rounded-md ${
+            className={`w-full rounded-md read-only:opacity-70 read-only:dark:text-gray-600 ${
               isDirty ? 'bg-yellow-50' : ''
             } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
               loading ? 'pr-8' : ''

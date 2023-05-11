@@ -51,7 +51,7 @@ const documents = {
     types.ProjectLockDocument,
   '\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
     types.ProjectUnlockDocument,
-  '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n':
+  '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n':
     types.ReportProjectFragmentDoc,
   '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n':
     types.ReportProjectsDocument,
@@ -65,7 +65,7 @@ const documents = {
     types.TaskListProjectFragmentDoc,
   '\n  mutation taskCreate($data: TaskInput!) {\n    taskCreate(data: $data) {\n      id\n    }\n  }\n':
     types.TaskCreateDocument,
-  '\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n':
+  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n':
     types.TaskRowFragmentDoc,
   '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.TaskUpdateDocument,
@@ -254,8 +254,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n',
-): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n']
+  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n',
+): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -296,8 +296,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n',
-): typeof documents['\n  fragment TaskRow on Task {\n    id\n    title\n    hourlyRate\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n']
+  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n',
+): typeof documents['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

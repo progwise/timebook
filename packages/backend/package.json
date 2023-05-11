@@ -39,7 +39,7 @@
     "prisma": "^4.8.1",
     "ts-jest": "^29.0.3",
     "tsconfig": "workspace:*",
-    "typescript": "^4.7.3"
+    "typescript": "^5.0.0"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma",
