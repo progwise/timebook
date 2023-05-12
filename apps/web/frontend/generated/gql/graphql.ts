@@ -44,7 +44,7 @@ export type Mutation = {
   /** Unassign user from a project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
-  projectMembershipInviteByEmail: Project
+  projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
   /** Unarchive a project */
@@ -170,6 +170,15 @@ export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailResult =
+  | MutationProjectMembershipInviteByEmailSuccess
+  | UserNotFoundError
+
+export type MutationProjectMembershipInviteByEmailSuccess = {
+  __typename?: 'MutationProjectMembershipInviteByEmailSuccess'
+  data: Project
 }
 
 export type Project = ModifyInterface & {
@@ -381,6 +390,11 @@ export type UserRoleArgs = {
   projectId: Scalars['ID']
 }
 
+export type UserNotFoundError = {
+  __typename?: 'UserNotFoundError'
+  email: Scalars['String']
+}
+
 export type WorkHour = {
   __typename?: 'WorkHour'
   date: Scalars['Date']
@@ -402,6 +416,10 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string } & {
+  ' $fragmentName'?: 'AddProjectMemberFormFragment'
+}
+
 export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
   email: Scalars['String']
   projectId: Scalars['ID']
@@ -409,11 +427,12 @@ export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
 
 export type ProjectMembershipInviteByEmailMutation = {
   __typename?: 'Mutation'
-  projectMembershipInviteByEmail: {
-    __typename?: 'Project'
-    title: string
-    members: Array<{ __typename?: 'User'; name?: string | null }>
-  }
+  projectMembershipInviteByEmail:
+    | {
+        __typename: 'MutationProjectMembershipInviteByEmailSuccess'
+        data: { __typename?: 'Project'; title: string; members: Array<{ __typename?: 'User'; name?: string | null }> }
+      }
+    | { __typename: 'UserNotFoundError'; email: string }
 }
 
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string } & {
@@ -497,7 +516,6 @@ export type ProjectFormFragment = ({
 
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
-  id: string
   canModify: boolean
   members: Array<
     { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
@@ -505,7 +523,10 @@ export type ProjectMemberListProjectFragment = ({
     }
   >
 } & {
-  ' $fragmentRefs'?: { RemoveUserFromProjectButtonProjectFragment: RemoveUserFromProjectButtonProjectFragment }
+  ' $fragmentRefs'?: {
+    RemoveUserFromProjectButtonProjectFragment: RemoveUserFromProjectButtonProjectFragment
+    AddProjectMemberFormFragment: AddProjectMemberFormFragment
+  }
 }) & { ' $fragmentName'?: 'ProjectMemberListProjectFragment' }
 
 export type RemoveUserFromProjectButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null } & {
@@ -1127,6 +1148,24 @@ export const RemoveUserFromProjectButtonProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<RemoveUserFromProjectButtonProjectFragment, unknown>
+export const AddProjectMemberFormFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AddProjectMemberForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AddProjectMemberFormFragment, unknown>
 export const RemoveUserFromProjectButtonUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1154,9 +1193,9 @@ export const ProjectMemberListProjectFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'members' },
@@ -1192,6 +1231,19 @@ export const ProjectMemberListProjectFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AddProjectMemberForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
         ],
       },
@@ -2099,15 +2151,45 @@ export const ProjectMembershipInviteByEmailDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                 {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'MutationProjectMembershipInviteByEmailSuccess' },
+                  },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'data' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'members' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
                   },
                 },
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'UserNotFoundError' } },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'email' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: '__typename' } },
               ],
             },
           },
@@ -3565,6 +3647,19 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AddProjectMemberForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
       selectionSet: {
@@ -3621,9 +3716,9 @@ export const ProjectDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'members' },

@@ -46,7 +46,7 @@ export type Mutation = {
   /** Unassign user from a project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
-  projectMembershipInviteByEmail: Project
+  projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
   /** Unarchive a project */
@@ -172,6 +172,15 @@ export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInviteByEmailResult =
+  | MutationProjectMembershipInviteByEmailSuccess
+  | UserNotFoundError
+
+export type MutationProjectMembershipInviteByEmailSuccess = {
+  __typename?: 'MutationProjectMembershipInviteByEmailSuccess'
+  data: Project
 }
 
 export type Project = ModifyInterface & {
@@ -383,6 +392,11 @@ export type UserRoleArgs = {
   projectId: Scalars['ID']
 }
 
+export type UserNotFoundError = {
+  __typename?: 'UserNotFoundError'
+  email: Scalars['String']
+}
+
 export type WorkHour = {
   __typename?: 'WorkHour'
   date: Scalars['Date']
@@ -404,6 +418,8 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
+
 export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
   email: Scalars['String']
   projectId: Scalars['ID']
@@ -411,11 +427,12 @@ export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
 
 export type ProjectMembershipInviteByEmailMutation = {
   __typename?: 'Mutation'
-  projectMembershipInviteByEmail: {
-    __typename?: 'Project'
-    title: string
-    members: Array<{ __typename?: 'User'; name?: string | null }>
-  }
+  projectMembershipInviteByEmail:
+    | {
+        __typename: 'MutationProjectMembershipInviteByEmailSuccess'
+        data: { __typename?: 'Project'; title: string; members: Array<{ __typename?: 'User'; name?: string | null }> }
+      }
+    | { __typename: 'UserNotFoundError'; email: string }
 }
 
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
@@ -484,9 +501,10 @@ export type ProjectFormFragment = {
 
 export type ProjectMemberListProjectFragment = {
   __typename?: 'Project'
-  id: string
   canModify: boolean
+  id: string
   title: string
+  inviteKey: string
   members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
 }
 
