@@ -27,6 +27,6 @@ export const timebook = new digitalocean.App('timebook', {
         ],
       },
     ],
-    databases: [{ engine: 'PG', name: 'db' }],
+    databases: [{ engine: 'PG', name: 'db', production: true }],
   },
 })
