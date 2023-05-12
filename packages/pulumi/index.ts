@@ -21,7 +21,7 @@ const timebook_cluster = new digitalocean.DatabaseCluster(
 const timebook_database = new digitalocean.DatabaseDb(
   'db',
   {
-    clusterId: timebook_cluster.id, // '0d81f026-a9e3-4c12-ba00-c82285331383',
+    clusterId: timebook_cluster.id,
     name: 'db',
   },
   {
