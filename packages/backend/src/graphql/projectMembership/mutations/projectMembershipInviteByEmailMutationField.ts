@@ -1,8 +1,28 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
+class UserNotFoundError extends Error {
+  public email
+
+  constructor(email: string) {
+    super(`User not found with email "${email}"`)
+    this.email = email
+  }
+}
+
+builder.objectType(UserNotFoundError, {
+  name: 'UserNotFoundError',
+  fields: (t) => ({
+    email: t.exposeString('email'),
+  }),
+})
+
 builder.mutationField('projectMembershipInviteByEmail', (t) =>
   t.prismaField({
+    errors: {
+      types: [UserNotFoundError],
+    },
+
     type: 'Project',
     description: 'Assign user to a project by e-mail.',
     args: {
@@ -15,7 +35,7 @@ builder.mutationField('projectMembershipInviteByEmail', (t) =>
         where: { email },
       })
       if (!user) {
-        throw new Error(`No user found with email ${email}`)
+        throw new UserNotFoundError(email)
       }
       const userId = user.id
 
