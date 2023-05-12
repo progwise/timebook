@@ -27,6 +27,13 @@ export const timebook = new digitalocean.App('timebook', {
         ],
       },
     ],
-    databases: [{ engine: 'PG', name: 'db', production: true }],
+    databases: [
+      {
+        engine: 'PG',
+        name: 'db',
+        production: true,
+        clusterName: 'app-cd9ae4c8-1b61-4e14-9369-f40e3d451169-do-user-11571250-0.b.db.ondigitalocean.com',
+      },
+    ],
   },
 })
