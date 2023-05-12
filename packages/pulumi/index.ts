@@ -9,7 +9,6 @@ const timebook_cluster = new digitalocean.DatabaseCluster(
     engine: 'pg',
     name: 'app-cd9ae4c8-1b61-4e14-9369-f40e3d451169',
     nodeCount: 1,
-    privateNetworkUuid: '748d34ed-720c-478f-8ab4-620bb38128ea',
     region: 'fra1',
     size: 'db-s-1vcpu-1gb',
     version: '12',
