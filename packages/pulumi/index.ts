@@ -17,6 +17,17 @@ const timebook_cluster = new digitalocean.DatabaseCluster(
     protect: true,
   },
 )
+
+const timebook_database = new digitalocean.DatabaseDb(
+  'db',
+  {
+    clusterId: timebook_cluster.id,
+    name: 'db',
+  },
+  {
+    protect: true,
+  },
+)
 export const timebook = new digitalocean.App('timebook', {
   spec: {
     domainNames: [{ name: 'timebook.progwise.net' }],
@@ -47,6 +58,7 @@ export const timebook = new digitalocean.App('timebook', {
         name: 'db',
         production: true,
         clusterName: timebook_cluster.name,
+        dbName: timebook_database.name,
       },
     ],
   },
