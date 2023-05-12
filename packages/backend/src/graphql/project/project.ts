@@ -58,7 +58,7 @@ export const Project = builder.prismaObject('Project', {
             : {
                 projectMemberships: { some: { projectId: project.id } },
               },
-          orderBy: { name: 'asc' },
+          orderBy: [{ id: 'asc' }, { name: 'asc' }],
         }),
     }),
     inviteKey: t.exposeString('inviteKey'),

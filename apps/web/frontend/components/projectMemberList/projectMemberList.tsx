@@ -9,6 +9,7 @@ import { Role } from '../../generated/gql/graphql'
 import { AddProjectMemberForm } from '../addProjectMemberForm'
 import { PageHeading } from '../pageHeading'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
+import { RoleButton } from './roleButton'
 import { RoleLabel } from './roleLabel'
 
 const ProjectMemberListProjectFragment = graphql(`
@@ -79,12 +80,17 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 {user.name}
               </TableCell>
               <TableCell>
-                <RoleLabel
-                  role={user.role}
-                  loading={fetching}
-                  onUpgrade={() => handleUpdateProjectMembership(user.id, Role.Admin)}
-                  onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}
-                />
+                <RoleLabel role={user.role} />
+              </TableCell>
+              <TableCell>
+                {user.id !== session.data?.user.id && project.canModify && (
+                  <RoleButton
+                    role={user.role}
+                    loading={fetching}
+                    onUpgrade={() => handleUpdateProjectMembership(user.id, Role.Admin)}
+                    onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}
+                  />
+                )}
               </TableCell>
               <TableCell>
                 {project.canModify && session.data?.user.id !== user.id && (
