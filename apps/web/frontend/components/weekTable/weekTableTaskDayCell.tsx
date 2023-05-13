@@ -37,8 +37,7 @@ interface WeekTableTaskDayCellProps {
 }
 
 export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
-  const [mutationResult, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
-  const mutationLoading = mutationResult.fetching
+  const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
 
@@ -69,7 +68,6 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
             taskId,
           })
         }}
-        mutationLoading={mutationLoading}
         duration={duration}
         disabled={isLocked || disabled}
       />

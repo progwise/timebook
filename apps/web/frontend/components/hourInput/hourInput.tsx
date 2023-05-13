@@ -25,7 +25,6 @@ export const HourInput = (props: {
   onChange?: (workHours: number) => void
   onBlur?: (workHours: number) => void
   disabled?: boolean
-  mutationLoading?: boolean
 }): JSX.Element => {
   const [formattedDuration, setFormattedDuration] = useState<string>(getFormattedDuration(props.duration))
   const previousDuration = useRef(props.duration)
@@ -64,7 +63,6 @@ export const HourInput = (props: {
       inputClassName="text-center"
       onBlur={handleBlur}
       isDirty={formattedDuration !== getFormattedDuration(props.duration)}
-      loading={props.mutationLoading}
     />
   )
 }

@@ -80,14 +80,14 @@ export const ReportForm = () => {
   const fromString = formatISO(from, { representation: 'date' })
   const endString = formatISO(to, { representation: 'date' })
 
-  const [{ fetching: loadProjects, data: projectsData }] = useQuery({
+  const [{ fetching: fetchingProjects, data: projectsData }] = useQuery({
     query: ReportProjectsQueryDocument,
     variables: { from: fromString, filter: ProjectFilter.All, date: { year, month } },
   })
   const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
   const context = useMemo(() => ({ additionalTypenames: ['WorkHour'] }), [])
-  const [{ fetching: loadReportGrouped, data: reportGroupedData }] = useQuery({
+  const [{ fetching: fetchingReports, data: reportGroupedData }] = useQuery({
     query: ReportQueryDocument,
     variables: {
       projectId: selectedProjectId ?? '',
@@ -119,7 +119,7 @@ export const ReportForm = () => {
 
       <div className="flex flex-col">
         <div className="flex justify-between">
-          {loadProjects ? (
+          {fetchingProjects ? (
             <Spinner />
           ) : (
             <div className="flex flex-row items-start gap-4">
@@ -160,7 +160,7 @@ export const ReportForm = () => {
 
         {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <>
-            {loadProjects ? (
+            {fetchingProjects && fetchingReports ? (
               <div className="mt-10 flex justify-center">
                 <Spinner size="medium" />
               </div>
