@@ -14,7 +14,9 @@ import * as types from './graphql'
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-  '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n':
+  '\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n':
+    types.AddProjectMemberFormFragmentDoc,
+  '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n':
     types.ProjectMembershipInviteByEmailDocument,
   '\n  fragment DeleteTaskModal on Task {\n    id\n    hasWorkHours\n    title\n  }\n':
     types.DeleteTaskModalFragmentDoc,
@@ -35,7 +37,7 @@ const documents = {
     types.ProjectUnarchiveDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
     types.ProjectFormFragmentDoc,
-  '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
+  '\n  fragment ProjectMemberListProject on Project {\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
     types.ProjectMemberListProjectFragmentDoc,
   '\n  fragment RemoveUserFromProjectButtonUser on User {\n    id\n    name\n  }\n':
     types.RemoveUserFromProjectButtonUserFragmentDoc,
@@ -49,7 +51,7 @@ const documents = {
     types.ProjectLockDocument,
   '\n  mutation projectUnlock($date: MonthInput!, $projectId: ID!) {\n    projectUnlock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
     types.ProjectUnlockDocument,
-  '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n':
+  '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n':
     types.ReportProjectFragmentDoc,
   '\n  query reportProjects($from: Date!, $to: Date, $filter: ProjectFilter, $date: MonthInput!) {\n    projects(from: $from, to: $to, filter: $filter) {\n      ...ReportProject\n    }\n  }\n':
     types.ReportProjectsDocument,
@@ -132,8 +134,14 @@ export function graphql(source: string): unknown
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n',
-): typeof documents['\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      title\n      members {\n        name\n      }\n    }\n  }\n']
+  source: '\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n',
+): typeof documents['\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n',
+): typeof documents['\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -204,8 +212,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n',
-): typeof documents['\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n']
+  source: '\n  fragment ProjectMemberListProject on Project {\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n',
+): typeof documents['\n  fragment ProjectMemberListProject on Project {\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -246,8 +254,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n',
-): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    isLocked(date: $date)\n  }\n']
+  source: '\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n',
+): typeof documents['\n  fragment ReportProject on Project {\n    id\n    title\n    role\n    canModify\n    isLocked(date: $date)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

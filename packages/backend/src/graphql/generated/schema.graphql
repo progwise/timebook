@@ -58,7 +58,7 @@ type Mutation {
   """
   Assign user to a project by e-mail.
   """
-  projectMembershipInviteByEmail(email: String!, projectId: ID!): Project!
+  projectMembershipInviteByEmail(email: String!, projectId: ID!): MutationProjectMembershipInviteByEmailResult!
 
   """
   Add a user to a project using the invite key.
@@ -166,6 +166,12 @@ type Mutation {
   workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
 
+union MutationProjectMembershipInviteByEmailResult = MutationProjectMembershipInviteByEmailSuccess | UserNotFoundError
+
+type MutationProjectMembershipInviteByEmailSuccess {
+  data: Project!
+}
+
 type Project implements ModifyInterface {
   """
   Can the user modify the entity
@@ -205,6 +211,11 @@ type Project implements ModifyInterface {
     """
     includePastMembers: Boolean! = false
   ): [User!]!
+
+  """
+  Can the user modify the entity
+  """
+  role: String!
   startDate: Date
 
   """
@@ -426,6 +437,10 @@ type User {
   Role of the user in a project
   """
   role(projectId: ID!): Role!
+}
+
+type UserNotFoundError {
+  email: String!
 }
 
 type WorkHour {

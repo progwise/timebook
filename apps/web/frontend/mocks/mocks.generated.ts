@@ -46,7 +46,7 @@ export type Mutation = {
   /** Unassign user from a project */
   projectMembershipDelete: Project
   /** Assign user to a project by e-mail. */
-  projectMembershipInviteByEmail: Project
+  projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
   /** Unarchive a project */
@@ -174,6 +174,15 @@ export type MutationWorkHourUpdateArgs = {
   taskId: Scalars['ID']
 }
 
+export type MutationProjectMembershipInviteByEmailResult =
+  | MutationProjectMembershipInviteByEmailSuccess
+  | UserNotFoundError
+
+export type MutationProjectMembershipInviteByEmailSuccess = {
+  __typename?: 'MutationProjectMembershipInviteByEmailSuccess'
+  data: Project
+}
+
 export type Project = ModifyInterface & {
   __typename?: 'Project'
   /** Can the user modify the entity */
@@ -190,6 +199,8 @@ export type Project = ModifyInterface & {
   isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
+  /** Can the user modify the entity */
+  role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
@@ -381,6 +392,11 @@ export type UserRoleArgs = {
   projectId: Scalars['ID']
 }
 
+export type UserNotFoundError = {
+  __typename?: 'UserNotFoundError'
+  email: Scalars['String']
+}
+
 export type WorkHour = {
   __typename?: 'WorkHour'
   date: Scalars['Date']
@@ -402,6 +418,8 @@ export type WorkHourInput = {
   taskId: Scalars['ID']
 }
 
+export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
+
 export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
   email: Scalars['String']
   projectId: Scalars['ID']
@@ -409,11 +427,12 @@ export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
 
 export type ProjectMembershipInviteByEmailMutation = {
   __typename?: 'Mutation'
-  projectMembershipInviteByEmail: {
-    __typename?: 'Project'
-    title: string
-    members: Array<{ __typename?: 'User'; name?: string | null }>
-  }
+  projectMembershipInviteByEmail:
+    | {
+        __typename: 'MutationProjectMembershipInviteByEmailSuccess'
+        data: { __typename?: 'Project'; title: string; members: Array<{ __typename?: 'User'; name?: string | null }> }
+      }
+    | { __typename: 'UserNotFoundError'; email: string }
 }
 
 export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
@@ -482,9 +501,10 @@ export type ProjectFormFragment = {
 
 export type ProjectMemberListProjectFragment = {
   __typename?: 'Project'
-  id: string
   canModify: boolean
+  id: string
   title: string
+  inviteKey: string
   members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
 }
 
@@ -530,7 +550,14 @@ export type ProjectUnlockMutation = {
   projectUnlock: { __typename?: 'Project'; isLocked: boolean }
 }
 
-export type ReportProjectFragment = { __typename?: 'Project'; id: string; title: string; isLocked: boolean }
+export type ReportProjectFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  role: string
+  canModify: boolean
+  isLocked: boolean
+}
 
 export type ReportProjectsQueryVariables = Exact<{
   from: Scalars['Date']
@@ -541,7 +568,14 @@ export type ReportProjectsQueryVariables = Exact<{
 
 export type ReportProjectsQuery = {
   __typename?: 'Query'
-  projects: Array<{ __typename?: 'Project'; id: string; title: string; isLocked: boolean }>
+  projects: Array<{
+    __typename?: 'Project'
+    id: string
+    title: string
+    role: string
+    canModify: boolean
+    isLocked: boolean
+  }>
 }
 
 export type ReportQueryVariables = Exact<{

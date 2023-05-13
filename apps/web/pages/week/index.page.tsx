@@ -5,6 +5,7 @@ import { useQuery } from 'urql'
 
 import { Spinner } from '@progwise/timebook-ui'
 
+import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { WeekTable } from '../../frontend/components/weekTable/weekTable'
@@ -41,7 +42,7 @@ const WeekPage = (props: WeekPageProps) => {
 
   return (
     <ProtectedPage>
-      <h2>Week entries</h2>
+      <PageHeading>Week entries</PageHeading>
       <WeekSelector value={day} onChange={handleWeekChange} />
       {fetching ? (
         <div className="flex justify-center">

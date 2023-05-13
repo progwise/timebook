@@ -8,6 +8,7 @@ import { Button, FormattedDuration, ListboxWithUnselect, Spinner } from '@progwi
 
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
+import { PageHeading } from '../pageHeading'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
@@ -15,6 +16,8 @@ export const ReportProjectFragment = graphql(`
   fragment ReportProject on Project {
     id
     title
+    role
+    canModify
     isLocked(date: $date)
   }
 `)
@@ -98,19 +101,20 @@ export const ReportForm = () => {
   })
 
   const selectedProject = projects?.find((project) => project.id === selectedProjectId)
+  const userIsAdmin = selectedProject?.role === 'ADMIN'
 
   return (
     <>
       <div>
         <div className="flex items-center justify-between">
-          <h1 className="my-4 text-2xl font-bold">
+          <PageHeading>
             Detailed time report: {fromString} - {endString}
-          </h1>
+          </PageHeading>
           <Button variant="secondary" className="px-6 print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
           </Button>
         </div>
-        <h2 className="print:hidden">Select a project</h2>
+        <PageHeading>Select a project</PageHeading>
       </div>
 
       <div className="flex flex-col">
@@ -154,7 +158,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProject && (
+        {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <>
             {loadProjects ? (
               <div className="mt-10 flex justify-center">

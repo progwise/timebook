@@ -5,14 +5,15 @@ import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { AddProjectMemberForm } from '../addProjectMemberForm'
+import { PageHeading } from '../pageHeading'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
 import { RoleLabel } from './roleLabel'
 
 const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
-    id
     canModify
     ...RemoveUserFromProjectButtonProject
+    ...AddProjectMemberForm
     members {
       id
       image
@@ -33,12 +34,12 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
 
   return (
     <>
-      <h2 className="text-lg font-semibold text-gray-400">Project Members</h2>
+      <PageHeading>Project Members</PageHeading>
       <Table>
         <TableBody>
           <TableRow>
             <TableCell>
-              <AddProjectMemberForm projectId={project.id} />
+              <AddProjectMemberForm project={project} />
             </TableCell>
             <TableCell colSpan={2} />
           </TableRow>

@@ -19,6 +19,7 @@ import { AiOutlineCalendar } from 'react-icons/ai'
 import { BiHome, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 import CalendarIcon from './calendarIcon'
+import { PageHeading } from './pageHeading'
 
 interface DayItemProps {
   day: Date
@@ -137,7 +138,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     <CalendarIcon label="Go to today" onClick={goToToday}>
                       <BiHome />
                     </CalendarIcon>
-                    <h2>{monthTitle}</h2>
+                    <PageHeading>{monthTitle}</PageHeading>
                   </div>
                   <CalendarIcon label="Go to next month" onClick={gotoNextMonth}>
                     <BiRightArrow />

@@ -79,7 +79,7 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "tsconfig": "workspace:*",
-    "typescript": "^4.8.4",
+    "typescript": "^5.0.0",
     "whatwg-fetch": "^3.6.2"
   }
 }

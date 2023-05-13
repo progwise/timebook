@@ -12,6 +12,7 @@ import { projectInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
+import { PageHeading } from '../pageHeading'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
@@ -102,11 +103,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       onSubmit={handleSubmit(handleSubmitHelper)}
     >
       {isNewProject ? (
-        <h2 className="w-full text-lg font-semibold text-gray-400 dark:text-white">Create new project</h2>
+        <PageHeading>Create new project</PageHeading>
       ) : (
-        <h2 className="w-full text-lg font-semibold text-gray-800 ">
-          {isProjectFormReadOnly ? 'View' : 'Edit'} project
-        </h2>
+        <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
       )}
       <InputField
         label="Name"
@@ -140,7 +139,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
@@ -174,7 +173,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:bg-gray-100 read-only:opacity-50 dark:border-white dark:bg-slate-800 dark:text-white"
+                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}

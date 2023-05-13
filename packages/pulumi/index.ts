@@ -3,6 +3,42 @@ import * as dotenv from 'dotenv'
 
 dotenv.config({ path: '../../apps/web/.env' })
 
+const timebook_cluster = new digitalocean.DatabaseCluster(
+  'timebook-cluster',
+  {
+    engine: 'pg',
+    name: 'app-cd9ae4c8-1b61-4e14-9369-f40e3d451169',
+    nodeCount: 1,
+    region: 'fra1',
+    size: 'db-s-1vcpu-1gb',
+    version: '12',
+  },
+  {
+    protect: true,
+  },
+)
+
+const timebook_database = new digitalocean.DatabaseDb(
+  'db',
+  {
+    clusterId: timebook_cluster.id,
+    name: 'db',
+  },
+  {
+    protect: true,
+  },
+)
+const db_user = new digitalocean.DatabaseUser(
+  'db',
+  {
+    clusterId: timebook_cluster.id,
+    name: 'db',
+  },
+  {
+    protect: true,
+  },
+)
+
 export const timebook = new digitalocean.App('timebook', {
   spec: {
     domainNames: [{ name: 'timebook.progwise.net' }],
@@ -27,6 +63,15 @@ export const timebook = new digitalocean.App('timebook', {
         ],
       },
     ],
-    databases: [{ engine: 'PG', name: 'db' }],
+    databases: [
+      {
+        engine: 'PG',
+        name: 'db',
+        production: true,
+        clusterName: timebook_cluster.name,
+        dbName: timebook_database.name,
+        dbUser: db_user.name,
+      },
+    ],
   },
 })

@@ -36,7 +36,6 @@ export const WorkHoursSheet = (): JSX.Element => {
           <strong>Person</strong>
           <strong>Hours</strong>
         </article>
-
         {eachMonthOfInterval(interval)
           .reverse()
           .map((startOfMonth) => (
