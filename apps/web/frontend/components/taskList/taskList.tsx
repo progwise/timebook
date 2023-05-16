@@ -86,8 +86,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         <TableHead>
           <TableHeadRow>
             <TableHeadCell>Tasks</TableHeadCell>
-            <TableHeadCell>Locked</TableHeadCell>
-            <TableHeadCell />
+            {project.canModify && (
+              <>
+                <TableHeadCell>Locked</TableHeadCell>
+                <TableHeadCell />
+              </>
+            )}
           </TableHeadRow>
         </TableHead>
         <TableBody>
