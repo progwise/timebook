@@ -88,22 +88,24 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           isDirty={isDirty && dirtyFields.title}
         />
       </TableCell>
-      <TableCell>
-        <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
-      </TableCell>
-      <TableCell>
-        {task.canModify && (
-          <Button
-            ariaLabel="Delete Task"
-            variant="danger"
-            tooltip="Delete Task"
-            onClick={() => setOpenDeleteModal(true)}
-          >
-            <BiTrash />
-          </Button>
-        )}
-        {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
-      </TableCell>
+      {task.canModify && (
+        <>
+          <TableCell>
+            <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
+          </TableCell>
+          <TableCell>
+            <Button
+              ariaLabel="Delete Task"
+              variant="danger"
+              tooltip="Delete Task"
+              onClick={() => setOpenDeleteModal(true)}
+            >
+              <BiTrash />
+            </Button>
+            {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
+          </TableCell>
+        </>
+      )}
     </TableRow>
   )
 }
