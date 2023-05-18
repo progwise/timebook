@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { BiLock, BiLockOpen } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
@@ -41,8 +40,6 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
 
   const fetching = lockFetching || unlockFetching
 
-  const date = new Date(year, month)
-
   return (
     <Button
       variant={project.isLocked ? 'danger' : 'secondary'}
@@ -51,7 +48,7 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
       className="self-start"
     >
       {project.isLocked ? <BiLockOpen /> : <BiLock />}
-      {project.isLocked ? `Unlock` : `Lock`} {project.title} for {format(date, 'MMMM yyyy')}
+      {project.isLocked ? `Unlock` : `Lock`}
     </Button>
   )
 }
