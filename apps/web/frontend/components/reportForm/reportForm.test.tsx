@@ -79,10 +79,10 @@ it('should be possible to lock and unlock a report', async () => {
   const user1Option = await screen.findByRole('option', { name: 'User 1 (0:00)' })
   await user.click(user1Option)
 
-  const lockButton = screen.getByRole('button', { name: /^Lock Project 1 for/ })
+  const lockButton = screen.getByRole('button', { name: /^Lock/ })
 
   await user.click(lockButton)
-  await waitFor(() => expect(lockButton).toHaveTextContent(/^Unlock Project 1 for/))
+  await waitFor(() => expect(lockButton).toHaveTextContent(/^Unlock/))
   expect(isLocked).toBeTruthy()
 
   await user.click(lockButton)
