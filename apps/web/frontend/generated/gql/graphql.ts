@@ -516,6 +516,7 @@ export type ProjectFormFragment = ({
 
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
+  id: string
   canModify: boolean
   members: Array<
     { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
@@ -1204,6 +1205,7 @@ export const ProjectMemberListProjectFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },
@@ -3784,6 +3786,7 @@ export const ProjectDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },

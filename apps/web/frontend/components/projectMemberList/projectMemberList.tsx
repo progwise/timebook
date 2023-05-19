@@ -14,6 +14,7 @@ import { RoleLabel } from './roleLabel'
 
 export const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
+    id
     canModify
     ...RemoveUserFromProjectButtonProject
     ...AddProjectMemberForm

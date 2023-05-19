@@ -501,8 +501,8 @@ export type ProjectFormFragment = {
 
 export type ProjectMemberListProjectFragment = {
   __typename?: 'Project'
-  canModify: boolean
   id: string
+  canModify: boolean
   title: string
   inviteKey: string
   members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
