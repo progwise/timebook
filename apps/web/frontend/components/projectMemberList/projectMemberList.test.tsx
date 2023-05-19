@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Client, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
@@ -53,8 +53,8 @@ describe('ProjectMemberList', () => {
     render(<ProjectMemberList project={project} />, { wrapper })
 
     const rows = screen.getAllByRole('row')
-    within(rows[1]).getByRole('cell', { name: 'Admin' })
-    within(rows[2]).getByRole('cell', { name: 'Member' })
+    expect(rows[1]).toHaveTextContent('Admin')
+    expect(rows[2]).toHaveTextContent('Member')
   })
 
   it('should not display role change buttons if the current user is only a member', async () => {
@@ -70,18 +70,18 @@ describe('ProjectMemberList', () => {
       ProjectMemberListProjectFragment,
     )
     render(<ProjectMemberList project={project} />, { wrapper })
-    const roleButtons = screen.queryAllByRole('button', { name: /Promote|Demote/ })
+    const roleButtons = screen.queryByRole('button', { name: /Promote|Demote/ })
 
-    expect(roleButtons).toHaveLength(0)
+    expect(roleButtons).not.toBeInTheDocument()
   })
 
   it('should display role change buttons for admins', async () => {
     render(<ProjectMemberList project={project} />, { wrapper })
-    const promoteButton = screen.queryAllByRole('button', { name: 'Promote' })
-    const demoteButton = screen.queryAllByRole('button', { name: 'Demote' })
+    const promoteButton = screen.queryByRole('button', { name: 'Promote' })
+    const demoteButton = screen.queryByRole('button', { name: 'Demote' })
 
-    expect(promoteButton).toHaveLength(1)
-    expect(demoteButton).toHaveLength(0)
+    expect(promoteButton).toBeInTheDocument()
+    expect(demoteButton).not.toBeInTheDocument()
   })
 
   it('should not display a "Remove" button for members', async () => {
@@ -99,6 +99,6 @@ describe('ProjectMemberList', () => {
     render(<ProjectMemberList project={project} />, { wrapper })
     const removeButton = screen.queryByRole('button', { name: 'Remove user from project' })
 
-    expect(removeButton).toBeNull()
+    expect(removeButton).not.toBeInTheDocument()
   })
 })
