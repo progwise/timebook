@@ -12,7 +12,7 @@ import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
 import { RoleButton } from './roleButton'
 import { RoleLabel } from './roleLabel'
 
-const ProjectMemberListProjectFragment = graphql(`
+export const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
     canModify
     ...RemoveUserFromProjectButtonProject
