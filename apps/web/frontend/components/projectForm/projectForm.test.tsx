@@ -119,13 +119,9 @@ describe('projectForm', () => {
           {
             title: 'test project',
             startDate: '2022-04-12',
-            endDate: '',
+            endDate: '2022-05-12',
             canModify: true,
             hasWorkHours: false,
-            ...makeFragmentData(
-              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
-              DeleteOrArchiveProjectButtonFragment,
-            ),
           },
           ProjectFormFragment,
         )}
@@ -142,6 +138,11 @@ describe('projectForm', () => {
     await userEvent.clear(endInput)
     await userEvent.click(submitButton)
 
-    expect(onSubmit).toHaveBeenNthCalledWith(1)
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      // eslint-disable-next-line unicorn/no-null
+      end: null,
+      start: '2022-04-12',
+      title: 'test project',
+    })
   })
 })
