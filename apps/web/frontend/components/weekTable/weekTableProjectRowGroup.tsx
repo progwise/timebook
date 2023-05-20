@@ -43,10 +43,9 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
     <>
       <TableRow onClick={() => setIsCollapsed(!isCollapsed)} className="cursor-pointer text-lg">
         <TableCell colSpan={2}>
-          <div className="flex items-center gap-1 font-bold">
-            {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
+          <div className="flex items-center gap-1 whitespace-nowrap font-bold">
             {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
-            {isCollapsed && `${project.tasks.length} tasks`}
+            {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
           </div>
         </TableCell>
         {eachDayOfInterval(interval).map((day) => (

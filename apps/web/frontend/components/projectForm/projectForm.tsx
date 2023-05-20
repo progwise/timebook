@@ -44,6 +44,9 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
       .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
   })
   .superRefine((arguments_, context) => {
+    if (!arguments_.end) {
+      return
+    }
     const isStartBeforeEnd = (getDate(arguments_.start) || 0) <= (getDate(arguments_.end) || 1)
 
     if (!isStartBeforeEnd) {

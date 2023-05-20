@@ -110,4 +110,39 @@ describe('projectForm', () => {
 
     expect(screen.getByRole('alert')).toBeInTheDocument()
   })
+
+  it('should be possible to have a open end project', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={makeFragmentData(
+          {
+            title: 'test project',
+            startDate: '2022-04-12',
+            endDate: '2022-05-12',
+            canModify: true,
+            hasWorkHours: false,
+          },
+          ProjectFormFragment,
+        )}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+      />,
+      { wrapper },
+    )
+
+    const submitButton = screen.getByRole('button', { name: /save/i })
+    const endInput = screen.getByRole('textbox', { name: /end/i })
+
+    await userEvent.clear(endInput)
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      // eslint-disable-next-line unicorn/no-null
+      end: null,
+      start: '2022-04-12',
+      title: 'test project',
+    })
+  })
 })
