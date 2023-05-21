@@ -6,7 +6,7 @@ import { useQuery } from 'urql'
 
 import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 
-import { graphql, useFragment } from '../../generated/gql'
+import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
 import { PageHeading } from '../pageHeading'
 import { ProjectLockButton } from './projectLockButton'
@@ -67,12 +67,14 @@ const ReportQueryDocument = graphql(`
     }
   }
 `)
+interface ReportFormProps {
+  date: Date
+  projectId?: string
+}
 
-export const ReportForm = () => {
+export const ReportForm = ({ date, projectId }: ReportFormProps) => {
   const router = useRouter()
-  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
-  const [date, setDate] = useState(new Date())
   const year = getYear(date)
   const month = getMonth(date)
   const from = startOfMonth(date)
@@ -90,17 +92,17 @@ export const ReportForm = () => {
   const [{ data: reportGroupedData }] = useQuery({
     query: ReportQueryDocument,
     variables: {
-      projectId: selectedProjectId ?? '',
+      projectId: projectId ?? '',
       year,
       month,
       userId: selectedUserId,
       groupByUser: !selectedUserId,
     },
     context,
-    pause: !router.isReady || !selectedProjectId,
+    pause: !router.isReady || !projectId,
   })
 
-  const selectedProject = projects?.find((project) => project.id === selectedProjectId)
+  const selectedProject = projects?.find((project) => project.id === projectId)
   const userIsAdmin = selectedProject?.role === 'ADMIN'
 
   return (
@@ -123,7 +125,7 @@ export const ReportForm = () => {
               value={selectedProject}
               getLabel={(project) => project.title}
               getKey={(project) => project.id}
-              onChange={(project) => setSelectedProjectId(project?.id)}
+              onChange={(project) => router.push(`/reports/${date}/${projectId}`)}
               options={projects ?? []}
               noOptionLabel="Select Project"
             />
@@ -133,17 +135,16 @@ export const ReportForm = () => {
               value={format(date, 'yyyy-MM')}
               onChange={(event) => {
                 if (event.target.value) {
-                  const newDate = parse(event.target.value, 'yyyy-MM', new Date())
-                  setDate(newDate)
+                  router.push(`/reports/${event.target.value}/${projectId}`)
                 }
               }}
             />
             {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
           </div>
           <div>
-            {selectedProjectId && (
+            {projectId && (
               <ReportUserSelect
-                projectId={selectedProjectId}
+                projectId={projectId}
                 selectedUserId={selectedUserId}
                 onUserChange={(newUserId) => setSelectedUserId(newUserId)}
                 from={from}
@@ -153,7 +154,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
+        {projectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
               <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />

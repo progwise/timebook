@@ -4,7 +4,7 @@ import { ReportForm } from '../../frontend/components/reportForm/reportForm'
 const ReportsPage = (): JSX.Element => {
   return (
     <ProtectedPage>
-      <ReportForm />
+      <ReportForm date={new Date()} />
     </ProtectedPage>
   )
 }
