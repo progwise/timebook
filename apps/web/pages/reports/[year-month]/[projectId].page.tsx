@@ -8,12 +8,13 @@ const ReportsPage = (): JSX.Element => {
   const router = useRouter()
   const date = router.query['year-month']?.toString() ?? ''
   const projectId = router.query.projectId?.toString()
+  const userId = router.query.userId?.toString()
 
   const selectedDate = parse(date, 'yyyy-MM', new Date())
 
   return (
     <ProtectedPage>
-      <ReportForm date={selectedDate} projectId={projectId} />
+      <ReportForm date={selectedDate} projectId={projectId} userId={userId} />
     </ProtectedPage>
   )
 }

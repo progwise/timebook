@@ -70,9 +70,10 @@ const ReportQueryDocument = graphql(`
 interface ReportFormProps {
   date: Date
   projectId?: string
+  userId?: string
 }
 
-export const ReportForm = ({ date, projectId }: ReportFormProps) => {
+export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const router = useRouter()
   const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const year = getYear(date)
@@ -125,7 +126,7 @@ export const ReportForm = ({ date, projectId }: ReportFormProps) => {
               value={selectedProject}
               getLabel={(project) => project.title}
               getKey={(project) => project.id}
-              onChange={(project) => router.push(`/reports/${date}/${projectId}`)}
+              onChange={(project) => router.push(`/reports/${format(date, 'yyyy-MM')}/${project?.id ?? ''}`)}
               options={projects ?? []}
               noOptionLabel="Select Project"
             />
@@ -135,7 +136,7 @@ export const ReportForm = ({ date, projectId }: ReportFormProps) => {
               value={format(date, 'yyyy-MM')}
               onChange={(event) => {
                 if (event.target.value) {
-                  router.push(`/reports/${event.target.value}/${projectId}`)
+                  router.push(`/reports/${event.target.value}/${projectId ?? ''}`)
                 }
               }}
             />
