@@ -1,7 +1,5 @@
 import React, { KeyboardEventHandler, ReactNode } from 'react'
 
-import { Spinner } from '../spinner'
-
 export interface InputFieldProps {
   name?: string
   value?: string
@@ -17,7 +15,6 @@ export interface InputFieldProps {
   label?: string
   errorMessage?: string | ReactNode
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
-  loading?: boolean
   type?: 'number' | 'text' | 'email'
   form?: string
   hideLabel?: boolean
@@ -42,7 +39,6 @@ export const InputField = React.forwardRef(
       inputClassName = '',
       label,
       errorMessage,
-      loading,
       type,
       form,
       hideLabel = false,
@@ -67,9 +63,7 @@ export const InputField = React.forwardRef(
             aria-label={label}
             className={`w-full rounded-md read-only:opacity-70 read-only:dark:text-gray-600 ${
               isDirty ? 'bg-yellow-50' : ''
-            } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${
-              loading ? 'pr-8' : ''
-            } ${inputClassName}`}
+            } text-black dark:border-white dark:bg-slate-800 dark:text-white ${variantClassName} ${inputClassName}`}
             type={type}
             placeholder={placeholder}
             disabled={disabled}
@@ -84,11 +78,6 @@ export const InputField = React.forwardRef(
             form={form}
             onFocus={onFocus}
           />
-          {loading && (
-            <div className="absolute inset-y-0 right-0 flex flex-col justify-center px-1">
-              <Spinner />
-            </div>
-          )}
         </span>
         {errorMessage && (
           <span role="alert" className="text-xs text-red-500">

@@ -82,10 +82,9 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           variant="primary"
           {...register('title', { required: true })}
           onBlur={handleSubmit(handleTitleSubmit)}
-          loading={fetchingTitle}
           errorMessage={errors.title?.message}
           disabled={!task.canModify}
-          isDirty={isDirty && dirtyFields.title}
+          isDirty={fetchingTitle || isDirty && dirtyFields.title}
         />
       </TableCell>
       {task.canModify && (
