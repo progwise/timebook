@@ -75,7 +75,6 @@ interface ReportFormProps {
 
 export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const router = useRouter()
-  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
   const year = getYear(date)
   const month = getMonth(date)
   const from = startOfMonth(date)
@@ -96,8 +95,8 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       projectId: projectId ?? '',
       year,
       month,
-      userId: selectedUserId,
-      groupByUser: !selectedUserId,
+      userId: userId,
+      groupByUser: !userId,
     },
     context,
     pause: !router.isReady || !projectId,
@@ -146,8 +145,13 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
             {projectId && (
               <ReportUserSelect
                 projectId={projectId}
-                selectedUserId={selectedUserId}
-                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
+                selectedUserId={userId}
+                onUserChange={(newUserId) =>
+                  router.push({
+                    pathname: `/reports/${format(date, 'yyyy-MM')}/${projectId ?? ''}`,
+                    query: newUserId ? { userId: newUserId } : undefined,
+                  })
+                }
                 from={from}
                 to={to}
               />
@@ -155,7 +159,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           </div>
         </div>
 
-        {projectId && reportGroupedData && selectedUserId && userIsAdmin && (
+        {projectId && reportGroupedData && userId && userIsAdmin && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
               <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />
