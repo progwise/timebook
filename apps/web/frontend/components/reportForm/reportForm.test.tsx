@@ -1,5 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { parse } from 'date-fns'
+import { useRouter } from 'next/router'
 import { Client, Provider } from 'urql'
 
 import { mockServer } from '../../mocks/mockServer'
@@ -67,7 +69,12 @@ beforeAll(() => {
 
 it('should be possible to lock and unlock a report', async () => {
   const user = userEvent.setup()
-  render(<ReportForm />, { wrapper })
+  const router = useRouter()
+  const date = router.query['year-month']?.toString() ?? ''
+  const projectId = router.query.projectId?.toString()
+  const userId = router.query.userId?.toString()
+  const selectedDate = parse(date, 'yyyy-MM', new Date())
+  render(<ReportForm date={selectedDate} projectId={projectId} userId={userId} />, { wrapper })
 
   const projectSelect = await screen.findByRole('button', { name: 'Select Project' })
   await user.click(projectSelect)

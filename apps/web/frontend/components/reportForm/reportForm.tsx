@@ -1,12 +1,12 @@
-import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
+import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import { BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
 import { Button, FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 
-import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
 import { PageHeading } from '../pageHeading'
 import { ProjectLockButton } from './projectLockButton'
