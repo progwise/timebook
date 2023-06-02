@@ -160,7 +160,7 @@ export const ReportForm = () => {
 
         {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
           <>
-            {fetchingProjects && fetchingReports ? (
+            {fetchingProjects || fetchingReports ? (
               <div className="mt-10 flex justify-center">
                 <Spinner size="medium" />
               </div>
