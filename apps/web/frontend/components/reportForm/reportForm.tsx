@@ -139,9 +139,9 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 }
               }}
             />
-            {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
           </div>
-          <div>
+          <div className="flex gap-4">
+            {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
             {projectId && (
               <ReportUserSelect
                 projectId={projectId}
