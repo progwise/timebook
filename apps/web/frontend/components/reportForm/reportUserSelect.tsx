@@ -36,7 +36,7 @@ interface ReportUserSelectProps {
 
 export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from, to }: ReportUserSelectProps) => {
   const context = useMemo(() => ({ __additionalTypnames: ['User'] }), [])
-  const [{ data }] = useQuery({
+  const [{ data, fetching }] = useQuery({
     query: ReportUsersQueryDocument,
     variables: { projectId, from: format(from, 'yyyy-MM-dd'), to: format(to, 'yyyy-MM-dd') },
     context,
@@ -48,13 +48,16 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
 
   // After receiving new data, check that the selected user is still in the user list
   useEffect(() => {
+    if (fetching) {
+      return
+    }
     const isSelectedUserInList = allUsers.some((user) => user.id === selectedUserId)
 
     if (!isSelectedUserInList) {
       // eslint-disable-next-line unicorn/no-useless-undefined
       onUserChange(undefined)
     }
-  }, [data])
+  }, [data, fetching])
 
   if (!data) {
     // eslint-disable-next-line unicorn/no-null
