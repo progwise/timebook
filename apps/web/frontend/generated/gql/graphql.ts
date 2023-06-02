@@ -516,6 +516,7 @@ export type ProjectFormFragment = ({
 
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
+  id: string
   canModify: boolean
   members: Array<
     { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
@@ -528,6 +529,17 @@ export type ProjectMemberListProjectFragment = ({
     AddProjectMemberFormFragment: AddProjectMemberFormFragment
   }
 }) & { ' $fragmentName'?: 'ProjectMemberListProjectFragment' }
+
+export type ProjectMembershipUpdateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type ProjectMembershipUpdateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: { __typename?: 'Project'; id: string }
+}
 
 export type RemoveUserFromProjectButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null } & {
   ' $fragmentName'?: 'RemoveUserFromProjectButtonUserFragment'
@@ -1193,6 +1205,7 @@ export const ProjectMemberListProjectFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },
@@ -2398,6 +2411,63 @@ export const ProjectUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>
+export const ProjectMembershipUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Role' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'role' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipUpdateMutation, ProjectMembershipUpdateMutationVariables>
 export const ProjectMembershipDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -3716,6 +3786,7 @@ export const ProjectDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddProjectMemberForm' } },

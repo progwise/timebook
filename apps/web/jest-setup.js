@@ -4,6 +4,7 @@
 require('@testing-library/jest-dom')
 require('whatwg-fetch')
 require('intersection-observer')
+global.ResizeObserver = require('resize-observer-polyfill')
 
 jest.mock('next/image', () => ({
   __esModule: true,
