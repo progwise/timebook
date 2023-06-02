@@ -1,16 +1,16 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import EmailProvider from 'next-auth/providers/email'
 import GitHubProvider from 'next-auth/providers/github'
 
 import { prisma } from '@progwise/timebook-backend'
 
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
 
     // Email Provider only used for e2e testing
@@ -26,4 +26,6 @@ export default NextAuth({
     },
   },
   secret: process.env.SECRET,
-})
+}
+
+export default NextAuth(nextAuthOptions)
