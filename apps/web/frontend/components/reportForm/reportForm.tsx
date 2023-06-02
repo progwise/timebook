@@ -125,7 +125,12 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               value={selectedProject}
               getLabel={(project) => project.title}
               getKey={(project) => project.id}
-              onChange={(project) => router.push(`/reports/${format(date, 'yyyy-MM')}/${project?.id ?? ''}`)}
+              onChange={(newProject) =>
+                router.push({
+                  pathname: `/reports/${format(date, 'yyyy-MM')}/${newProject?.id ?? ''}`,
+                  query: userId ? { userId } : undefined,
+                })
+              }
               options={projects ?? []}
               noOptionLabel="Select Project"
             />
@@ -135,7 +140,10 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               value={format(date, 'yyyy-MM')}
               onChange={(event) => {
                 if (event.target.value) {
-                  router.push(`/reports/${event.target.value}/${projectId ?? ''}`)
+                  router.push({
+                    pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
+                    query: userId ? { userId } : undefined,
+                  })
                 }
               }}
             />
