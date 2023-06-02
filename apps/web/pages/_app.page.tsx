@@ -1,7 +1,6 @@
 import { setDefaultOptions } from 'date-fns'
-import { NextPageContext } from 'next'
 import { Session } from 'next-auth'
-import { getSession, SessionProvider } from 'next-auth/react'
+import { SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Link from 'next/link'
 
@@ -44,10 +43,6 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
     <TimebookToaster />
   </SessionProvider>
 )
-
-TimebookApp.getInitialProps = async (context: NextPageContext) => ({
-  session: await getSession(context),
-})
 
 export default withUrqlClient(
   (_ssrExchange, context) => ({
