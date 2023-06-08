@@ -1,6 +1,7 @@
 import './projectArchiveMutationField'
 import './projectCreateMutationField'
 import './projectDeleteMutationField'
+import './projectInvitationMutationField'
 import './projectLockMutationField'
 import './projectUnarchiveMutationField'
 import './projectUnlockMutationField'
