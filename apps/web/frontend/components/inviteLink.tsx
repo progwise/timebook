@@ -16,34 +16,34 @@ const InviteLinkProjectFragment = graphql(`
   }
 `)
 
-const GENERATE_INVITE_LINK = gql`
-  mutation projectGenerateNewInvitationKey($projectId: ID!) {
-    generateNewInvitationKey(projectId: $projectId) {
-      inviteLink
-    }
-  }
-`
+// const GENERATE_INVITE_LINK = gql`
+//   mutation projectGenerateNewInvitationKey($projectId: ID!) {
+//     generateNewInvitationKey(projectId: $projectId) {
+//       inviteLink
+//     }
+//   }
+// `
 
 export const InviteLink = (props: InviteLinkProps) => {
   const project = useFragment(InviteLinkProjectFragment, props.project)
   const [inviteLink, setInviteLink] = useState<string>(`${process.env.NEXTAUTH_URL}/projects/join/${project.inviteKey}`)
-  const [generateNewInvitationKeyMutation] = useMutation(GENERATE_INVITE_LINK)
+  // const [generateNewInvitationKeyMutation] = useMutation(GENERATE_INVITE_LINK)
 
   const copyInviteLink = async () => {
     await navigator.clipboard.writeText(inviteLink)
   }
 
-  const regenerateNewInvitationKey = async () => {
-    try {
-      const { data } = await generateNewInvitationKeyMutation({
-        variables: { projectId: project.id },
-      })
-      const newInviteLink = data.generateNewInvitationKey.inviteLink
-      setInviteLink(newInviteLink)
-    } catch (error) {
-      console.error('Error generating invite link:', error)
-    }
-  }
+  // const regenerateNewInvitationKey = async () => {
+  //   try {
+  //     const { data } = await generateNewInvitationKeyMutation({
+  //       variables: { projectId: project.id },
+  //     })
+  //     const newInviteLink = data.generateNewInvitationKey.inviteLink
+  //     setInviteLink(newInviteLink)
+  //   } catch (error) {
+  //     console.error('Error generating invite link:', error)
+  //   }
+  // }
 
   return (
     <div className="flex items-center gap-2">
@@ -52,9 +52,9 @@ export const InviteLink = (props: InviteLinkProps) => {
       <Button variant="secondary" className="whitespace-nowrap" onClick={copyInviteLink}>
         Copy link
       </Button>
-      <Button variant="secondary" className="whitespace-nowrap" onClick={regenerateNewInvitationKey}>
+      {/* <Button variant="secondary" className="whitespace-nowrap" onClick={regenerateNewInvitationKey}>
         Regenerate link
-      </Button>
+      </Button> */}
     </div>
   )
 }

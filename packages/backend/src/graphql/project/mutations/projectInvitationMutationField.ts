@@ -33,12 +33,23 @@ import { ProjectInput } from '../projectInput'
 // )
 
 builder.mutationField('projectInvitation', (t) =>
-  t.string({
+  t.withAuth({ isLoggedIn: true }).prismaField({
+    type: 'Project',
+    authScopes: async (_source, { projectId }) => ({ isAdminByProject: projectId.toString() }),
     args: {
       projectId: t.arg.id(),
     },
-    resolve: (_source, { projectId }) => {
-      return projectId.toString()
+    resolve: async (query, _source, { projectId }) => {
+      const updatedProject = await prisma.project.update({
+        ...query,
+        where: {
+          id: projectId.toString(),
+        },
+        data: {
+          inviteKey: crypto.randomUUID(),
+        },
+      })
+      return updatedProject
     },
   }),
 )

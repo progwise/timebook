@@ -43,7 +43,7 @@ type Mutation {
     """
     id: ID!
   ): Project!
-  projectInvitation(projectId: ID!): String!
+  projectInvitation(projectId: ID!): Project!
   projectLock(date: MonthInput!, projectId: ID!): Project!
 
   """

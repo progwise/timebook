@@ -38,6 +38,7 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
+  projectInvitation: Project
   projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
@@ -88,6 +89,10 @@ export type MutationProjectCreateArgs = {
 
 export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationProjectInvitationArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectLockArgs = {
