@@ -38,7 +38,6 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
-  projectInvitation: Project
   projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
@@ -48,6 +47,8 @@ export type Mutation = {
   projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
+  /** Regenerate the invite key of a project. The old key will be outdated. */
+  projectRegenerateInviteKey: Project
   /** Unarchive a project */
   projectUnarchive: Project
   projectUnlock: Project
@@ -91,10 +92,6 @@ export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
 }
 
-export type MutationProjectInvitationArgs = {
-  projectId: Scalars['ID']
-}
-
 export type MutationProjectLockArgs = {
   date: MonthInput
   projectId: Scalars['ID']
@@ -118,6 +115,10 @@ export type MutationProjectMembershipInviteByEmailArgs = {
 
 export type MutationProjectMembershipJoinArgs = {
   inviteKey: Scalars['String']
+}
+
+export type MutationProjectRegenerateInviteKeyArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUnarchiveArgs = {
@@ -457,6 +458,15 @@ export type TaskDeleteMutation = {
 
 export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string } & {
   ' $fragmentName'?: 'InviteLinkProjectFragmentFragment'
+}
+
+export type ProjectRegenerateInviteKeyMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectRegenerateInviteKeyMutation = {
+  __typename?: 'Mutation'
+  projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
 export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
@@ -2299,6 +2309,46 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
+export const ProjectRegenerateInviteKeyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectRegenerateInviteKey' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectRegenerateInviteKey' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>
 export const ProjectArchiveDocument = {
   kind: 'Document',
   definitions: [

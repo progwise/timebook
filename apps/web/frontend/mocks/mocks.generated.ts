@@ -40,7 +40,6 @@ export type Mutation = {
   projectCreate: Project
   /** Delete a project */
   projectDelete: Project
-  projectInvitation: Project
   projectLock: Project
   /** Assign user to a project. This mutation can also be used for updating the role of a project member */
   projectMembershipCreate: Project
@@ -50,6 +49,8 @@ export type Mutation = {
   projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
   /** Add a user to a project using the invite key. */
   projectMembershipJoin: Project
+  /** Regenerate the invite key of a project. The old key will be outdated. */
+  projectRegenerateInviteKey: Project
   /** Unarchive a project */
   projectUnarchive: Project
   projectUnlock: Project
@@ -93,10 +94,6 @@ export type MutationProjectDeleteArgs = {
   id: Scalars['ID']
 }
 
-export type MutationProjectInvitationArgs = {
-  projectId: Scalars['ID']
-}
-
 export type MutationProjectLockArgs = {
   date: MonthInput
   projectId: Scalars['ID']
@@ -120,6 +117,10 @@ export type MutationProjectMembershipInviteByEmailArgs = {
 
 export type MutationProjectMembershipJoinArgs = {
   inviteKey: Scalars['String']
+}
+
+export type MutationProjectRegenerateInviteKeyArgs = {
+  projectId: Scalars['ID']
 }
 
 export type MutationProjectUnarchiveArgs = {
@@ -454,6 +455,15 @@ export type TaskDeleteMutation = {
 }
 
 export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
+
+export type ProjectRegenerateInviteKeyMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectRegenerateInviteKeyMutation = {
+  __typename?: 'Mutation'
+  projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
+}
 
 export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
 
@@ -1041,6 +1051,29 @@ export const mockProjectMembershipInviteByEmailMutation = (
 export const mockTaskDeleteMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
 ) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectRegenerateInviteKeyMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectRegenerateInviteKey })
+ *   )
+ * })
+ */
+export const mockProjectRegenerateInviteKeyMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectRegenerateInviteKeyMutationVariables>,
+    GraphQLContext<ProjectRegenerateInviteKeyMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>(
+    'projectRegenerateInviteKey',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
