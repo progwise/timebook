@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
@@ -15,7 +17,7 @@ builder.mutationField('projectRegenerateInviteKey', (t) =>
           id: projectId.toString(),
         },
         data: {
-          inviteKey: crypto.randomUUID(),
+          inviteKey: uuidv4(),
         },
       }),
     description: 'Regenerate the invite key of a project. The old key will be outdated.',
