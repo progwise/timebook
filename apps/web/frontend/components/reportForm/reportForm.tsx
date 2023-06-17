@@ -1,6 +1,6 @@
-import { endOfMonth, format, formatISO, getMonth, getYear, parse, startOfMonth } from 'date-fns'
+import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
-import { Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import { BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
@@ -67,12 +67,14 @@ const ReportQueryDocument = graphql(`
     }
   }
 `)
+interface ReportFormProps {
+  date: Date
+  projectId?: string
+  userId?: string
+}
 
-export const ReportForm = () => {
+export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const router = useRouter()
-  const [selectedProjectId, setSelectedProjectId] = useState<string | undefined>()
-  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
-  const [date, setDate] = useState(new Date())
   const year = getYear(date)
   const month = getMonth(date)
   const from = startOfMonth(date)
@@ -90,17 +92,17 @@ export const ReportForm = () => {
   const [{ fetching: fetchingReports, data: reportGroupedData }] = useQuery({
     query: ReportQueryDocument,
     variables: {
-      projectId: selectedProjectId ?? '',
+      projectId: projectId ?? '',
       year,
       month,
-      userId: selectedUserId,
-      groupByUser: !selectedUserId,
+      userId: userId,
+      groupByUser: !userId,
     },
     context,
-    pause: !router.isReady || !selectedProjectId,
+    pause: !router.isReady || !projectId,
   })
 
-  const selectedProject = projects?.find((project) => project.id === selectedProjectId)
+  const selectedProject = projects?.find((project) => project.id === projectId)
   const userIsAdmin = selectedProject?.role === 'ADMIN'
 
   return (
@@ -127,7 +129,12 @@ export const ReportForm = () => {
                 value={selectedProject}
                 getLabel={(project) => project.title}
                 getKey={(project) => project.id}
-                onChange={(project) => setSelectedProjectId(project?.id)}
+                onChange={(newProject) =>
+                  router.push({
+                    pathname: `/reports/${format(date, 'yyyy-MM')}/${newProject?.id ?? ''}`,
+                    query: userId ? { userId } : undefined,
+                  })
+                }
                 options={projects ?? []}
                 noOptionLabel="Select Project"
               />
@@ -137,20 +144,27 @@ export const ReportForm = () => {
                 value={format(date, 'yyyy-MM')}
                 onChange={(event) => {
                   if (event.target.value) {
-                    const newDate = parse(event.target.value, 'yyyy-MM', new Date())
-                    setDate(newDate)
+                    router.push({
+                      pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
+                      query: userId ? { userId } : undefined,
+                    })
                   }
                 }}
               />
-              {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
             </div>
           )}
-          <div>
-            {selectedProjectId && (
+          <div className="flex gap-4">
+            {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
+            {projectId && (
               <ReportUserSelect
-                projectId={selectedProjectId}
-                selectedUserId={selectedUserId}
-                onUserChange={(newUserId) => setSelectedUserId(newUserId)}
+                projectId={projectId}
+                selectedUserId={userId}
+                onUserChange={(newUserId) =>
+                  router.push({
+                    pathname: `/reports/${format(date, 'yyyy-MM')}/${projectId ?? ''}`,
+                    query: newUserId ? { userId: newUserId } : undefined,
+                  })
+                }
                 from={from}
                 to={to}
               />
@@ -158,7 +172,7 @@ export const ReportForm = () => {
           </div>
         </div>
 
-        {selectedProjectId && reportGroupedData && selectedUserId && userIsAdmin && (
+        {projectId && reportGroupedData && userId && userIsAdmin && (
           <>
             {fetchingProjects || fetchingReports ? (
               <div className="mt-10 flex justify-center">
