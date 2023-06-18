@@ -66,6 +66,11 @@ type Mutation {
   projectMembershipJoin(inviteKey: String!): Project!
 
   """
+  Regenerate the invite key of a project. The old key will be outdated.
+  """
+  projectRegenerateInviteKey(projectId: ID!): Project!
+
+  """
   Unarchive a project
   """
   projectUnarchive(projectId: ID!): Project!

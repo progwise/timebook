@@ -24,6 +24,8 @@ const documents = {
     types.TaskDeleteDocument,
   '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n':
     types.InviteLinkProjectFragmentFragmentDoc,
+  '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n':
+    types.ProjectRegenerateInviteKeyDocument,
   '\n  fragment ArchiveProjectModal on Project {\n    id\n    title\n  }\n': types.ArchiveProjectModalFragmentDoc,
   '\n  mutation projectArchive($projectId: ID!) {\n    projectArchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectArchiveDocument,
@@ -162,6 +164,12 @@ export function graphql(
 export function graphql(
   source: '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n',
 ): typeof documents['\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n',
+): typeof documents['\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
