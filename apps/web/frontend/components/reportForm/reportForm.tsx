@@ -167,7 +167,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           </div>
         </div>
 
-        {projectId && reportGroupedData && userId && userIsAdmin && (
+        {projectId && reportGroupedData && userIsAdmin && (
           <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
             <article className="contents border-y text-lg">
               <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />
