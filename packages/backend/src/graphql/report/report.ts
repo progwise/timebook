@@ -16,6 +16,7 @@ export const Report = builder.objectType('Report', {
             task: { projectId },
             date: { gte: from, lte: to },
             userId,
+            duration: { not: 0 },
           },
           _sum: {
             duration: true,
@@ -35,6 +36,7 @@ export const Report = builder.objectType('Report', {
               taskId,
               date: { gte: from, lte: to },
               userId,
+              duration: { not: 0 },
             },
           }),
         }))
@@ -49,6 +51,7 @@ export const Report = builder.objectType('Report', {
             task: { projectId },
             date: { gte: from, lte: to },
             userId,
+            duration: { not: 0 },
           },
           _sum: {
             duration: true,
@@ -66,6 +69,7 @@ export const Report = builder.objectType('Report', {
               task: { projectId },
               userId,
               date: { gte: from, lte: to },
+              duration: { not: 0 },
             },
           }),
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -82,6 +86,7 @@ export const Report = builder.objectType('Report', {
             task: { projectId },
             date: { gte: from, lte: to },
             userId,
+            duration: { not: 0 },
           },
           _sum: {
             duration: true,
@@ -98,6 +103,7 @@ export const Report = builder.objectType('Report', {
               task: { projectId },
               date: { equals: date },
               userId,
+              duration: { not: 0 },
             },
           }),
         }))
