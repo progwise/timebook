@@ -1,9 +1,8 @@
-import { hoursToMinutes, parse } from 'date-fns'
-import { FocusEventHandler, KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
+import { hoursToMinutes } from 'date-fns'
+import { KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
 
 import { InputField } from '@progwise/timebook-ui'
 
-import { getFormattedWorkHours } from '../hourInput'
 import { convertDurationStringToMinutes } from './convertDurationStringToMinutes'
 
 export interface IWorkDuration {
