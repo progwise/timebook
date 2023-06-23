@@ -105,9 +105,9 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
     )
 
   return (
-    <form className="flex w-full items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
-      <Button type="submit" disabled={isSubmitting} variant="primary" className="h-16 w-16 rounded-full">
-        <AiOutlinePlus className="h-10 w-10 fill-white" />
+    <form className="flex w-full  items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
+      <Button type="submit" disabled={isSubmitting} variant="primary" className="h-16 w-16 flex-none rounded-full">
+        <AiOutlinePlus className=" h-10 w-10 fill-white" />
       </Button>
       <InputField
         {...register('email')}
