@@ -4,10 +4,10 @@ import { Client, Provider } from 'urql'
 
 import { mockServer } from '../../mocks/mockServer'
 import {
-  mockReportLockMutation,
+  mockProjectLockMutation,
+  mockProjectUnlockMutation,
   mockReportProjectsQuery,
   mockReportQuery,
-  mockReportUnlockMutation,
   mockReportUsersQuery,
 } from '../../mocks/mocks.generated'
 import { ReportForm } from './reportForm'
@@ -26,7 +26,9 @@ beforeAll(() => {
     mockReportProjectsQuery((_request, response, context) =>
       response(
         context.data({
-          projects: [{ id: 'project1', title: 'Project 1', __typename: 'Project' }],
+          projects: [
+            { id: 'project1', title: 'Project 1', __typename: 'Project', isLocked, role: 'NONE', canModify: false },
+          ],
           __typename: 'Query',
         }),
       ),
@@ -46,44 +48,34 @@ beforeAll(() => {
     mockReportQuery((_request, response, context) =>
       response(
         context.data({
-          report: { groupedByDate: [], groupedByTask: [], groupedByUser: [], isLocked, __typename: 'Report' },
+          project: { canModify: true },
+          report: { groupedByDate: [], groupedByTask: [], groupedByUser: [], __typename: 'Report' },
           __typename: 'Query',
         }),
       ),
     ),
-    mockReportLockMutation((_request, response, context) => {
+    mockProjectLockMutation((_request, response, context) => {
       isLocked = true
-      return response(context.data({ reportLock: { isLocked, __typename: 'Report' }, __typename: 'Mutation' }))
+      return response(context.data({ projectLock: { isLocked, __typename: 'Project' }, __typename: 'Mutation' }))
     }),
-    mockReportUnlockMutation((_request, response, context) => {
+    mockProjectUnlockMutation((_request, response, context) => {
       isLocked = false
-      return response(context.data({ reportUnlock: { isLocked, __typename: 'Report' }, __typename: 'Mutation' }))
+      return response(context.data({ projectUnlock: { isLocked, __typename: 'Project' }, __typename: 'Mutation' }))
     }),
   )
 })
 
 it('should be possible to lock and unlock a report', async () => {
   const user = userEvent.setup()
-  render(<ReportForm />, { wrapper })
+  render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
 
-  const projectSelect = await screen.findByRole('combobox')
-  await user.clear(projectSelect)
-  const project1Option = await screen.findByRole('option', { name: 'Project 1' })
-  await user.click(project1Option)
+  const lockButton = await screen.findByRole('button', { name: /^Lock/ })
 
-  const userSelect = await screen.findByRole('combobox', { name: 'user' })
-  await user.clear(userSelect)
-  const user1Option = await screen.findByRole('option', { name: 'User 1 (0:00)' })
-  await user.click(user1Option)
-
-  const lockCheckbox = screen.getByRole('checkbox', { name: 'Lock Report' })
-  expect(lockCheckbox).not.toBeChecked()
-
-  await user.click(lockCheckbox)
-  await waitFor(() => expect(lockCheckbox).toBeChecked())
+  await user.click(lockButton)
+  await waitFor(() => expect(lockButton).toHaveTextContent(/^Unlock/))
   expect(isLocked).toBeTruthy()
 
-  await user.click(lockCheckbox)
-  await waitFor(() => expect(lockCheckbox).not.toBeChecked())
+  await user.click(lockButton)
+  await waitFor(() => expect(lockButton).not.toBeChecked())
   expect(isLocked).toBeFalsy()
 })

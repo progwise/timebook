@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "tsconfig": "workspace:*",
-    "typescript": "^4.7.3"
+    "typescript": "^5.0.0"
   }
 }

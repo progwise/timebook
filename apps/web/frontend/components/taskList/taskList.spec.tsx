@@ -1,4 +1,4 @@
-import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
@@ -25,6 +25,7 @@ const project = makeFragmentData(
             id: '1',
             canModify: true,
             title: 'Task 1',
+            isLockedByAdmin: false,
           },
           TaskRowFragment,
         ),
@@ -43,16 +44,16 @@ describe('TaskList', () => {
   })
 
   describe('Task form', () => {
-    it('should display an error message when submitting a new task with less then 4 characters', async () => {
+    it('should display an error message when submitting a task without a title', async () => {
       render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
-      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+      const titleInput = screen.getByPlaceholderText('Enter task name')
 
-      await userEvent.type(titleInput, 'abc')
+      await userEvent.type(titleInput, ' ')
       await userEvent.click(submitButton)
 
-      const errorMessage = await screen.findByText('title must be at least 4 characters')
+      const errorMessage = await screen.findByText('title must be at least 1 character')
       expect(errorMessage).toBeInTheDocument()
     })
 
@@ -60,24 +61,12 @@ describe('TaskList', () => {
       render(<TaskList project={project} />, { wrapper })
 
       const submitButton = screen.getByRole('button', { name: 'Add task' })
-      const titleInput = screen.getByPlaceholderText('Enter Taskname')
+      const titleInput = screen.getByPlaceholderText('Enter task name')
 
       await userEvent.type(titleInput, 'New Task')
       await userEvent.click(submitButton)
 
       await waitFor(() => expect(titleInput).toHaveValue(''))
     })
-  })
-
-  it('should update hourly rates', async () => {
-    render(<TaskList project={project} />, { wrapper })
-    const hourlyRateInput = screen.getByRole('spinbutton', {
-      name: /hourly rate/i,
-    })
-    await userEvent.type(hourlyRateInput, '100')
-    await userEvent.tab()
-    const spinner = screen.getByRole('progressbar')
-    expect(spinner).toBeInTheDocument()
-    await waitForElementToBeRemoved(spinner)
   })
 })

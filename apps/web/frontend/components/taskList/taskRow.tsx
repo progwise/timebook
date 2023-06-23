@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
@@ -10,13 +10,14 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
 import { DeleteTaskModal } from '../deleteTaskModal'
+import { LockSwitch } from './lockSwitch'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
     id
     title
-    hourlyRate
     canModify
+    isLockedByAdmin
     ...DeleteTaskModal
   }
 `)
@@ -36,26 +37,19 @@ interface TaskRowProps {
 export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
-  const [{ fetching: fetchingHourlyRate }, updateHourlyRate] = useMutation(TaskUpdateMutationDocument)
+  const [{ fetching: fetchingIsLocked }, updateIsLocked] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty, dirtyFields, isSubmitSuccessful },
   } = useForm<Pick<TaskUpdateInput, 'title'>>({
     mode: 'onChange',
     defaultValues: {
       title: task.title,
     },
     resolver: zodResolver(taskInputValidations.pick({ title: true })),
-  })
-
-  const hourlyRateForm = useForm<Pick<TaskUpdateInput, 'hourlyRate'>>({
-    mode: 'onChange',
-    defaultValues: {
-      hourlyRate: task.hourlyRate,
-    },
-    resolver: zodResolver(taskInputValidations.pick({ hourlyRate: true })),
   })
 
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
@@ -71,20 +65,19 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     if (result.error) setError('title', { message: 'Network error' })
   }
 
-  const handleHourlyRateSubmit = async (taskData: Pick<TaskUpdateInput, 'hourlyRate'>) => {
-    const result = await updateHourlyRate({
-      id: task.id,
-      data: {
-        hourlyRate: taskData.hourlyRate,
-      },
-    })
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({}, { keepValues: true })
+    }
+  }, [isSubmitSuccessful, reset])
 
-    if (result.error) hourlyRateForm.setError('hourlyRate', { message: 'Network error' })
+  const handleLockChange = async (isLocked: boolean) => {
+    await updateIsLocked({ id: task.id, data: { isLocked } })
   }
 
   return (
     <TableRow>
-      <TableCell className="mt-1 flex items-center">
+      <TableCell className="flex items-center">
         <InputField
           variant="primary"
           {...register('title', { required: true })}
@@ -92,34 +85,27 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           loading={fetchingTitle}
           errorMessage={errors.title?.message}
           disabled={!task.canModify}
+          isDirty={isDirty && dirtyFields.title}
         />
       </TableCell>
-      <TableCell>
-        <InputField
-          variant="primary"
-          type="number"
-          {...hourlyRateForm.register('hourlyRate', { required: true })}
-          onBlur={hourlyRateForm.handleSubmit(handleHourlyRateSubmit)}
-          loading={fetchingHourlyRate}
-          errorMessage={hourlyRateForm.formState.errors.hourlyRate?.message}
-          label="hourly rate"
-          hideLabel
-          disabled={!task.canModify}
-        />
-      </TableCell>
-      <TableCell>
-        {task.canModify && (
-          <Button
-            ariaLabel="Delete Task"
-            variant="danger"
-            tooltip="Delete Task"
-            onClick={() => setOpenDeleteModal(true)}
-          >
-            <BiTrash />
-          </Button>
-        )}
-        {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
-      </TableCell>
+      {task.canModify && (
+        <>
+          <TableCell>
+            <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
+          </TableCell>
+          <TableCell>
+            <Button
+              ariaLabel="Delete Task"
+              variant="danger"
+              tooltip="Delete Task"
+              onClick={() => setOpenDeleteModal(true)}
+            >
+              <BiTrash />
+            </Button>
+            {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
+          </TableCell>
+        </>
+      )}
     </TableRow>
   )
 }

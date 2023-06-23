@@ -1,12 +1,20 @@
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { ApolloServer } from 'apollo-server-micro'
-import { NextApiHandler, NextApiRequest } from 'next'
-import { getSession } from 'next-auth/react'
+import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth/next'
 
 import { Context, schema } from '@progwise/timebook-backend'
 
-export const context = async ({ req: request }: { req: NextApiRequest }): Promise<Context> => ({
-  session: await getSession({ req: request }),
+import { nextAuthOptions } from './auth/[...nextauth].page'
+
+export const context = async ({
+  req: request,
+  res: response,
+}: {
+  req: NextApiRequest
+  res: NextApiResponse
+}): Promise<Context> => ({
+  session: await getServerSession(request, response, nextAuthOptions),
 })
 
 export const server = new ApolloServer({

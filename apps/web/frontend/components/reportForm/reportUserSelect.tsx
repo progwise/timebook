@@ -2,9 +2,10 @@ import { format } from 'date-fns'
 import { useEffect, useMemo } from 'react'
 import { useQuery } from 'urql'
 
+import { ListboxWithUnselect } from '@progwise/timebook-ui'
+
 import { graphql, useFragment } from '../../generated/gql'
-import { ReportUserFragment as ReportUserFragmentType } from '../../generated/gql/graphql'
-import { ComboBox } from '../combobox/combobox'
+import { UserLabel } from './userLabel'
 
 const ReportUserFragment = graphql(`
   fragment ReportUser on User {
@@ -33,15 +34,9 @@ interface ReportUserSelectProps {
   to: Date
 }
 
-const formatDuration = (durationInMinutes: number) => {
-  const hours = Math.floor(durationInMinutes / 60).toString()
-  const minutes = (durationInMinutes % 60).toString().padStart(2, '0')
-  return `${hours}:${minutes}`
-}
-
 export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from, to }: ReportUserSelectProps) => {
   const context = useMemo(() => ({ __additionalTypnames: ['User'] }), [])
-  const [{ data }] = useQuery({
+  const [{ data, fetching }] = useQuery({
     query: ReportUsersQueryDocument,
     variables: { projectId, from: format(from, 'yyyy-MM-dd'), to: format(to, 'yyyy-MM-dd') },
     context,
@@ -53,13 +48,16 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
 
   // After receiving new data, check that the selected user is still in the user list
   useEffect(() => {
+    if (fetching) {
+      return
+    }
     const isSelectedUserInList = allUsers.some((user) => user.id === selectedUserId)
 
     if (!isSelectedUserInList) {
       // eslint-disable-next-line unicorn/no-useless-undefined
       onUserChange(undefined)
     }
-  }, [data])
+  }, [data, fetching])
 
   if (!data) {
     // eslint-disable-next-line unicorn/no-null
@@ -67,14 +65,13 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
   }
 
   return (
-    <ComboBox<ReportUserFragmentType>
-      key={JSON.stringify(data)}
+    <ListboxWithUnselect
+      getKey={(user) => user?.id}
       value={selectedUser}
-      displayValue={(user) => `${user.name ?? user.id} (${formatDuration(user.durationWorkedOnProject)})`}
-      noOptionLabel={`All Users (${formatDuration(allDurations)})`}
-      onChange={(newUserId) => onUserChange(newUserId ?? undefined)}
+      getLabel={(user) => <UserLabel name={user.name ?? user.id} duration={user.durationWorkedOnProject} />}
+      noOptionLabel={<UserLabel name="All Users" duration={allDurations} />}
+      onChange={(user) => onUserChange(user?.id)}
       options={allUsers}
-      label="user"
     />
   )
 }

@@ -1,4 +1,5 @@
 import SchemaBuilder from '@pothos/core'
+import ErrorsPlugin from '@pothos/plugin-errors'
 import PrismaPlugin from '@pothos/plugin-prisma'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
@@ -38,6 +39,10 @@ export const builder = new SchemaBuilder<{
       Input: Date
       Output: Date
     }
+    DateTime: {
+      Input: Date
+      Output: Date
+    }
   }
   Objects: {
     Report: {
@@ -51,7 +56,7 @@ export const builder = new SchemaBuilder<{
     Project: { id: string }
   }
 }>({
-  plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin],
+  plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin, ErrorsPlugin],
   prisma: {
     client: prisma,
     filterConnectionTotalCount: true,

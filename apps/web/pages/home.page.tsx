@@ -3,6 +3,7 @@ import Head from 'next/head'
 
 import { Button } from '@progwise/timebook-ui'
 
+import { PageHeading } from '../frontend/components/pageHeading'
 import { TimebookPage } from '../frontend/components/timebookPage'
 
 export default function Home(): JSX.Element {
@@ -16,7 +17,7 @@ export default function Home(): JSX.Element {
       </Head>
 
       <TimebookPage>
-        <h2 className="font-bold">Welcome</h2>
+        <PageHeading>Welcome</PageHeading>
         <p>This is the new app for reporting your work.</p>
         {session.status !== 'authenticated' && (
           <Button onClick={() => signIn('github')} variant="primary">
@@ -24,7 +25,7 @@ export default function Home(): JSX.Element {
           </Button>
         )}
         <section>
-          <h2 className="font-bold">What is timebook?</h2>
+          <PageHeading>What is timebook?</PageHeading>
           <p>
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
             dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet

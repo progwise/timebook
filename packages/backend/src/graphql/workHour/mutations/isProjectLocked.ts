@@ -4,16 +4,15 @@ import { prisma } from '../../prisma'
 
 interface Options {
   projectId: string
-  userId: string
   date: Date
 }
 
-export const isProjectLocked = async ({ projectId, userId, date }: Options) => {
+export const isProjectLocked = async ({ projectId, date }: Options) => {
   const year = getYear(date)
   const month = getMonth(date)
 
-  const report = await prisma.report.findUnique({
-    where: { projectId_userId_year_month: { year, month, projectId, userId } },
+  const report = await prisma.lockedMonth.findUnique({
+    where: { projectId_year_month: { year, month, projectId } },
   })
 
   return !!report

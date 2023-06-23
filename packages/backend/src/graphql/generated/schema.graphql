@@ -4,6 +4,11 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 scalar Date
 
 """
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+"""
 Adds the information whether the user can edit the entity
 """
 interface ModifyInterface {
@@ -13,7 +18,17 @@ interface ModifyInterface {
   canModify: Boolean!
 }
 
+input MonthInput {
+  month: Int!
+  year: Int!
+}
+
 type Mutation {
+  """
+  Archive a project
+  """
+  projectArchive(projectId: ID!): Project!
+
   """
   Create a new project
   """
@@ -28,6 +43,7 @@ type Mutation {
     """
     id: ID!
   ): Project!
+  projectLock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Assign user to a project. This mutation can also be used for updating the role of a project member
@@ -35,9 +51,30 @@ type Mutation {
   projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
 
   """
-  Unassign user to Project
+  Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
+
+  """
+  Assign user to a project by e-mail.
+  """
+  projectMembershipInviteByEmail(email: String!, projectId: ID!): MutationProjectMembershipInviteByEmailResult!
+
+  """
+  Add a user to a project using the invite key.
+  """
+  projectMembershipJoin(inviteKey: String!): Project!
+
+  """
+  Regenerate the invite key of a project. The old key will be outdated.
+  """
+  projectRegenerateInviteKey(projectId: ID!): Project!
+
+  """
+  Unarchive a project
+  """
+  projectUnarchive(projectId: ID!): Project!
+  projectUnlock(date: MonthInput!, projectId: ID!): Project!
 
   """
   Update a project
@@ -50,8 +87,6 @@ type Mutation {
     """
     id: ID!
   ): Project!
-  reportLock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
-  reportUnlock(month: Int!, projectId: ID!, userId: ID!, year: Int!): Report!
 
   """
   Archive a task
@@ -79,6 +114,16 @@ type Mutation {
   ): Task!
 
   """
+  Lock a task for the current user
+  """
+  taskLock(taskId: ID!): Task!
+
+  """
+  Unlock a task for the current user
+  """
+  taskUnlock(taskId: ID!): Task!
+
+  """
   Update a task
   """
   taskUpdate(
@@ -89,6 +134,21 @@ type Mutation {
     """
     id: ID!
   ): Task!
+
+  """
+  The ongoing time tracking will be deleted
+  """
+  trackingCancel: Tracking
+
+  """
+  Start time tracking for a task. When a tracking for the same task is already running the tracking keeps untouched. When a tracking for a different task is running, the on going tracking will be stopped and converted to work hours.
+  """
+  trackingStart(taskId: ID!): Tracking!
+
+  """
+  The ongoing time tracking will be stopped and converted to work hours
+  """
+  trackingStop: [WorkHour!]!
 
   """
   Create a new WorkHour
@@ -111,17 +171,41 @@ type Mutation {
   workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
 
+union MutationProjectMembershipInviteByEmailResult = MutationProjectMembershipInviteByEmailSuccess | UserNotFoundError
+
+type MutationProjectMembershipInviteByEmailSuccess {
+  data: Project!
+}
+
 type Project implements ModifyInterface {
   """
   Can the user modify the entity
   """
   canModify: Boolean!
   endDate: Date
+  hasWorkHours: Boolean!
 
   """
   identifies the project
   """
   id: ID!
+  inviteKey: String!
+  isArchived: Boolean!
+
+  """
+  Is the project locked for the given month
+  """
+  isLocked(
+    """
+    The month to check. If empty the current month is used.
+    """
+    date: MonthInput
+  ): Boolean!
+
+  """
+  Is the user member of the project
+  """
+  isProjectMember: Boolean!
 
   """
   List of users that are member of the project
@@ -132,15 +216,24 @@ type Project implements ModifyInterface {
     """
     includePastMembers: Boolean! = false
   ): [User!]!
+
+  """
+  Can the user modify the entity
+  """
+  role: String!
   startDate: Date
+
+  """
+  List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned.
+  """
   tasks(showArchived: Boolean! = false): [Task!]!
   title: String!
-  workHours: [WorkHour!]!
 }
 
 enum ProjectFilter {
   ACTIVE
   ALL
+  ARCHIVED
   FUTURE
   PAST
 }
@@ -152,6 +245,8 @@ input ProjectInput {
 }
 
 type Query {
+  currentTracking: Tracking
+
   """
   Returns a single project
   """
@@ -165,7 +260,16 @@ type Query {
   """
   Returns all project of the signed in user that are active
   """
-  projects(filter: ProjectFilter! = ACTIVE, from: Date!, to: Date): [Project!]!
+  projects(
+    filter: ProjectFilter! = ACTIVE
+    from: Date!
+
+    """
+    If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.
+    """
+    includeProjectsWhereUserBookedWorkHours: Boolean! = false
+    to: Date
+  ): [Project!]!
   projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 
   """
@@ -287,33 +391,45 @@ type Task implements ModifyInterface {
   hasWorkHours: Boolean!
 
   """
-  For calculating the money spent
-  """
-  hourlyRate: Float
-
-  """
   Identifies the task
   """
   id: ID!
+  isLocked: Boolean!
+
+  """
+  Is the task locked by an admin
+  """
+  isLockedByAdmin: Boolean!
+
+  """
+  Is the task locked by the user
+  """
+  isLockedByUser: Boolean!
   project: Project!
 
   """
   The user can identify the task in the UI
   """
   title: String!
+  tracking: Tracking
   workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
 input TaskInput {
-  hourlyRate: Float
+  isLocked: Boolean = false
   projectId: ID!
   title: String!
 }
 
 input TaskUpdateInput {
-  hourlyRate: Float
+  isLocked: Boolean
   projectId: ID
   title: String
+}
+
+type Tracking {
+  start: DateTime!
+  task: Task!
 }
 
 type User {
@@ -326,6 +442,10 @@ type User {
   Role of the user in a project
   """
   role(projectId: ID!): Role!
+}
+
+type UserNotFoundError {
+  email: String!
 }
 
 type WorkHour {

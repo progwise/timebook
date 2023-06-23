@@ -1,4 +1,6 @@
 import './taskArchiveMutationField'
 import './taskCreateMutationField'
 import './taskDeleteMutationField'
+import './taskLockMutationField'
+import './taskUnlockMutationField'
 import './taskUpdateMutationField'

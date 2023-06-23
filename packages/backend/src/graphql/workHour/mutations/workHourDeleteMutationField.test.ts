@@ -17,7 +17,7 @@ const workHourDeleteMutation = gql`
 
 describe('workHourDeleteMutationField', () => {
   beforeEach(async () => {
-    await prisma.report.deleteMany()
+    await prisma.lockedMonth.deleteMany()
     await prisma.workHour.deleteMany()
     await prisma.user.deleteMany()
     await prisma.project.deleteMany()
@@ -80,14 +80,34 @@ describe('workHourDeleteMutationField', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when report exist', async () => {
-    await prisma.report.create({ data: { year: 2023, month: 0, projectId: 'P1', userId: '1' } })
+  it('should throw error when project is locked for the given month exist', async () => {
+    await prisma.lockedMonth.create({ data: { year: 2023, month: 0, projectId: 'P1' } })
 
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
 
     expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('project is locked by report')])
+    expect(response.errors).toEqual([new GraphQLError('project is locked for the given month')])
+  })
+
+  it('should throw error when task is locked by admin', async () => {
+    await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('task is locked')])
+  })
+
+  it('should throw error when project is archived', async () => {
+    await prisma.project.update({ where: { id: 'P1' }, data: { archivedAt: new Date() } })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({ query: workHourDeleteMutation, variables: { id: '1' } })
+
+    expect(response.data).toBeNull()
+    expect(response.errors).toEqual([new GraphQLError('project is archived')])
   })
 
   it('should delete when work hour belongs to the user', async () => {

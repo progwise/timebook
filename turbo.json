@@ -29,7 +29,7 @@
     },
     "graphql:generate": {
       "inputs": ["**/*.tsx", "../../packages/backend/**/schema.graphql"],
-      "outputs": ["**/graphql.ts"]
+      "outputs": ["**/generated/gql/*.ts", "**/mocks.generated.ts"]
     },
     "typecheck": {
       "outputs": []
@@ -39,5 +39,5 @@
       "outputs": []
     }
   },
-  "globalEnv": ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "NODE_ENV", "SECRET"]
+  "globalEnv": ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "NODE_ENV", "SECRET", "DATABASE_URL"]
 }

@@ -17,6 +17,7 @@ const testTask = makeFragmentData(
     id: 'task1',
     title: 'Task 1',
     canModify: true,
+    isLockedByAdmin: false,
   },
   TaskRowFragment,
 )
@@ -38,10 +39,12 @@ describe('TaskCell', () => {
     const textBox = await screen.findByRole('textbox')
 
     await userEvent.clear(textBox)
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+
+    const alertBox = await screen.findByRole('alert')
+    expect(alertBox).toBeInTheDocument()
 
     await userEvent.type(textBox, '2')
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(alertBox).not.toBeInTheDocument()
   })
   it('should be success', async () => {
     render(<TaskRow task={testTask} />, { wrapper })

@@ -3,10 +3,9 @@ import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
 import { useQuery } from 'urql'
 
-import { Button, Spinner } from '@progwise/timebook-ui'
+import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
 
-import { ComboBox } from '../../frontend/components/combobox/combobox'
-import { ProjectList } from '../../frontend/components/projectList/projectList'
+import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -16,7 +15,6 @@ const MyProjectsQueryDocument = graphql(`
   query myProjects($from: Date!, $filter: ProjectFilter) {
     projects(from: $from, filter: $filter) {
       ...ProjectTableItem
-      ...ProjectListItem
     }
   }
 `)
@@ -27,10 +25,9 @@ const projectCountsQueryDocument = graphql(`
     activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)
     futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)
     pastCounts: projectsCount(from: $from, to: $to, filter: PAST)
+    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)
   }
 `)
-
-const projectFilters = Object.values(ProjectFilter).map((projectFilter) => ({ id: projectFilter }))
 
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
@@ -49,55 +46,41 @@ const Projects = (): JSX.Element => {
   })
 
   const projectFilterKeyToLabel: Record<ProjectFilter, string> = {
-    ALL: `all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
-    ACTIVE: `current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
-    FUTURE: `upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
-    PAST: `finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ALL: `🔍 all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
+    ACTIVE: `🏃‍♂️ current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
+    FUTURE: `🚀 upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
+    PAST: `🏁 finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
+    ARCHIVED: `🗄️ archived projects ${projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}`,
   }
 
   const handleAddProject = async () => {
     await router.push('/projects/new')
   }
 
-  const handleProjectFilterChange = (newProjectFilter: ProjectFilter | null) => {
-    if (newProjectFilter) {
-      setSelectedProjectFilter(newProjectFilter)
-    }
-  }
-
   return (
     <ProtectedPage>
       <article>
         <div className="flex justify-between">
-          <h2 className="text-lg font-semibold text-gray-400 dark:text-white">Projects</h2>
+          <PageHeading>Projects</PageHeading>
           <Button variant="primary" onClick={handleAddProject}>
             Add
           </Button>
         </div>
 
         <div className="mb-6 flex">
-          <ComboBox<{ id: ProjectFilter }, ProjectFilter>
-            value={projectFilters.find((filter) => filter.id === selectedProjectFilter)}
-            displayValue={(project) => projectFilterKeyToLabel[project.id]}
-            onChange={handleProjectFilterChange}
-            options={projectFilters}
+          <Listbox
+            value={selectedProjectFilter}
+            getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
+            getKey={(projectFilter) => projectFilter}
+            onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
+            options={Object.values(ProjectFilter)}
           />
         </div>
 
         {error && <span>{error.message}</span>}
         {projectsLoading && <Spinner />}
-        {data && (
-          <>
-            {data.projects.length === 0 ? (
-              <div>No projects found</div>
-            ) : (
-              <>
-                <ProjectList className="mb-6 " projects={data.projects} />
-                <ProjectTable projects={data.projects} />
-              </>
-            )}
-          </>
-        )}
+        {data &&
+          (data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />)}
       </article>
     </ProtectedPage>
   )
