@@ -17,6 +17,7 @@ export interface InputFieldProps {
   label?: string
   errorMessage?: string | ReactNode
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
   type?: 'number' | 'text' | 'email'
   form?: string
@@ -34,6 +35,7 @@ export const InputField = React.forwardRef(
       onChange,
       onKeyPress,
       onBlur,
+      onKeyDown,
       value,
       name,
       readOnly,
@@ -79,6 +81,7 @@ export const InputField = React.forwardRef(
             value={value}
             ref={reference}
             onKeyPress={onKeyPress}
+            onKeyDown={onKeyDown}
             name={name}
             size={size}
             form={form}

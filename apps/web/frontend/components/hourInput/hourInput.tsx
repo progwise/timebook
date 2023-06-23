@@ -1,5 +1,5 @@
 import { hoursToMinutes } from 'date-fns'
-import { FocusEventHandler, useRef, useState } from 'react'
+import { KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
 
 import { InputField } from '@progwise/timebook-ui'
 
@@ -29,8 +29,8 @@ export const HourInput = (props: {
   const [formattedDuration, setFormattedDuration] = useState<string>(getFormattedDuration(props.duration))
   const previousDuration = useRef(props.duration)
 
-  const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
-    const newDuration = convertDurationStringToMinutes(event.target.value)
+  const handleBlur = (event: SyntheticEvent<HTMLInputElement>) => {
+    const newDuration = convertDurationStringToMinutes(event.currentTarget.value)
     if (newDuration === undefined) {
       setFormattedDuration(getFormattedDuration(previousDuration.current))
       return
@@ -51,6 +51,12 @@ export const HourInput = (props: {
     setFormattedDuration(newFormattedDuration)
   }
 
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.code === 'Enter') {
+      handleBlur(event)
+    }
+  }
+
   return (
     <InputField
       variant="primary"
@@ -59,6 +65,7 @@ export const HourInput = (props: {
       onChange={(event) => setFormattedDuration(event.target.value)}
       onFocus={(event) => event.target.select()}
       size={4}
+      onKeyDown={handleKeyDown}
       className="min-w-max items-center"
       inputClassName="text-center"
       onBlur={handleBlur}
