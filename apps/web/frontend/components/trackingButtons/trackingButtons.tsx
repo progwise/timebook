@@ -80,11 +80,11 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
 
     return (
       <>
-        <Button variant="primary">
-          <BiPause onClick={() => stopTracking({})} />
+        <Button variant="primary" onClick={() => stopTracking({})}>
+          <BiPause />
         </Button>
-        <Button variant="danger">
-          <BiBlock onClick={() => setIsCancelModalOpen(true)} />
+        <Button variant="danger" onClick={() => setIsCancelModalOpen(true)}>
+          <BiBlock />
         </Button>
         {isCancelModalOpen && (
           <Modal
