@@ -16,10 +16,6 @@ const getDurationString = (difference: number) => {
   return `${hours > 0 ? `${hours}:` : ''}${minutesWithLeadingZero}:${secondsWithLeadingZero}`
 }
 
-const clearTimerFromDocumentTitle = () => {
-  document.title = ''
-}
-
 export const LiveDuration = ({ start }: LiveDurationProps) => {
   // When calculating the duration on SSR, we often get an error, that there is a mismatch between server and client.
   // This useState ensures, that the calculation starts on client side.
@@ -37,7 +33,7 @@ export const LiveDuration = ({ start }: LiveDurationProps) => {
     const interval = setInterval(calculateDuration, 1000)
     return () => {
       clearInterval(interval)
-      clearTimerFromDocumentTitle()
+      document.title = ''
     }
   }, [start])
 
