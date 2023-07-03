@@ -5,27 +5,7 @@ interface LiveDurationProps {
   start: Date
 }
 
-export const LiveDuration = ({ start }: LiveDurationProps) => {
-  // When calculating the duration on SSR, we often get an error, that there is a mismatch between server and client.
-  // This useState ensures, that the calculation starts on client side.
-  const [difference, setDifference] = useState<number>()
-
-  const calculateDuration = () => {
-    setDifference(() => differenceInSeconds(new Date(), start))
-  }
-
-  useEffect(() => {
-    calculateDuration()
-
-    const interval = setInterval(calculateDuration, 1000)
-    return () => clearInterval(interval)
-  }, [start])
-
-  if (difference === undefined) {
-    // eslint-disable-next-line unicorn/no-null
-    return null
-  }
-
+const getDurationString = (difference: number) => {
   const differenceInMinutes = secondsToMinutes(difference)
   const hours = minutesToHours(differenceInMinutes)
   const seconds = difference % 60
@@ -33,11 +13,34 @@ export const LiveDuration = ({ start }: LiveDurationProps) => {
 
   const secondsWithLeadingZero = seconds.toString().padStart(2, '0')
   const minutesWithLeadingZero = minutes.toString().padStart(2, '0')
+  return `${hours > 0 ? `${hours}:` : ''}${minutesWithLeadingZero}:${secondsWithLeadingZero}`
+}
 
-  return (
-    <span>
-      {hours > 0 && `${hours}:`}
-      {minutesWithLeadingZero}:{secondsWithLeadingZero}
-    </span>
-  )
+export const LiveDuration = ({ start }: LiveDurationProps) => {
+  // When calculating the duration on SSR, we often get an error, that there is a mismatch between server and client.
+  // This useState ensures, that the calculation starts on client side.
+  const [difference, setDifference] = useState<number>()
+
+  const calculateDuration = () => {
+    const newDifference = differenceInSeconds(new Date(), start)
+    setDifference(newDifference)
+    document.title = getDurationString(newDifference)
+  }
+
+  useEffect(() => {
+    calculateDuration()
+
+    const interval = setInterval(calculateDuration, 1000)
+    return () => {
+      clearInterval(interval)
+      document.title = ''
+    }
+  }, [start])
+
+  if (difference === undefined) {
+    // eslint-disable-next-line unicorn/no-null
+    return null
+  }
+
+  return <span>{getDurationString(difference)}</span>
 }
