@@ -172,7 +172,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           </div>
         </div>
 
-        {projectId && reportGroupedData && userId && userIsAdmin && (
+        {projectId && reportGroupedData && userIsAdmin && (
           <>
             {fetchingProjects || fetchingReports ? (
               <div className="mt-10 flex justify-center">
