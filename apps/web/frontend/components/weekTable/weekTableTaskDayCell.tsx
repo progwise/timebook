@@ -34,9 +34,17 @@ interface WeekTableTaskDayCellProps {
   projectId: string
   day: Date
   disabled: boolean
+  className?: string
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({
+  duration,
+  taskId,
+  day,
+  projectId,
+  disabled,
+  className,
+}: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -55,7 +63,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>
+    <TableCell key={day.toDateString()} className={`${isToday(day) ? classNameMarkDay : ''} ${className ?? ''}`}>
       <HourInput
         onBlur={(duration: number) => {
           workHourUpdate({

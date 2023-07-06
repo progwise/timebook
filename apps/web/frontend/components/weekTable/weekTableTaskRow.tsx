@@ -45,14 +45,14 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableRow className="border-gray-200 dark:border-gray-700">
+    <TableRow className="border-none ">
       <TableCell className="flex gap-1">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
       </TableCell>
       <TableCell>{task.title}</TableCell>
-      {eachDayOfInterval(interval).map((day) => {
+      {eachDayOfInterval(interval).map((day, index, array) => {
         const durations = task.workHours
           .filter((workHour) => isSameDay(parseISO(workHour.date), day))
           .map((workHour) => workHour.duration)
@@ -71,6 +71,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
             duration={duration}
             key={day.toDateString() + duration}
             projectId={task.project.id}
+            className={`${index === 0 ? 'border-l' : ''} ${index === array.length - 1 ? 'border-r' : ''}`}
           />
         )
       })}

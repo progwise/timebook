@@ -24,18 +24,25 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableFootRow className="text-lg">
+    <TableFootRow className="border-t text-lg">
       <TableCell />
       <TableCell />
-      {eachDayOfInterval(interval).map((day) => {
+      {eachDayOfInterval(interval).map((day, index, array) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
           .map((workHour) => workHour.duration)
           .reduce((previous, current) => previous + current, 0)
 
         return (
-          <TableCell className={`${isToday(day) ? classNameMarkDay : ''} text-center`} key={day.toString()}>
-            <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
+          <TableCell
+            className={` border-b px-0.5 pt-0 pb-0.5 text-center ${index === 0 ? 'border-l' : ''} ${
+              index === array.length - 1 ? 'border-r' : ''
+            }`}
+            key={day.toString()}
+          >
+            <div className={`${isToday(day) ? `${classNameMarkDay} rounded-b-lg` : ''} `}>
+              <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
+            </div>
           </TableCell>
         )
       })}

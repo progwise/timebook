@@ -5,7 +5,7 @@ export interface DefaultTableComponentProps {
 }
 
 export const Table: React.FC<DefaultTableComponentProps> = ({ children, className = '' }) => {
-  return <table className={`w-full bg-white shadow-lg ${className}`}>{children}</table>
+  return <table className={`w-full shadow-lg ${className}`}>{children}</table>
 }
 
 // Header
