@@ -15,4 +15,5 @@ module.exports = {
   experimental: {
     externalDir: true,
   },
+  output: 'standalone',
 }
