@@ -27,7 +27,7 @@ RUN pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-RUN yarn turbo run build --filter=@progwise/timebook-web
+RUN pnpm exec turbo run build --filter=@progwise/timebook-web
  
 FROM base AS runner
 WORKDIR /app
