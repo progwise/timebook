@@ -17,16 +17,16 @@ interface WeekTableFooterRowProps {
   workHours: FragmentType<typeof WeekTableFooterFragment>[]
 }
 
-export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: WeekTableFooterRowProps) => {
+export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: WeekTableFooterRowProps) => {
   const workHours = useFragment(WeekTableFooterFragment, workHoursFragment)
   const sumOfDurationsOfTheWeek = workHours
     .map((workHour) => workHour.duration)
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableFootRow className="border-t text-lg">
-      <TableCell />
-      <TableCell />
+    <div className="contents">
+      <div className="border-t" />
+      <div className="border-t" />
       {eachDayOfInterval(interval).map((day, index, array) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
@@ -34,7 +34,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
           .reduce((previous, current) => previous + current, 0)
 
         return (
-          <TableCell className="p-0 text-center" key={day.toString()}>
+          <div className="border-t p-0 text-center text-lg" key={day.toString()}>
             <div
               className={`border-b px-0.5 pb-1 ${index === 0 ? 'rounded-bl-md border-l' : ''} ${
                 index === array.length - 1 ? 'rounded-br-md border-r' : ''
@@ -44,13 +44,13 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
                 <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
               </div>
             </div>
-          </TableCell>
+          </div>
         )
       })}
-      <TableCell className="text-center font-bold">
+      <div className="text-center text-lg font-bold">
         <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
-      </TableCell>
-      <TableCell />
-    </TableFootRow>
+      </div>
+      <div />
+    </div>
   )
 }

@@ -6,6 +6,7 @@ import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { classNameMarkDay } from './classNameMarkDay'
+import { WeekGridTaskRow } from './weekGridTaskRow'
 import { WeekTableTaskRow } from './weekTableTaskRow'
 
 export const WeekTableProjectRowGroupFragment = graphql(`
@@ -28,7 +29,7 @@ interface WeekTableProjectRowGroupProps {
   project: FragmentType<typeof WeekTableProjectRowGroupFragment>
 }
 
-export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }: WeekTableProjectRowGroupProps) => {
+export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: WeekTableProjectRowGroupProps) => {
   const project = useFragment(WeekTableProjectRowGroupFragment, projectFragment)
 
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
@@ -41,28 +42,26 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
 
   return (
     <>
-      <TableRow onClick={() => setIsCollapsed(!isCollapsed)} className="cursor-pointer border-t border-b-0 text-lg">
-        <TableCell colSpan={2}>
-          <div className="flex items-center gap-1 whitespace-nowrap font-bold">
-            {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
-            {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
-          </div>
-        </TableCell>
+      <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer border-b-0">
+        <div className="col-span-2 col-start-1 flex items-center gap-1 self-stretch whitespace-nowrap border-t text-lg font-bold">
+          {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
+          {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
+        </div>
         {eachDayOfInterval(interval).map((day, index, array) => (
-          <TableCell
+          <div
             key={day.toDateString()}
             className={`${index === 0 ? 'border-l' : ''} ${index === array.length - 1 ? 'border-r' : ''}
-            ${isToday(day) ? `${classNameMarkDay} border-0` : ''}`}
+            self-stretch px-0.5 text-lg`}
           >
-            <div className={`${isToday(day) ? `${classNameMarkDay} border-0` : ''}`} />
-          </TableCell>
+            <div className={`${isToday(day) ? classNameMarkDay : ''} h-full border-t`} />
+          </div>
         ))}
-        <TableCell className="text-center font-bold">
+        <div className="px-2 text-center text-lg font-bold">
           <FormattedDuration title="" minutes={projectDuration} />
-        </TableCell>
-        <TableCell />
-      </TableRow>
-      {!isCollapsed && project.tasks.map((task) => <WeekTableTaskRow interval={interval} task={task} key={task.id} />)}
+        </div>
+        <div className="px-5" />
+      </div>
+      {!isCollapsed && project.tasks.map((task) => <WeekGridTaskRow interval={interval} task={task} key={task.id} />)}
     </>
   )
 }

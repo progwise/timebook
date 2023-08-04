@@ -1,6 +1,9 @@
 import { Table, TableBody, TableFoot, TableHead } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
+import { WeekGridFooterRow } from './weekGridFooterRow'
+import { WeekGridProjectRowGroup } from './weekGridProjectRowGroup'
 import { WeekTableDateHeaderRow } from './weekTableDateHeaderRow'
 import { WeekTableFooterRow } from './weekTableFooterRow'
 import { WeekTableProjectRowGroup } from './weekTableProjectRowGroup'
@@ -30,18 +33,32 @@ export const WeekTable: React.FC<WeekTableProps> = ({ tableData, startDate, endD
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
 
   return (
-    <Table>
-      <TableHead>
-        <WeekTableDateHeaderRow interval={interval} />
-      </TableHead>
-      <TableBody>
+    <>
+      <Table>
+        <TableHead>
+          <WeekTableDateHeaderRow interval={interval} />
+        </TableHead>
+        <TableBody>
+          {projects.map((project) => (
+            <WeekTableProjectRowGroup interval={interval} project={project} key={project.id} />
+          ))}
+        </TableBody>
+        <TableFoot>
+          <WeekTableFooterRow interval={interval} workHours={allWorkHours} />
+        </TableFoot>
+      </Table>
+
+      <div
+        className="grid grid-cols-11 items-center"
+        style={{ gridTemplateColumns: 'min-content auto repeat(9, min-content)' }}
+      >
+        <div className="h-full bg-slate-300" />
+        <WeekGridDateHeaderRow interval={interval} />
         {projects.map((project) => (
-          <WeekTableProjectRowGroup interval={interval} project={project} key={project.id} />
+          <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} />
         ))}
-      </TableBody>
-      <TableFoot>
-        <WeekTableFooterRow interval={interval} workHours={allWorkHours} />
-      </TableFoot>
-    </Table>
+        <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
+      </div>
+    </>
   )
 }

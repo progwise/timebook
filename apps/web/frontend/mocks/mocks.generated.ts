@@ -789,35 +789,6 @@ export type UnlockTaskMutation = {
   taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
-export type WeekTableProjectFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  isArchived: boolean
-  tasks: Array<{
-    __typename?: 'Task'
-    id: string
-    title: string
-    isLockedByAdmin: boolean
-    isLocked: boolean
-    isLockedByUser: boolean
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: {
-      __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
-      id: string
-      isProjectMember: boolean
-      isArchived: boolean
-    }
-    tracking?: {
-      __typename?: 'Tracking'
-      start: string
-      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
-    } | null
-  }>
-}
-
 export type WeekTableFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string }
 
 export type WeekTableProjectRowGroupFragment = {
@@ -895,6 +866,35 @@ export type WeekTableTaskRowFragment = {
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+}
+
+export type WeekTableProjectFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  isArchived: boolean
+  tasks: Array<{
+    __typename?: 'Task'
+    id: string
+    title: string
+    isLockedByAdmin: boolean
+    isLocked: boolean
+    isLockedByUser: boolean
+    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+      isArchived: boolean
+    }
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
+  }>
 }
 
 export type ProjectQueryVariables = Exact<{

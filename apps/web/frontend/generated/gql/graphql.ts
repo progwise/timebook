@@ -802,21 +802,6 @@ export type UnlockTaskMutation = {
   taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
-export type WeekTableProjectFragment = ({
-  __typename?: 'Project'
-  id: string
-  tasks: Array<{
-    __typename?: 'Task'
-    workHours: Array<
-      { __typename?: 'WorkHour'; duration: number } & {
-        ' $fragmentRefs'?: { WeekTableFooterFragment: WeekTableFooterFragment }
-      }
-    >
-  }>
-} & { ' $fragmentRefs'?: { WeekTableProjectRowGroupFragment: WeekTableProjectRowGroupFragment } }) & {
-  ' $fragmentName'?: 'WeekTableProjectFragment'
-}
-
 export type WeekTableFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string } & {
   ' $fragmentName'?: 'WeekTableFooterFragment'
 }
@@ -883,6 +868,21 @@ export type WeekTableTaskRowFragment = ({
     TaskLockButtonFragment: TaskLockButtonFragment
   }
 }) & { ' $fragmentName'?: 'WeekTableTaskRowFragment' }
+
+export type WeekTableProjectFragment = ({
+  __typename?: 'Project'
+  id: string
+  tasks: Array<{
+    __typename?: 'Task'
+    workHours: Array<
+      { __typename?: 'WorkHour'; duration: number } & {
+        ' $fragmentRefs'?: { WeekTableFooterFragment: WeekTableFooterFragment }
+      }
+    >
+  }>
+} & { ' $fragmentRefs'?: { WeekTableProjectRowGroupFragment: WeekTableProjectRowGroupFragment } }) & {
+  ' $fragmentName'?: 'WeekTableProjectFragment'
+}
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']

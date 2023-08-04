@@ -13,16 +13,17 @@ export const WeekTableDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps
     <TableHeadCell />
     <TableHeadCell />
     {eachDayOfInterval(interval).map((day, index, array) => (
-      <TableHeadCell
-        className={` border-t px-0.5 pb-0 pt-1 text-center ${index === 0 ? 'border-l' : ''} ${
-          index === array.length - 1 ? 'border-r' : ''
-        }`}
-        key={day.toString()}
-      >
-        <div className={`${isToday(day) ? `${classNameMarkDay} rounded-t-lg ` : ''}`}>
-          {format(day, 'EEE')}
-          <br />
-          <span className="text-base font-normal">{format(day, 'dd. MMM')}</span>
+      <TableHeadCell className="p-0 text-center" key={day.toString()}>
+        <div
+          className={`border-t px-0.5 pt-1 ${index === 0 ? 'rounded-tl-md border-l' : ''} ${
+            index === array.length - 1 ? 'rounded-tr-md border-r' : ''
+          }`}
+        >
+          <div className={`${isToday(day) ? `${classNameMarkDay} rounded-t-lg` : ''}`}>
+            {format(day, 'EEE')}
+            <br />
+            <span className="text-base font-normal">{format(day, 'dd. MMM')}</span>
+          </div>
         </div>
       </TableHeadCell>
     ))}

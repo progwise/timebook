@@ -37,7 +37,7 @@ interface WeekTableTaskDayCellProps {
   className?: string
 }
 
-export const WeekTableTaskDayCell = ({
+export const WeekGridTaskDayCell = ({
   duration,
   taskId,
   day,
@@ -63,8 +63,8 @@ export const WeekTableTaskDayCell = ({
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <TableCell key={day.toDateString()} className={`px-0.5 py-0 ${className ?? ''}`}>
-      <div className={isToday(day) ? classNameMarkDay : ''}>
+    <div key={day.toDateString()} className={`px-0.5 ${className ?? ''}`}>
+      <div className={`${isToday(day) ? classNameMarkDay : ''} h-full px-3 py-1`}>
         <HourInput
           onBlur={(duration: number) => {
             workHourUpdate({
@@ -81,6 +81,6 @@ export const WeekTableTaskDayCell = ({
           disabled={isLocked || disabled}
         />
       </div>
-    </TableCell>
+    </div>
   )
 }
