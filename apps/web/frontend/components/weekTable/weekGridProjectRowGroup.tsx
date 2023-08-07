@@ -42,8 +42,8 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
 
   return (
     <>
-      <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer border-b-0">
-        <div className="col-span-2 col-start-1 flex items-center gap-1 self-stretch whitespace-nowrap border-t text-lg font-bold">
+      <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer">
+        <div className="col-span-2 col-start-1 flex items-center gap-1 self-stretch whitespace-nowrap border-t py-2 text-lg font-bold">
           {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>

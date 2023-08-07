@@ -52,7 +52,7 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekTableTaskR
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
       </div>
-      <div>{task.title}</div>
+      <div className="px-2">{task.title}</div>
       {eachDayOfInterval(interval).map((day, index, array) => {
         const durations = task.workHours
           .filter((workHour) => isSameDay(parseISO(workHour.date), day))

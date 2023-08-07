@@ -16,7 +16,7 @@ export const WeekGridDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps)
       <div
         className={`border-t px-0.5 pt-1 ${index === 0 ? 'rounded-tl-md border-l' : ''} ${
           index === array.length - 1 ? 'rounded-tr-md border-r' : ''
-        } text-center text-lg`}
+        } text-center text-xl`}
         key={day.toString()}
       >
         <div className={`${isToday(day) ? `${classNameMarkDay} rounded-t-lg` : ''} px-5 font-bold`}>

@@ -52,7 +52,6 @@ export const WeekTable: React.FC<WeekTableProps> = ({ tableData, startDate, endD
         className="grid grid-cols-11 items-center"
         style={{ gridTemplateColumns: 'min-content auto repeat(9, min-content)' }}
       >
-        <div className="h-full bg-slate-300" />
         <WeekGridDateHeaderRow interval={interval} />
         {projects.map((project) => (
           <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} />

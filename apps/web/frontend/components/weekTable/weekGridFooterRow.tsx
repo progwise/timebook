@@ -25,8 +25,7 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
 
   return (
     <div className="contents">
-      <div className="border-t" />
-      <div className="border-t" />
+      <div className="col-span-2 self-stretch border-t" />
       {eachDayOfInterval(interval).map((day, index, array) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
@@ -40,7 +39,7 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
                 index === array.length - 1 ? 'rounded-br-md border-r' : ''
               }`}
             >
-              <div className={`${isToday(day) ? `${classNameMarkDay} rounded-b-lg` : ''} `}>
+              <div className={`${isToday(day) ? `${classNameMarkDay} rounded-b-lg` : ''} pt-0.5`}>
                 <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
               </div>
             </div>
