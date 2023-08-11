@@ -2,8 +2,6 @@ import { format, getMonth, getYear, isToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useMutation, useQuery } from 'urql'
 
-import { TableCell } from '@progwise/timebook-ui'
-
 import { graphql } from '../../generated/gql'
 import { HourInput } from '../hourInput/hourInput'
 import { classNameMarkDay } from './classNameMarkDay'
@@ -28,7 +26,7 @@ const IsLockedQueryDocument = graphql(`
   }
 `)
 
-interface WeekTableTaskDayCellProps {
+interface WeekGridTaskDayCellProps {
   duration: number
   taskId: string
   projectId: string
@@ -37,14 +35,14 @@ interface WeekTableTaskDayCellProps {
   className?: string
 }
 
-export const WeekTableTaskDayCell = ({
+export const WeekGridTaskDayCell = ({
   duration,
   taskId,
   day,
   projectId,
   disabled,
   className,
-}: WeekTableTaskDayCellProps) => {
+}: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -63,8 +61,8 @@ export const WeekTableTaskDayCell = ({
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <TableCell key={day.toDateString()} className={`px-0.5 py-0 ${className ?? ''}`}>
-      <div className={isToday(day) ? classNameMarkDay : ''}>
+    <div key={day.toDateString()} className={`px-1 ${className ?? ''}`}>
+      <div className={`${isToday(day) ? classNameMarkDay : ''} h-full px-3 py-1`}>
         <HourInput
           onBlur={(duration: number) => {
             workHourUpdate({
@@ -81,6 +79,6 @@ export const WeekTableTaskDayCell = ({
           disabled={isLocked || disabled}
         />
       </div>
-    </TableCell>
+    </div>
   )
 }

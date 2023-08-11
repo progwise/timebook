@@ -789,9 +789,38 @@ export type UnlockTaskMutation = {
   taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
-export type WeekTableFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string }
+export type WeekGridProjectFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  isArchived: boolean
+  tasks: Array<{
+    __typename?: 'Task'
+    id: string
+    title: string
+    isLockedByAdmin: boolean
+    isLocked: boolean
+    isLockedByUser: boolean
+    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    project: {
+      __typename?: 'Project'
+      startDate?: string | null
+      endDate?: string | null
+      id: string
+      isProjectMember: boolean
+      isArchived: boolean
+    }
+    tracking?: {
+      __typename?: 'Tracking'
+      start: string
+      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+    } | null
+  }>
+}
 
-export type WeekTableProjectRowGroupFragment = {
+export type WeekGridFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string }
+
+export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
@@ -845,7 +874,7 @@ export type IsLockedQuery = {
   task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
 }
 
-export type WeekTableTaskRowFragment = {
+export type WeekGridTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
@@ -866,35 +895,6 @@ export type WeekTableTaskRowFragment = {
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
-}
-
-export type WeekTableProjectFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  isArchived: boolean
-  tasks: Array<{
-    __typename?: 'Task'
-    id: string
-    title: string
-    isLockedByAdmin: boolean
-    isLocked: boolean
-    isLockedByUser: boolean
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
-    project: {
-      __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
-      id: string
-      isProjectMember: boolean
-      isArchived: boolean
-    }
-    tracking?: {
-      __typename?: 'Tracking'
-      start: string
-      task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
-    } | null
-  }>
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -977,12 +977,12 @@ export type ProjectCreateMutationVariables = Exact<{
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
 
-export type WeekTableQueryVariables = Exact<{
+export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
 
-export type WeekTableQuery = {
+export type WeekGridQuery = {
   __typename?: 'Query'
   projects: Array<{
     __typename?: 'Project'
@@ -1541,13 +1541,13 @@ export const mockProjectCreateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockWeekTableQuery((req, res, ctx) => {
+ * mockWeekGridQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
  * })
  */
-export const mockWeekTableQuery = (
-  resolver: ResponseResolver<GraphQLRequest<WeekTableQueryVariables>, GraphQLContext<WeekTableQuery>, any>,
-) => graphql.query<WeekTableQuery, WeekTableQueryVariables>('weekTable', resolver)
+export const mockWeekGridQuery = (
+  resolver: ResponseResolver<GraphQLRequest<WeekGridQueryVariables>, GraphQLContext<WeekGridQuery>, any>,
+) => graphql.query<WeekGridQuery, WeekGridQueryVariables>('weekGrid', resolver)

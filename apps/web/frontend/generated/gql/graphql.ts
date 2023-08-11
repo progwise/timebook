@@ -802,21 +802,36 @@ export type UnlockTaskMutation = {
   taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
-export type WeekTableFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string } & {
-  ' $fragmentName'?: 'WeekTableFooterFragment'
+export type WeekGridProjectFragment = ({
+  __typename?: 'Project'
+  id: string
+  tasks: Array<{
+    __typename?: 'Task'
+    workHours: Array<
+      { __typename?: 'WorkHour'; duration: number } & {
+        ' $fragmentRefs'?: { WeekGridFooterFragment: WeekGridFooterFragment }
+      }
+    >
+  }>
+} & { ' $fragmentRefs'?: { WeekGridProjectRowGroupFragment: WeekGridProjectRowGroupFragment } }) & {
+  ' $fragmentName'?: 'WeekGridProjectFragment'
 }
 
-export type WeekTableProjectRowGroupFragment = {
+export type WeekGridFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string } & {
+  ' $fragmentName'?: 'WeekGridFooterFragment'
+}
+
+export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
   isArchived: boolean
   tasks: Array<
     { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; duration: number }> } & {
-      ' $fragmentRefs'?: { WeekTableTaskRowFragment: WeekTableTaskRowFragment }
+      ' $fragmentRefs'?: { WeekGridTaskRowFragment: WeekGridTaskRowFragment }
     }
   >
-} & { ' $fragmentName'?: 'WeekTableProjectRowGroupFragment' }
+} & { ' $fragmentName'?: 'WeekGridProjectRowGroupFragment' }
 
 export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
@@ -843,7 +858,7 @@ export type IsLockedQuery = {
   task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
 }
 
-export type WeekTableTaskRowFragment = ({
+export type WeekGridTaskRowFragment = ({
   __typename?: 'Task'
   id: string
   title: string
@@ -867,22 +882,7 @@ export type WeekTableTaskRowFragment = ({
     TrackingButtonsTaskFragment: TrackingButtonsTaskFragment
     TaskLockButtonFragment: TaskLockButtonFragment
   }
-}) & { ' $fragmentName'?: 'WeekTableTaskRowFragment' }
-
-export type WeekTableProjectFragment = ({
-  __typename?: 'Project'
-  id: string
-  tasks: Array<{
-    __typename?: 'Task'
-    workHours: Array<
-      { __typename?: 'WorkHour'; duration: number } & {
-        ' $fragmentRefs'?: { WeekTableFooterFragment: WeekTableFooterFragment }
-      }
-    >
-  }>
-} & { ' $fragmentRefs'?: { WeekTableProjectRowGroupFragment: WeekTableProjectRowGroupFragment } }) & {
-  ' $fragmentName'?: 'WeekTableProjectFragment'
-}
+}) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -948,15 +948,15 @@ export type ProjectCreateMutationVariables = Exact<{
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
 
-export type WeekTableQueryVariables = Exact<{
+export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
 
-export type WeekTableQuery = {
+export type WeekGridQuery = {
   __typename?: 'Query'
   projects: Array<
-    { __typename?: 'Project' } & { ' $fragmentRefs'?: { WeekTableProjectFragment: WeekTableProjectFragment } }
+    { __typename?: 'Project' } & { ' $fragmentRefs'?: { WeekGridProjectFragment: WeekGridProjectFragment } }
   >
 }
 
@@ -1525,12 +1525,12 @@ export const SheetDayRowFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SheetDayRowFragment, unknown>
-export const WeekTableFooterFragmentDoc = {
+export const WeekGridFooterFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableFooter' },
+      name: { kind: 'Name', value: 'WeekGridFooter' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'WorkHour' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1541,7 +1541,7 @@ export const WeekTableFooterFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekTableFooterFragment, unknown>
+} as unknown as DocumentNode<WeekGridFooterFragment, unknown>
 export const TrackingButtonsTrackingFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1611,12 +1611,12 @@ export const TaskLockButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TaskLockButtonFragment, unknown>
-export const WeekTableTaskRowFragmentDoc = {
+export const WeekGridTaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1738,13 +1738,13 @@ export const WeekTableTaskRowFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekTableTaskRowFragment, unknown>
-export const WeekTableProjectRowGroupFragmentDoc = {
+} as unknown as DocumentNode<WeekGridTaskRowFragment, unknown>
+export const WeekGridProjectRowGroupFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableProjectRowGroup' },
+      name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1759,7 +1759,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'workHours' },
@@ -1842,7 +1842,7 @@ export const WeekTableProjectRowGroupFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1910,13 +1910,13 @@ export const WeekTableProjectRowGroupFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekTableProjectRowGroupFragment, unknown>
-export const WeekTableProjectFragmentDoc = {
+} as unknown as DocumentNode<WeekGridProjectRowGroupFragment, unknown>
+export const WeekGridProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableProject' },
+      name: { kind: 'Name', value: 'WeekGridProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1947,14 +1947,14 @@ export const WeekTableProjectFragmentDoc = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableFooter' } },
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridFooter' } },
                     ],
                   },
                 },
               ],
             },
           },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableProjectRowGroup' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridProjectRowGroup' } },
         ],
       },
     },
@@ -2014,7 +2014,7 @@ export const WeekTableProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -2083,7 +2083,7 @@ export const WeekTableProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableFooter' },
+      name: { kind: 'Name', value: 'WeekGridFooter' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'WorkHour' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -2095,7 +2095,7 @@ export const WeekTableProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableProjectRowGroup' },
+      name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -2110,7 +2110,7 @@ export const WeekTableProjectFragmentDoc = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'workHours' },
@@ -2138,7 +2138,7 @@ export const WeekTableProjectFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekTableProjectFragment, unknown>
+} as unknown as DocumentNode<WeekGridProjectFragment, unknown>
 export const ProjectMembershipInviteByEmailDocument = {
   kind: 'Document',
   definitions: [
@@ -4201,13 +4201,13 @@ export const ProjectCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectCreateMutation, ProjectCreateMutationVariables>
-export const WeekTableDocument = {
+export const WeekGridDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'weekTable' },
+      name: { kind: 'Name', value: 'weekGrid' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -4245,7 +4245,7 @@ export const WeekTableDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableProject' } }],
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridProject' } }],
             },
           },
         ],
@@ -4253,7 +4253,7 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableFooter' },
+      name: { kind: 'Name', value: 'WeekGridFooter' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'WorkHour' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -4319,7 +4319,7 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -4388,7 +4388,7 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableProjectRowGroup' },
+      name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -4403,7 +4403,7 @@ export const WeekTableDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableTaskRow' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'workHours' },
@@ -4432,7 +4432,7 @@ export const WeekTableDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekTableProject' },
+      name: { kind: 'Name', value: 'WeekGridProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -4463,16 +4463,16 @@ export const WeekTableDocument = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableFooter' } },
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridFooter' } },
                     ],
                   },
                 },
               ],
             },
           },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekTableProjectRowGroup' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridProjectRowGroup' } },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<WeekTableQuery, WeekTableQueryVariables>
+} as unknown as DocumentNode<WeekGridQuery, WeekGridQueryVariables>

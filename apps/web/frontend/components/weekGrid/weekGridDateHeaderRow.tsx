@@ -1,24 +1,17 @@
 import { eachDayOfInterval, format, isToday } from 'date-fns'
 
-import { TableHeadCell, TableHeadRow } from '@progwise/timebook-ui'
-
 import { classNameMarkDay } from './classNameMarkDay'
 
-interface WeekTableDateHeaderRowProps {
+interface WeekGridDateHeaderRowProps {
   interval: { start: Date; end: Date }
 }
 
-export const WeekGridDateHeaderRow = ({ interval }: WeekTableDateHeaderRowProps) => (
+export const WeekGridDateHeaderRow = ({ interval }: WeekGridDateHeaderRowProps) => (
   <div className="contents">
     <div />
     <div />
-    {eachDayOfInterval(interval).map((day, index, array) => (
-      <div
-        className={`border-t px-0.5 pt-1 ${index === 0 ? 'rounded-tl-md border-l' : ''} ${
-          index === array.length - 1 ? 'rounded-tr-md border-r' : ''
-        } text-center text-xl`}
-        key={day.toString()}
-      >
+    {eachDayOfInterval(interval).map((day) => (
+      <div className="px-1 pt-1 text-center text-xl" key={day.toString()}>
         <div className={`${isToday(day) ? `${classNameMarkDay} rounded-t-lg` : ''} px-5 font-bold`}>
           {format(day, 'EEE')}
           <br />
