@@ -4,7 +4,6 @@ import { useMutation, useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
 import { HourInput } from '../hourInput/hourInput'
-import { classNameMarkDay } from './classNameMarkDay'
 
 const WorkHourUpdateMutationDocument = graphql(`
   mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
@@ -62,7 +61,7 @@ export const WeekGridTaskDayCell = ({
 
   return (
     <div key={day.toDateString()} className={`px-1 ${className ?? ''}`}>
-      <div className={`${isToday(day) ? classNameMarkDay : ''} h-full px-3 py-1`}>
+      <div className="h-full px-3 py-1">
         <HourInput
           onBlur={(duration: number) => {
             workHourUpdate({

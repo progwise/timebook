@@ -57,11 +57,9 @@ export const WeekGridProjectRowGroup = ({
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
-          <div key={day.toDateString()} className={`self-stretch px-1 text-lg ${isToday(day) ? '' : 'border-t'}`}>
-            <div className={`${isToday(day) ? classNameMarkDay : ''} h-full`} />
-          </div>
+          <div key={day.toDateString()} className="self-stretch border-t px-1 text-lg" />
         ))}
-        <div className="self-stretch border-t px-2 text-center text-lg font-bold">
+        <div className="flex items-center self-stretch border-t px-2 text-center text-lg font-bold">
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
         <div className={`self-stretch border-t px-5 ${isFirstProject ? 'rounded-tr-md' : ''}`} />

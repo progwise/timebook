@@ -1,9 +1,8 @@
-import { eachDayOfInterval, isSameDay, isToday, parseISO } from 'date-fns'
+import { eachDayOfInterval, isSameDay, parseISO } from 'date-fns'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { classNameMarkDay } from './classNameMarkDay'
 
 const WeekGridFooterFragment = graphql(`
   fragment WeekGridFooter on WorkHour {
@@ -33,9 +32,9 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
           .reduce((previous, current) => previous + current, 0)
 
         return (
-          <div className="self-stretch p-0 text-center text-lg" key={day.toString()}>
+          <div className="z-10 self-stretch p-0 text-center text-lg" key={day.toString()}>
             <div className="h-full px-1 pb-1">
-              <div className={`${isToday(day) ? `${classNameMarkDay} rounded-b-lg` : ''} pt-0.5`}>
+              <div className="pt-0.5">
                 <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
               </div>
             </div>

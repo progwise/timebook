@@ -1,4 +1,4 @@
-import { differenceInDays } from 'date-fns'
+import { differenceInDays, isToday, isWithinInterval } from 'date-fns'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
@@ -29,17 +29,26 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate)
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
-
+  console.log(endDate)
   return (
     <div
       className="relative grid grid-cols-11 items-center [&_div]:border-gray-400"
       style={{
         gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 3}, min-content)`,
-        gridTemplateRows: `repeat(99999, min-content)`,
+        gridTemplateRows: `repeat(999, min-content)`,
       }}
     >
       <div className="pointer-events-none absolute col-start-3 col-end-[-3] row-start-1 flex h-full w-full self-stretch rounded-md border" />
       <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] flex h-full w-full self-stretch rounded-md border" />
+      {isWithinInterval(new Date(), interval) && (
+        <div
+          className="absolute col-span-1 row-start-1 flex h-full w-full self-stretch p-1"
+          style={{ gridColumnStart: differenceInDays(new Date(), startDate) + 3 }}
+        >
+          <div className="h-full w-full rounded-md bg-slate-200 dark:bg-gray-900" />
+        </div>
+      )}
+
       <WeekGridDateHeaderRow interval={interval} />
       {projects.map((project, index) => (
         <WeekGridProjectRowGroup

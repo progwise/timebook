@@ -46,7 +46,7 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
 
   return (
     <div className="contents">
-      <div className="self-stretch pl-2">
+      <div className="pl-2">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
@@ -78,7 +78,7 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
       <div className="text-center">
         <FormattedDuration minutes={taskDurations} title="" />
       </div>
-      <div className="self-stretch px-1">
+      <div className="px-1">
         {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
           <TaskLockButton task={task} />
         )}
