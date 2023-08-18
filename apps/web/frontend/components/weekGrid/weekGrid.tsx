@@ -1,4 +1,4 @@
-import { differenceInDays, isToday, isWithinInterval } from 'date-fns'
+import { differenceInDays, isWithinInterval } from 'date-fns'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
@@ -29,7 +29,6 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate)
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
-  console.log(endDate)
   return (
     <div
       className="relative grid grid-cols-11 items-center [&_div]:border-gray-400"
