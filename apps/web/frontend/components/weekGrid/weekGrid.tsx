@@ -31,14 +31,20 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
   return (
     <div
+      role="table"
       className="relative grid grid-cols-11 items-center [&_div]:border-gray-400"
       style={{
         gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 3}, min-content)`,
         gridTemplateRows: `repeat(999, min-content)`,
       }}
     >
+      {/* adds a border around week day headers and all hour inputs */}
       <div className="pointer-events-none absolute col-start-3 col-end-[-3] row-start-1 flex h-full w-full self-stretch rounded-md border" />
+
+      {/* adds a border around project row groups and task rows */}
       <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] flex h-full w-full self-stretch rounded-md border" />
+
+      {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
         <div
           className="absolute col-span-1 row-start-1 flex h-full w-full self-stretch p-1"

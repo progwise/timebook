@@ -1,4 +1,4 @@
-import { format, getMonth, getYear, isToday } from 'date-fns'
+import { format, getMonth, getYear } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useMutation, useQuery } from 'urql'
 
@@ -60,7 +60,7 @@ export const WeekGridTaskDayCell = ({
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <div key={day.toDateString()} className={`px-1 ${className ?? ''}`}>
+    <div key={day.toDateString()} className={`px-1 ${className ?? ''}`} role="cell">
       <div className="h-full px-3 py-1">
         <HourInput
           onBlur={(duration: number) => {

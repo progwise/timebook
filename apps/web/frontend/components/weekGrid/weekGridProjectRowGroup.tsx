@@ -1,11 +1,10 @@
 import { useLocalStorageValue } from '@react-hookz/web'
-import { eachDayOfInterval, isToday } from 'date-fns'
+import { eachDayOfInterval } from 'date-fns'
 import { BiArrowToBottom, BiArrowToTop } from 'react-icons/bi'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { classNameMarkDay } from './classNameMarkDay'
 import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
@@ -47,22 +46,23 @@ export const WeekGridProjectRowGroup = ({
 
   return (
     <>
-      <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer">
+      <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer" role="row">
         <div
           className={`col-span-2 col-start-1 flex items-center gap-1 self-stretch ${
             isFirstProject ? 'rounded-tl-md' : ''
           } border-t p-2 text-lg font-bold`}
+          role="cell"
         >
           {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
-          <div key={day.toDateString()} className="self-stretch border-t px-1 text-lg" />
+          <div key={day.toDateString()} className="self-stretch border-t px-1 text-lg" role="cell" />
         ))}
-        <div className="flex items-center self-stretch border-t px-2 text-center text-lg font-bold">
+        <div className="flex items-center self-stretch border-t px-2 text-center text-lg font-bold" role="cell">
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
-        <div className={`self-stretch border-t px-5 ${isFirstProject ? 'rounded-tr-md' : ''}`} />
+        <div className={`self-stretch border-t px-5 ${isFirstProject ? 'rounded-tr-md' : ''}`} role="cell" />
       </div>
       {!isCollapsed && project.tasks.map((task) => <WeekGridTaskRow interval={interval} task={task} key={task.id} />)}
     </>

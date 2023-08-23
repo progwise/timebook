@@ -45,13 +45,15 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <div className="contents">
-      <div className="pl-2">
+    <div className="contents" role="row">
+      <div className="pl-2" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
       </div>
-      <div className="px-2">{task.title}</div>
+      <div className="px-2" role="cell">
+        {task.title}
+      </div>
       {eachDayOfInterval(interval).map((day) => {
         const durations = task.workHours
           .filter((workHour) => isSameDay(parseISO(workHour.date), day))
@@ -75,10 +77,10 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
           />
         )
       })}
-      <div className="text-center">
+      <div className="text-center" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
       </div>
-      <div className="px-1">
+      <div className="px-1" role="cell">
         {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
           <TaskLockButton task={task} />
         )}
