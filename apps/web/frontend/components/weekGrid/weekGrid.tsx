@@ -27,15 +27,17 @@ export interface WeekGridProps {
 export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDate }) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
-  const numberOfDays = differenceInDays(endDate, startDate)
+  const numberOfDays = differenceInDays(endDate, startDate) + 1
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
+  const allTasks = projects.flatMap((project) => project.tasks)
+  const numberOfRows = 1 + projects.length + allTasks.length + 1
   return (
     <div
       role="table"
-      className="relative grid grid-cols-11 items-center [&_div]:border-gray-400"
+      className="relative grid items-center [&_div]:border-gray-400"
       style={{
-        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 3}, min-content)`,
-        gridTemplateRows: `repeat(999, min-content)`,
+        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 2}, min-content)`,
+        gridTemplateRows: `repeat(${numberOfRows}, min-content)`,
       }}
     >
       {/* adds a border around week day headers and all hour inputs */}

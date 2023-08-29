@@ -1,3 +1,4 @@
+import { Transition } from '@headlessui/react'
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
 import { BiArrowToBottom, BiArrowToTop } from 'react-icons/bi'
@@ -53,7 +54,7 @@ export const WeekGridProjectRowGroup = ({
           } border-t p-2 text-lg font-bold`}
           role="cell"
         >
-          {isCollapsed ? <BiArrowToBottom /> : <BiArrowToTop />}
+          <BiArrowToBottom className={`${isCollapsed ? '-rotate-180' : ''} transition`} />
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
@@ -64,7 +65,15 @@ export const WeekGridProjectRowGroup = ({
         </div>
         <div className={`self-stretch border-t px-5 ${isFirstProject ? 'rounded-tr-md' : ''}`} role="cell" />
       </div>
-      {!isCollapsed && project.tasks.map((task) => <WeekGridTaskRow interval={interval} task={task} key={task.id} />)}
+      <div
+        className={`contents ${
+          isCollapsed ? 'invisible [&_*]:max-h-0 [&_*]:opacity-0' : '[&_*]:max-h-[9999rem]'
+        } [&_*]:transition-all`}
+      >
+        {project.tasks.map((task) => (
+          <WeekGridTaskRow interval={interval} task={task} key={task.id} />
+        ))}
+      </div>
     </>
   )
 }

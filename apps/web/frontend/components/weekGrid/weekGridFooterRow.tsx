@@ -23,7 +23,7 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <div className="contents [&_>*]:row-start-[-2]">
+    <div className="contents">
       <div className="col-span-2 self-stretch" />
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
