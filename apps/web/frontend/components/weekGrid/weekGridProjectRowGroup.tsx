@@ -1,7 +1,6 @@
-import { Transition } from '@headlessui/react'
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
-import { BiArrowToBottom, BiArrowToTop } from 'react-icons/bi'
+import { BiArrowToBottom } from 'react-icons/bi'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
