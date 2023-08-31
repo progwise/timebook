@@ -5,14 +5,14 @@ import { useQuery } from 'urql'
 
 import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
+import { WeekGrid } from '../../frontend/components/weekGrid/weekGrid'
 import { WeekSelector } from '../../frontend/components/weekSelector'
-import { WeekTable } from '../../frontend/components/weekTable/weekTable'
 import { graphql } from '../../frontend/generated/gql'
 
-const weekTableQueryDocument = graphql(`
-  query weekTable($from: Date!, $to: Date) {
+const weekGridQueryDocument = graphql(`
+  query weekGrid($from: Date!, $to: Date) {
     projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {
-      ...WeekTableProject
+      ...WeekGridProject
     }
   }
 `)
@@ -27,11 +27,11 @@ const WeekPage = (props: WeekPageProps) => {
   const startDate = startOfWeek(day, { weekStartsOn: 1 })
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
 
-  const weekTableContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const [{ data: weekTableData }] = useQuery({
-    query: weekTableQueryDocument,
+  const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
+  const [{ data: weekGridData }] = useQuery({
+    query: weekGridQueryDocument,
     variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd') },
-    context: weekTableContext,
+    context: weekGridContext,
   })
 
   const handleWeekChange = (newDate: Date) => {
@@ -42,9 +42,7 @@ const WeekPage = (props: WeekPageProps) => {
     <ProtectedPage>
       <PageHeading>Week entries</PageHeading>
       <WeekSelector value={day} onChange={handleWeekChange} />
-      {weekTableData?.projects && (
-        <WeekTable tableData={weekTableData.projects} startDate={startDate} endDate={endDate} />
-      )}
+      {weekGridData?.projects && <WeekGrid tableData={weekGridData.projects} startDate={startDate} endDate={endDate} />}
     </ProtectedPage>
   )
 }

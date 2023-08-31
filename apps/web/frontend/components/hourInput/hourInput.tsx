@@ -67,7 +67,7 @@ export const HourInput = (props: {
       size={4}
       onKeyDown={handleKeyDown}
       className="min-w-max items-center"
-      inputClassName="text-center"
+      inputClassName="text-center dark:bg-slate-600"
       onBlur={handleBlur}
       isDirty={formattedDuration !== getFormattedDuration(props.duration)}
     />

@@ -1,14 +1,14 @@
 import { eachDayOfInterval, isSameDay, parseISO, isBefore, isAfter } from 'date-fns'
 
-import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
+import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
 import { TaskLockButton } from './taskLockButton'
-import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
+import { WeekGridTaskDayCell } from './weekGridTaskDayCell'
 
-const WeekTableTaskRowFragment = graphql(`
-  fragment WeekTableTaskRow on Task {
+const WeekGridTaskRowFragment = graphql(`
+  fragment WeekGridTaskRow on Task {
     id
     title
     project {
@@ -33,25 +33,27 @@ const WeekTableTaskRowFragment = graphql(`
   }
 `)
 
-interface WeekTableTaskRowProps {
+interface WeekGridTaskRowProps {
   interval: { start: Date; end: Date }
-  task: FragmentType<typeof WeekTableTaskRowFragment>
+  task: FragmentType<typeof WeekGridTaskRowFragment>
 }
 
-export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTaskRowProps) => {
-  const task = useFragment(WeekTableTaskRowFragment, taskFragment)
+export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRowProps) => {
+  const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const taskDurations = task.workHours
     .map((workHour) => workHour.duration)
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableRow className="border-gray-200 dark:border-gray-700">
-      <TableCell className="flex gap-1">
+    <div className="contents" role="row">
+      <div className="pl-2" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
-      </TableCell>
-      <TableCell>{task.title}</TableCell>
+      </div>
+      <div className="px-2" role="cell">
+        {task.title}
+      </div>
       {eachDayOfInterval(interval).map((day) => {
         const durations = task.workHours
           .filter((workHour) => isSameDay(parseISO(workHour.date), day))
@@ -59,7 +61,7 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
         const duration = durations.reduce((previous, current) => previous + current, 0)
 
         return (
-          <WeekTableTaskDayCell
+          <WeekGridTaskDayCell
             day={day}
             disabled={
               task.project.isArchived ||
@@ -74,14 +76,14 @@ export const WeekTableTaskRow = ({ interval, task: taskFragment }: WeekTableTask
           />
         )
       })}
-      <TableCell className="text-center">
+      <div className="text-center" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
-      </TableCell>
-      <TableCell>
+      </div>
+      <div className="px-2" role="cell">
         {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
           <TaskLockButton task={task} />
         )}
-      </TableCell>
-    </TableRow>
+      </div>
+    </div>
   )
 }
