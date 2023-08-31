@@ -31,17 +31,9 @@ interface WeekGridTaskDayCellProps {
   projectId: string
   day: Date
   disabled: boolean
-  className?: string
 }
 
-export const WeekGridTaskDayCell = ({
-  duration,
-  taskId,
-  day,
-  projectId,
-  disabled,
-  className,
-}: WeekGridTaskDayCellProps) => {
+export const WeekGridTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const session = useSession()
   const userId = session.data?.user.id
@@ -60,24 +52,22 @@ export const WeekGridTaskDayCell = ({
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <div key={day.toDateString()} className={`px-1 ${className ?? ''}`} role="cell">
-      <div className="h-full px-3 py-1">
-        <HourInput
-          onBlur={(duration: number) => {
-            workHourUpdate({
-              data: {
-                date: format(day, 'yyyy-MM-dd'),
-                duration: duration,
-                taskId,
-              },
+    <div key={day.toDateString()} className="px-4 py-1" role="cell">
+      <HourInput
+        onBlur={(duration: number) => {
+          workHourUpdate({
+            data: {
               date: format(day, 'yyyy-MM-dd'),
+              duration: duration,
               taskId,
-            })
-          }}
-          duration={duration}
-          disabled={isLocked || disabled}
-        />
-      </div>
+            },
+            date: format(day, 'yyyy-MM-dd'),
+            taskId,
+          })
+        }}
+        duration={duration}
+        disabled={isLocked || disabled}
+      />
     </div>
   )
 }

@@ -26,7 +26,6 @@ interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
   isFirstProject: boolean
-  isLastProject: boolean
 }
 
 export const WeekGridProjectRowGroup = ({
@@ -48,7 +47,7 @@ export const WeekGridProjectRowGroup = ({
     <>
       <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer" role="row">
         <div
-          className={`col-span-2 col-start-1 flex items-center gap-1 self-stretch ${
+          className={`col-span-2 flex items-center gap-1 self-stretch ${
             isFirstProject ? 'rounded-tl-md' : ''
           } border-t p-2 text-lg font-bold`}
           role="cell"
@@ -57,12 +56,12 @@ export const WeekGridProjectRowGroup = ({
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
-          <div key={day.toDateString()} className="self-stretch border-t px-1 text-lg" role="cell" />
+          <div key={day.toDateString()} className="self-stretch border-t" role="cell" />
         ))}
         <div className="flex items-center self-stretch border-t px-2 text-center text-lg font-bold" role="cell">
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
-        <div className={`self-stretch border-t px-5 ${isFirstProject ? 'rounded-tr-md' : ''}`} role="cell" />
+        <div className={`self-stretch border-t ${isFirstProject ? 'rounded-tr-md' : ''}`} role="cell" />
       </div>
       <div
         className={`contents ${

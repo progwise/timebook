@@ -9,12 +9,10 @@ export const WeekGridDateHeaderRow = ({ interval }: WeekGridDateHeaderRowProps) 
     <div />
     <div />
     {eachDayOfInterval(interval).map((day) => (
-      <div className="z-10 px-1 pt-1 text-center text-xl" key={day.toString()}>
-        <div className="px-5 font-bold">
-          {format(day, 'EEE')}
-          <br />
-          <span className="whitespace-nowrap text-base font-normal">{format(day, 'dd. MMM')}</span>
-        </div>
+      <div className="z-10 px-6 pt-1 text-center text-xl font-bold" key={day.toString()}>
+        {format(day, 'EEE')}
+        <br />
+        <span className="whitespace-nowrap text-base font-normal">{format(day, 'dd. MMM')}</span>
       </div>
     ))}
     <div />

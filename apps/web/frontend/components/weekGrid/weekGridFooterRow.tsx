@@ -23,8 +23,8 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <div className="contents">
-      <div className="col-span-2 self-stretch" />
+    <div className="contents text-center text-lg">
+      <div className="col-span-2" />
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
@@ -32,19 +32,14 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
           .reduce((previous, current) => previous + current, 0)
 
         return (
-          <div className="z-10 self-stretch p-0 text-center text-lg" key={day.toString()}>
-            <div className="h-full px-1 pb-1">
-              <div className="pt-0.5">
-                <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
-              </div>
-            </div>
+          <div className="z-10 py-3" key={day.toString()}>
+            <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
           </div>
         )
       })}
-      <div className="self-stretch text-center text-lg font-bold">
+      <div className="font-bold">
         <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
       </div>
-      <div className="self-stretch" />
     </div>
   )
 }

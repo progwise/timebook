@@ -40,16 +40,16 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
         gridTemplateRows: `repeat(${numberOfRows}, min-content)`,
       }}
     >
-      {/* adds a border around week day headers and all hour inputs */}
-      <div className="pointer-events-none absolute col-start-3 col-end-[-3] row-start-1 flex h-full w-full self-stretch rounded-md border" />
+      {/* adds a border around week day headers, all hour inputs and week day footers */}
+      <div className="pointer-events-none absolute col-start-3 col-end-[-3] h-full w-full rounded-md border" />
 
       {/* adds a border around project row groups and task rows */}
-      <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] flex h-full w-full self-stretch rounded-md border" />
+      <div className="pointer-events-none absolute row-start-2 row-end-[-2] h-full w-full rounded-md border" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
         <div
-          className="absolute col-span-1 row-start-1 flex h-full w-full self-stretch p-1"
+          className="absolute col-span-1 h-full w-full p-1"
           style={{ gridColumnStart: differenceInDays(new Date(), startDate) + 3 }}
         >
           <div className="h-full w-full rounded-md bg-slate-200 dark:bg-gray-900" />
@@ -58,13 +58,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
 
       <WeekGridDateHeaderRow interval={interval} />
       {projects.map((project, index) => (
-        <WeekGridProjectRowGroup
-          interval={interval}
-          project={project}
-          key={project.id}
-          isFirstProject={index === 0}
-          isLastProject={index === projects.length - 1}
-        />
+        <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} isFirstProject={index === 0} />
       ))}
       <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
     </div>

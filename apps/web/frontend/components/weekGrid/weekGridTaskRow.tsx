@@ -73,14 +73,13 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
             duration={duration}
             key={day.toDateString() + duration}
             projectId={task.project.id}
-            className="self-stretch"
           />
         )
       })}
       <div className="text-center" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
       </div>
-      <div className="px-1" role="cell">
+      <div className="px-2" role="cell">
         {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
           <TaskLockButton task={task} />
         )}
