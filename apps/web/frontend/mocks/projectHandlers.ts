@@ -8,7 +8,7 @@ import {
   mockProjectMembershipUpdateMutation,
   mockProjectQuery,
   mockProjectRegenerateInviteKeyMutation,
-  mockWeekTableQuery,
+  mockWeekGridQuery,
 } from './mocks.generated'
 
 const testProject1 = { id: 'project1', title: 'Project 1', isArchived: false }
@@ -91,7 +91,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockWeekTableQuery((request, response, context) =>
+  mockWeekGridQuery((request, response, context) =>
     response(
       context.data({
         __typename: 'Query',

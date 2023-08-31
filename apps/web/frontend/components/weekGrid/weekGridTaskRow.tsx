@@ -1,14 +1,14 @@
 import { parseISO } from 'date-fns'
 
-import { FormattedDuration, TableCell, TableRow } from '@progwise/timebook-ui'
+import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
 import { TaskLockButton } from './taskLockButton'
-import { WeekTableTaskDayCell } from './weekTableTaskDayCell'
+import { WeekGridTaskDayCell } from './weekGridTaskDayCell'
 
-const WeekTableTaskRowFragment = graphql(`
-  fragment WeekTableTaskRow on Task {
+const WeekGridTaskRowFragment = graphql(`
+  fragment WeekGridTaskRow on Task {
     id
     title
     project {
@@ -36,26 +36,28 @@ const WeekTableTaskRowFragment = graphql(`
   }
 `)
 
-interface WeekTableTaskRowProps {
-  task: FragmentType<typeof WeekTableTaskRowFragment>
+interface WeekGridTaskRowProps {
+  task: FragmentType<typeof WeekGridTaskRowFragment>
 }
 
-export const WeekTableTaskRow = ({ task: taskFragment }: WeekTableTaskRowProps) => {
-  const task = useFragment(WeekTableTaskRowFragment, taskFragment)
+export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) => {
+  const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const taskDurations = task.workHourOfDays
     .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
 
   return (
-    <TableRow className="border-gray-200 dark:border-gray-700">
-      <TableCell className="flex gap-1">
+    <div className="contents" role="row">
+      <div className="pl-2" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
-      </TableCell>
-      <TableCell>{task.title}</TableCell>
+      </div>
+      <div className="px-2" role="cell">
+        {task.title}
+      </div>
       {task.workHourOfDays.map((workHourOfDay) => (
-        <WeekTableTaskDayCell
+        <WeekGridTaskDayCell
           day={parseISO(workHourOfDay.date)}
           disabled={workHourOfDay.isLocked}
           taskId={task.id}
@@ -63,14 +65,14 @@ export const WeekTableTaskRow = ({ task: taskFragment }: WeekTableTaskRowProps) 
           key={workHourOfDay.date}
         />
       ))}
-      <TableCell className="text-center">
+      <div className="text-center" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
-      </TableCell>
-      <TableCell>
+      </div>
+      <div className="px-2" role="cell">
         {task.project.isProjectMember && !task.isLockedByAdmin && !task.project.isArchived && (
           <TaskLockButton task={task} />
         )}
-      </TableCell>
-    </TableRow>
+      </div>
+    </div>
   )
 }

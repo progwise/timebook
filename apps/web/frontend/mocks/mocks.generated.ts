@@ -803,7 +803,7 @@ export type UnlockTaskMutation = {
   taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
-export type WeekTableProjectFragment = {
+export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
   title: string
@@ -837,13 +837,13 @@ export type WeekTableProjectFragment = {
   }>
 }
 
-export type WeekTableFooterFragment = {
+export type WeekGridFooterFragment = {
   __typename?: 'WorkHourOfDay'
   date: string
   workHour?: { __typename?: 'WorkHour'; duration: number } | null
 }
 
-export type WeekTableProjectRowGroupFragment = {
+export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
   title: string
@@ -888,7 +888,7 @@ export type WorkHourUpdateMutation = {
   workHourUpdate: { __typename?: 'WorkHour'; id: string }
 }
 
-export type WeekTableTaskRowFragment = {
+export type WeekGridTaskRowFragment = {
   __typename?: 'Task'
   id: string
   title: string
@@ -996,12 +996,12 @@ export type ProjectCreateMutationVariables = Exact<{
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
 
-export type WeekTableQueryVariables = Exact<{
+export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }>
 
-export type WeekTableQuery = {
+export type WeekGridQuery = {
   __typename?: 'Query'
   projects: Array<{
     __typename?: 'Project'
@@ -1550,13 +1550,13 @@ export const mockProjectCreateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockWeekTableQuery((req, res, ctx) => {
+ * mockWeekGridQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
  * })
  */
-export const mockWeekTableQuery = (
-  resolver: ResponseResolver<GraphQLRequest<WeekTableQueryVariables>, GraphQLContext<WeekTableQuery>, any>,
-) => graphql.query<WeekTableQuery, WeekTableQueryVariables>('weekTable', resolver)
+export const mockWeekGridQuery = (
+  resolver: ResponseResolver<GraphQLRequest<WeekGridQueryVariables>, GraphQLContext<WeekGridQuery>, any>,
+) => graphql.query<WeekGridQuery, WeekGridQueryVariables>('weekGrid', resolver)
