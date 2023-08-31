@@ -352,7 +352,14 @@ export type Task = ModifyInterface & {
   /** The user can identify the task in the UI */
   title: Scalars['String']
   tracking?: Maybe<Tracking>
+  /** The work hours of the task for each day of the given interval */
+  workHourOfDays: Array<WorkHourOfDay>
   workHours: Array<WorkHour>
+}
+
+export type TaskWorkHourOfDaysArgs = {
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
 }
 
 export type TaskWorkHoursArgs = {
@@ -422,6 +429,13 @@ export type WorkHourInput = {
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
   taskId: Scalars['ID']
+}
+
+export type WorkHourOfDay = {
+  __typename?: 'WorkHourOfDay'
+  date: Scalars['Date']
+  isLocked: Scalars['Boolean']
+  workHour?: Maybe<WorkHour>
 }
 
 export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
@@ -801,7 +815,12 @@ export type WeekTableProjectFragment = {
     isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     project: {
       __typename?: 'Project'
       startDate?: string | null
@@ -818,7 +837,11 @@ export type WeekTableProjectFragment = {
   }>
 }
 
-export type WeekTableFooterFragment = { __typename?: 'WorkHour'; duration: number; date: string }
+export type WeekTableFooterFragment = {
+  __typename?: 'WorkHourOfDay'
+  date: string
+  workHour?: { __typename?: 'WorkHour'; duration: number } | null
+}
 
 export type WeekTableProjectRowGroupFragment = {
   __typename?: 'Project'
@@ -832,7 +855,12 @@ export type WeekTableProjectRowGroupFragment = {
     isLockedByAdmin: boolean
     isLocked: boolean
     isLockedByUser: boolean
-    workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     project: {
       __typename?: 'Project'
       startDate?: string | null
@@ -860,20 +888,6 @@ export type WorkHourUpdateMutation = {
   workHourUpdate: { __typename?: 'WorkHour'; id: string }
 }
 
-export type IsLockedQueryVariables = Exact<{
-  year: Scalars['Int']
-  month: Scalars['Int']
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-  taskId: Scalars['ID']
-}>
-
-export type IsLockedQuery = {
-  __typename?: 'Query'
-  report: { __typename?: 'Report'; isLocked: boolean }
-  task: { __typename?: 'Task'; isLockedByUser: boolean; isLockedByAdmin: boolean }
-}
-
 export type WeekTableTaskRowFragment = {
   __typename?: 'Task'
   id: string
@@ -889,7 +903,12 @@ export type WeekTableTaskRowFragment = {
     isProjectMember: boolean
     isArchived: boolean
   }
-  workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+  }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
@@ -996,7 +1015,12 @@ export type WeekTableQuery = {
       isLockedByAdmin: boolean
       isLocked: boolean
       isLockedByUser: boolean
-      workHours: Array<{ __typename?: 'WorkHour'; duration: number; date: string }>
+      workHourOfDays: Array<{
+        __typename?: 'WorkHourOfDay'
+        date: string
+        isLocked: boolean
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      }>
       project: {
         __typename?: 'Project'
         startDate?: string | null
@@ -1415,21 +1439,6 @@ export const mockWorkHourUpdateMutation = (
     any
   >,
 ) => graphql.mutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>('workHourUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockIsLockedQuery((req, res, ctx) => {
- *   const { year, month, projectId, userId, taskId } = req.variables;
- *   return res(
- *     ctx.data({ report, task })
- *   )
- * })
- */
-export const mockIsLockedQuery = (
-  resolver: ResponseResolver<GraphQLRequest<IsLockedQueryVariables>, GraphQLContext<IsLockedQuery>, any>,
-) => graphql.query<IsLockedQuery, IsLockedQueryVariables>('isLocked', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

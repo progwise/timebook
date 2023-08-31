@@ -6,9 +6,11 @@ import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { classNameMarkDay } from './classNameMarkDay'
 
 const WeekTableFooterFragment = graphql(`
-  fragment WeekTableFooter on WorkHour {
-    duration
+  fragment WeekTableFooter on WorkHourOfDay {
     date
+    workHour {
+      duration
+    }
   }
 `)
 
@@ -20,7 +22,7 @@ interface WeekTableFooterRowProps {
 export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: WeekTableFooterRowProps) => {
   const workHours = useFragment(WeekTableFooterFragment, workHoursFragment)
   const sumOfDurationsOfTheWeek = workHours
-    .map((workHour) => workHour.duration)
+    .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
 
   return (
@@ -30,7 +32,7 @@ export const WeekTableFooterRow = ({ interval, workHours: workHoursFragment }: W
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
-          .map((workHour) => workHour.duration)
+          .map((workHour) => workHour.workHour?.duration ?? 0)
           .reduce((previous, current) => previous + current, 0)
 
         return (

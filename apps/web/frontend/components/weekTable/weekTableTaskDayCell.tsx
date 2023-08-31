@@ -1,6 +1,5 @@
-import { format, getMonth, getYear, isToday } from 'date-fns'
-import { useSession } from 'next-auth/react'
-import { useMutation, useQuery } from 'urql'
+import { format, isToday } from 'date-fns'
+import { useMutation } from 'urql'
 
 import { TableCell } from '@progwise/timebook-ui'
 
@@ -16,43 +15,15 @@ const WorkHourUpdateMutationDocument = graphql(`
   }
 `)
 
-const IsLockedQueryDocument = graphql(`
-  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {
-    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
-      isLocked
-    }
-    task(taskId: $taskId) {
-      isLockedByUser
-      isLockedByAdmin
-    }
-  }
-`)
-
 interface WeekTableTaskDayCellProps {
   duration: number
   taskId: string
-  projectId: string
   day: Date
   disabled: boolean
 }
 
-export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekTableTaskDayCellProps) => {
+export const WeekTableTaskDayCell = ({ duration, taskId, day, disabled }: WeekTableTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
-  const session = useSession()
-  const userId = session.data?.user.id
-
-  const year = getYear(day)
-  const month = getMonth(day)
-
-  const [{ data }] = useQuery({
-    query: IsLockedQueryDocument,
-    variables: { year, month, userId: userId ?? '', projectId, taskId },
-    pause: !userId,
-  })
-  const isLockedByReport = data?.report.isLocked ?? false
-  const isLockedByUser = data?.task.isLockedByUser ?? false
-  const isLockedByAdmin = data?.task.isLockedByAdmin ?? false
-  const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
     <TableCell key={day.toDateString()} className={isToday(day) ? classNameMarkDay : ''}>
@@ -69,7 +40,7 @@ export const WeekTableTaskDayCell = ({ duration, taskId, day, projectId, disable
           })
         }}
         duration={duration}
-        disabled={isLocked || disabled}
+        disabled={disabled}
       />
     </TableCell>
   )

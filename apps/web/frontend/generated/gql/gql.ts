@@ -93,16 +93,15 @@ const documents = {
     types.LockTaskDocument,
   '\n  mutation unlockTask($taskId: ID!) {\n    taskUnlock(taskId: $taskId) {\n      id\n      isLockedByUser\n    }\n  }\n':
     types.UnlockTaskDocument,
-  '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n':
+  '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHourOfDays(from: $from, to: $to) {\n        ...WeekTableFooter\n        workHour {\n          duration\n        }\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n':
     types.WeekTableProjectFragmentDoc,
-  '\n  fragment WeekTableFooter on WorkHour {\n    duration\n    date\n  }\n': types.WeekTableFooterFragmentDoc,
-  '\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHours(from: $from, to: $to) {\n        duration\n      }\n    }\n  }\n':
+  '\n  fragment WeekTableFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n':
+    types.WeekTableFooterFragmentDoc,
+  '\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n':
     types.WeekTableProjectRowGroupFragmentDoc,
   '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
-  '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n      isLockedByAdmin\n    }\n  }\n':
-    types.IsLockedDocument,
-  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
+  '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekTableTaskRowFragmentDoc,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n      ...InviteLinkProjectFragment\n    }\n  }\n':
     types.ProjectDocument,
@@ -390,20 +389,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n',
-): typeof documents['\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHours(from: $from, to: $to) {\n        duration\n        ...WeekTableFooter\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n']
+  source: '\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHourOfDays(from: $from, to: $to) {\n        ...WeekTableFooter\n        workHour {\n          duration\n        }\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n',
+): typeof documents['\n  fragment WeekTableProject on Project {\n    id\n    tasks {\n      workHourOfDays(from: $from, to: $to) {\n        ...WeekTableFooter\n        workHour {\n          duration\n        }\n      }\n    }\n    ...WeekTableProjectRowGroup\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekTableFooter on WorkHour {\n    duration\n    date\n  }\n',
-): typeof documents['\n  fragment WeekTableFooter on WorkHour {\n    duration\n    date\n  }\n']
+  source: '\n  fragment WeekTableFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n',
+): typeof documents['\n  fragment WeekTableFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHours(from: $from, to: $to) {\n        duration\n      }\n    }\n  }\n',
-): typeof documents['\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHours(from: $from, to: $to) {\n        duration\n      }\n    }\n  }\n']
+  source: '\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n',
+): typeof documents['\n  fragment WeekTableProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekTableTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -414,14 +413,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n      isLockedByAdmin\n    }\n  }\n',
-): typeof documents['\n  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {\n    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {\n      isLocked\n    }\n    task(taskId: $taskId) {\n      isLockedByUser\n      isLockedByAdmin\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n',
-): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHours(from: $from, to: $to) {\n      duration\n      date\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n']
+  source: '\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n',
+): typeof documents['\n  fragment WeekTableTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

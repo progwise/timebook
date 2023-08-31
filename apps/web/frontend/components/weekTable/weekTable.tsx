@@ -9,9 +9,11 @@ export const WeekTableProjectFragment = graphql(`
   fragment WeekTableProject on Project {
     id
     tasks {
-      workHours(from: $from, to: $to) {
-        duration
+      workHourOfDays(from: $from, to: $to) {
         ...WeekTableFooter
+        workHour {
+          duration
+        }
       }
     }
     ...WeekTableProjectRowGroup
@@ -27,7 +29,7 @@ export interface WeekTableProps {
 export const WeekTable: React.FC<WeekTableProps> = ({ tableData, startDate, endDate }) => {
   const projects = useFragment(WeekTableProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
-  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
+  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
 
   return (
     <Table>

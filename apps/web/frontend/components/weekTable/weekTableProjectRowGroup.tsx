@@ -16,8 +16,10 @@ export const WeekTableProjectRowGroupFragment = graphql(`
     tasks {
       id
       ...WeekTableTaskRow
-      workHours(from: $from, to: $to) {
-        duration
+      workHourOfDays(from: $from, to: $to) {
+        workHour {
+          duration
+        }
       }
     }
   }
@@ -36,8 +38,11 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
     initializeWithValue: false,
   })
 
-  const workHours = project.tasks.flatMap((task) => task.workHours)
-  const projectDuration = workHours.reduce((accumulator, workHour) => accumulator + workHour.duration, 0)
+  const workHours = project.tasks.flatMap((task) => task.workHourOfDays)
+  const projectDuration = workHours.reduce(
+    (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
+    0,
+  )
 
   return (
     <>
@@ -56,7 +61,7 @@ export const WeekTableProjectRowGroup = ({ interval, project: projectFragment }:
         </TableCell>
         <TableCell />
       </TableRow>
-      {!isCollapsed && project.tasks.map((task) => <WeekTableTaskRow interval={interval} task={task} key={task.id} />)}
+      {!isCollapsed && project.tasks.map((task) => <WeekTableTaskRow task={task} key={task.id} />)}
     </>
   )
 }

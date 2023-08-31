@@ -1,3 +1,5 @@
+import { eachDayOfInterval, isSameMonth } from 'date-fns'
+
 import {
   ProjectMemberListProjectFragment,
   Role,
@@ -89,7 +91,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockWeekTableQuery((_request, response, context) =>
+  mockWeekTableQuery((request, response, context) =>
     response(
       context.data({
         __typename: 'Query',
@@ -100,7 +102,13 @@ export const projectHandlers = [
               {
                 id: 'task1',
                 title: 'Task 1',
-                workHours: [],
+                workHourOfDays: eachDayOfInterval({
+                  start: new Date(request.variables.from),
+                  end: new Date(request.variables.to ?? request.variables.from),
+                }).map((date) => ({
+                  date: date.toISOString(),
+                  isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
+                })),
                 project: { id: testProject1.id, isProjectMember: true, isArchived: false },
                 isLocked: false,
                 isLockedByUser: false,
