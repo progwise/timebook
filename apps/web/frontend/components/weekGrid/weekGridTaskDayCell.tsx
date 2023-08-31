@@ -52,22 +52,24 @@ export const WeekGridTaskDayCell = ({ duration, taskId, day, projectId, disabled
   const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
-    <div key={day.toDateString()} className="px-4 py-1" role="cell">
-      <HourInput
-        onBlur={(duration: number) => {
-          workHourUpdate({
-            data: {
+    <div key={day.toDateString()} className="px-4" role="cell">
+      <div className="py-1">
+        <HourInput
+          onBlur={(duration: number) => {
+            workHourUpdate({
+              data: {
+                date: format(day, 'yyyy-MM-dd'),
+                duration: duration,
+                taskId,
+              },
               date: format(day, 'yyyy-MM-dd'),
-              duration: duration,
               taskId,
-            },
-            date: format(day, 'yyyy-MM-dd'),
-            taskId,
-          })
-        }}
-        duration={duration}
-        disabled={isLocked || disabled}
-      />
+            })
+          }}
+          duration={duration}
+          disabled={isLocked || disabled}
+        />
+      </div>
     </div>
   )
 }

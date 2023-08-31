@@ -65,7 +65,7 @@ export const WeekGridProjectRowGroup = ({
       </div>
       <div
         className={`contents ${
-          isCollapsed ? 'invisible [&_*]:max-h-0 [&_*]:opacity-0' : '[&_*]:max-h-[9999rem]'
+          isCollapsed ? 'invisible [&_*]:max-h-0 [&_*]:opacity-0' : '[&_*]:max-h-[399rem]'
         } [&_*]:transition-all`}
       >
         {project.tasks.map((task) => (
