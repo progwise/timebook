@@ -29,6 +29,7 @@
     "apollo-server-core": "^3.10.2",
     "apollo-server-micro": "^3.6.7",
     "csstype": "^3.0.10",
+    "daisyui": "^3.6.4",
     "date-fns": "^2.28.0",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
