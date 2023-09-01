@@ -2,8 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import { format, getWeek, getYear, startOfWeek, endOfWeek } from 'date-fns'
 import { Client, Provider } from 'urql'
 
-import { mockServer } from '../../frontend/mocks/mockServer'
-import { mockIsLockedQuery } from '../../frontend/mocks/mocks.generated'
+import '../../frontend/mocks/mockServer'
 import TimePage from './index.page'
 
 const now = new Date()
@@ -20,20 +19,6 @@ const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated', data: { user: { id: '1' } } }),
 }))
-
-beforeEach(() => {
-  mockServer.use(
-    mockIsLockedQuery((request, response, context) =>
-      response(
-        context.data({
-          report: { isLocked: request.variables.month === 1, __typename: 'Report' },
-          task: { isLockedByUser: false, isLockedByAdmin: false, __typename: 'Task' },
-          __typename: 'Query',
-        }),
-      ),
-    ),
-  )
-})
 
 describe('The time page...', () => {
   it('...displays the correct week, start and end dates', () => {

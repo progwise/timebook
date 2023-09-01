@@ -1,6 +1,5 @@
-import { format, getMonth, getYear } from 'date-fns'
-import { useSession } from 'next-auth/react'
-import { useMutation, useQuery } from 'urql'
+import { format } from 'date-fns'
+import { useMutation } from 'urql'
 
 import { graphql } from '../../generated/gql'
 import { HourInput } from '../hourInput/hourInput'
@@ -13,43 +12,15 @@ const WorkHourUpdateMutationDocument = graphql(`
   }
 `)
 
-const IsLockedQueryDocument = graphql(`
-  query isLocked($year: Int!, $month: Int!, $projectId: ID!, $userId: ID!, $taskId: ID!) {
-    report(year: $year, month: $month, projectId: $projectId, userId: $userId) {
-      isLocked
-    }
-    task(taskId: $taskId) {
-      isLockedByUser
-      isLockedByAdmin
-    }
-  }
-`)
-
 interface WeekGridTaskDayCellProps {
   duration: number
   taskId: string
-  projectId: string
   day: Date
   disabled: boolean
 }
 
-export const WeekGridTaskDayCell = ({ duration, taskId, day, projectId, disabled }: WeekGridTaskDayCellProps) => {
+export const WeekGridTaskDayCell = ({ duration, taskId, day, disabled }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
-  const session = useSession()
-  const userId = session.data?.user.id
-
-  const year = getYear(day)
-  const month = getMonth(day)
-
-  const [{ data }] = useQuery({
-    query: IsLockedQueryDocument,
-    variables: { year, month, userId: userId ?? '', projectId, taskId },
-    pause: !userId,
-  })
-  const isLockedByReport = data?.report.isLocked ?? false
-  const isLockedByUser = data?.task.isLockedByUser ?? false
-  const isLockedByAdmin = data?.task.isLockedByAdmin ?? false
-  const isLocked = isLockedByReport || isLockedByUser || isLockedByAdmin
 
   return (
     <div key={day.toDateString()} className="px-4" role="cell">
@@ -67,7 +38,7 @@ export const WeekGridTaskDayCell = ({ duration, taskId, day, projectId, disabled
             })
           }}
           duration={duration}
-          disabled={isLocked || disabled}
+          disabled={disabled}
         />
       </div>
     </div>
