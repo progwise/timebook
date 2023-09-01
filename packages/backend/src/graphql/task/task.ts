@@ -1,9 +1,10 @@
-import { getMonth, getYear } from 'date-fns'
+import { eachDayOfInterval, getMonth, getYear, subMinutes } from 'date-fns'
 
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
 import { DateScalar } from '../scalars'
+import { WorkHourOfDayAndTask } from '../workHourOfDay/workHourOfDay'
 
 export const Task = builder.prismaObject('Task', {
   select: {},
@@ -35,6 +36,23 @@ export const Task = builder.prismaObject('Task', {
           },
         },
       }),
+    }),
+    workHourOfDays: t.withAuth({ isLoggedIn: true }).field({
+      description: 'The work hours of the task for each day of the given interval',
+      select: { id: true, projectId: true },
+      type: [WorkHourOfDayAndTask],
+      args: {
+        from: t.arg({ type: DateScalar, required: true }),
+        to: t.arg({ type: DateScalar, required: false }),
+      },
+      resolve: async (task, _arguments, context) => {
+        const interval = { start: _arguments.from, end: _arguments.to ?? _arguments.from }
+        return eachDayOfInterval(interval).map(async (date) => ({
+          date: subMinutes(date, date.getTimezoneOffset()),
+          taskId: task.id,
+          userId: context.session.user.id,
+        }))
+      },
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',

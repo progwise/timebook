@@ -1,4 +1,4 @@
-import { eachDayOfInterval, isSameDay, parseISO, isBefore, isAfter } from 'date-fns'
+import { parseISO } from 'date-fns'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -15,9 +15,12 @@ const WeekGridTaskRowFragment = graphql(`
       startDate
       endDate
     }
-    workHours(from: $from, to: $to) {
-      duration
+    workHourOfDays(from: $from, to: $to) {
       date
+      workHour {
+        duration
+      }
+      isLocked
     }
     project {
       id
@@ -34,14 +37,13 @@ const WeekGridTaskRowFragment = graphql(`
 `)
 
 interface WeekGridTaskRowProps {
-  interval: { start: Date; end: Date }
   task: FragmentType<typeof WeekGridTaskRowFragment>
 }
 
-export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRowProps) => {
+export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const taskDurations = task.workHours
-    .map((workHour) => workHour.duration)
+  const taskDurations = task.workHourOfDays
+    .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
 
   return (
@@ -54,28 +56,15 @@ export const WeekGridTaskRow = ({ interval, task: taskFragment }: WeekGridTaskRo
       <div className="px-2" role="cell">
         {task.title}
       </div>
-      {eachDayOfInterval(interval).map((day) => {
-        const durations = task.workHours
-          .filter((workHour) => isSameDay(parseISO(workHour.date), day))
-          .map((workHour) => workHour.duration)
-        const duration = durations.reduce((previous, current) => previous + current, 0)
-
-        return (
-          <WeekGridTaskDayCell
-            day={day}
-            disabled={
-              task.project.isArchived ||
-              !task.project.isProjectMember ||
-              (task.project.startDate ? isBefore(day, parseISO(task.project.startDate)) : false) ||
-              (task.project.endDate ? isAfter(day, parseISO(task.project.endDate)) : false)
-            }
-            taskId={task.id}
-            duration={duration}
-            key={day.toDateString() + duration}
-            projectId={task.project.id}
-          />
-        )
-      })}
+      {task.workHourOfDays.map((workHourOfDay) => (
+        <WeekGridTaskDayCell
+          day={parseISO(workHourOfDay.date)}
+          disabled={workHourOfDay.isLocked}
+          taskId={task.id}
+          duration={workHourOfDay.workHour?.duration ?? 0}
+          key={workHourOfDay.date}
+        />
+      ))}
       <div className="text-center" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
       </div>

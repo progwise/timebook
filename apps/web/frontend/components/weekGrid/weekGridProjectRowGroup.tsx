@@ -15,8 +15,10 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     tasks {
       id
       ...WeekGridTaskRow
-      workHours(from: $from, to: $to) {
-        duration
+      workHourOfDays(from: $from, to: $to) {
+        workHour {
+          duration
+        }
       }
     }
   }
@@ -40,8 +42,11 @@ export const WeekGridProjectRowGroup = ({
     initializeWithValue: false,
   })
 
-  const workHours = project.tasks.flatMap((task) => task.workHours)
-  const projectDuration = workHours.reduce((accumulator, workHour) => accumulator + workHour.duration, 0)
+  const workHours = project.tasks.flatMap((task) => task.workHourOfDays)
+  const projectDuration = workHours.reduce(
+    (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
+    0,
+  )
 
   return (
     <>
@@ -69,7 +74,7 @@ export const WeekGridProjectRowGroup = ({
         } [&_*]:transition-all`}
       >
         {project.tasks.map((task) => (
-          <WeekGridTaskRow interval={interval} task={task} key={task.id} />
+          <WeekGridTaskRow task={task} key={task.id} />
         ))}
       </div>
     </>

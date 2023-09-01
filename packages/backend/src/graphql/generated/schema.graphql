@@ -412,6 +412,11 @@ type Task implements ModifyInterface {
   """
   title: String!
   tracking: Tracking
+
+  """
+  The work hours of the task for each day of the given interval
+  """
+  workHourOfDays(from: Date!, to: Date): [WorkHourOfDay!]!
   workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
@@ -481,4 +486,10 @@ input WorkHourInput {
   """
   duration: Int!
   taskId: ID!
+}
+
+type WorkHourOfDay {
+  date: Date!
+  isLocked: Boolean!
+  workHour: WorkHour
 }
