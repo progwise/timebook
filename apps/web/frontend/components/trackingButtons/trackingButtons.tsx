@@ -80,12 +80,14 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
 
     return (
       <>
-        <Button variant="primary" onClick={() => stopTracking({})}>
-          <BiPause />
-        </Button>
-        <Button variant="danger" onClick={() => setIsCancelModalOpen(true)}>
-          <BiBlock />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="primary" onClick={() => stopTracking({})}>
+            <BiPause />
+          </Button>
+          <Button variant="danger" onClick={() => setIsCancelModalOpen(true)}>
+            <BiBlock />
+          </Button>
+        </div>
         {isCancelModalOpen && (
           <Modal
             title="Delete Tracking"
