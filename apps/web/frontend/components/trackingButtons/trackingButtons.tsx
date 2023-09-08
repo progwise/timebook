@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import { parseISO } from 'date-fns'
 import { useState } from 'react'
 import { BiBlock, BiPause, BiPlay } from 'react-icons/bi'
@@ -80,12 +81,12 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
 
     return (
       <>
-        <Button variant="primary" onClick={() => stopTracking({})}>
+        <button className="btn btn-primary btn-xs" onClick={() => stopTracking({})}>
           <BiPause />
-        </Button>
-        <Button variant="danger" onClick={() => setIsCancelModalOpen(true)}>
+        </button>
+        <button className="btn btn-error btn-xs" onClick={() => setIsCancelModalOpen(true)}>
           <BiBlock />
-        </Button>
+        </button>
         {isCancelModalOpen && (
           <Modal
             title="Delete Tracking"
