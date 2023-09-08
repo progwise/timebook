@@ -20,7 +20,7 @@ export const Modal = ({
   variant = 'oneColumn',
 }: ModalProps): JSX.Element => {
   return (
-    <Dialog open={open} onClose={onClose} className="fixed inset-0 overflow-y-auto">
+    <Dialog open={open} onClose={onClose} className="fixed inset-0 z-30 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
         <div className="relative w-full max-w-lg rounded-3xl bg-white p-7 shadow-lg dark:bg-slate-800">
