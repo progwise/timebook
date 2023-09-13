@@ -42,11 +42,11 @@ export const TopNavigation = (): JSX.Element => {
         {data?.currentTracking && (
           <>
             <div className="divider divider-horizontal" />
-            <div className="bg-neutral rounded-box flex items-center gap-2 p-2 px-4">
+            <div className="bg-neutral rounded-box text-neutral-content flex items-center gap-2 p-2 px-4">
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-600" />
+                  <span className="bg-error inline-block h-2 w-2 animate-pulse rounded-full" />
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>
