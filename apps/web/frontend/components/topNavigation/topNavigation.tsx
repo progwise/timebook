@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import { parseISO } from 'date-fns'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
@@ -33,7 +32,7 @@ export const TopNavigation = (): JSX.Element => {
   const session = useSession()
 
   return (
-    <header className="navbar bg-base-200 sticky top-0 z-20">
+    <header className="navbar sticky top-0 z-20 bg-base-200">
       <h1 className="navbar-start">
         <Link href="/" className="btn btn-ghost text-2xl normal-case">
           <AiOutlineFieldTime className="" />
@@ -42,11 +41,11 @@ export const TopNavigation = (): JSX.Element => {
         {data?.currentTracking && (
           <>
             <div className="divider divider-horizontal" />
-            <div className="bg-neutral rounded-box text-neutral-content flex items-center gap-2 p-2 px-4">
+            <div className="rounded-box flex items-center gap-2 bg-neutral p-2 px-4 text-neutral-content">
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="bg-error inline-block h-2 w-2 animate-pulse rounded-full" />
+                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-error" />
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>
@@ -63,7 +62,7 @@ export const TopNavigation = (): JSX.Element => {
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
         <div className="dropdown dropdown-end leading-none">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+          <label tabIndex={0} className="avatar btn btn-circle btn-ghost">
             {session.data?.user.image && (
               <Image
                 className="rounded-full"
@@ -75,7 +74,7 @@ export const TopNavigation = (): JSX.Element => {
             )}
           </label>
 
-          <ul tabIndex={0} className="dropdown-content menu rounded-box bg-base-100 menu-sm w-40 shadow">
+          <ul tabIndex={0} className="menu dropdown-content rounded-box menu-sm w-40 bg-base-100 shadow">
             <a onClick={() => signOut({ callbackUrl: '/' })} href="#">
               Sign out
             </a>

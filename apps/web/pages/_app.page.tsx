@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import { setDefaultOptions } from 'date-fns'
 import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
@@ -28,14 +27,14 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
     <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white print:m-0 print:p-0">
       <Component {...pageProps} />
     </main>
-    <footer className="footer bg-base-200 justify-items-center p-5">
-      <Link href="/impress" className="link link-hover">
+    <footer className="footer justify-items-center bg-base-200 p-5">
+      <Link href="/impress" className="link-hover link">
         Impress
       </Link>
-      <Link href="/privacy" className="link link-hover">
+      <Link href="/privacy" className="link-hover link">
         Privacy Policy
       </Link>
-      <Link href="/privacy" className="link link-hover">
+      <Link href="/privacy" className="link-hover link">
         Conditions
       </Link>
     </footer>

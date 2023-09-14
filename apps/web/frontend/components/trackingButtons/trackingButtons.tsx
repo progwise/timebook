@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import { parseISO } from 'date-fns'
 import { useState } from 'react'
 import { BiBlock, BiPause, BiPlay } from 'react-icons/bi'

@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
