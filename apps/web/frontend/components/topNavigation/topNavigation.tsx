@@ -61,6 +61,9 @@ export const TopNavigation = (): JSX.Element => {
         <div className="divider divider-horizontal" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
+        {/* Ignore the next line because prettier sorts dropdown classes sometimes differently */}
+        {/* We have absolutely no idea or control over this, so we just ignore it */}
+        {/* prettier-ignore */}
         <div className="dropdown dropdown-end leading-none">
           <label tabIndex={0} className="avatar btn btn-circle btn-ghost">
             {session.data?.user.image && (
