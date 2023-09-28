@@ -24,7 +24,7 @@ const printGraphQLSchema = async () => {
 
   const config = await resolveConfig(path.join(rootPath, './prettierrc.js'))
 
-  const schemaAsString = format(printSchema(lexicographicSortSchema(schema)), {
+  const schemaAsString = await format(printSchema(lexicographicSortSchema(schema)), {
     parser: 'graphql',
     ...config,
   })
