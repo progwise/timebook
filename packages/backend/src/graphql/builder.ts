@@ -54,6 +54,11 @@ export const builder = new SchemaBuilder<{
       month: number
     }
     Project: { id: string }
+    WorkHourOfDay: {
+      date: Date
+      taskId: string
+      userId: string
+    }
   }
 }>({
   plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin, ErrorsPlugin],

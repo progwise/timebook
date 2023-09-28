@@ -5,9 +5,11 @@ import { FormattedDuration } from '@progwise/timebook-ui'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 
 const WeekGridFooterFragment = graphql(`
-  fragment WeekGridFooter on WorkHour {
-    duration
+  fragment WeekGridFooter on WorkHourOfDay {
     date
+    workHour {
+      duration
+    }
   }
 `)
 
@@ -19,7 +21,7 @@ interface WeekGridFooterRowProps {
 export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: WeekGridFooterRowProps) => {
   const workHours = useFragment(WeekGridFooterFragment, workHoursFragment)
   const sumOfDurationsOfTheWeek = workHours
-    .map((workHour) => workHour.duration)
+    .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
 
   return (
@@ -28,7 +30,7 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay
-          .map((workHour) => workHour.duration)
+          .map((workHour) => workHour.workHour?.duration ?? 0)
           .reduce((previous, current) => previous + current, 0)
 
         return (

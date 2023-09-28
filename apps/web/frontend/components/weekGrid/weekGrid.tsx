@@ -9,9 +9,11 @@ export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
     tasks {
-      workHours(from: $from, to: $to) {
-        duration
+      workHourOfDays(from: $from, to: $to) {
         ...WeekGridFooter
+        workHour {
+          duration
+        }
       }
     }
     ...WeekGridProjectRowGroup
@@ -28,7 +30,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHours))
+  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
   const allTasks = projects.flatMap((project) => project.tasks)
   const numberOfRows = 1 + projects.length + allTasks.length + 1
   return (
