@@ -12,5 +12,5 @@ export const Label = ({ children, color }: LabelProps) => {
       'border-yellow-700 bg-yellow-100 text-yellow-700 dark:border-yellow-100 dark:bg-yellow-700 dark:text-yellow-100',
   }[color]
 
-  return <span className={`rounded-full border py-1 px-3 text-xs ${colorClasses}`}>{children}</span>
+  return <span className={`rounded-full border px-3 py-1 text-xs ${colorClasses}`}>{children}</span>
 }

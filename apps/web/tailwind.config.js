@@ -12,5 +12,9 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require('@tailwindcss/forms'), require('@headlessui/tailwindcss')],
+  daisyui: {
+    themes: ['winter', 'night'],
+    darkTheme: 'night',
+  },
+  plugins: [require('@tailwindcss/forms'), require('@headlessui/tailwindcss'), require('daisyui')],
 }

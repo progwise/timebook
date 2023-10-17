@@ -3,37 +3,16 @@ import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 
 export interface TopNavigationLinkProps {
-  href?: string
-  onClick?: () => void
+  href: string
   children: ReactNode
-  className?: string
 }
 
-export const TopNavigationLink: React.FC<TopNavigationLinkProps> = ({
-  href,
-  children,
-  onClick,
-  className,
-}): JSX.Element => {
+export const TopNavigationLink: React.FC<TopNavigationLinkProps> = ({ href, children }): JSX.Element => {
   const router = useRouter()
 
-  if (href) {
-    return (
-      <Link href={href} passHref>
-        {href && router.asPath.startsWith(href) ? (
-          <span className={`text-blue-500 underline  ${className}`}>{children}</span>
-        ) : (
-          <span className={`cursor-pointer text-gray-500 hover:text-blue-500  dark:text-white ${className}`}>
-            {children}
-          </span>
-        )}
-      </Link>
-    )
-  }
-
   return (
-    <span className={`cursor-pointer text-gray-500 hover:text-blue-500 ${className}`} onClick={onClick}>
+    <Link href={href} className={`btn btn-ghost normal-case ${router.asPath.startsWith(href) ? 'btn-active' : ''}`}>
       {children}
-    </span>
+    </Link>
   )
 }
