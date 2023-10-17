@@ -40,6 +40,7 @@ module.exports = {
     'unicorn/prefer-node-protocol': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'unicorn/switch-case-braces': 'off',
+    'tailwindcss/classnames-order': 'off',
   },
   overrides: [
     {
