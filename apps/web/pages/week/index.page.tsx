@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
-import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { WeekGrid } from '../../frontend/components/weekGrid/weekGrid'
 import { WeekSelector } from '../../frontend/components/weekSelector'
@@ -40,8 +39,9 @@ const WeekPage = (props: WeekPageProps) => {
 
   return (
     <ProtectedPage>
-      <PageHeading>Week entries</PageHeading>
-      <WeekSelector value={day} onChange={handleWeekChange} />
+      <div className="flex justify-center">
+        <WeekSelector value={day} onChange={handleWeekChange} />
+      </div>
       {weekGridData?.projects && <WeekGrid tableData={weekGridData.projects} startDate={startDate} endDate={endDate} />}
     </ProtectedPage>
   )

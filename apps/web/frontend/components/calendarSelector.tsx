@@ -15,7 +15,7 @@ import {
   subMonths,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { AiOutlineCalendar } from 'react-icons/ai'
+import { BiCalendarAlt } from 'react-icons/bi'
 import { BiHome, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 import CalendarIcon from './calendarIcon'
@@ -29,7 +29,7 @@ interface DayItemProps {
 }
 
 const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
-  const classNames = ['text-center border cursor-pointer p-0']
+  const classNames = ['text-center border rounded-box cursor-pointer border-base-200']
 
   if (!isSameMonth(day, shownDate)) {
     classNames.push('italic')
@@ -43,7 +43,7 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
   }
 
   if (isWeekend(day)) {
-    classNames.push('text-green-600')
+    classNames.push('text-base-content')
   }
 
   if (!isWeekend(day) && isSameMonth(day, shownDate)) {
@@ -103,16 +103,16 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         <Popover.Button
           ref={reference}
           aria-label="select date"
-          className="flex gap-1 disabled:opacity-50"
+          className="btn no-animation btn-sm"
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <AiOutlineCalendar className="h-5 w-5" title="Calendar icon" />
+          <BiCalendarAlt className="" title="Calendar icon" />
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
         <Transition
-          className="z-10 w-80 rounded-xl border-2 bg-gray-200 p-2 text-sm dark:bg-slate-800 dark:text-white"
+          className="rounded-box z-40 w-80 border-2 border-base-200 bg-base-300 p-2 text-sm text-base-content shadow-md"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"
@@ -127,16 +127,19 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           ref={floating}
           data-testid="calendar-popover"
         >
-          <Popover.Panel>
+          <Popover.Panel className="bg-base-300">
             {({ close }) => (
               <>
-                <header className="flex justify-between pb-2 font-bold">
+                <header className="flex justify-between font-bold">
                   <CalendarIcon label="Go to previous month" onClick={gotoPreviousMonth}>
                     <BiLeftArrow />
                   </CalendarIcon>
-                  <div className="flex gap-2">
+                  <div className="flex gap-5">
                     <CalendarIcon label="Go to today" onClick={goToToday}>
-                      <BiHome />
+                      <>
+                        <BiHome className="h-5 w-5" />
+                        home
+                      </>
                     </CalendarIcon>
                     <PageHeading>{monthTitle}</PageHeading>
                   </div>
@@ -145,13 +148,13 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   </CalendarIcon>
                 </header>
                 <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-3">
-                  <div className="border-b border-gray-800 p-1 text-center">Mon</div>
-                  <div className="border-b border-gray-800 p-1 text-center">Tue</div>
-                  <div className="border-b border-gray-800 p-1 text-center">Wed</div>
-                  <div className="border-b border-gray-800 p-1 text-center">Thu</div>
-                  <div className="border-b border-gray-800 p-1 text-center">Fri</div>
-                  <div className="border-b border-gray-800 p-1 text-center text-green-600">Sat</div>
-                  <div className="border-b border-gray-800 p-1 text-center text-green-600">Sun</div>
+                  <div className="border-b border-base-200 p-1 text-center">Mon</div>
+                  <div className="border-b border-base-200 p-1 text-center">Tue</div>
+                  <div className="border-b border-base-200 p-1 text-center">Wed</div>
+                  <div className="border-b border-base-200 p-1 text-center">Thu</div>
+                  <div className="border-b border-base-200 p-1 text-center">Fri</div>
+                  <div className="border-b border-base-200 p-1 text-center">Sat</div>
+                  <div className="border-b border-base-200 p-1 text-center">Sun</div>
                   {daysToRender.map((day) => (
                     <DayItem
                       key={day.toString()}

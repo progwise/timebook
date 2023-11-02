@@ -36,31 +36,33 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   return (
     <div
       role="table"
-      className="relative grid items-center [&_div]:border-gray-400"
+      className="relative grid items-center [&_div]:border-base-content"
       style={{
         gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 2}, min-content)`,
         gridTemplateRows: `repeat(${numberOfRows}, min-content)`,
       }}
     >
       {/* adds a border around week day headers, all hour inputs and week day footers */}
-      <div className="pointer-events-none absolute col-start-3 col-end-[-3] h-full w-full rounded-md border" />
+      <div className="rounded-box pointer-events-none absolute z-30 col-start-3 col-end-[-3] h-full w-full border" />
 
       {/* adds a border around project row groups and task rows */}
-      <div className="pointer-events-none absolute row-start-2 row-end-[-2] h-full w-full rounded-md border" />
+      <div className="rounded-box pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] h-full w-full border" />
+
+      {/* adds a background color to the header row and the footer row*/}
+      <div className="rounded-t-box absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full bg-base-200" />
+      <div className="rounded-b-box absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
         <div
-          className="absolute col-span-1 h-full w-full p-1"
+          className="rounded-box absolute z-10 col-span-1 h-full w-full border bg-base-300 shadow-xl"
           style={{ gridColumnStart: differenceInDays(new Date(), startDate) + 3 }}
-        >
-          <div className="h-full w-full rounded-md bg-slate-200 dark:bg-gray-900" />
-        </div>
+        />
       )}
 
       <WeekGridDateHeaderRow interval={interval} />
-      {projects.map((project, index) => (
-        <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} isFirstProject={index === 0} />
+      {projects.map((project) => (
+        <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} />
       ))}
       <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
     </div>

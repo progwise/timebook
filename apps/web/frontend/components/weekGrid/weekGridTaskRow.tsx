@@ -48,12 +48,12 @@ export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) =>
 
   return (
     <div className="contents" role="row">
-      <div className="pl-2" role="cell">
+      <div className="pl-3" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
           <TrackingButtons tracking={task.tracking} taskToTrack={task} />
         )}
       </div>
-      <div className="px-2" role="cell">
+      <div className="px-3" role="cell">
         {task.title}
       </div>
       {task.workHourOfDays.map((workHourOfDay) => (

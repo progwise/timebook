@@ -1,8 +1,6 @@
 import { hoursToMinutes } from 'date-fns'
 import { KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
 
-import { InputField } from '@progwise/timebook-ui'
-
 import { convertDurationStringToMinutes } from './convertDurationStringToMinutes'
 
 export interface IWorkDuration {
@@ -57,19 +55,20 @@ export const HourInput = (props: {
     }
   }
 
+  const isDirty = formattedDuration !== getFormattedDuration(props.duration)
+
   return (
-    <InputField
-      variant="primary"
+    <input
       disabled={props.disabled}
       value={formattedDuration}
       onChange={(event) => setFormattedDuration(event.target.value)}
       onFocus={(event) => event.target.select()}
       size={4}
       onKeyDown={handleKeyDown}
-      className="min-w-max items-center"
-      inputClassName="text-center dark:bg-slate-600"
+      className={`input input-bordered input-sm bg-base-200 text-center ${
+        isDirty ? 'input-warning' : 'input-primary'
+      } `}
       onBlur={handleBlur}
-      isDirty={formattedDuration !== getFormattedDuration(props.duration)}
     />
   )
 }

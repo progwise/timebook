@@ -27,21 +27,20 @@ interface SheetDayRowProps {
 
 export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
   const workHours = useFragment(SheetDayRowFragment, props.workHours)
-  const classNameMarkDay = 'bg-slate-300 dark:bg-gray-900'
+  const classNameMarkDay = 'bg-base-300'
 
   return (
     <>
-      <hr className="col-span-4 -mt-2 h-0.5 bg-gray-700 " />
-      <strong className={`col-span-3 ${isToday(props.day) ? classNameMarkDay : ''}`}>
+      <hr className="col-span-4 -mt-2 h-0.5 bg-neutral " />
+      <strong className={`col-span-4 flex justify-between ${isToday(props.day) ? classNameMarkDay : ''}`}>
         {format(props.day, 'dd.MM.yyyy')} - {format(props.day, 'EEEE')}
+        <FormattedDuration
+          title="Total work hours of the day"
+          minutes={workHours
+            .map((WorkHourDuration) => WorkHourDuration.duration)
+            .reduce((sum, duration) => duration + sum, 0)}
+        />
       </strong>
-      <FormattedDuration
-        title="Total work hours of the day"
-        minutes={workHours
-          .map((WorkHourDuration) => WorkHourDuration.duration)
-          .reduce((sum, duration) => duration + sum, 0)}
-      />
-
       {workHours.map((workHour) => (
         <article key={workHour.id} className="contents">
           <h1>{workHour.project.title}</h1>

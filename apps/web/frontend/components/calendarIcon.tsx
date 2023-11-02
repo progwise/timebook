@@ -6,7 +6,7 @@ interface CalendarIconProps {
 
 const CalendarIcon = ({ label, onClick, children }: CalendarIconProps): JSX.Element => {
   return (
-    <button type="button" onClick={onClick} className="opacity-60 hover:opacity-100">
+    <button type="button" onClick={onClick} className="btn btn-sm border-none bg-base-300">
       <span className="sr-only">{label}</span>
       {children}
     </button>

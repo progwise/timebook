@@ -23,8 +23,8 @@ export const WeekGridTaskDayCell = ({ duration, taskId, day, disabled }: WeekGri
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
 
   return (
-    <div key={day.toDateString()} className="px-4" role="cell">
-      <div className="py-1">
+    <div key={day.toDateString()} className="z-20 justify-self-center px-4" role="cell">
+      <div className="relative py-1">
         <HourInput
           onBlur={(duration: number) => {
             workHourUpdate({

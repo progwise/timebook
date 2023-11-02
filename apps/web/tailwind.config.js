@@ -13,8 +13,8 @@ module.exports = {
     extend: {},
   },
   daisyui: {
-    themes: ['winter', 'night'],
-    darkTheme: 'night',
+    themes: ['winter', 'night', 'valentine', 'cyberpunk', 'dark', 'black', 'coffee', 'luxury', 'pastel', 'forest', 'dracula'],
+    darkTheme: 'forest',
   },
   plugins: [require('@tailwindcss/forms'), require('@headlessui/tailwindcss'), require('daisyui')],
 }

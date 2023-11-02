@@ -23,21 +23,23 @@ interface TimebookProps {
 
 const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
-    <TopNavigation />
-    <main className="container mx-auto mb-10 mt-16 px-6 dark:bg-slate-800 dark:text-white print:m-0 print:p-0">
-      <Component {...pageProps} />
-    </main>
-    <footer className="footer justify-items-center bg-base-200 p-5">
-      <Link href="/impress" className="link-hover link">
-        Impress
-      </Link>
-      <Link href="/privacy" className="link-hover link">
-        Privacy Policy
-      </Link>
-      <Link href="/privacy" className="link-hover link">
-        Conditions
-      </Link>
-    </footer>
+    <div className="flex h-screen flex-col justify-between">
+      <TopNavigation />
+      <main className="container mx-auto print:m-0 print:p-0">
+        <Component {...pageProps} />
+      </main>
+      <footer className="footer justify-items-center bg-base-200 p-5">
+        <Link href="/impress" className="link-hover link">
+          Impress
+        </Link>
+        <Link href="/privacy" className="link-hover link">
+          Privacy Policy
+        </Link>
+        <Link href="/privacy" className="link-hover link">
+          Conditions
+        </Link>
+      </footer>
+    </div>
     <TimebookToaster />
   </SessionProvider>
 )

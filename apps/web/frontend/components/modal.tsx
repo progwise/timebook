@@ -1,4 +1,3 @@
-import { Dialog } from '@headlessui/react'
 import { ReactNode } from 'react'
 
 interface ModalProps {
@@ -17,26 +16,17 @@ export const Modal = ({
   title,
   actions,
   children,
-  variant = 'oneColumn',
 }: ModalProps): JSX.Element => {
   return (
-    <Dialog open={open} onClose={onClose} className="fixed inset-0 z-30 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center">
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-        <div className="relative w-full max-w-lg rounded-3xl bg-white p-7 shadow-lg dark:bg-slate-800">
-          <div
-            className={`grid grid-cols-1 gap-8 ${
-              variant === 'twoColumns' ? 'sm:grid-cols-[minmax(0,_1fr)_minmax(0,_2fr)]' : ''
-            }`}
-          >
-            <div>
-              <Dialog.Title className="text-xl">{title}</Dialog.Title>
-            </div>
-            {children && <div className="row-span-2">{children}</div>}
-            <div className="flex flex-col flex-wrap gap-4 self-end sm:flex-row sm:justify-end">{actions}</div>
-          </div>
-        </div>
+    <dialog open={open} onClose={onClose} className="modal">
+      <div className="modal-box">
+        <h3 className="text-lg font-bold">{title}</h3>
+        {children && <p className="py-4">{children}</p>}
+        <div className="flex flex-col flex-wrap gap-4 self-end sm:flex-row sm:justify-end">{actions}</div>
       </div>
-    </Dialog>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   )
 }

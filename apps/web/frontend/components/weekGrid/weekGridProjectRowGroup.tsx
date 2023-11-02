@@ -1,6 +1,6 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
-import { BiArrowToBottom } from 'react-icons/bi'
+import { BiChevronRight } from 'react-icons/bi'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -27,14 +27,9 @@ export const WeekGridProjectRowGroupFragment = graphql(`
 interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
-  isFirstProject: boolean
 }
 
-export const WeekGridProjectRowGroup = ({
-  interval,
-  project: projectFragment,
-  isFirstProject,
-}: WeekGridProjectRowGroupProps) => {
+export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
 
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
@@ -52,27 +47,24 @@ export const WeekGridProjectRowGroup = ({
     <>
       <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer" role="row">
         <div
-          className={`col-span-2 flex items-center gap-1 self-stretch ${
-            isFirstProject ? 'rounded-tl-md' : ''
-          } border-t p-2 text-lg font-bold`}
+          className="rounded-l-box col-span-2 flex items-center gap-1 self-stretch bg-base-200 p-2 text-lg font-bold text-base-content"
           role="cell"
         >
-          <BiArrowToBottom className={`${isCollapsed ? '-rotate-180' : ''} transition`} />
+          <BiChevronRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
-          <div key={day.toDateString()} className="self-stretch border-t" role="cell" />
+          <div key={day.toDateString()} className="self-stretch bg-base-200" role="cell" />
         ))}
-        <div className="flex items-center self-stretch border-t px-2 text-center text-lg font-bold" role="cell">
+        <div
+          className="flex items-center self-stretch bg-base-200 px-2 text-center text-lg font-bold text-base-content"
+          role="cell"
+        >
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
-        <div className={`self-stretch border-t ${isFirstProject ? 'rounded-tr-md' : ''}`} role="cell" />
+        <div className="rounded-r-box self-stretch bg-base-200" role="cell" />
       </div>
-      <div
-        className={`contents ${
-          isCollapsed ? 'invisible [&_*]:max-h-0 [&_*]:opacity-0' : '[&_*]:max-h-[399rem]'
-        } [&_*]:transition-all`}
-      >
+      <div className={`contents ${isCollapsed ? 'invisible [&_*]:max-h-0' : ''}`}>
         {project.tasks.map((task) => (
           <WeekGridTaskRow task={task} key={task.id} />
         ))}
