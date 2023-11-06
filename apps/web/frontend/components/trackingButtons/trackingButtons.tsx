@@ -92,8 +92,8 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
             <BiBlock />
           </button>
         </div>
-        <dialog className="modal" id="my_modal_2" ref={dialogReference}>
-          <div className="modal-box">
+        <dialog className="modal" ref={dialogReference}>
+          <div className="modal-box bg-base-content text-base-300">
             <h3 className="text-lg font-bold">Delete Tracking</h3>
             <p className="py-4">
               Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (

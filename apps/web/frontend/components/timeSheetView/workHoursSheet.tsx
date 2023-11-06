@@ -28,23 +28,25 @@ export const WorkHoursSheet = (): JSX.Element => {
   })
 
   return (
-    <div className="flex flex-col">
-      <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
-        <article className="contents text-lg">
-          <strong>Project</strong>
-          <strong>Task</strong>
-          <strong>Person</strong>
-          <strong>Hours</strong>
-        </article>
-        {eachMonthOfInterval(interval)
-          .reverse()
-          .map((startOfMonth) => (
-            <SheetMonth key={startOfMonth.toString()} startDay={startOfMonth} onFetched={() => setFetching(false)} />
-          ))}
+    <div className="">
+      <table className="table table-pin-rows">
+        <thead className="text-lg">
+          <th>Project</th>
+          <th>Task</th>
+          <th>Person</th>
+          <th>Hours</th>
+        </thead>
+        <tbody>
+          {eachMonthOfInterval(interval)
+            .reverse()
+            .map((startOfMonth) => (
+              <SheetMonth key={startOfMonth.toString()} startDay={startOfMonth} onFetched={() => setFetching(false)} />
+            ))}
+        </tbody>
         <div ref={sentryReference}>
           <Spinner size="small" />
         </div>
-      </section>
+      </table>
     </div>
   )
 }
