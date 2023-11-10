@@ -31,7 +31,6 @@ export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
 
   return (
     <>
-      {/* <hr className="col-span-4 -mt-2 h-0.5 bg-neutral " /> */}
       <tr className={`${isToday(props.day) ? classNameMarkDay : ''}`}>
         <td>
           {format(props.day, 'dd.MM.yyyy')} - {format(props.day, 'EEEE')}

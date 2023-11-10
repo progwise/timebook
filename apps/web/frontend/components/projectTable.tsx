@@ -35,31 +35,33 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   }
 
   return (
-    <Table className="w-full bg-white shadow-lg dark:bg-slate-800">
-      <TableHead>
-        <TableHeadRow>
-          <TableHeadCell>Name</TableHeadCell>
-          <TableHeadCell>Duration</TableHeadCell>
-          <TableHeadCell />
-        </TableHeadRow>
-      </TableHead>
-      <TableBody>
-        {projects.map((project) => {
-          return (
-            <TableRow key={project.id}>
-              <TableCell>{project.title}</TableCell>
-              <TableCell>
-                {project.startDate} - {project.endDate}
-              </TableCell>
-              <TableCell>
-                <Button variant="tertiary" onClick={() => handleProjectDetails(project.id)}>
-                  Details
-                </Button>
-              </TableCell>
-            </TableRow>
-          )
-        })}
-      </TableBody>
-    </Table>
+    <div className="rounded-box w-full border shadow-lg">
+      <table className="table">
+        <thead className=" text-xl font-bold text-base-content">
+          <tr className="bg-base-200">
+            <th className="rounded-tl-box ">Name</th>
+            <th>Duration</th>
+            <th className="rounded-tr-box" />
+          </tr>
+        </thead>
+        <tbody className="text-base">
+          {projects.map((project) => {
+            return (
+              <tr key={project.id}>
+                <td>{project.title}</td>
+                <td>
+                  {project.startDate} - {project.endDate}
+                </td>
+                <td className="text-center">
+                  <button className="btn btn-outline btn-sm" onClick={() => handleProjectDetails(project.id)}>
+                    Details
+                  </button>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }

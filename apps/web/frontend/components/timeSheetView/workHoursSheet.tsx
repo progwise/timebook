@@ -28,13 +28,15 @@ export const WorkHoursSheet = (): JSX.Element => {
   })
 
   return (
-    <div className="">
+    <div>
       <table className="table table-pin-rows">
         <thead className="text-lg">
-          <th>Project</th>
-          <th>Task</th>
-          <th>Person</th>
-          <th>Hours</th>
+          <tr className="top-16">
+            <th>Project</th>
+            <th>Task</th>
+            <th>Person</th>
+            <th>Hours</th>
+          </tr>
         </thead>
         <tbody>
           {eachMonthOfInterval(interval)

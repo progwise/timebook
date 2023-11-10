@@ -41,14 +41,9 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
   const fetching = lockFetching || unlockFetching
 
   return (
-    <Button
-      variant={project.isLocked ? 'danger' : 'secondary'}
-      onClick={handleClick}
-      disabled={fetching}
-      className="self-start"
-    >
+    <button onClick={handleClick} disabled={fetching} className="btn btn-md">
       {project.isLocked ? <BiLockOpen /> : <BiLock />}
       {project.isLocked ? `Unlock` : `Lock`}
-    </Button>
+    </button>
   )
 }

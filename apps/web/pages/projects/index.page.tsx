@@ -1,9 +1,10 @@
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
+import { BiAddToQueue, BiArchive, BiCheckCircle, BiFolderOpen, BiSpreadsheet } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
-import { Button, Listbox, Spinner } from '@progwise/timebook-ui'
+import { Listbox, Spinner } from '@progwise/timebook-ui'
 
 import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
@@ -45,12 +46,36 @@ const Projects = (): JSX.Element => {
     variables: { from },
   })
 
-  const projectFilterKeyToLabel: Record<ProjectFilter, string> = {
-    ALL: `🔍 all projects ${projectCountsData ? `(${projectCountsData.allCounts})` : ''}`,
-    ACTIVE: `🏃‍♂️ current projects ${projectCountsData ? `(${projectCountsData.activeCounts})` : ''}`,
-    FUTURE: `🚀 upcoming projects ${projectCountsData ? `(${projectCountsData.futureCounts})` : ''}`,
-    PAST: `🏁 finished projects ${projectCountsData ? `(${projectCountsData.pastCounts})` : ''}`,
-    ARCHIVED: `🗄️ archived projects ${projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}`,
+  const projectFilterKeyToLabel: Record<ProjectFilter, string | JSX.Element> = {
+    ALL: (
+      <>
+        <BiSpreadsheet className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
+      </>
+    ),
+    ACTIVE: (
+      <>
+        <BiFolderOpen className="inline" /> current projects{' '}
+        {projectCountsData ? `(${projectCountsData.activeCounts})` : ''}
+      </>
+    ),
+    FUTURE: (
+      <>
+        <BiAddToQueue className="inline" /> upcoming projects{' '}
+        {projectCountsData ? `(${projectCountsData.futureCounts})` : ''}
+      </>
+    ),
+    PAST: (
+      <>
+        <BiCheckCircle className="inline" /> finished projects{' '}
+        {projectCountsData ? `(${projectCountsData.pastCounts})` : ''}
+      </>
+    ),
+    ARCHIVED: (
+      <>
+        <BiArchive className="inline" /> archived projects{' '}
+        {projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}
+      </>
+    ),
   }
 
   const handleAddProject = async () => {
@@ -60,14 +85,13 @@ const Projects = (): JSX.Element => {
   return (
     <ProtectedPage>
       <article>
-        <div className="flex justify-between">
-          <PageHeading>Projects</PageHeading>
-          <Button variant="primary" onClick={handleAddProject}>
-            Add
-          </Button>
-        </div>
-
-        <div className="mb-6 flex">
+        <div className="mb-6 inline-flex flex-col">
+          <div className="flex justify-between gap-4">
+            <PageHeading>Projects</PageHeading>
+            <button className="btn btn-outline btn-sm" onClick={handleAddProject}>
+              Add
+            </button>
+          </div>
           <Listbox
             value={selectedProjectFilter}
             getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
@@ -76,7 +100,6 @@ const Projects = (): JSX.Element => {
             options={Object.values(ProjectFilter)}
           />
         </div>
-
         {error && <span>{error.message}</span>}
         {projectsLoading && <Spinner />}
         {data &&

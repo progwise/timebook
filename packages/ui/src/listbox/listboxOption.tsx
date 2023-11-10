@@ -9,10 +9,7 @@ interface ListboxOptionProps<TType> {
 
 export const ListboxOption = <TType,>({ value, children }: ListboxOptionProps<TType>) => {
   return (
-    <HuListbox.Option
-      value={value}
-      className="flex cursor-pointer items-center gap-2 p-2 ui-active:bg-blue-50 dark:ui-active:bg-slate-600"
-    >
+    <HuListbox.Option value={value} className="flex cursor-pointer items-center gap-2 p-2 ui-active:bg-primary-focus">
       <BiCheck className="flex-none text-xl opacity-0 ui-selected:opacity-100" />
       <span className="truncate">{children}</span>
     </HuListbox.Option>

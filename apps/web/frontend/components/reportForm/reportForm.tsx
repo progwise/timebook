@@ -112,15 +112,15 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           <PageHeading>
             Detailed time report: {fromString} - {endString}
           </PageHeading>
-          <Button variant="secondary" className="px-6 print:hidden" onClick={() => print()}>
+          <button className="btn btn-md print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
-          </Button>
+          </button>
         </div>
         <PageHeading>Select a project</PageHeading>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <div className="flex flex-row items-start gap-4">
+          <div className="flex flex-row items-center gap-4">
             <ListboxWithUnselect
               value={selectedProject}
               getLabel={(project) => project.title}
@@ -135,7 +135,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               noOptionLabel="Select Project"
             />
             <input
-              className="rounded-lg border-none py-2 pl-3 text-sm leading-5  shadow-md dark:bg-slate-700"
+              className="input rounded-md bg-base-300 text-sm shadow-md"
               type="month"
               value={format(date, 'yyyy-MM')}
               onChange={(event) => {
@@ -148,7 +148,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               }}
             />
           </div>
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
             {projectId && (
               <ReportUserSelect

@@ -15,11 +15,7 @@ export const ListboxOptions = forwardRef<HTMLUListElement, ListboxOptionsProps>(
     leaveFrom="opacity-100"
     leaveTo="opacity-0"
   >
-    <HuListbox.Options
-      style={style}
-      ref={reference}
-      className="w-full rounded-lg bg-white py-2 shadow-lg dark:bg-slate-700"
-    >
+    <HuListbox.Options style={style} ref={reference} className="w-full rounded-lg bg-base-300 py-2 shadow-lg">
       {children}
     </HuListbox.Options>
   </Transition>
