@@ -112,7 +112,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           <PageHeading>
             Detailed time report: {fromString} - {endString}
           </PageHeading>
-          <button className="btn btn-md print:hidden" onClick={() => print()}>
+          <button className="btn btn-md shadow-lg print:hidden" onClick={() => print()}>
             <BiPrinter /> Print
           </button>
         </div>
@@ -135,7 +135,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               noOptionLabel="Select Project"
             />
             <input
-              className="input rounded-md bg-base-300 text-sm shadow-md"
+              className="input rounded-md bg-base-200 text-sm shadow-lg"
               type="month"
               value={format(date, 'yyyy-MM')}
               onChange={(event) => {
@@ -168,68 +168,82 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
         </div>
 
         {projectId && reportGroupedData && userIsAdmin && (
-          <section className="mt-10 grid w-full grid-cols-3 gap-2 text-left">
-            <article className="contents border-y text-lg">
-              <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" />
-              <strong>Tasks</strong>
-              <strong>Person</strong>
-              <strong>Hours</strong>
-            </article>
-            {reportGroupedData?.report.groupedByDate.map((group) => (
-              <Fragment key={group.date}>
-                <article className="contents">
-                  <hr className="col-span-3 -mt-2 h-0.5 bg-gray-700 " />
-                  <strong className="col-span-2">{group.date}</strong>
-                  <FormattedDuration
-                    title="Total work hours of the day"
-                    minutes={group.workHours
-                      .map((WorkHourDuration) => WorkHourDuration.duration)
-                      .reduce((sum, duration) => duration + sum, 0)}
-                  />
+          <div>
+            <table className="table mt-10 w-full gap-2 text-left">
+              <thead className="contents border-y text-lg">
+                <tr>
+                  {/* <hr className="col-span-3 -mb-2 h-0.5 bg-gray-600" /> */}
+                  <th>Tasks</th>
+                  <th>Person</th>
+                  <th>Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportGroupedData?.report.groupedByDate.map((group) => (
+                  <Fragment key={group.date}>
+                    <tr className="">
+                      {/* <hr className="col-span-3 -mt-2 h-0.5 bg-gray-700 " /> */}
+                      <td className="font-bold">{group.date}</td>
+                      <td />
+                      <td>
+                        <FormattedDuration
+                          title="Total work hours of the day"
+                          minutes={group.workHours
+                            .map((WorkHourDuration) => WorkHourDuration.duration)
+                            .reduce((sum, duration) => duration + sum, 0)}
+                        />
+                      </td>
+                    </tr>
+                    {group.workHours.map((workHour) => (
+                      <tr key={workHour.id} className="">
+                        <td>{workHour.task.title}</td>
+                        <td>{workHour.user?.name}</td>
+                        <td>
+                          <FormattedDuration title="Work duration" minutes={workHour.duration} />
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
+                ))}
+                <tr className="">
+                  {/* <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" /> */}
+                  <td className="">Total</td>
+                  <td />
+                  <td>
+                    <FormattedDuration
+                      title="Total work hours of the selected project"
+                      minutes={reportGroupedData?.report.groupedByDate
+                        .map((WorkHourDuration) => WorkHourDuration.duration)
+                        .reduce((sum, duration) => duration + sum, 0)}
+                    />
+                  </td>
+                </tr>
+                <article className="">
+                  <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
+                  <strong className="col-span-3">Total by Task</strong>
+                  {reportGroupedData?.report.groupedByTask.map((entry) => (
+                    <div key={entry.task.id} className="grid grid-flow-row">
+                      <span>{entry.task.title}</span>
+                      <FormattedDuration title="Total by task" minutes={entry.duration} />
+                    </div>
+                  ))}
+                  <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
                 </article>
-                {group.workHours.map((workHour) => (
-                  <article key={workHour.id} className="contents">
-                    <h1>{workHour.task.title}</h1>
-                    <span>{workHour.user?.name}</span>
-                    <FormattedDuration title="Work duration" minutes={workHour.duration} />
+                {reportGroupedData?.report.groupedByUser && (
+                  <article className="">
+                    <strong className="col-span-3">Total by Person</strong>
+                    {reportGroupedData.report.groupedByUser.map((group) => (
+                      <div key={group.user.id} className="grid grid-flow-row">
+                        <span>{group.user.name}</span>
+                        <FormattedDuration title="Total by user" minutes={group.duration} />
+                      </div>
+                    ))}
+                    <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
                   </article>
-                ))}
-              </Fragment>
-            ))}
-            <article className="contents">
-              <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
-              <strong className="col-span-2">Total</strong>
-              <FormattedDuration
-                title="Total work hours of the selected project"
-                minutes={reportGroupedData?.report.groupedByDate
-                  .map((WorkHourDuration) => WorkHourDuration.duration)
-                  .reduce((sum, duration) => duration + sum, 0)}
-              />
-            </article>
-            <article className="contents">
-              <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
-              <strong className="col-span-3">Total by Task</strong>
-              {reportGroupedData?.report.groupedByTask.map((entry) => (
-                <div key={entry.task.id} className="grid grid-flow-row">
-                  <span>{entry.task.title}</span>
-                  <FormattedDuration title="Total by task" minutes={entry.duration} />
-                </div>
-              ))}
-              <hr className="col-span-3 my-8 h-0.5 border-0 bg-gray-600" />
-            </article>
-            {reportGroupedData?.report.groupedByUser && (
-              <article className="contents">
-                <strong className="col-span-3">Total by Person</strong>
-                {reportGroupedData.report.groupedByUser.map((group) => (
-                  <div key={group.user.id} className="grid grid-flow-row">
-                    <span>{group.user.name}</span>
-                    <FormattedDuration title="Total by user" minutes={group.duration} />
-                  </div>
-                ))}
-                <hr className="col-span-3 -mt-2 h-0.5 bg-gray-600" />
-              </article>
-            )}
-          </section>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </>
