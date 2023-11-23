@@ -2,8 +2,6 @@ import { eachMonthOfInterval, subMonths } from 'date-fns'
 import { useState } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
 
-import { Spinner } from '@progwise/timebook-ui'
-
 import { SheetMonth } from './sheetMonth'
 
 export const WorkHoursSheet = (): JSX.Element => {
@@ -46,7 +44,7 @@ export const WorkHoursSheet = (): JSX.Element => {
             ))}
         </tbody>
         <div ref={sentryReference}>
-          <Spinner size="small" />
+          <span className="loading loading-spinner" />
         </div>
       </table>
     </div>

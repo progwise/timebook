@@ -3,23 +3,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
-import {
-  Button,
-  InputField,
-  Table,
-  TableBody,
-  TableCell,
-  TableFoot,
-  TableFootRow,
-  TableHead,
-  TableHeadCell,
-  TableHeadRow,
-} from '@progwise/timebook-ui'
+import { InputField } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskInput } from '../../generated/gql/graphql'
-import { LockSwitch } from './lockSwitch'
 import { TaskRow } from './taskRow'
 
 export const TaskListProjectFragment = graphql(`
@@ -81,63 +69,70 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   }
 
   return (
-    <section className={className}>
-      <Table className="min-w-full dark:bg-slate-800">
-        <TableHead>
-          <TableHeadRow>
-            <TableHeadCell>Tasks</TableHeadCell>
+    <div className={className}>
+      <table className="table min-w-full [&_tr]:border-none">
+        <thead>
+          <tr className="font-normal">
+            <td className="text-xl text-base-content">Tasks</td>
             {project.canModify && (
               <>
-                <TableHeadCell>Locked</TableHeadCell>
-                <TableHeadCell />
+                <td className="w-px" />
+                <td className="w-px" />
               </>
             )}
-          </TableHeadRow>
-        </TableHead>
-        <TableBody>
+          </tr>
+        </thead>
+        <tbody>
           {project.tasks.map((task) => (
             <TaskRow task={task} key={task.id} />
           ))}
-        </TableBody>
+        </tbody>
         {project.canModify && (
-          <TableFoot>
-            <TableFootRow>
-              <TableCell>
-                <form className="flex items-start gap-4" onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
+          <tfoot>
+            <tr>
+              <td className="p-1 pt-1">
+                <form
+                  className="flex items-start gap-4 font-normal"
+                  onSubmit={handleSubmit(handleAddTask)}
+                  id="form-create-task"
+                >
                   <InputField
-                    variant="primary"
-                    placeholder="Enter task name"
-                    className="dark:bg-slate-800 dark:text-white"
+                    type="text"
+                    placeholder="Enter new task name"
                     {...register('title')}
                     errorMessage={errors.title?.message}
                     isDirty={isDirty && dirtyFields.title}
                   />
                 </form>
-              </TableCell>
-              <TableCell>
+              </td>
+              <td className="w-px">
                 <Controller
                   control={control}
                   name="isLocked"
                   render={({ field: { onChange, value } }) => (
-                    <LockSwitch locked={value ?? false} onChange={onChange} />
+                    <input
+                      type="checkbox"
+                      checked={value ?? false}
+                      onChange={onChange}
+                      className="toggle toggle-warning"
+                    />
                   )}
                 />
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="secondary"
-                  className="h-8"
+              </td>
+              <td className="w-px">
+                <button
+                  className="btn btn-primary btn-sm w-full"
                   type="submit"
                   disabled={isSubmitting}
                   form="form-create-task"
                 >
-                  Add task
-                </Button>
-              </TableCell>
-            </TableFootRow>
-          </TableFoot>
+                  Add
+                </button>
+              </td>
+            </tr>
+          </tfoot>
         )}
-      </Table>
-    </section>
+      </table>
+    </div>
   )
 }

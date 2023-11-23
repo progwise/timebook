@@ -930,8 +930,8 @@ export type ProjectQuery = {
     startDate?: string | null
     endDate?: string | null
     hasWorkHours: boolean
-    inviteKey: string
     isArchived: boolean
+    inviteKey: string
     tasks: Array<{
       __typename?: 'Task'
       id: string

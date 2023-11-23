@@ -2,12 +2,10 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useMutation } from 'urql'
 
-import { Table, TableBody, TableCell, TableRow } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { AddProjectMemberForm } from '../addProjectMemberForm'
-import { PageHeading } from '../pageHeading'
+import { InviteLink } from '../inviteLink'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
 import { RoleButton } from './roleButton'
 import { RoleLabel } from './roleLabel'
@@ -25,6 +23,7 @@ export const ProjectMemberListProjectFragment = graphql(`
       role(projectId: $projectId)
       ...RemoveUserFromProjectButtonUser
     }
+    ...InviteLinkProjectFragment
   }
 `)
 
@@ -54,36 +53,42 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
   }
 
   return (
-    <>
-      <PageHeading>Project Members</PageHeading>
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell>
+    <div>
+      <table className="table mt-10">
+        <thead>
+          <tr className="border-none">
+            <th className="text-xl font-normal text-base-content">Project Members</th>
+          </tr>
+          <tr className="border-none">
+            <td colSpan={3} className="font-normal text-base-content">
+              <InviteLink project={project} />
+            </td>
+          </tr>
+          <tr className="border-b">
+            <td colSpan={3} className="font-normal">
               <AddProjectMemberForm project={project} />
-            </TableCell>
-            <TableCell colSpan={2} />
-          </TableRow>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
           {project.members.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell className="flex items-center gap-2">
+            <tr key={user.id}>
+              <td className="flex w-full items-center gap-2">
                 {user.image ? (
                   <Image
-                    className="rounded-full"
+                    className="rounded-box"
                     width={64}
                     height={64}
                     src={user.image}
                     alt={user.name ?? 'image of the user'}
                   />
                 ) : (
-                  <div className="h-16 w-16 rounded-full bg-gray-300" />
+                  <div className="rounded-box h-16 w-16" />
                 )}
                 {user.name}
-              </TableCell>
-              <TableCell>
                 <RoleLabel role={user.role} />
-              </TableCell>
-              <TableCell>
+              </td>
+              <td className="w-px">
                 {user.id !== session.data?.user.id && project.canModify && (
                   <RoleButton
                     role={user.role}
@@ -92,16 +97,16 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                     onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}
                   />
                 )}
-              </TableCell>
-              <TableCell>
+              </td>
+              <td className="w-px">
                 {project.canModify && session.data?.user.id !== user.id && (
                   <RemoveUserFromProjectButton user={user} project={project} />
                 )}
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
-    </>
+        </tbody>
+      </table>
+    </div>
   )
 }

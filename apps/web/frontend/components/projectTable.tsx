@@ -1,16 +1,5 @@
 import { useRouter } from 'next/router'
 
-import {
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableHeadCell,
-  TableBody,
-  TableCell,
-  TableHeadRow,
-} from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
 export const ProjectTableItemFragment = graphql(`
@@ -37,11 +26,11 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   return (
     <div className="rounded-box w-full border shadow-lg">
       <table className="table">
-        <thead className=" text-xl font-bold text-base-content">
-          <tr className="bg-base-200">
-            <th className="rounded-tl-box ">Name</th>
+        <thead className="text-xl text-base-content">
+          <tr>
+            <th>Name</th>
             <th>Duration</th>
-            <th className="rounded-tr-box" />
+            <th />
           </tr>
         </thead>
         <tbody className="text-base">
@@ -52,7 +41,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                 <td>
                   {project.startDate} - {project.endDate}
                 </td>
-                <td className="text-center">
+                <td className="text-right">
                   <button className="btn btn-outline btn-sm" onClick={() => handleProjectDetails(project.id)}>
                     Details
                   </button>

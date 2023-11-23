@@ -20,7 +20,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (
-    <div className="rounded-box inline-flex flex-col items-center border border-base-content bg-base-200 p-4 text-base-content">
+    <div className="rounded-box inline-flex flex-col items-center p-4 text-base-content">
       <div className="pb-2 text-lg font-bold">
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
@@ -35,17 +35,16 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
         </button>
 
         <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>
-          <BiCalendarCheck className="" />
+          <BiCalendarCheck />
           today
         </button>
-
         <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
         <button
           className="btn btn-neutral btn-outline btn-sm"
           aria-label="Next week"
           onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
         >
-          <BiSolidChevronRight className="" />
+          <BiSolidChevronRight />
         </button>
       </div>
     </div>

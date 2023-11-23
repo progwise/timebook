@@ -28,7 +28,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
       <main className="container mx-auto py-16 print:m-0 print:p-0">
         <Component {...pageProps} />
       </main>
-      <footer className="footer fixed bottom-0 justify-items-center bg-base-200 p-5">
+      <footer className="footer fixed bottom-0 z-40 justify-items-center bg-base-300 p-5">
         <Link href="/impress" className="link-hover link">
           Impress
         </Link>

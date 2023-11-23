@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../../generated/gql'
-import { Modal } from '../../modal'
 
 export const ArchiveProjectModalFragment = graphql(`
   fragment ArchiveProjectModal on Project {
@@ -45,20 +42,33 @@ export const ArchiveProjectModal = ({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={`Are you sure you want to archive project ${project.title}?`}
-      actions={
-        <>
-          <Button variant="tertiary" onClick={onClose} disabled={projectArchiveState.fetching}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleArchiveProject} disabled={projectArchiveState.fetching}>
+    <dialog className="modal" open={open} onClose={onClose}>
+      <div className="modal-box">
+        <h3 className="text-lg font-bold">Archive project</h3>
+        <p className="py-4">Are you sure you want to archive project {project.title}?</p>
+        <div className="modal-action">
+          <button
+            className="btn btn-success btn-sm"
+            onClick={handleArchiveProject}
+            disabled={projectArchiveState.fetching}
+          >
             Archive
-          </Button>
-        </>
-      }
-    />
+          </button>
+          <form method="dialog">
+            <button
+              className="btn btn-warning btn-sm"
+              onClick={onClose}
+              disabled={projectArchiveState.fetching}
+              type="button"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   )
 }

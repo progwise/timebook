@@ -32,7 +32,7 @@ export const TopNavigation = (): JSX.Element => {
   const session = useSession()
 
   return (
-    <header className="navbar fixed top-0 z-40 bg-base-100 shadow-xl">
+    <header className="navbar fixed top-0 z-40 bg-base-100 shadow-lg">
       <h1 className="navbar-start">
         <Link href="/" className="btn btn-ghost text-2xl normal-case">
           <AiOutlineFieldTime />

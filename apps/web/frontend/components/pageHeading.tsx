@@ -5,5 +5,5 @@ interface PageHeadingProps {
 }
 
 export const PageHeading = ({ children }: PageHeadingProps) => {
-  return <h2 className="self-center text-lg text-base-content">{children}</h2>
+  return <h2 className="self-center text-xl text-base-content">{children}</h2>
 }

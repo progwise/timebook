@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import InputMask from 'react-input-mask'
 import { z } from 'zod'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { InputField } from '@progwise/timebook-ui'
 import { projectInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -110,9 +110,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       ) : (
         <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
       )}
+
       <InputField
         label="Name"
-        variant="primary"
+        type="text"
+        className="input input-bordered w-full"
         disabled={isSubmitting}
         readOnly={isProjectFormReadOnly}
         {...register('title')}
@@ -142,11 +144,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="start"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
+                className="input input-bordered py-1 read-only:opacity-70"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
-                className="shrink-0"
+                className="shrink-0 pl-1"
                 date={getDate(value)}
                 hideLabel={true}
                 onDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
@@ -156,7 +158,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         />
         <ErrorMessage name="start" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
-      <div className="mb-6 flex flex-col">
+      <div className="mb-2 flex flex-col">
         <label htmlFor="end" className="text-sm font-semibold">
           End
         </label>
@@ -176,11 +178,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 id="end"
                 type="text"
                 size={10}
-                className="rounded py-1 read-only:opacity-70 dark:border-white dark:bg-slate-800 dark:text-white read-only:dark:text-gray-600"
+                className="input input-bordered py-1 read-only:opacity-70"
               />
               <CalendarSelector
                 disabled={isSubmitting || isProjectFormReadOnly}
-                className="shrink-0"
+                className="shrink-0 pl-1"
                 date={getDate(value)}
                 hideLabel={true}
                 onDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}
@@ -191,15 +193,26 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
         <ErrorMessage name="end" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
       </div>
-      <div className="mt-8 flex w-full justify-center gap-2">
+      <div className="mb-8 flex w-full gap-2">
         {project?.canModify && <DeleteOrArchiveProjectButton project={project} />}
-        <Button disabled={isSubmitting} variant="secondary" onClick={onCancel} tooltip="Cancel the changes">
+        <button
+          className="btn btn-outline btn-sm"
+          disabled={isSubmitting}
+          onClick={onCancel}
+          title="Cancel the changes"
+          type="button"
+        >
           Cancel
-        </Button>
+        </button>
         {!isProjectFormReadOnly && (
-          <Button type="submit" variant="primary" disabled={isSubmitting} tooltip={isNewProject ? 'Create' : 'Save'}>
+          <button
+            className="btn btn-outline btn-sm"
+            type="submit"
+            disabled={isSubmitting}
+            title={isNewProject ? 'Create' : 'Save'}
+          >
             {isNewProject ? 'Create' : 'Save'}
-          </Button>
+          </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       </div>

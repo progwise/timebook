@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../../generated/gql'
-import { Modal } from '../../modal'
 
 export const DeleteProjectModalFragment = graphql(`
   fragment DeleteProjectModal on Project {
@@ -44,20 +41,24 @@ export const DeleteProjectModal = ({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={`Are you sure you want to delete project ${project.title}?`}
-      actions={
-        <>
-          <Button variant="tertiary" onClick={onClose} disabled={projectDeleteState.fetching}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDeleteProject} disabled={projectDeleteState.fetching}>
+    <dialog className="modal" open={open} onClose={onClose}>
+      <div className="modal-box">
+        <h3 className="text-lg font-bold">Delete project</h3>
+        <p className="py-4">Are you sure you want to delete {project.title}?</p>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn btn-warning btn-sm" onClick={onClose} disabled={projectDeleteState.fetching}>
+              Cancel
+            </button>
+          </form>
+          <button className="btn btn-error btn-sm" onClick={handleDeleteProject} disabled={projectDeleteState.fetching}>
             Delete
-          </Button>
-        </>
-      }
-    />
+          </button>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   )
 }

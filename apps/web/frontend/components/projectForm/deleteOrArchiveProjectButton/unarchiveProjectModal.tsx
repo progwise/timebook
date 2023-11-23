@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../../generated/gql'
-import { Modal } from '../../modal'
 
 export const UnarchiveProjectModalFragment = graphql(`
   fragment UnarchiveProjectModal on Project {
@@ -45,20 +42,28 @@ export const UnarchiveProjectModal = ({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={`Are you sure you want to unarchive project ${project.title}?`}
-      actions={
-        <>
-          <Button variant="tertiary" onClick={onClose} disabled={projectUnarchiveState.fetching}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleUnarchiveProject} disabled={projectUnarchiveState.fetching}>
+    <dialog className="modal" open={open} onClose={onClose}>
+      <div className="modal-box">
+        <h3 className="text-lg font-bold">Unarchive project</h3>
+        <p className="py-4">Are you sure you want to unarchive project {project.title}?</p>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn btn-warning btn-sm" onClick={onClose} disabled={projectUnarchiveState.fetching}>
+              Cancel
+            </button>
+          </form>
+          <button
+            className="btn btn-error btn-sm"
+            onClick={handleUnarchiveProject}
+            disabled={projectUnarchiveState.fetching}
+          >
             Unarchive
-          </Button>
-        </>
-      }
-    />
+          </button>
+        </div>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   )
 }

@@ -9,17 +9,16 @@ import {
   getDate,
   isSameDay,
   isSameMonth,
+  isThisMonth,
+  isToday,
   isWeekend,
   startOfMonth,
   startOfWeek,
   subMonths,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { BiCalendarAlt } from 'react-icons/bi'
-import { BiHome, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
-
-import CalendarIcon from './calendarIcon'
-import { PageHeading } from './pageHeading'
+import { BiCalendarAlt, BiCaretLeft } from 'react-icons/bi'
+import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 interface DayItemProps {
   day: Date
@@ -29,26 +28,30 @@ interface DayItemProps {
 }
 
 const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
-  const classNames = ['text-center border rounded-box cursor-pointer border-base-200']
+  const classNames = ['text-center cursor-pointer']
 
   if (!isSameMonth(day, shownDate)) {
-    classNames.push('italic')
+    classNames.push('opacity-50')
   }
 
   let title = format(day, 'do MMM yyyy')
 
   if (selectedDate && isSameDay(day, selectedDate)) {
-    classNames.push('border-red-700')
+    classNames.push('border-error')
     title = `Selected Day, ${title}`
   }
 
   if (isWeekend(day)) {
-    classNames.push('text-base-content')
+    classNames.push('opacity-50')
   }
 
-  if (!isWeekend(day) && isSameMonth(day, shownDate)) {
-    classNames.push('font-bold')
+  if (isToday(day)) {
+    classNames.push('bg-primary text-primary-content rounded-box')
   }
+
+  // if (!isWeekend(day) && isSameMonth(day, shownDate)) {
+  //   classNames.push('font-bold')
+  // }
 
   return (
     <button title={title} className={classNames.join(' ')} onClick={onClick} type="button">
@@ -89,13 +92,16 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
     setShownDate((oldDate) => addMonths(oldDate, 1))
   }
 
-  const monthTitle = format(shownDate, 'MMM yyyy')
+  const monthTitle = format(shownDate, 'MMMM yyyy')
 
   const { x, y, reference, floating, strategy } = useFloating({
     placement: 'bottom',
     strategy: 'absolute',
     middleware: [offset(10), shift({ crossAxis: true })],
   })
+
+  const currentDate = new Date()
+  const currentMonth = format(currentDate, 'MMMM yyyy')
 
   return (
     <section className={props.className}>
@@ -107,12 +113,12 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <BiCalendarAlt className="" title="Calendar icon" />
+          <BiCalendarAlt title="Calendar icon" />
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
         <Transition
-          className="rounded-box z-40 w-80 border-2 border-base-200 bg-base-300 p-2 text-sm text-base-content shadow-md"
+          className="rounded-box z-40 border bg-base-200 p-2 shadow-md"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"
@@ -127,34 +133,29 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           ref={floating}
           data-testid="calendar-popover"
         >
-          <Popover.Panel className="bg-base-300">
+          <Popover.Panel className="bg-base-200">
             {({ close }) => (
               <>
                 <header className="flex justify-between font-bold">
-                  <CalendarIcon label="Go to previous month" onClick={gotoPreviousMonth}>
+                  <button className="btn btn-ghost btn-xs self-center" onClick={gotoPreviousMonth} type="button">
                     <BiLeftArrow />
-                  </CalendarIcon>
-                  <div className="flex gap-5">
-                    <CalendarIcon label="Go to today" onClick={goToToday}>
-                      <>
-                        <BiHome className="h-5 w-5" />
-                        home
-                      </>
-                    </CalendarIcon>
-                    <PageHeading>{monthTitle}</PageHeading>
+                  </button>
+                  <div className="flex gap-2 text-lg">
+                    <div className="self-center">{monthTitle}</div>
                   </div>
-                  <CalendarIcon label="Go to next month" onClick={gotoNextMonth}>
+                  <button className="btn btn-ghost btn-xs self-center" onClick={gotoNextMonth} type="button">
                     <BiRightArrow />
-                  </CalendarIcon>
+                  </button>
                 </header>
-                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-3">
-                  <div className="border-b border-base-200 p-1 text-center">Mon</div>
-                  <div className="border-b border-base-200 p-1 text-center">Tue</div>
-                  <div className="border-b border-base-200 p-1 text-center">Wed</div>
-                  <div className="border-b border-base-200 p-1 text-center">Thu</div>
-                  <div className="border-b border-base-200 p-1 text-center">Fri</div>
-                  <div className="border-b border-base-200 p-1 text-center">Sat</div>
-                  <div className="border-b border-base-200 p-1 text-center">Sun</div>
+                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center text-base">
+                  <div>Mon</div>
+                  <div>Tue</div>
+                  <div>Wed</div>
+                  <div>Thu</div>
+                  <div>Fri</div>
+                  <div className="opacity-50">Sat</div>
+                  <div className="opacity-50">Sun</div>
+                  <hr className="col-span-7 -m-1 h-0.5 bg-neutral opacity-50" />
                   {daysToRender.map((day) => (
                     <DayItem
                       key={day.toString()}
@@ -168,6 +169,15 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     />
                   ))}
                 </div>
+                {!isThisMonth(shownDate) && (
+                  <>
+                    <hr className="col-span-7 mt-2 h-0.5 bg-neutral opacity-50" />
+                    <button className="btn btn-ghost no-animation btn-xs btn-block mt-1" onClick={goToToday}>
+                      <BiCaretLeft />
+                      Back to {currentMonth}
+                    </button>
+                  </>
+                )}
               </>
             )}
           </Popover.Panel>

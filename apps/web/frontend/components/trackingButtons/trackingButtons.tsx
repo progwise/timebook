@@ -6,7 +6,6 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { LiveDuration } from '../liveDuration/liveDuration'
-import { Modal } from '../modal'
 
 const TrackingButtonsTrackingFragment = graphql(`
   fragment TrackingButtonsTracking on Tracking {
@@ -93,18 +92,18 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
           </button>
         </div>
         <dialog className="modal" ref={dialogReference}>
-          <div className="modal-box bg-base-content text-base-300">
+          <div className="modal-box">
             <h3 className="text-lg font-bold">Delete Tracking</h3>
             <p className="py-4">
               Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (
               {tracking.task.project.title})?
             </p>
-            <div className="flex flex-col flex-wrap gap-4 self-end sm:flex-row sm:justify-end">
+            <div className="modal-action">
               <form method="dialog">
-                <button className="btn btn-sm shadow-lg">Cancel</button>
+                <button className="btn btn-warning btn-sm">Cancel</button>
               </form>
               <button
-                className="btn btn-error btn-sm shadow-lg"
+                className="btn btn-error btn-sm"
                 onClick={async () => {
                   await cancelTracking({})
                   dialogReference.current?.close()

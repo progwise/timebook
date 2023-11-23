@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { BiExit } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { Modal } from '../modal'
 
 const RemoveUserFromProjectButtonUserFragment = graphql(`
   fragment RemoveUserFromProjectButtonUser on User {
@@ -47,26 +44,27 @@ export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonPr
 
   return (
     <>
-      <Button variant="danger" onClick={() => setModalOpen(true)} tooltip="Remove user from project">
+      <button className="btn btn-error btn-sm" onClick={() => setModalOpen(true)} title="Remove user from project">
         <BiExit />
-      </Button>
-      <Modal
-        title="Remove User"
-        actions={
-          <>
-            <Button variant="secondary" disabled={fetching} onClick={() => setModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="danger" disabled={fetching} onClick={handleRemoveClick}>
+      </button>
+      <dialog className="modal" title="Remove User" open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="modal-box">
+          <p>
+            Do you really want to remove <b>{user.name}</b> from <b>{project.title}</b>?
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-warning btn-sm">Cancel</button>
+            </form>
+            <button className="btn btn-error btn-sm" disabled={fetching} onClick={handleRemoveClick}>
               Remove
-            </Button>
-          </>
-        }
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      >
-        Do you really want to remove <b>{user.name}</b> from <b>{project.title}</b>?
-      </Modal>
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </>
   )
 }

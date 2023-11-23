@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../../generated/gql'
 import { ArchiveProjectModal } from './archiveProjectModal'
 import { DeleteProjectModal } from './deleteProjectModal'
@@ -32,9 +30,9 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
   if (project.isArchived) {
     return (
       <>
-        <Button variant="tertiary" onClick={handleClick}>
+        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
           Unarchive
-        </Button>
+        </button>
         <UnarchiveProjectModal open={isModalOpen} onClose={handleClose} project={project} />
       </>
     )
@@ -43,9 +41,9 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
   if (project.hasWorkHours) {
     return (
       <>
-        <Button variant="tertiary" onClick={handleClick}>
+        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
           Archive
-        </Button>
+        </button>
         <ArchiveProjectModal open={isModalOpen} onClose={handleClose} project={project} />
       </>
     )
@@ -53,9 +51,9 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
 
   return (
     <>
-      <Button variant="tertiary" onClick={handleClick}>
+      <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
         Delete
-      </Button>
+      </button>
       <DeleteProjectModal open={isModalOpen} onClose={handleClose} project={project} />
     </>
   )

@@ -556,6 +556,7 @@ export type ProjectMemberListProjectFragment = ({
   ' $fragmentRefs'?: {
     RemoveUserFromProjectButtonProjectFragment: RemoveUserFromProjectButtonProjectFragment
     AddProjectMemberFormFragment: AddProjectMemberFormFragment
+    InviteLinkProjectFragmentFragment: InviteLinkProjectFragmentFragment
   }
 }) & { ' $fragmentName'?: 'ProjectMemberListProjectFragment' }
 
@@ -907,7 +908,6 @@ export type ProjectQuery = {
       TaskListProjectFragment: TaskListProjectFragment
       ProjectFormFragment: ProjectFormFragment
       ProjectMemberListProjectFragment: ProjectMemberListProjectFragment
-      InviteLinkProjectFragmentFragment: InviteLinkProjectFragmentFragment
     }
   }
 }
@@ -972,23 +972,6 @@ export type WeekGridQuery = {
   >
 }
 
-export const InviteLinkProjectFragmentFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<InviteLinkProjectFragmentFragment, unknown>
 export const DeleteProjectModalFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1222,6 +1205,23 @@ export const RemoveUserFromProjectButtonUserFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<RemoveUserFromProjectButtonUserFragment, unknown>
+export const InviteLinkProjectFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InviteLinkProjectFragmentFragment, unknown>
 export const ProjectMemberListProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1260,6 +1260,7 @@ export const ProjectMemberListProjectFragmentDoc = {
               ],
             },
           },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InviteLinkProjectFragment' } },
         ],
       },
     },
@@ -1297,6 +1298,18 @@ export const ProjectMemberListProjectFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
         ],
       },
     },
@@ -3656,7 +3669,6 @@ export const ProjectDocument = {
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskListProject' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectForm' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectMemberListProject' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InviteLinkProjectFragment' } },
               ],
             },
           },
@@ -3782,6 +3794,18 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TaskListProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -3854,18 +3878,7 @@ export const ProjectDocument = {
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InviteLinkProjectFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InviteLinkProjectFragment' } },
         ],
       },
     },

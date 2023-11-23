@@ -88,7 +88,7 @@ const Projects = (): JSX.Element => {
         <div className="mb-6 inline-flex flex-col">
           <div className="flex justify-between gap-4">
             <PageHeading>Projects</PageHeading>
-            <button className="btn btn-sm shadow-lg" onClick={handleAddProject}>
+            <button className="btn btn-outline btn-sm" onClick={handleAddProject}>
               Add
             </button>
           </div>
