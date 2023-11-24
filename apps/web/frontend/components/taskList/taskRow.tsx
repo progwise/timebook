@@ -8,7 +8,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
-import { DeleteTaskModal } from '../deleteTaskButton'
+import { DeleteTaskButton } from '../deleteTaskButton'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
@@ -98,7 +98,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
             </div>
           </td>
           <td className="w-px">
-            <DeleteTaskModal task={task} />
+            <DeleteTaskButton task={task} />
           </td>
         </>
       )}

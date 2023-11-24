@@ -98,7 +98,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 >
                   <InputField
                     type="text"
-                    placeholder="Enter new task name"
+                    placeholder="Enter a new task name"
                     {...register('title')}
                     errorMessage={errors.title?.message}
                     isDirty={isDirty && dirtyFields.title}

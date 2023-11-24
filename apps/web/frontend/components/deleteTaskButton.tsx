@@ -23,11 +23,11 @@ const TaskDeleteMutationDocument = graphql(`
   }
 `)
 
-export interface DeleteTaskModalProps {
+export interface DeleteTaskButtonProps {
   task: FragmentType<typeof DeleteTaskModalFragment>
 }
 
-export const DeleteTaskModal = ({ task: taskFragment }: DeleteTaskModalProps): JSX.Element => {
+export const DeleteTaskButton = ({ task: taskFragment }: DeleteTaskButtonProps): JSX.Element => {
   const task = useFragment(DeleteTaskModalFragment, taskFragment)
   const [{ fetching }, taskDelete] = useMutation(TaskDeleteMutationDocument)
 
@@ -44,8 +44,8 @@ export const DeleteTaskModal = ({ task: taskFragment }: DeleteTaskModalProps): J
     <>
       <button
         className="btn btn-outline btn-sm w-full"
-        // ariaLabel="Delete Task"
-        title="Delete Task"
+        aria-label="Delete the task"
+        title="Delete the task"
         onClick={() => dialogReference.current?.showModal()}
       >
         <BiTrash />

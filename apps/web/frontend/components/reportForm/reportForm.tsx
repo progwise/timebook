@@ -227,7 +227,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                       ))}
                     </Fragment>
                   ))}
-                  {/* <tr className="bg-base-200 font-bold">
+                  <tr className="bg-base-200 font-bold">
                     <td>Total by Task</td>
                     <td />
                     <td />
@@ -240,9 +240,9 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                         <FormattedDuration title="Total by task" minutes={entry.duration} />
                       </td>
                     </tr>
-                  ))} */}
+                  ))}
 
-                  {/* {reportGroupedData?.report.groupedByUser && (
+                  {reportGroupedData?.report.groupedByUser && (
                     <>
                       <tr className="bg-base-200 font-bold">
                         <td>Total by Person</td>
@@ -260,7 +260,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                         </tr>
                       ))}
                     </>
-                  )} */}
+                  )}
                 </tbody>
               </table>
             </div>

@@ -126,7 +126,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
       <button
         className="btn btn-square btn-primary btn-outline btn-xs"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
-        //disabled={taskToTrack.isLocked}
+        disabled={taskToTrack.isLocked}
       >
         <BiPlay />
       </button>

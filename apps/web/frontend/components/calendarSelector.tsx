@@ -49,10 +49,6 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
     classNames.push('bg-primary text-primary-content rounded-box')
   }
 
-  // if (!isWeekend(day) && isSameMonth(day, shownDate)) {
-  //   classNames.push('font-bold')
-  // }
-
   return (
     <button title={title} className={classNames.join(' ')} onClick={onClick} type="button">
       {getDate(day)}
@@ -137,13 +133,25 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
             {({ close }) => (
               <>
                 <header className="flex justify-between font-bold">
-                  <button className="btn btn-ghost btn-xs self-center" onClick={gotoPreviousMonth} type="button">
+                  <button
+                    className="btn btn-ghost btn-xs self-center"
+                    onClick={gotoPreviousMonth}
+                    type="button"
+                    aria-label="go to previous month"
+                  >
                     <BiLeftArrow />
                   </button>
                   <div className="flex gap-2 text-lg">
-                    <div className="self-center">{monthTitle}</div>
+                    <div className="self-center" role="heading">
+                      {monthTitle}
+                    </div>
                   </div>
-                  <button className="btn btn-ghost btn-xs self-center" onClick={gotoNextMonth} type="button">
+                  <button
+                    className="btn btn-ghost btn-xs self-center"
+                    onClick={gotoNextMonth}
+                    type="button"
+                    aria-label="go to next month"
+                  >
                     <BiRightArrow />
                   </button>
                 </header>
@@ -172,7 +180,11 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                 {!isThisMonth(shownDate) && (
                   <>
                     <hr className="col-span-7 mt-2 h-0.5 bg-neutral opacity-50" />
-                    <button className="btn btn-ghost no-animation btn-xs btn-block mt-1" onClick={goToToday}>
+                    <button
+                      className="btn btn-ghost no-animation btn-xs btn-block mt-1"
+                      onClick={goToToday}
+                      aria-label="go to today"
+                    >
                       <BiCaretLeft />
                       Back to {currentMonth}
                     </button>

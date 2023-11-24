@@ -18,6 +18,7 @@ export const DeleteOrArchiveProjectButtonFragment = graphql(`
 
 interface DeleteOrArchiveProjectButtonProps {
   project: FragmentType<typeof DeleteOrArchiveProjectButtonFragment>
+  disabled: boolean
 }
 
 export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButtonProps) => {
@@ -30,7 +31,7 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
   if (project.isArchived) {
     return (
       <>
-        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
+        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick} disabled={props.disabled}>
           Unarchive
         </button>
         <UnarchiveProjectModal open={isModalOpen} onClose={handleClose} project={project} />
@@ -41,7 +42,7 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
   if (project.hasWorkHours) {
     return (
       <>
-        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
+        <button className="btn btn-outline btn-sm" type="button" onClick={handleClick} disabled={props.disabled}>
           Archive
         </button>
         <ArchiveProjectModal open={isModalOpen} onClose={handleClose} project={project} />
@@ -51,7 +52,7 @@ export const DeleteOrArchiveProjectButton = (props: DeleteOrArchiveProjectButton
 
   return (
     <>
-      <button className="btn btn-outline btn-sm" type="button" onClick={handleClick}>
+      <button className="btn btn-outline btn-sm" type="button" onClick={handleClick} disabled={props.disabled}>
         Delete
       </button>
       <DeleteProjectModal open={isModalOpen} onClose={handleClose} project={project} />

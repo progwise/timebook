@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { BiAddToQueue, BiArchive, BiCheckCircle, BiFolderOpen, BiSpreadsheet } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
-import { Listbox, Spinner } from '@progwise/timebook-ui'
+import { Listbox } from '@progwise/timebook-ui'
 
 import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
@@ -101,7 +101,7 @@ const Projects = (): JSX.Element => {
           />
         </div>
         {error && <span>{error.message}</span>}
-        {projectsLoading && <Spinner />}
+        {projectsLoading && <span className="loading loading-spinner" />}
         {data &&
           (data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />)}
       </article>
