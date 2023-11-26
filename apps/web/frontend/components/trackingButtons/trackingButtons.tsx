@@ -1,5 +1,4 @@
 import { parseISO } from 'date-fns'
-import { useState } from 'react'
 import { useRef } from 'react'
 import { BiBlock, BiPlay, BiSave } from 'react-icons/bi'
 import { useMutation } from 'urql'
@@ -66,7 +65,6 @@ interface TrackingButtonsProps {
 }
 
 export const TrackingButtons = (props: TrackingButtonsProps) => {
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const tracking = useFragment(TrackingButtonsTrackingFragment, props.tracking)
   const taskToTrack = useFragment(TrackingButtonsTaskFragment, props.taskToTrack)
   const [, startTracking] = useMutation(TrackingStartMutationDocument)
