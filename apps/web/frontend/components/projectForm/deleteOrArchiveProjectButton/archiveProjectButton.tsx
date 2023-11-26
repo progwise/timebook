@@ -1,0 +1,68 @@
+import { useRouter } from 'next/router'
+import { useRef } from 'react'
+import { useMutation } from 'urql'
+
+import { FragmentType, graphql, useFragment } from '../../../generated/gql'
+
+export const ArchiveProjectModalFragment = graphql(`
+  fragment ArchiveProjectModal on Project {
+    id
+    title
+  }
+`)
+
+const ProjectArchiveMutationDocument = graphql(`
+  mutation projectArchive($projectId: ID!) {
+    projectArchive(projectId: $projectId) {
+      id
+      isArchived
+    }
+  }
+`)
+
+interface ArchiveProjectButtonProps {
+  project: FragmentType<typeof ArchiveProjectModalFragment>
+}
+
+export const ArchiveProjectButton = ({ project: projectFragment }: ArchiveProjectButtonProps): JSX.Element => {
+  const project = useFragment(ArchiveProjectModalFragment, projectFragment)
+  const [{ fetching }, projectArchive] = useMutation(ProjectArchiveMutationDocument)
+  const router = useRouter()
+
+  const dialogReference = useRef<HTMLDialogElement>(null)
+
+  const handleArchiveProject = async () => {
+    try {
+      await projectArchive({ projectId: project.id })
+      await router.push('/projects')
+    } catch {}
+    dialogReference.current?.close()
+  }
+
+  return (
+    <>
+      <button className="btn btn-outline btn-sm" type="button" onClick={() => dialogReference.current?.showModal()}>
+        Archive
+      </button>
+      <dialog className="modal" ref={dialogReference}>
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Archive project</h3>
+          <p className="py-4">Are you sure you want to archive project {project.title}?</p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-warning btn-sm" disabled={fetching}>
+                Cancel
+              </button>
+            </form>
+            <button className="btn btn-success btn-sm" onClick={handleArchiveProject} disabled={fetching}>
+              Archive
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+    </>
+  )
+}
