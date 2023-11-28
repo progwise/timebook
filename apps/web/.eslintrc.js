@@ -7,7 +7,7 @@ module.exports = {
   extends: ['custom'],
   ignorePatterns: ['next-env.d.ts', 'coverage'],
   settings: {
-    tailwindcss: { config: join(__dirname,  'tailwind.config.js') },
+    tailwindcss: { config: join(__dirname, 'tailwind.config.js') },
   },
   overrides: [
     {
