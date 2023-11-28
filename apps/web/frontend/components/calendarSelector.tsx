@@ -17,8 +17,7 @@ import {
   subMonths,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { BiCalendarAlt, BiCaretLeft } from 'react-icons/bi'
-import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
+import { BiCalendarAlt, BiCaretLeft, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 interface DayItemProps {
   day: Date
@@ -28,7 +27,7 @@ interface DayItemProps {
 }
 
 const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
-  const classNames = ['text-center cursor-pointer']
+  const classNames = ['btn btn-sm cursor-pointer']
 
   if (!isSameMonth(day, shownDate)) {
     classNames.push('opacity-50')
@@ -36,17 +35,17 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
 
   let title = format(day, 'do MMM yyyy')
 
-  if (selectedDate && isSameDay(day, selectedDate)) {
-    classNames.push('border-error')
-    title = `Selected Day, ${title}`
-  }
-
   if (isWeekend(day)) {
     classNames.push('opacity-50')
   }
 
-  if (isToday(day)) {
-    classNames.push('bg-primary text-primary-content rounded-box')
+  if (selectedDate && isSameDay(day, selectedDate)) {
+    classNames.push('btn-primary')
+    title = `Selected Day, ${title}`
+  } else if (isToday(day)) {
+    classNames.push('btn-neutral')
+  } else {
+    classNames.push('btn-ghost')
   }
 
   return (
@@ -163,7 +162,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   <div>Fri</div>
                   <div className="opacity-50">Sat</div>
                   <div className="opacity-50">Sun</div>
-                  <hr className="col-span-7 -m-1 h-0.5 bg-neutral opacity-50" />
+                  <div className="divider col-span-7 -my-2" />
                   {daysToRender.map((day) => (
                     <DayItem
                       key={day.toString()}

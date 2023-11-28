@@ -107,7 +107,6 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
   return (
     <form className="flex items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
       <InputField
-        className="input input-bordered w-full"
         {...register('email')}
         disabled={isSubmitting}
         errorMessage={emailErrorMessage}

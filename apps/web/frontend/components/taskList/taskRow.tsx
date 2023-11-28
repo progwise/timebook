@@ -75,7 +75,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     <tr>
       <td className="flex w-full items-center p-1">
         <InputField
-          className="input input-bordered w-full"
           {...register('title', { required: true })}
           onBlur={handleSubmit(handleTitleSubmit)}
           loading={fetchingTitle}

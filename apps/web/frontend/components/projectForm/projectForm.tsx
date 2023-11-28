@@ -112,7 +112,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         <InputField
           label="Name"
           type="text"
-          className="input input-bordered w-full"
           disabled={isSubmitting}
           readOnly={isProjectFormReadOnly}
           {...register('title')}
