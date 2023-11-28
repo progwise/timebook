@@ -1,8 +1,6 @@
 import { BiLock, BiLockOpen } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { graphql } from '../../generated/gql'
 import { ReportProjectFragment } from '../../generated/gql/graphql'
 

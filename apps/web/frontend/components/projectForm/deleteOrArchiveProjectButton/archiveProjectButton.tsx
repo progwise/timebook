@@ -50,11 +50,11 @@ export const ArchiveProjectButton = ({ project: projectFragment }: ArchiveProjec
           <p className="py-4">Are you sure you want to archive project {project.title}?</p>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-warning btn-sm" disabled={fetching}>
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
                 Cancel
               </button>
             </form>
-            <button className="btn btn-success btn-sm" onClick={handleArchiveProject} disabled={fetching}>
+            <button className="btn btn-warning btn-sm" onClick={handleArchiveProject} disabled={fetching}>
               Archive
             </button>
           </div>

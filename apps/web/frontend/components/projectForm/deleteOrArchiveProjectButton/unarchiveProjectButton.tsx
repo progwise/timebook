@@ -50,11 +50,11 @@ export const UnarchiveProjectButton = ({ project: projectFragment }: UnarchivePr
           <p className="py-4">Are you sure you want to unarchive project {project.title}?</p>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-warning btn-sm" disabled={fetching}>
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
                 Cancel
               </button>
             </form>
-            <button className="btn btn-error btn-sm" onClick={handleUnarchiveProject} disabled={fetching}>
+            <button className="btn btn-warning btn-sm" onClick={handleUnarchiveProject} disabled={fetching}>
               Unarchive
             </button>
           </div>

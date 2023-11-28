@@ -192,7 +192,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
 
         {projectId && reportGroupedData && userIsAdmin && (
           <>
-            <div className="border-b">
+            <div>
               <table className="table text-base">
                 <thead className="bg-base-200 text-base text-base-content">
                   <tr>
@@ -229,6 +229,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   ))}
                 </tbody>
               </table>
+              <div className="divider" />
               <table className="table mt-8 text-base">
                 <thead className="bg-base-200 text-base text-base-content">
                   <tr className="bg-base-200 font-bold">
@@ -247,6 +248,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   ))}
                 </tbody>
               </table>
+              <div className="divider" />
               <table className="table mt-8 text-base">
                 {reportGroupedData?.report.groupedByUser && (
                   <>
@@ -270,6 +272,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 )}
               </table>
             </div>
+            <div className="divider" />
             <div className="flex justify-end gap-8 pr-4 font-mono text-lg font-bold">
               Total
               <FormattedDuration
