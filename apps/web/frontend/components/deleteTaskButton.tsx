@@ -4,8 +4,8 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
-const DeleteTaskModalFragment = graphql(`
-  fragment DeleteTaskModal on Task {
+const DeleteTaskButtonFragment = graphql(`
+  fragment DeleteTaskButton on Task {
     id
     hasWorkHours
     title
@@ -24,11 +24,11 @@ const TaskDeleteMutationDocument = graphql(`
 `)
 
 export interface DeleteTaskButtonProps {
-  task: FragmentType<typeof DeleteTaskModalFragment>
+  task: FragmentType<typeof DeleteTaskButtonFragment>
 }
 
 export const DeleteTaskButton = ({ task: taskFragment }: DeleteTaskButtonProps): JSX.Element => {
-  const task = useFragment(DeleteTaskModalFragment, taskFragment)
+  const task = useFragment(DeleteTaskButtonFragment, taskFragment)
   const [{ fetching }, taskDelete] = useMutation(TaskDeleteMutationDocument)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
@@ -43,7 +43,7 @@ export const DeleteTaskButton = ({ task: taskFragment }: DeleteTaskButtonProps):
   return (
     <>
       <button
-        className="btn btn-outline btn-sm w-full"
+        className="btn btn-outline btn-sm btn-block"
         aria-label="Delete the task"
         title="Delete the task"
         onClick={() => dialogReference.current?.showModal()}

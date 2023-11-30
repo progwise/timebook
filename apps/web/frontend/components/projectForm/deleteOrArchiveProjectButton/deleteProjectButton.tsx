@@ -4,8 +4,8 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../../generated/gql'
 
-export const DeleteProjectModalFragment = graphql(`
-  fragment DeleteProjectModal on Project {
+export const DeleteProjectButtonFragment = graphql(`
+  fragment DeleteProjectButton on Project {
     id
     title
   }
@@ -20,11 +20,11 @@ const ProjectDeleteMutationDocument = graphql(`
 `)
 
 interface DeleteProjectButtonProps {
-  project: FragmentType<typeof DeleteProjectModalFragment>
+  project: FragmentType<typeof DeleteProjectButtonFragment>
 }
 
 export const DeleteProjectButton = ({ project: projectFragment }: DeleteProjectButtonProps): JSX.Element => {
-  const project = useFragment(DeleteProjectModalFragment, projectFragment)
+  const project = useFragment(DeleteProjectButtonFragment, projectFragment)
   const [{ fetching }, projectDelete] = useMutation(ProjectDeleteMutationDocument)
   const router = useRouter()
 

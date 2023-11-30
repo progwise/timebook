@@ -8,9 +8,9 @@ export const DeleteOrArchiveProjectButtonFragment = graphql(`
     id
     hasWorkHours
     isArchived
-    ...DeleteProjectModal
-    ...UnarchiveProjectModal
-    ...ArchiveProjectModal
+    ...DeleteProjectButton
+    ...UnarchiveProjectButton
+    ...ArchiveProjectButton
   }
 `)
 

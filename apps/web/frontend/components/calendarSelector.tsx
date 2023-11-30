@@ -128,7 +128,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           ref={floating}
           data-testid="calendar-popover"
         >
-          <Popover.Panel className="bg-base-200">
+          <Popover.Panel>
             {({ close }) => (
               <>
                 <header className="flex justify-between font-bold">
@@ -178,7 +178,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                 </div>
                 {!isThisMonth(shownDate) && (
                   <>
-                    <hr className="col-span-7 mt-2 h-0.5 bg-neutral opacity-50" />
+                    <div className="divider col-span-7 -my-1" />
                     <button
                       className="btn btn-ghost no-animation btn-xs btn-block mt-1"
                       onClick={goToToday}

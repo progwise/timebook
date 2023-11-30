@@ -16,7 +16,7 @@ export const TaskRowFragment = graphql(`
     title
     canModify
     isLockedByAdmin
-    ...DeleteTaskModal
+    ...DeleteTaskButton
   }
 `)
 

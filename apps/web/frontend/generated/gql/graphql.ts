@@ -455,8 +455,8 @@ export type ProjectMembershipInviteByEmailMutation = {
     | { __typename: 'UserNotFoundError'; email: string }
 }
 
-export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string } & {
-  ' $fragmentName'?: 'DeleteTaskModalFragment'
+export type DeleteTaskButtonFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string } & {
+  ' $fragmentName'?: 'DeleteTaskButtonFragment'
 }
 
 export type TaskDeleteMutationVariables = Exact<{
@@ -483,8 +483,8 @@ export type ProjectRegenerateInviteKeyMutation = {
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
-export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
-  ' $fragmentName'?: 'ArchiveProjectModalFragment'
+export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'ArchiveProjectButtonFragment'
 }
 
 export type ProjectArchiveMutationVariables = Exact<{
@@ -503,14 +503,14 @@ export type DeleteOrArchiveProjectButtonFragment = ({
   isArchived: boolean
 } & {
   ' $fragmentRefs'?: {
-    DeleteProjectModalFragment: DeleteProjectModalFragment
-    UnarchiveProjectModalFragment: UnarchiveProjectModalFragment
-    ArchiveProjectModalFragment: ArchiveProjectModalFragment
+    DeleteProjectButtonFragment: DeleteProjectButtonFragment
+    UnarchiveProjectButtonFragment: UnarchiveProjectButtonFragment
+    ArchiveProjectButtonFragment: ArchiveProjectButtonFragment
   }
 }) & { ' $fragmentName'?: 'DeleteOrArchiveProjectButtonFragment' }
 
-export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
-  ' $fragmentName'?: 'DeleteProjectModalFragment'
+export type DeleteProjectButtonFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'DeleteProjectButtonFragment'
 }
 
 export type ProjectDeleteMutationVariables = Exact<{
@@ -519,8 +519,8 @@ export type ProjectDeleteMutationVariables = Exact<{
 
 export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
 
-export type UnarchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string } & {
-  ' $fragmentName'?: 'UnarchiveProjectModalFragment'
+export type UnarchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string } & {
+  ' $fragmentName'?: 'UnarchiveProjectButtonFragment'
 }
 
 export type ProjectUnarchiveMutationVariables = Exact<{
@@ -717,7 +717,7 @@ export type TaskRowFragment = ({
   title: string
   canModify: boolean
   isLockedByAdmin: boolean
-} & { ' $fragmentRefs'?: { DeleteTaskModalFragment: DeleteTaskModalFragment } }) & {
+} & { ' $fragmentRefs'?: { DeleteTaskButtonFragment: DeleteTaskButtonFragment } }) & {
   ' $fragmentName'?: 'TaskRowFragment'
 }
 
@@ -972,12 +972,12 @@ export type WeekGridQuery = {
   >
 }
 
-export const DeleteProjectModalFragmentDoc = {
+export const DeleteProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteProjectModal' },
+      name: { kind: 'Name', value: 'DeleteProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -988,13 +988,13 @@ export const DeleteProjectModalFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<DeleteProjectModalFragment, unknown>
-export const UnarchiveProjectModalFragmentDoc = {
+} as unknown as DocumentNode<DeleteProjectButtonFragment, unknown>
+export const UnarchiveProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      name: { kind: 'Name', value: 'UnarchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1005,13 +1005,13 @@ export const UnarchiveProjectModalFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<UnarchiveProjectModalFragment, unknown>
-export const ArchiveProjectModalFragmentDoc = {
+} as unknown as DocumentNode<UnarchiveProjectButtonFragment, unknown>
+export const ArchiveProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      name: { kind: 'Name', value: 'ArchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1022,7 +1022,7 @@ export const ArchiveProjectModalFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<ArchiveProjectModalFragment, unknown>
+} as unknown as DocumentNode<ArchiveProjectButtonFragment, unknown>
 export const DeleteOrArchiveProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1036,15 +1036,15 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectButton' } },
         ],
       },
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteProjectModal' },
+      name: { kind: 'Name', value: 'DeleteProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1056,7 +1056,7 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      name: { kind: 'Name', value: 'UnarchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1068,7 +1068,7 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      name: { kind: 'Name', value: 'ArchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1101,7 +1101,7 @@ export const ProjectFormFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteProjectModal' },
+      name: { kind: 'Name', value: 'DeleteProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1113,7 +1113,7 @@ export const ProjectFormFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      name: { kind: 'Name', value: 'UnarchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1125,7 +1125,7 @@ export const ProjectFormFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      name: { kind: 'Name', value: 'ArchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1145,9 +1145,9 @@ export const ProjectFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectButton' } },
         ],
       },
     },
@@ -1402,12 +1402,12 @@ export const ReportUserFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ReportUserFragment, unknown>
-export const DeleteTaskModalFragmentDoc = {
+export const DeleteTaskButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteTaskModal' },
+      name: { kind: 'Name', value: 'DeleteTaskButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1419,7 +1419,7 @@ export const DeleteTaskModalFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<DeleteTaskModalFragment, unknown>
+} as unknown as DocumentNode<DeleteTaskButtonFragment, unknown>
 export const TaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1434,13 +1434,13 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
         ],
       },
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteTaskModal' },
+      name: { kind: 'Name', value: 'DeleteTaskButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1481,7 +1481,7 @@ export const TaskListProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteTaskModal' },
+      name: { kind: 'Name', value: 'DeleteTaskButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1503,7 +1503,7 @@ export const TaskListProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
         ],
       },
     },
@@ -3677,7 +3677,7 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteTaskModal' },
+      name: { kind: 'Name', value: 'DeleteTaskButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3699,13 +3699,13 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
         ],
       },
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'DeleteProjectModal' },
+      name: { kind: 'Name', value: 'DeleteProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3717,7 +3717,7 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnarchiveProjectModal' },
+      name: { kind: 'Name', value: 'UnarchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3729,7 +3729,7 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveProjectModal' },
+      name: { kind: 'Name', value: 'ArchiveProjectButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3749,9 +3749,9 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectModal' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectModal' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectButton' } },
         ],
       },
     },

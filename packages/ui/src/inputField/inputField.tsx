@@ -10,7 +10,6 @@ export interface InputFieldProps {
   readOnly?: boolean
   size?: number
   className?: string
-  inputClassName?: string
   label?: string
   errorMessage?: string | ReactNode
   onKeyPress?: KeyboardEventHandler<HTMLInputElement>
@@ -37,7 +36,6 @@ export const InputField = React.forwardRef(
       name,
       readOnly,
       size,
-      inputClassName = '',
       label,
       errorMessage,
       loading,
@@ -45,6 +43,7 @@ export const InputField = React.forwardRef(
       form,
       onFocus,
       isDirty = false,
+      className,
     }: InputFieldProps,
     reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -60,7 +59,7 @@ export const InputField = React.forwardRef(
             aria-label={label}
             className={`input input-bordered w-full ${isDirty ? 'input-warning' : ''} ${
               errorMessage ? 'input-error' : ''
-            } ${loading ? 'pr-8' : ''} ${inputClassName}`}
+            } ${loading ? 'pr-8' : ''} ${className}`}
             type={type}
             placeholder={placeholder}
             disabled={disabled}

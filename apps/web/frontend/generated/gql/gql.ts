@@ -18,23 +18,23 @@ const documents = {
     types.AddProjectMemberFormFragmentDoc,
   '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n':
     types.ProjectMembershipInviteByEmailDocument,
-  '\n  fragment DeleteTaskModal on Task {\n    id\n    hasWorkHours\n    title\n  }\n':
-    types.DeleteTaskModalFragmentDoc,
+  '\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n':
+    types.DeleteTaskButtonFragmentDoc,
   '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n':
     types.TaskDeleteDocument,
   '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n':
     types.InviteLinkProjectFragmentFragmentDoc,
   '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n':
     types.ProjectRegenerateInviteKeyDocument,
-  '\n  fragment ArchiveProjectModal on Project {\n    id\n    title\n  }\n': types.ArchiveProjectModalFragmentDoc,
+  '\n  fragment ArchiveProjectButton on Project {\n    id\n    title\n  }\n': types.ArchiveProjectButtonFragmentDoc,
   '\n  mutation projectArchive($projectId: ID!) {\n    projectArchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectArchiveDocument,
-  '\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectModal\n    ...UnarchiveProjectModal\n    ...ArchiveProjectModal\n  }\n':
+  '\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectButton\n    ...UnarchiveProjectButton\n    ...ArchiveProjectButton\n  }\n':
     types.DeleteOrArchiveProjectButtonFragmentDoc,
-  '\n  fragment DeleteProjectModal on Project {\n    id\n    title\n  }\n': types.DeleteProjectModalFragmentDoc,
+  '\n  fragment DeleteProjectButton on Project {\n    id\n    title\n  }\n': types.DeleteProjectButtonFragmentDoc,
   '\n  mutation projectDelete($id: ID!) {\n    projectDelete(id: $id) {\n      id\n    }\n  }\n':
     types.ProjectDeleteDocument,
-  '\n  fragment UnarchiveProjectModal on Project {\n    id\n    title\n  }\n': types.UnarchiveProjectModalFragmentDoc,
+  '\n  fragment UnarchiveProjectButton on Project {\n    id\n    title\n  }\n': types.UnarchiveProjectButtonFragmentDoc,
   '\n  mutation projectUnarchive($projectId: ID!) {\n    projectUnarchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectUnarchiveDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
@@ -69,7 +69,7 @@ const documents = {
     types.TaskListProjectFragmentDoc,
   '\n  mutation taskCreate($data: TaskInput!) {\n    taskCreate(data: $data) {\n      id\n    }\n  }\n':
     types.TaskCreateDocument,
-  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n':
+  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n':
     types.TaskRowFragmentDoc,
   '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.TaskUpdateDocument,
@@ -149,8 +149,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment DeleteTaskModal on Task {\n    id\n    hasWorkHours\n    title\n  }\n',
-): (typeof documents)['\n  fragment DeleteTaskModal on Task {\n    id\n    hasWorkHours\n    title\n  }\n']
+  source: '\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n',
+): (typeof documents)['\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -173,8 +173,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ArchiveProjectModal on Project {\n    id\n    title\n  }\n',
-): (typeof documents)['\n  fragment ArchiveProjectModal on Project {\n    id\n    title\n  }\n']
+  source: '\n  fragment ArchiveProjectButton on Project {\n    id\n    title\n  }\n',
+): (typeof documents)['\n  fragment ArchiveProjectButton on Project {\n    id\n    title\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -185,14 +185,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectModal\n    ...UnarchiveProjectModal\n    ...ArchiveProjectModal\n  }\n',
-): (typeof documents)['\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectModal\n    ...UnarchiveProjectModal\n    ...ArchiveProjectModal\n  }\n']
+  source: '\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectButton\n    ...UnarchiveProjectButton\n    ...ArchiveProjectButton\n  }\n',
+): (typeof documents)['\n  fragment DeleteOrArchiveProjectButton on Project {\n    id\n    hasWorkHours\n    isArchived\n    ...DeleteProjectButton\n    ...UnarchiveProjectButton\n    ...ArchiveProjectButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment DeleteProjectModal on Project {\n    id\n    title\n  }\n',
-): (typeof documents)['\n  fragment DeleteProjectModal on Project {\n    id\n    title\n  }\n']
+  source: '\n  fragment DeleteProjectButton on Project {\n    id\n    title\n  }\n',
+): (typeof documents)['\n  fragment DeleteProjectButton on Project {\n    id\n    title\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -203,8 +203,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment UnarchiveProjectModal on Project {\n    id\n    title\n  }\n',
-): (typeof documents)['\n  fragment UnarchiveProjectModal on Project {\n    id\n    title\n  }\n']
+  source: '\n  fragment UnarchiveProjectButton on Project {\n    id\n    title\n  }\n',
+): (typeof documents)['\n  fragment UnarchiveProjectButton on Project {\n    id\n    title\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -311,8 +311,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n',
-): (typeof documents)['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskModal\n  }\n']
+  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n',
+): (typeof documents)['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
