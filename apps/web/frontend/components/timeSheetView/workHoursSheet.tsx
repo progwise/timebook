@@ -43,9 +43,11 @@ export const WorkHoursSheet = (): JSX.Element => {
               <SheetMonth key={startOfMonth.toString()} startDay={startOfMonth} onFetched={() => setFetching(false)} />
             ))}
         </tbody>
-        <div ref={sentryReference}>
-          <span className="loading loading-spinner" />
-        </div>
+        <tfoot ref={sentryReference}>
+          <tr>
+            <th className="loading loading-spinner" />
+          </tr>
+        </tfoot>
       </table>
     </div>
   )

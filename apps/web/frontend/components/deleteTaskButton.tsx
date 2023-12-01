@@ -56,7 +56,7 @@ export const DeleteTaskButton = ({ task: taskFragment }: DeleteTaskButtonProps):
           <p className="py-4">Are you sure you want to delete {task.title}?</p>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-warning btn-sm" disabled={fetching}>
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
                 Cancel
               </button>
             </form>
