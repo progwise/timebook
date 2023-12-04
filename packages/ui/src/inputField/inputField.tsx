@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, ReactNode } from 'react'
+import React, { KeyboardEventHandler, ReactNode, useId } from 'react'
 
 export interface InputFieldProps {
   name?: string
@@ -47,15 +47,17 @@ export const InputField = React.forwardRef(
     }: InputFieldProps,
     reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
+    const inputId = useId()
     return (
       <div className="form-control w-full">
         {label && (
-          <label className="label" htmlFor={name}>
+          <label className="label" htmlFor={inputId}>
             <span className="label-text">{label}</span>
           </label>
         )}
         <div className="relative">
           <input
+            id={inputId}
             aria-label={label}
             className={`input input-bordered w-full ${isDirty ? 'input-warning' : ''} ${
               errorMessage ? 'input-error' : ''
