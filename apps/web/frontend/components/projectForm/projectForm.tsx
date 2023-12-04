@@ -120,9 +120,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           isDirty={isDirty}
         />
         <div>
-          <label htmlFor="start" className="form-control">
+          <div className="form-control">
             <div className="label">
-              <span className="label-text">Start</span>
+              <label htmlFor="start" className="label-text">
+                Start
+              </label>
             </div>
             <Controller
               control={control}
@@ -152,17 +154,21 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 </div>
               )}
             />
-          </label>
-          <ErrorMessage
-            name="start"
-            errors={errors}
-            as={<span role="alert" className="whitespace-nowrap text-error" />}
-          />
+            <div className="label">
+              <ErrorMessage
+                name="start"
+                errors={errors}
+                as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
+              />
+            </div>
+          </div>
         </div>
         <div>
-          <label className="form-control">
+          <div className="form-control">
             <div className="label">
-              <span className="label-text">End</span>
+              <label htmlFor="end" className="label-text">
+                End
+              </label>
             </div>
             <Controller
               control={control}
@@ -192,9 +198,14 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                 </div>
               )}
             />
-          </label>
-
-          <ErrorMessage name="end" errors={errors} as={<span role="alert" className="whitespace-nowrap" />} />
+            <div className="label">
+              <ErrorMessage
+                name="end"
+                errors={errors}
+                as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
+              />
+            </div>
+          </div>
         </div>
       </form>
       <div className="mb-8 flex w-full gap-2">
