@@ -108,25 +108,21 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         ) : (
           <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
         )}
-        <label htmlFor="start" className="form-control w-full">
-          <div className="label">
-            <span className="label-text text-sm font-semibold">Name</span>
-          </div>
-          <InputField
-            type="text"
-            disabled={isSubmitting}
-            readOnly={isProjectFormReadOnly}
-            {...register('title')}
-            placeholder="Enter project name"
-            size={30}
-            errorMessage={errors.title?.message}
-            isDirty={isDirty}
-          />
-        </label>
+        <InputField
+          label="Name"
+          type="text"
+          disabled={isSubmitting}
+          readOnly={isProjectFormReadOnly}
+          {...register('title')}
+          placeholder="Enter project name"
+          size={30}
+          errorMessage={errors.title?.message}
+          isDirty={isDirty}
+        />
         <div>
           <label htmlFor="start" className="form-control">
             <div className="label">
-              <span className="label-text text-sm font-semibold">Start</span>
+              <span className="label-text">Start</span>
             </div>
             <Controller
               control={control}
@@ -164,9 +160,9 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           />
         </div>
         <div>
-          <label htmlFor="end" className="form-control">
+          <label className="form-control">
             <div className="label">
-              <span className="label-text text-sm font-semibold">End</span>
+              <span className="label-text">End</span>
             </div>
             <Controller
               control={control}
