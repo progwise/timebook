@@ -37,12 +37,14 @@ export const InviteLink = (props: InviteLinkProps) => {
   }
 
   return (
-    <label className="form-control">
+    <div className="form-control">
       <div className="label">
-        <label className="label-text">Invite link</label>
+        <label className="label-text" htmlFor="invite-link">
+          Invite link
+        </label>
       </div>
       <div className="flex items-center gap-2">
-        <input className="input input-bordered w-full" readOnly value={inviteLink} />
+        <input className="input input-bordered w-full" readOnly value={inviteLink} id="invite-link" />
         <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
           Copy link
         </button>
@@ -54,6 +56,6 @@ export const InviteLink = (props: InviteLinkProps) => {
           Regenerate link
         </button>
       </div>
-    </label>
+    </div>
   )
 }
