@@ -57,19 +57,18 @@ export const HourInput = (props: {
     }
   }
 
+  const isDirty = formattedDuration !== getFormattedDuration(props.duration)
+
   return (
     <InputField
-      variant="primary"
       disabled={props.disabled}
       value={formattedDuration}
       onChange={(event) => setFormattedDuration(event.target.value)}
       onFocus={(event) => event.target.select()}
       size={4}
       onKeyDown={handleKeyDown}
-      className="min-w-max items-center"
-      inputClassName="text-center dark:bg-slate-600"
+      className={`input-sm bg-base-200 text-center ${isDirty ? '' : 'input-primary'} `}
       onBlur={handleBlur}
-      isDirty={formattedDuration !== getFormattedDuration(props.duration)}
     />
   )
 }

@@ -1,8 +1,6 @@
 import { BiLock, BiLockOpen } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { graphql } from '../../generated/gql'
 import { ReportProjectFragment } from '../../generated/gql/graphql'
 
@@ -41,14 +39,16 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
   const fetching = lockFetching || unlockFetching
 
   return (
-    <Button
-      variant={project.isLocked ? 'danger' : 'secondary'}
-      onClick={handleClick}
-      disabled={fetching}
-      className="self-start"
-    >
-      {project.isLocked ? <BiLockOpen /> : <BiLock />}
-      {project.isLocked ? `Unlock` : `Lock`}
-    </Button>
+    <button onClick={handleClick} disabled={fetching} className="btn btn-md">
+      {project.isLocked ? (
+        <>
+          <BiLockOpen /> Unlock
+        </>
+      ) : (
+        <>
+          <BiLock /> Lock
+        </>
+      )}
+    </button>
   )
 }

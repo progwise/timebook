@@ -6,5 +6,6 @@ module.exports = {
     next: {
       rootDir: ['apps/*/'],
     },
+    tailwindcss: { config: './apps/web/tailwind.config.js' },
   },
 }

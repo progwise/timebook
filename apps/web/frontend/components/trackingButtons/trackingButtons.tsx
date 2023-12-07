@@ -1,13 +1,10 @@
 import { parseISO } from 'date-fns'
-import { useState } from 'react'
-import { BiBlock, BiPause, BiPlay } from 'react-icons/bi'
+import { useRef } from 'react'
+import { BiBlock, BiPlay, BiSave } from 'react-icons/bi'
 import { useMutation } from 'urql'
-
-import { Button } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { LiveDuration } from '../liveDuration/liveDuration'
-import { Modal } from '../modal'
 
 const TrackingButtonsTrackingFragment = graphql(`
   fragment TrackingButtonsTracking on Tracking {
@@ -68,12 +65,16 @@ interface TrackingButtonsProps {
 }
 
 export const TrackingButtons = (props: TrackingButtonsProps) => {
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const tracking = useFragment(TrackingButtonsTrackingFragment, props.tracking)
   const taskToTrack = useFragment(TrackingButtonsTaskFragment, props.taskToTrack)
   const [, startTracking] = useMutation(TrackingStartMutationDocument)
   const [, stopTracking] = useMutation(TrackingStopMutationDocument)
   const [, cancelTracking] = useMutation(TrackingCancelMutationDocument)
+
+  const dialogReference = useRef<HTMLDialogElement>(null)
+  const openDialog = () => {
+    dialogReference.current?.showModal()
+  }
 
   if (tracking) {
     const start = parseISO(tracking.start)
@@ -81,50 +82,52 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
     return (
       <>
         <div className="flex items-center gap-2">
-          <button className="btn btn-primary btn-xs" onClick={() => stopTracking({})}>
-            <BiPause />
+          <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
+            <BiSave />
           </button>
-          <button className="btn btn-error btn-xs" onClick={() => setIsCancelModalOpen(true)}>
+          <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
             <BiBlock />
           </button>
         </div>
-        {isCancelModalOpen && (
-          <Modal
-            title="Delete Tracking"
-            actions={
-              <>
-                <Button variant="secondary" onClick={() => setIsCancelModalOpen(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={async () => {
-                    await cancelTracking({})
-                    setIsCancelModalOpen(false)
-                  }}
-                >
-                  Delete
-                </Button>
-              </>
-            }
-          >
-            Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (
-            {tracking.task.project.title})?
-          </Modal>
-        )}
+        <dialog className="modal" ref={dialogReference}>
+          <div className="modal-box">
+            <h3 className="text-lg font-bold">Delete Tracking</h3>
+            <p className="py-4">
+              Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (
+              {tracking.task.project.title})?
+            </p>
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn btn-ghost btn-sm">Cancel</button>
+              </form>
+              <button
+                className="btn btn-error btn-sm"
+                onClick={async () => {
+                  await cancelTracking({})
+                  dialogReference.current?.close()
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
       </>
     )
   }
 
   if (taskToTrack) {
     return (
-      <Button
-        variant="secondary"
+      <button
+        className="btn btn-square btn-primary btn-outline btn-xs"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
         disabled={taskToTrack.isLocked}
       >
         <BiPlay />
-      </Button>
+      </button>
     )
   }
 

@@ -1,5 +1,3 @@
-import { Button } from '@progwise/timebook-ui'
-
 import { Role } from '../../mocks/mocks.generated'
 
 interface RoleButtonProps {
@@ -13,13 +11,13 @@ export const RoleButton = ({ role, onUpgrade, onDowngrade, loading }: RoleButton
   return (
     <div>
       {role === Role.Admin ? (
-        <Button variant="secondary" onClick={onDowngrade} disabled={loading}>
+        <button className="btn btn-outline btn-sm" onClick={onDowngrade} disabled={loading}>
           Demote
-        </Button>
+        </button>
       ) : (
-        <Button variant="secondary" onClick={onUpgrade} disabled={loading}>
+        <button className="btn btn-outline btn-sm" onClick={onUpgrade} disabled={loading}>
           Promote
-        </Button>
+        </button>
       )}
     </div>
   )

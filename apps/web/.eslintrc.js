@@ -1,9 +1,13 @@
+/* eslint-disable unicorn/import-style */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { join } = require('path')
+
 module.exports = {
   root: true,
   extends: ['custom'],
   ignorePatterns: ['next-env.d.ts', 'coverage'],
   settings: {
-    tailwindcss: { config: './apps/web/tailwind.config.js' },
+    tailwindcss: { config: join(__dirname, 'tailwind.config.js') },
   },
   overrides: [
     {

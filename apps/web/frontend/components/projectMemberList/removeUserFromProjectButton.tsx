@@ -1,11 +1,8 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import { BiExit } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { Modal } from '../modal'
 
 const RemoveUserFromProjectButtonUserFragment = graphql(`
   fragment RemoveUserFromProjectButtonUser on User {
@@ -35,38 +32,46 @@ const ProjectMembershipDeleteMutation = graphql(`
 `)
 
 export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonProps) => {
-  const [modalOpen, setModalOpen] = useState(false)
   const [{ fetching }, removeUser] = useMutation(ProjectMembershipDeleteMutation)
   const user = useFragment(RemoveUserFromProjectButtonUserFragment, props.user)
   const project = useFragment(RemoveUserFromProjectButtonProjectFragment, props.project)
+  const dialogReference = useRef<HTMLDialogElement>(null)
 
   const handleRemoveClick = async () => {
     await removeUser({ projectId: project.id, userId: user.id })
-    setModalOpen(false)
   }
 
   return (
     <>
-      <Button variant="danger" onClick={() => setModalOpen(true)} tooltip="Remove user from project">
-        <BiExit />
-      </Button>
-      <Modal
-        title="Remove User"
-        actions={
-          <>
-            <Button variant="secondary" disabled={fetching} onClick={() => setModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="danger" disabled={fetching} onClick={handleRemoveClick}>
-              Remove
-            </Button>
-          </>
-        }
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+      <button
+        className="btn btn-error btn-sm"
+        onClick={() => dialogReference.current?.showModal()}
+        title="Remove user from project"
+        type="button"
       >
-        Do you really want to remove <b>{user.name}</b> from <b>{project.title}</b>?
-      </Modal>
+        <BiExit />
+      </button>
+      <dialog className="modal" ref={dialogReference}>
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Remove member</h3>
+          <p className="py-4">
+            Do you really want to remove <b>{user.name}</b> from <b>{project.title}</b>?
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
+                Cancel
+              </button>
+            </form>
+            <button className="btn btn-error btn-sm" disabled={fetching} onClick={handleRemoveClick}>
+              Remove
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </>
   )
 }

@@ -21,7 +21,7 @@ export const Listbox = <TType = string,>({ getLabel, options, getKey, value, onC
 
   return (
     <HuListbox value={value} onChange={onChange}>
-      <div className="w-64">
+      <div className="z-10 w-64 py-2">
         <ListboxButton ref={refs.setReference}>{getLabel(value)}</ListboxButton>
         <ListboxOptions ref={refs.setFloating} style={{ position: strategy, top: y ?? 0, left: x ?? 0 }}>
           {options.map((option) => (

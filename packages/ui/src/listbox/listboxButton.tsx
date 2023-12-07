@@ -7,10 +7,7 @@ interface ListboxButtonProps {
 }
 
 export const ListboxButton = forwardRef<HTMLButtonElement, ListboxButtonProps>(({ children }, reference) => (
-  <HuListbox.Button
-    ref={reference}
-    className="flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 shadow-lg dark:bg-slate-700"
-  >
+  <HuListbox.Button ref={reference} className="input flex w-full items-center justify-between bg-base-200 p-3">
     <span className="truncate">{children}</span>
     <BiExpandVertical className="flex-none text-lg" />
   </HuListbox.Button>
