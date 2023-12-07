@@ -107,7 +107,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
 
   return (
     <>
-      <div className="mb-8 border-b">
+      <div className="mb-2 border-b border-base-content">
         <div className="flex items-center justify-between">
           <PageHeading>
             Detailed time report: {fromString} — {endString}
@@ -115,24 +115,17 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
         </div>
       </div>
       {projectId && reportGroupedData && userIsAdmin && (
-        <div className="flex-col">
-          <div>Total hours</div>
-          <div className="text-2xl font-bold">
-            <FormattedDuration
-              title="Total work hours of the selected project"
-              minutes={reportGroupedData?.report.groupedByDate
-                .map((WorkHourDuration) => WorkHourDuration.duration)
-                .reduce((sum, duration) => duration + sum, 0)}
-            />
-          </div>
-          <div className="flex gap-1 font-mono text-sm">
-            <FormattedDuration
-              title="Total work hours of the selected project"
-              minutes={reportGroupedData?.report.groupedByDate
-                .map((WorkHourDuration) => WorkHourDuration.duration)
-                .reduce((sum, duration) => duration + sum, 0)}
-            />
-            Uninvoiced billable hours
+        <div className="stats shadow">
+          <div className="stat">
+            <div className="stat-title">Total hours</div>
+            <div className="stat-value">
+              <FormattedDuration
+                title="Total work hours of the selected project"
+                minutes={reportGroupedData?.report.groupedByDate
+                  .map((WorkHourDuration) => WorkHourDuration.duration)
+                  .reduce((sum, duration) => duration + sum, 0)}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -198,16 +191,16 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   <tr>
                     <th>Tasks</th>
                     <th>Person</th>
-                    <th className="w-px">Hours</th>
+                    <th className="w-px text-right">Hours</th>
                   </tr>
                 </thead>
                 <tbody>
                   {reportGroupedData?.report.groupedByDate.map((group) => (
                     <Fragment key={group.date}>
-                      <tr className="bg-base-200 font-bold">
+                      <tr className="font-bold">
                         <td>{group.date}</td>
                         <td />
-                        <td className="text-center">
+                        <td className="text-right">
                           <FormattedDuration
                             title="Total work hours of the day"
                             minutes={group.workHours
@@ -218,9 +211,9 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                       </tr>
                       {group.workHours.map((workHour) => (
                         <tr key={workHour.id}>
-                          <td>{workHour.task.title}</td>
+                          <td className="pl-8">{workHour.task.title}</td>
                           <td>{workHour.user?.name}</td>
-                          <td className="text-center">
+                          <td className="text-right">
                             <FormattedDuration title="Work duration" minutes={workHour.duration} />
                           </td>
                         </tr>
@@ -234,14 +227,14 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 <thead className="bg-base-200 text-base text-base-content">
                   <tr className="bg-base-200 font-bold">
                     <th>Total by Task</th>
-                    <th className="w-px" />
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
                   {reportGroupedData?.report.groupedByTask.map((entry) => (
                     <tr key={entry.task.id}>
                       <td>{entry.task.title}</td>
-                      <td>
+                      <td className="text-right">
                         <FormattedDuration title="Total by task" minutes={entry.duration} />
                       </td>
                     </tr>
@@ -253,16 +246,16 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 {reportGroupedData?.report.groupedByUser && (
                   <>
                     <thead className="bg-base-200 text-base text-base-content">
-                      <tr className="bg-base-200 font-bold">
+                      <tr className="font-bold">
                         <th>Total by Person</th>
-                        <th className="w-px" />
+                        <th />
                       </tr>
                     </thead>
                     <tbody>
                       {reportGroupedData.report.groupedByUser.map((group) => (
                         <tr key={group.user.id}>
                           <td>{group.user.name}</td>
-                          <td>
+                          <td className="text-right">
                             <FormattedDuration title="Total by user" minutes={group.duration} />
                           </td>
                         </tr>
@@ -273,8 +266,8 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               </table>
             </div>
             <div className="divider" />
-            <div className="flex justify-end gap-8 pr-4 font-mono text-lg font-bold">
-              Total
+            <div className="pr-4 text-right text-lg font-bold">
+              Total{' '}
               <FormattedDuration
                 title="Total work hours of the selected project"
                 minutes={reportGroupedData?.report.groupedByDate

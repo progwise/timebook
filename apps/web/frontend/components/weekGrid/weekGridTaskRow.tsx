@@ -65,7 +65,7 @@ export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) =>
           key={workHourOfDay.date}
         />
       ))}
-      <div className="text-center" role="cell">
+      <div className="px-2 text-right" role="cell">
         <FormattedDuration minutes={taskDurations} title="" />
       </div>
       <div className="px-2" role="cell">

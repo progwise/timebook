@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import { BiExit } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
@@ -32,29 +32,36 @@ const ProjectMembershipDeleteMutation = graphql(`
 `)
 
 export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonProps) => {
-  const [modalOpen, setModalOpen] = useState(false)
   const [{ fetching }, removeUser] = useMutation(ProjectMembershipDeleteMutation)
   const user = useFragment(RemoveUserFromProjectButtonUserFragment, props.user)
   const project = useFragment(RemoveUserFromProjectButtonProjectFragment, props.project)
+  const dialogReference = useRef<HTMLDialogElement>(null)
 
   const handleRemoveClick = async () => {
     await removeUser({ projectId: project.id, userId: user.id })
-    setModalOpen(false)
   }
 
   return (
     <>
-      <button className="btn btn-error btn-sm" onClick={() => setModalOpen(true)} title="Remove user from project">
+      <button
+        className="btn btn-error btn-sm"
+        onClick={() => dialogReference.current?.showModal()}
+        title="Remove user from project"
+        type="button"
+      >
         <BiExit />
       </button>
-      <dialog className="modal" title="Remove User" open={modalOpen} onClose={() => setModalOpen(false)}>
+      <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
-          <p>
+          <h3 className="text-lg font-bold">Remove member</h3>
+          <p className="py-4">
             Do you really want to remove <b>{user.name}</b> from <b>{project.title}</b>?
           </p>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-warning btn-sm">Cancel</button>
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
+                Cancel
+              </button>
             </form>
             <button className="btn btn-error btn-sm" disabled={fetching} onClick={handleRemoveClick}>
               Remove

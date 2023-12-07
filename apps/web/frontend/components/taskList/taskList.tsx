@@ -89,13 +89,9 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
         </tbody>
         {project.canModify && (
           <tfoot>
-            <tr>
-              <td className="p-1 pt-1">
-                <form
-                  className="flex items-start gap-4 font-normal"
-                  onSubmit={handleSubmit(handleAddTask)}
-                  id="form-create-task"
-                >
+            <tr className="font-normal">
+              <td className="p-1">
+                <form onSubmit={handleSubmit(handleAddTask)} id="form-create-task">
                   <InputField
                     type="text"
                     placeholder="Enter a new task name"
@@ -105,7 +101,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   />
                 </form>
               </td>
-              <td className="w-px">
+              <td>
                 <Controller
                   control={control}
                   name="isLocked"
@@ -119,7 +115,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   )}
                 />
               </td>
-              <td className="w-px">
+              <td>
                 <button
                   className="btn btn-primary btn-sm w-full"
                   type="submit"

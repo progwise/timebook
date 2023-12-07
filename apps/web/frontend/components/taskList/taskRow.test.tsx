@@ -7,18 +7,6 @@ import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
 import { TaskRow, TaskRowFragment } from './taskRow'
 
-HTMLDialogElement.prototype.show = jest.fn(function mock(this: HTMLDialogElement) {
-  this.open = true
-})
-
-HTMLDialogElement.prototype.showModal = jest.fn(function mock(this: HTMLDialogElement) {
-  this.open = true
-})
-
-HTMLDialogElement.prototype.close = jest.fn(function mock(this: HTMLDialogElement) {
-  this.open = false
-})
-
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>

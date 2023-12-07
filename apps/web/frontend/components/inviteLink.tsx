@@ -37,17 +37,23 @@ export const InviteLink = (props: InviteLinkProps) => {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <label className="flex grow items-center gap-2">
-        <h4 className="whitespace-nowrap text-lg font-semibold">Invite link:</h4>
+    <label className="form-control">
+      <div className="label">
+        <label className="label-text">Invite link</label>
+      </div>
+      <div className="flex items-center gap-2">
         <input className="input input-bordered w-full" readOnly value={inviteLink} />
-      </label>
-      <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
-        Copy link
-      </button>
-      <button className="btn btn-primary btn-sm" onClick={handleRegenerateClick} disabled={fetchingRegenerateInviteKey}>
-        Regenerate link
-      </button>
-    </div>
+        <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
+          Copy link
+        </button>
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleRegenerateClick}
+          disabled={fetchingRegenerateInviteKey}
+        >
+          Regenerate link
+        </button>
+      </div>
+    </label>
   )
 }

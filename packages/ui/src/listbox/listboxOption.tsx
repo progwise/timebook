@@ -11,7 +11,7 @@ export const ListboxOption = <TType,>({ value, children }: ListboxOptionProps<TT
   return (
     <HuListbox.Option
       value={value}
-      className="flex cursor-pointer items-center gap-2 p-2 ui-active:bg-secondary ui-active:text-secondary-content"
+      className="flex cursor-pointer items-center gap-2 p-2 ui-active:rounded-box ui-active:bg-primary ui-active:text-primary-content"
     >
       <BiCheck className="flex-none text-xl opacity-0 ui-selected:opacity-100" />
       <span className="truncate">{children}</span>

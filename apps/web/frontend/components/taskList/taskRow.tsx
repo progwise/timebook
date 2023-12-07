@@ -73,7 +73,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
 
   return (
     <tr>
-      <td className="flex w-full items-center p-1">
+      <td className="flex items-center p-1">
         <InputField
           {...register('title', { required: true })}
           onBlur={handleSubmit(handleTitleSubmit)}
@@ -85,7 +85,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
       </td>
       {task.canModify && (
         <>
-          <td className="w-px">
+          <td>
             <div>
               <input
                 type="checkbox"
@@ -96,7 +96,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
               />
             </div>
           </td>
-          <td className="w-px">
+          <td>
             <DeleteTaskButton task={task} />
           </td>
         </>

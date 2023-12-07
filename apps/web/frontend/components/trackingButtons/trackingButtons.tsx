@@ -98,7 +98,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
             </p>
             <div className="modal-action">
               <form method="dialog">
-                <button className="btn btn-warning btn-sm">Cancel</button>
+                <button className="btn btn-ghost btn-sm">Cancel</button>
               </form>
               <button
                 className="btn btn-error btn-sm"

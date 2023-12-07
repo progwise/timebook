@@ -142,7 +142,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="start"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1 read-only:opacity-70"
+                    className="input input-bordered py-1"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}
@@ -186,7 +186,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="end"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1 read-only:opacity-70"
+                    className="input input-bordered py-1"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}

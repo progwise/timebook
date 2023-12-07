@@ -29,11 +29,11 @@ export const WorkHoursSheet = (): JSX.Element => {
     <div>
       <table className="table table-pin-rows">
         <thead className="text-lg">
-          <tr className="top-16">
+          <tr className="top-16 text-base-content">
             <th>Project</th>
             <th>Task</th>
             <th>Person</th>
-            <th>Hours</th>
+            <th className="text-right">Hours</th>
           </tr>
         </thead>
         <tbody>

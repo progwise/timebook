@@ -57,14 +57,14 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
           <div key={day.toDateString()} className="self-stretch bg-base-200" role="cell" />
         ))}
         <div
-          className="flex items-center self-stretch bg-base-200 px-2 text-center text-lg font-bold text-base-content"
+          className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
         <div className="rounded-r-box self-stretch bg-base-200" role="cell" />
       </div>
-      <div className={`contents ${isCollapsed ? 'invisible [&_*]:max-h-0' : ''}`}>
+      <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (
           <WeekGridTaskRow task={task} key={task.id} />
         ))}

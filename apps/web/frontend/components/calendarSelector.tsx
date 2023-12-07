@@ -27,7 +27,7 @@ interface DayItemProps {
 }
 
 const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
-  const classNames = ['btn btn-sm cursor-pointer']
+  const classNames = ['btn btn-sm']
 
   if (!isSameMonth(day, shownDate)) {
     classNames.push('opacity-50')
@@ -113,7 +113,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         </Popover.Button>
 
         <Transition
-          className="rounded-box z-40 border bg-base-200 p-2 shadow-md"
+          className="rounded-box z-40 border border-base-content/50 bg-base-200 p-2 shadow-md"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"
@@ -131,22 +131,20 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           <Popover.Panel>
             {({ close }) => (
               <>
-                <header className="flex justify-between font-bold">
+                <header className="flex items-center justify-between font-bold">
                   <button
-                    className="btn btn-ghost btn-xs self-center"
+                    className="btn btn-ghost btn-xs"
                     onClick={gotoPreviousMonth}
                     type="button"
                     aria-label="go to previous month"
                   >
                     <BiLeftArrow />
                   </button>
-                  <div className="flex gap-2 text-lg">
-                    <div className="self-center" role="heading">
-                      {monthTitle}
-                    </div>
+                  <div className="text-lg" role="heading">
+                    {monthTitle}
                   </div>
                   <button
-                    className="btn btn-ghost btn-xs self-center"
+                    className="btn btn-ghost btn-xs"
                     onClick={gotoNextMonth}
                     type="button"
                     aria-label="go to next month"
@@ -154,7 +152,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     <BiRightArrow />
                   </button>
                 </header>
-                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center text-base">
+                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center">
                   <div>Mon</div>
                   <div>Tue</div>
                   <div>Wed</div>

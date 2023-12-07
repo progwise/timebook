@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
@@ -16,17 +16,12 @@ interface ProjectTableProps {
 }
 
 export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
-  const router = useRouter()
   const projects = useFragment(ProjectTableItemFragment, props.projects)
 
-  const handleProjectDetails = async (projectId: string) => {
-    await router.push(`/projects/${projectId}`)
-  }
-
   return (
-    <div className="rounded-box w-full border shadow-lg">
+    <div className="rounded-box w-full border border-base-content/50 shadow-lg">
       <table className="table">
-        <thead className="text-xl text-base-content">
+        <thead className="text-lg text-base-content">
           <tr>
             <th>Name</th>
             <th>Duration</th>
@@ -42,9 +37,9 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                   {project.startDate} - {project.endDate}
                 </td>
                 <td className="text-right">
-                  <button className="btn btn-outline btn-sm" onClick={() => handleProjectDetails(project.id)}>
+                  <Link className="btn btn-outline btn-sm" href={`/projects/${project.id}`}>
                     Details
-                  </button>
+                  </Link>
                 </td>
               </tr>
             )

@@ -42,7 +42,7 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
           </div>
         )
       })}
-      <div className="font-bold">
+      <div className="px-2 text-right font-bold">
         <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
       </div>
     </div>

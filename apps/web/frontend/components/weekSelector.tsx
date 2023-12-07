@@ -20,8 +20,8 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (
-    <div className="rounded-box inline-flex flex-col items-center p-4 text-base-content">
-      <div className="pb-2 text-lg font-bold">
+    <div className="inline-flex flex-col items-center gap-2 p-4">
+      <div className="text-lg font-bold">
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
       </div>
@@ -31,7 +31,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           aria-label="Previous week"
           onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
         >
-          <BiSolidChevronLeft className="" />
+          <BiSolidChevronLeft />
         </button>
 
         <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>

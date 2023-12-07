@@ -37,7 +37,7 @@ export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
         </td>
         <td />
         <td />
-        <td>
+        <td className="text-right">
           <FormattedDuration
             title="Total work hours of the day"
             minutes={workHours
@@ -51,7 +51,7 @@ export const SheetDayRow = (props: SheetDayRowProps): JSX.Element => {
           <td>{workHour.project.title}</td>
           <td>{workHour.task.title}</td>
           <td>{workHour.user?.name}</td>
-          <td>
+          <td className="text-right">
             <FormattedDuration title="Work duration" minutes={workHour.duration} />
           </td>
         </tr>
