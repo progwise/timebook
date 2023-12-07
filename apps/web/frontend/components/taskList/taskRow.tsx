@@ -1,16 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button, InputField, TableCell, TableRow } from '@progwise/timebook-ui'
+import { InputField } from '@progwise/timebook-ui'
 import { taskInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
-import { DeleteTaskModal } from '../deleteTaskModal'
-import { LockSwitch } from './lockSwitch'
+import { DeleteTaskButton } from '../deleteTaskButton'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
@@ -18,7 +16,7 @@ export const TaskRowFragment = graphql(`
     title
     canModify
     isLockedByAdmin
-    ...DeleteTaskModal
+    ...DeleteTaskButton
   }
 `)
 
@@ -52,8 +50,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     resolver: zodResolver(taskInputValidations.pick({ title: true })),
   })
 
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
-
   const handleTitleSubmit = async (taskData: Pick<TaskUpdateInput, 'title'>) => {
     const result = await updateTaskTitle({
       id: task.id,
@@ -76,10 +72,9 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   }
 
   return (
-    <TableRow>
-      <TableCell className="flex items-center">
+    <tr>
+      <td className="flex items-center p-1">
         <InputField
-          variant="primary"
           {...register('title', { required: true })}
           onBlur={handleSubmit(handleTitleSubmit)}
           loading={fetchingTitle}
@@ -87,25 +82,25 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
           disabled={!task.canModify}
           isDirty={isDirty && dirtyFields.title}
         />
-      </TableCell>
+      </td>
       {task.canModify && (
         <>
-          <TableCell>
-            <LockSwitch locked={task.isLockedByAdmin} onChange={handleLockChange} loading={fetchingIsLocked} />
-          </TableCell>
-          <TableCell>
-            <Button
-              ariaLabel="Delete Task"
-              variant="danger"
-              tooltip="Delete Task"
-              onClick={() => setOpenDeleteModal(true)}
-            >
-              <BiTrash />
-            </Button>
-            {openDeleteModal && <DeleteTaskModal open onClose={() => setOpenDeleteModal(false)} task={task} />}
-          </TableCell>
+          <td>
+            <div>
+              <input
+                type="checkbox"
+                checked={task.isLockedByAdmin}
+                onChange={() => handleLockChange(!task.isLockedByAdmin)}
+                disabled={fetchingIsLocked}
+                className="toggle toggle-warning"
+              />
+            </div>
+          </td>
+          <td>
+            <DeleteTaskButton task={task} />
+          </td>
         </>
       )}
-    </TableRow>
+    </tr>
   )
 }

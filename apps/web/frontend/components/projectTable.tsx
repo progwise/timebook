@@ -1,15 +1,4 @@
-import { useRouter } from 'next/router'
-
-import {
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableHeadCell,
-  TableBody,
-  TableCell,
-  TableHeadRow,
-} from '@progwise/timebook-ui'
+import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
@@ -27,39 +16,36 @@ interface ProjectTableProps {
 }
 
 export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
-  const router = useRouter()
   const projects = useFragment(ProjectTableItemFragment, props.projects)
 
-  const handleProjectDetails = async (projectId: string) => {
-    await router.push(`/projects/${projectId}`)
-  }
-
   return (
-    <Table className="w-full bg-white shadow-lg dark:bg-slate-800">
-      <TableHead>
-        <TableHeadRow>
-          <TableHeadCell>Name</TableHeadCell>
-          <TableHeadCell>Duration</TableHeadCell>
-          <TableHeadCell />
-        </TableHeadRow>
-      </TableHead>
-      <TableBody>
-        {projects.map((project) => {
-          return (
-            <TableRow key={project.id}>
-              <TableCell>{project.title}</TableCell>
-              <TableCell>
-                {project.startDate} - {project.endDate}
-              </TableCell>
-              <TableCell>
-                <Button variant="tertiary" onClick={() => handleProjectDetails(project.id)}>
-                  Details
-                </Button>
-              </TableCell>
-            </TableRow>
-          )
-        })}
-      </TableBody>
-    </Table>
+    <div className="rounded-box w-full border border-base-content/50 shadow-lg">
+      <table className="table">
+        <thead className="text-lg text-base-content">
+          <tr>
+            <th>Name</th>
+            <th>Duration</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody className="text-base">
+          {projects.map((project) => {
+            return (
+              <tr key={project.id}>
+                <td>{project.title}</td>
+                <td>
+                  {project.startDate} - {project.endDate}
+                </td>
+                <td className="text-right">
+                  <Link className="btn btn-outline btn-sm" href={`/projects/${project.id}`}>
+                    Details
+                  </Link>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }

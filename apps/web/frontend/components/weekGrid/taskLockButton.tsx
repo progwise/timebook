@@ -1,8 +1,6 @@
 import { BiLock, BiLockOpen } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
-import { Button } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 
 const TaskLockButtonFragment = graphql(`
@@ -44,8 +42,11 @@ export const TaskLockButton = (props: TaskLockButtonProps) => {
   }
 
   return (
-    <Button variant={task.isLockedByUser ? 'danger' : 'secondary'} onClick={handleClick} className="p-1 text-lg">
+    <button
+      onClick={handleClick}
+      className={`btn btn-square btn-error  btn-xs ${task.isLockedByUser ? '' : 'btn-outline'}`}
+    >
       {task.isLockedByUser ? <BiLock /> : <BiLockOpen />}
-    </Button>
+    </button>
   )
 }

@@ -1,5 +1,4 @@
 import { Role } from '../../generated/gql/graphql'
-import { Label } from './label'
 
 interface RoleLabelProps {
   role: Role
@@ -7,8 +6,8 @@ interface RoleLabelProps {
 
 export const RoleLabel = (props: RoleLabelProps) => {
   if (props.role === Role.Admin) {
-    return <Label color="blue">Admin</Label>
+    return <span className="badge badge-primary">Admin</span>
   }
 
-  return <Label color="yellow">Member</Label>
+  return <span className="badge badge-ghost">Member</span>
 }

@@ -455,7 +455,7 @@ export type ProjectMembershipInviteByEmailMutation = {
     | { __typename: 'UserNotFoundError'; email: string }
 }
 
-export type DeleteTaskModalFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
+export type DeleteTaskButtonFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
 
 export type TaskDeleteMutationVariables = Exact<{
   id: Scalars['ID']
@@ -479,7 +479,7 @@ export type ProjectRegenerateInviteKeyMutation = {
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
-export type ArchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectArchiveMutationVariables = Exact<{
   projectId: Scalars['ID']
@@ -498,7 +498,7 @@ export type DeleteOrArchiveProjectButtonFragment = {
   title: string
 }
 
-export type DeleteProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+export type DeleteProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectDeleteMutationVariables = Exact<{
   id: Scalars['ID']
@@ -506,7 +506,7 @@ export type ProjectDeleteMutationVariables = Exact<{
 
 export type ProjectDeleteMutation = { __typename?: 'Mutation'; projectDelete: { __typename?: 'Project'; id: string } }
 
-export type UnarchiveProjectModalFragment = { __typename?: 'Project'; id: string; title: string }
+export type UnarchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectUnarchiveMutationVariables = Exact<{
   projectId: Scalars['ID']
@@ -930,8 +930,8 @@ export type ProjectQuery = {
     startDate?: string | null
     endDate?: string | null
     hasWorkHours: boolean
-    inviteKey: string
     isArchived: boolean
+    inviteKey: string
     tasks: Array<{
       __typename?: 'Task'
       id: string

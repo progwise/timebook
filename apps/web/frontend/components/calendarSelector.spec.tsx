@@ -34,7 +34,7 @@ it('should update the date when the props updates', async () => {
   expect(selectButton).toHaveTextContent('12/24/2021')
 
   const heading = screen.getByRole('heading')
-  expect(heading).toHaveTextContent('Dec 2021')
+  expect(heading).toHaveTextContent('December 2021')
 })
 
 describe('when opening the popup', () => {
@@ -49,7 +49,7 @@ describe('when opening the popup', () => {
 
   it('should render the given month in the heading', async () => {
     const heading = screen.getByRole('heading')
-    expect(heading).toHaveTextContent('Jan 2021')
+    expect(heading).toHaveTextContent('January 2021')
   })
 
   it('should marks the given date as selected', async () => {
@@ -69,22 +69,22 @@ describe('when opening the popup', () => {
     const previousMonthIcon = screen.getByRole('button', { name: /go to previous month/i })
     const nextMonthIcon = screen.getByRole('button', { name: /go to next month/i })
     const heading = screen.getByRole('heading')
-    expect(heading).toHaveTextContent('Jan 2021')
+    expect(heading).toHaveTextContent('January 2021')
 
     await userEvent.click(previousMonthIcon)
-    expect(heading).toHaveTextContent('Dec 2020')
+    expect(heading).toHaveTextContent('December 2020')
 
     await userEvent.click(nextMonthIcon)
-    expect(heading).toHaveTextContent('Jan 2021')
+    expect(heading).toHaveTextContent('January 2021')
   })
 
   it('should display the current month when clicking on the home icon', async () => {
     const heading = screen.getByRole('heading')
     const homeIcon = screen.getByRole('button', { name: /go to today/i })
-    expect(heading).toHaveTextContent('Jan 2021')
+    expect(heading).toHaveTextContent('January 2021')
 
     await userEvent.click(homeIcon)
-    const expectedMonthTitle = format(new Date(), 'MMM yyyy')
+    const expectedMonthTitle = format(new Date(), 'MMMM yyyy')
     expect(heading).toHaveTextContent(expectedMonthTitle)
   })
 })

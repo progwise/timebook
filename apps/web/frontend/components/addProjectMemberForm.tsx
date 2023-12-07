@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { AiOutlinePlus } from 'react-icons/ai'
+import { BiPlus } from 'react-icons/bi'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
-import { Button, InputField } from '@progwise/timebook-ui'
+import { InputField } from '@progwise/timebook-ui'
 
 import { graphql, FragmentType, useFragment } from '../generated/gql'
 
@@ -105,20 +105,20 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
     )
 
   return (
-    <form className="flex w-full  items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
-      <Button type="submit" disabled={isSubmitting} variant="primary" className="h-16 w-16 flex-none rounded-full">
-        <AiOutlinePlus className=" h-10 w-10 fill-white" />
-      </Button>
+    <form className="flex items-center gap-2" onSubmit={handleSubmit(handleUserInviteSubmit)}>
       <InputField
         {...register('email')}
         disabled={isSubmitting}
         errorMessage={emailErrorMessage}
         type="email"
-        variant="primary"
-        placeholder="Email address to invite someone"
-        className="dark:bg-slate-800 dark:text-white"
+        placeholder="Paste e-mail address here to invite someone"
         isDirty={isDirty}
       />
+
+      <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-sm">
+        <BiPlus />
+        Add member
+      </button>
     </form>
   )
 }

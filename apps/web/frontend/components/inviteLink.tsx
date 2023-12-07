@@ -1,7 +1,5 @@
 import { useMutation } from 'urql'
 
-import { Button, InputField } from '@progwise/timebook-ui'
-
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
 interface InviteLinkProps {
@@ -39,22 +37,25 @@ export const InviteLink = (props: InviteLinkProps) => {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <label className="flex grow gap-2">
-        <h4 className="whitespace-nowrap text-lg font-semibold text-gray-400">Invite link:</h4>
-        <InputField variant="primary" readOnly value={inviteLink} className="w-full" />
-      </label>
-      <Button variant="secondary" className="whitespace-nowrap" onClick={handleCopyInviteLink}>
-        Copy link
-      </Button>
-      <Button
-        variant="secondary"
-        className="whitespace-nowrap"
-        onClick={handleRegenerateClick}
-        disabled={fetchingRegenerateInviteKey}
-      >
-        Regenerate link
-      </Button>
+    <div className="form-control">
+      <div className="label">
+        <label className="label-text" htmlFor="invite-link">
+          Invite link
+        </label>
+      </div>
+      <div className="flex items-center gap-2">
+        <input className="input input-bordered w-full" readOnly value={inviteLink} id="invite-link" />
+        <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
+          Copy link
+        </button>
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleRegenerateClick}
+          disabled={fetchingRegenerateInviteKey}
+        >
+          Regenerate link
+        </button>
+      </div>
     </div>
   )
 }
