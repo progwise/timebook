@@ -10,7 +10,7 @@ import { promisify } from 'util'
 
 const exec = promisify(nativeExec)
 
-const prismaBinary = path.join('./node_modules/.bin/', 'prisma2')
+const prismaBinary = path.join('./node_modules/.bin/', 'prisma')
 
 class PrismaTestEnvironment extends TestEnvironment {
   constructor(config) {
