@@ -69,12 +69,8 @@ export const Task = builder.prismaObject('Task', {
       select: { id: true },
       type: 'Tracking',
       nullable: true,
-      resolve: async (query, task, _argument, context) => {
-        const tracking = await prisma.tracking.findUnique({ ...query, where: { userId: context.session.user.id } })
-        if (tracking?.taskId === task.id) {
-          return tracking
-        }
-      },
+      resolve: async (query, task, _argument, context) =>
+        prisma.tracking.findUnique({ ...query, where: { userId: context.session.user.id, taskId: task.id } }),
     }),
     isLockedByUser: t.withAuth({ isLoggedIn: true }).boolean({
       select: { id: true },
