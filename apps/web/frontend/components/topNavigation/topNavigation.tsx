@@ -2,14 +2,16 @@ import { parseISO } from 'date-fns'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { AiOutlineFieldTime } from 'react-icons/ai'
+import { BiMenu } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
 import { LiveDuration } from '../liveDuration/liveDuration'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
 import { TopNavigationLink } from './topNavigationLink'
+import { TopNavigationMenuLink } from './topNavigationMenuLink'
 
 const CurrentTrackingQueryDocument = graphql(`
   query currentTracking {
@@ -30,17 +32,69 @@ export const TopNavigation = (): JSX.Element => {
   const currentTrackingContext = useMemo(() => ({ additionalTypenames: ['Tracking', 'Task', 'Project'] }), [])
   const [{ data }] = useQuery({ query: CurrentTrackingQueryDocument, context: currentTrackingContext })
   const session = useSession()
+  const drawerCheckboxReference = useRef<HTMLInputElement>(null)
+
+  const handleMenuLinkClick = () => {
+    if (drawerCheckboxReference.current) {
+      drawerCheckboxReference.current.checked = false
+    }
+  }
 
   return (
-    <header className="navbar fixed top-0 z-50 bg-base-100 shadow-lg">
-      <h1 className="navbar-start">
-        <Link href="/" className="btn btn-ghost text-2xl normal-case">
+    <header className="navbar fixed top-0 z-50 gap-2 bg-base-100 shadow-lg">
+      <h1 className="navbar-start max-md:w-full max-md:justify-between">
+        <div className="drawer z-10 w-min md:hidden">
+          <input id="my-drawer-3" type="checkbox" className="drawer-toggle" ref={drawerCheckboxReference} />
+          <span className="drawer-content">
+            <label htmlFor="my-drawer-3" aria-label="open sidebar" className="btn btn-ghost text-2xl">
+              <BiMenu />
+            </label>
+          </span>
+          <div className="drawer-side">
+            <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay" />
+            <ul className="menu menu-lg min-h-full w-80 bg-base-200 p-4">
+              <li className="menu-title">
+                <span className="flex items-center gap-1 text-2xl text-base-content">
+                  <AiOutlineFieldTime />
+                  timebook
+                </span>
+              </li>
+
+              <li>
+                <TopNavigationMenuLink href="/week" onClick={handleMenuLinkClick}>
+                  Week
+                </TopNavigationMenuLink>
+              </li>
+              <li>
+                <TopNavigationMenuLink href="/sheet" onClick={handleMenuLinkClick}>
+                  Sheet
+                </TopNavigationMenuLink>
+              </li>
+              <li>
+                <TopNavigationMenuLink href="/projects" onClick={handleMenuLinkClick}>
+                  Projects
+                </TopNavigationMenuLink>
+              </li>
+              <li>
+                <TopNavigationMenuLink href="/reports" onClick={handleMenuLinkClick}>
+                  Reports
+                </TopNavigationMenuLink>
+              </li>
+              <li className="grow justify-end">
+                <div className="divider-neutral divider -m-2 gap-0" />
+                <span>Log out</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <Link href="/" className="btn btn-ghost text-2xl normal-case max-md:hidden">
           <AiOutlineFieldTime />
-          timebook
+          <span className="max-lg:hidden">timebook</span>
         </Link>
         {data?.currentTracking && (
           <>
-            <div className="divider divider-horizontal" />
+            <div className="divider divider-horizontal max-lg:hidden" />
             <div className="rounded-box flex items-center gap-2 bg-neutral p-2 px-4 text-neutral-content">
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
@@ -55,7 +109,7 @@ export const TopNavigation = (): JSX.Element => {
         )}
       </h1>
 
-      <div className="navbar-end">
+      <div className="navbar-end max-md:hidden">
         <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <div className="divider divider-horizontal" />
