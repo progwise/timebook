@@ -13,7 +13,7 @@ module.exports = {
     extend: {},
   },
   daisyui: {
-    themes: ['winter', 'forest'],
+    themes: ['winter', 'forest', 'cyberpunk'],
     darkTheme: 'forest',
   },
   plugins: [require('@headlessui/tailwindcss'), require('daisyui')],

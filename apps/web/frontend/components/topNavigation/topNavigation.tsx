@@ -81,7 +81,7 @@ export const TopNavigation = (): JSX.Element => {
                 </TopNavigationMenuLink>
               </li>
               <li className="grow justify-end">
-                <div className="divider-neutral divider -m-2 gap-0" />
+                <div className="divider divider-neutral -m-2 gap-0" />
                 <span>Log out</span>
               </li>
             </ul>
@@ -94,8 +94,8 @@ export const TopNavigation = (): JSX.Element => {
         </Link>
         {data?.currentTracking && (
           <>
-            <div className="divider divider-horizontal max-lg:hidden" />
-            <div className="rounded-box flex items-center gap-2 bg-neutral p-2 px-4 text-neutral-content">
+            <div className="divider divider-horizontal m-1 max-lg:hidden" />
+            <div className="flex items-center gap-2 rounded-box bg-neutral p-2 px-4 text-neutral-content">
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
@@ -109,10 +109,10 @@ export const TopNavigation = (): JSX.Element => {
         )}
       </h1>
 
-      <div className="navbar-end max-md:hidden">
+      <div className="navbar-end gap-1 max-md:hidden">
         <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
-        <div className="divider divider-horizontal" />
+        <div className="divider divider-horizontal m-0" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
         {/* Ignore the next line because prettier sorts dropdown classes sometimes differently */}
