@@ -122,7 +122,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
   if (taskToTrack) {
     return (
       <button
-        className="btn btn-square btn-primary btn-outline btn-xs"
+        className="btn btn-square btn-outline btn-primary btn-xs"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
         disabled={taskToTrack.isLocked}
       >
