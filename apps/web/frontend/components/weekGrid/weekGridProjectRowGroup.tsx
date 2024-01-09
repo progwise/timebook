@@ -47,7 +47,7 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
     <>
       <div onClick={() => setIsCollapsed(!isCollapsed)} className="contents cursor-pointer" role="row">
         <div
-          className="rounded-l-box col-span-2 flex items-center gap-1 self-stretch bg-base-200 p-2 text-lg font-bold text-base-content"
+          className="col-span-2 flex items-center gap-1 self-stretch rounded-l-box bg-base-200 p-2 text-lg font-bold text-base-content"
           role="cell"
         >
           <BiChevronRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
@@ -62,7 +62,7 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
         >
           <FormattedDuration title="" minutes={projectDuration} />
         </div>
-        <div className="rounded-r-box self-stretch bg-base-200" role="cell" />
+        <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>
       <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (

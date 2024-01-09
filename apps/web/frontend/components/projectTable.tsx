@@ -19,7 +19,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   const projects = useFragment(ProjectTableItemFragment, props.projects)
 
   return (
-    <div className="rounded-box w-full border border-base-content/50 shadow-lg">
+    <div className="w-full rounded-box border border-base-content/50 shadow-lg">
       <table className="table">
         <thead className="text-lg text-base-content">
           <tr>

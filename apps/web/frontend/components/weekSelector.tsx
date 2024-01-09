@@ -27,7 +27,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
       </div>
       <div className="flex gap-2 text-sm">
         <button
-          className="btn btn-neutral btn-outline btn-sm"
+          className="btn btn-outline btn-neutral btn-sm"
           aria-label="Previous week"
           onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
         >
@@ -40,7 +40,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
         </button>
         <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
         <button
-          className="btn btn-neutral btn-outline btn-sm"
+          className="btn btn-outline btn-neutral btn-sm"
           aria-label="Next week"
           onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
         >
