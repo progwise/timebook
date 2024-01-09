@@ -89,7 +89,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
             <BiBlock />
           </button>
         </div>
-        <dialog className="modal" ref={dialogReference}>
+        <dialog className="modal text-base-content" ref={dialogReference}>
           <div className="modal-box">
             <h3 className="text-lg font-bold">Delete Tracking</h3>
             <p className="py-4">
