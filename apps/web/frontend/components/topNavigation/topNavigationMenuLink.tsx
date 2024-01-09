@@ -8,16 +8,8 @@ export interface TopNavigationMenuLinkProps {
   onClick?: () => void
 }
 
-export const TopNavigationMenuLink: React.FC<TopNavigationMenuLinkProps> = ({
-  href,
-  children,
-  onClick,
-}): JSX.Element => {
+export const TopNavigationMenuLink: React.FC<TopNavigationMenuLinkProps> = (props): JSX.Element => {
   const router = useRouter()
 
-  return (
-    <Link href={href} className={router.asPath.startsWith(href) ? 'active' : ''} onClick={onClick}>
-      {children}
-    </Link>
-  )
+  return <Link className={router.asPath.startsWith(props.href) ? 'active' : ''} {...props} />
 }

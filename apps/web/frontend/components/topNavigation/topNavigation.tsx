@@ -44,14 +44,14 @@ export const TopNavigation = (): JSX.Element => {
     <header className="navbar fixed top-0 z-50 gap-2 bg-base-100 shadow-lg">
       <h1 className="navbar-start max-md:w-full max-md:justify-between">
         <div className="drawer z-10 w-min md:hidden">
-          <input id="my-drawer-3" type="checkbox" className="drawer-toggle" ref={drawerCheckboxReference} />
+          <input id="drawer" type="checkbox" className="drawer-toggle" ref={drawerCheckboxReference} />
           <span className="drawer-content">
-            <label htmlFor="my-drawer-3" aria-label="open sidebar" className="btn btn-ghost text-2xl">
+            <label htmlFor="drawer" aria-label="open sidebar" className="btn btn-ghost text-2xl">
               <BiMenu />
             </label>
           </span>
           <div className="drawer-side">
-            <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay" />
+            <label htmlFor="drawer" aria-label="close sidebar" className="drawer-overlay" />
             <ul className="menu menu-lg min-h-full w-80 bg-base-200 p-4">
               <li className="menu-title">
                 <span className="flex items-center gap-1 text-2xl text-base-content">
