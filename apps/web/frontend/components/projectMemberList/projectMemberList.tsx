@@ -85,7 +85,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 </div>
               ) : (
                 <div className="avatar placeholder">
-                  <div className="rounded-box h-16 w-16 bg-neutral text-neutral-content" />
+                  <div className="h-16 w-16 rounded-box bg-neutral text-neutral-content" />
                 </div>
               )}
               {user.name}

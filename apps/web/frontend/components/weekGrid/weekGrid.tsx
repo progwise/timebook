@@ -43,19 +43,19 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
       }}
     >
       {/* adds a border around week day headers, all hour inputs and week day footers */}
-      <div className="rounded-box pointer-events-none absolute z-30 col-start-3 col-end-[-3] h-full w-full border opacity-50" />
+      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-3] h-full w-full rounded-box border opacity-50" />
 
       {/* adds a border around project row groups and task rows */}
-      <div className="rounded-box pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] h-full w-full border opacity-50" />
+      <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] h-full w-full rounded-box border opacity-50" />
 
       {/* adds a background color to the header row and the footer row*/}
-      <div className="rounded-t-box absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full bg-base-200" />
-      <div className="rounded-b-box absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full rounded-t-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full rounded-b-box bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
         <div
-          className="rounded-box absolute z-10 col-span-1 h-full w-full border bg-base-300 shadow-lg"
+          className="absolute z-10 col-span-1 h-full w-full rounded-box border bg-base-300 shadow-lg"
           style={{ gridColumnStart: differenceInDays(new Date(), startDate) + 3 }}
         />
       )}

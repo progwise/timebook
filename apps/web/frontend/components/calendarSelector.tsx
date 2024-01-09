@@ -113,7 +113,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         </Popover.Button>
 
         <Transition
-          className="rounded-box z-40 border border-base-content/50 bg-base-200 p-2 shadow-md"
+          className="z-40 rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
           enter="transition duration-100 ease-out"
           enterFrom="transform scale-75 opacity-0"
           enterTo="transform scale-100 opacity-100"

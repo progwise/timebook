@@ -23,12 +23,12 @@ interface TimebookProps {
 
 const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
-    <div className="flex h-screen flex-col justify-between">
+    <div className="flex min-h-screen flex-col justify-between">
       <TopNavigation />
-      <main className="container mx-auto py-16 print:m-0 print:p-0">
+      <main className="container mx-auto py-16 print:m-0 print:p-0 max-md:min-h-screen">
         <Component {...pageProps} />
       </main>
-      <footer className="footer fixed bottom-0 z-40 justify-items-center bg-base-300 p-5">
+      <footer className="footer justify-items-center bg-base-300 p-5">
         <Link href="/impress" className="link-hover link">
           Impress
         </Link>
