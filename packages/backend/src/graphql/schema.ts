@@ -3,6 +3,7 @@ import { lexicographicSortSchema, printSchema } from 'graphql'
 import path from 'path'
 import { format, resolveConfig } from 'prettier'
 
+import './accessToken'
 import { builder } from './builder'
 import './project'
 import './projectMembership'

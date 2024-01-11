@@ -19,6 +19,14 @@ export type Scalars = {
   DateTime: string
 }
 
+export type AccessToken = {
+  __typename?: 'AccessToken'
+  /** Date when the access token was created */
+  createdAt: Scalars['DateTime']
+  id: Scalars['ID']
+  name: Scalars['String']
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -239,6 +247,8 @@ export type ProjectInput = {
 
 export type Query = {
   __typename?: 'Query'
+  /** List of tokens of the signed in user */
+  accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
   /** Returns a single project */
   project: Project
@@ -896,6 +906,13 @@ export type WeekGridTaskRowFragment = ({
     TaskLockButtonFragment: TaskLockButtonFragment
   }
 }) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
+
+export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
+
+export type AccessTokensQuery = {
+  __typename?: 'Query'
+  accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+}
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -3635,6 +3652,33 @@ export const WorkHourUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>
+export const AccessTokensDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'accessTokens' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessTokens' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokensQuery, AccessTokensQueryVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [

@@ -133,6 +133,7 @@ model User {
   projectMemberships ProjectMembership[]
   tracking           Tracking?
   lockedTasks        LockedTask[]
+  accessTokens       AccessToken[]
 }
 
 model VerificationToken {
@@ -170,4 +171,14 @@ model LockedTask {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([taskId, userId])
+}
+
+model AccessToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  name      String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
