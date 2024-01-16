@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/filename-case */
-import { formatDistanceToNow, formatRelative, parseISO } from 'date-fns'
+import { formatDistanceToNow, parseISO } from 'date-fns'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
