@@ -1,3 +1,12 @@
+type AccessToken {
+  """
+  Date when the access token was created
+  """
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -245,6 +254,10 @@ input ProjectInput {
 }
 
 type Query {
+  """
+  List of tokens of the signed in user
+  """
+  accessTokens: [AccessToken!]!
   currentTracking: Tracking
 
   """
