@@ -44,7 +44,7 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const { register, handleSubmit, reset, formState, control } = useForm<TaskFormData>({
+  const { register, handleSubmit, reset, formState, control, setFocus } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
     defaultValues: { title: '' },
   })
@@ -64,6 +64,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }
+      setFocus('title')
       reset()
     } catch {}
   }
