@@ -24,7 +24,7 @@ importers:
         specifier: ^0.5.4
         version: 0.5.4(@trivago/prettier-plugin-sort-imports@4.1.1)(prettier@3.0.3)
       turbo:
-        specifier: ^1.10.7
+        specifier: latest
         version: 1.10.7
 
   apps/web:
