@@ -42,6 +42,10 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Create an access token for the signed in user */
+  accessTokenCreate: Scalars['String']
+  /** Delete an access token for the signed in user */
+  accessTokenDelete: AccessToken
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -88,6 +92,14 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationAccessTokenCreateArgs = {
+  name: Scalars['String']
+}
+
+export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationProjectArchiveArgs = {
@@ -926,11 +938,22 @@ export type WeekGridTaskRowFragment = {
   } | null
 }
 
+export type DeleteAccessTokenButtonFragment = { __typename?: 'AccessToken'; id: string; name: string }
+
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
   accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+}
+
+export type AccessTokenDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type AccessTokenDeleteMutation = {
+  __typename?: 'Mutation'
+  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -1470,6 +1493,25 @@ export const mockWorkHourUpdateMutation = (
 export const mockAccessTokensQuery = (
   resolver: ResponseResolver<GraphQLRequest<AccessTokensQueryVariables>, GraphQLContext<AccessTokensQuery>, any>,
 ) => graphql.query<AccessTokensQuery, AccessTokensQueryVariables>('accessTokens', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockAccessTokenDeleteMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ accessTokenDelete })
+ *   )
+ * })
+ */
+export const mockAccessTokenDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<AccessTokenDeleteMutationVariables>,
+    GraphQLContext<AccessTokenDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>('accessTokenDelete', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

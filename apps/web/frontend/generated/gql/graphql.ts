@@ -40,6 +40,10 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Create an access token for the signed in user */
+  accessTokenCreate: Scalars['String']
+  /** Delete an access token for the signed in user */
+  accessTokenDelete: AccessToken
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -86,6 +90,14 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationAccessTokenCreateArgs = {
+  name: Scalars['String']
+}
+
+export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationProjectArchiveArgs = {
@@ -907,11 +919,24 @@ export type WeekGridTaskRowFragment = ({
   }
 }) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
 
+export type DeleteAccessTokenButtonFragment = { __typename?: 'AccessToken'; id: string; name: string } & {
+  ' $fragmentName'?: 'DeleteAccessTokenButtonFragment'
+}
+
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
   accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+}
+
+export type AccessTokenDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type AccessTokenDeleteMutation = {
+  __typename?: 'Mutation'
+  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
 export type ProjectQueryVariables = Exact<{
@@ -2244,6 +2269,23 @@ export const WeekGridProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekGridProjectFragment, unknown>
+export const DeleteAccessTokenButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'DeleteAccessTokenButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'AccessToken' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteAccessTokenButtonFragment, unknown>
 export const ProjectMembershipInviteByEmailDocument = {
   kind: 'Document',
   definitions: [
@@ -3679,6 +3721,43 @@ export const AccessTokensDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokensQuery, AccessTokensQueryVariables>
+export const AccessTokenDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'accessTokenDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessTokenDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [

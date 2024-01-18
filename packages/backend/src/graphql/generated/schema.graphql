@@ -34,6 +34,16 @@ input MonthInput {
 
 type Mutation {
   """
+  Create an access token for the signed in user
+  """
+  accessTokenCreate(name: String!): String!
+
+  """
+  Delete an access token for the signed in user
+  """
+  accessTokenDelete(id: ID!): AccessToken!
+
+  """
   Archive a project
   """
   projectArchive(projectId: ID!): Project!

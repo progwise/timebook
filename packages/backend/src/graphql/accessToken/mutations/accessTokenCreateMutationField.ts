@@ -1,0 +1,20 @@
+import { createHash } from 'node:crypto'
+import { v4 as uuidv4 } from 'uuid'
+
+import { builder } from '../../builder'
+import { prisma } from '../../prisma'
+
+builder.mutationField('accessTokenCreate', (t) =>
+  t.withAuth({ isLoggedIn: true }).string({
+    description: 'Create an access token for the signed in user',
+    args: {
+      name: t.arg.string(),
+    },
+    resolve: async (_source, { name }, context) => {
+      const accessTokenCreateString = uuidv4()
+      const tokenHash = createHash('sha256').update(accessTokenCreateString).digest('hex')
+      await prisma.accessToken.create({ data: { name, tokenHash, userId: context.session.user.id } })
+      return accessTokenCreateString
+    },
+  }),
+)
