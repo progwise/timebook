@@ -18,7 +18,7 @@ Documentation for installing pnpm https://pnpm.io/installation.
 - **apps/web**  
   main nextjs web app with backend routes
 
-- **apps/web-e2e** 
+- **apps/web-e2e**
   browser tests build with playwright
 
 - **packages/backend**  
