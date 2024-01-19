@@ -9,16 +9,11 @@ We use `pnpm` for this repository instead of `npm`.
 You need to install pnpm:
 
 - `brew install pnpm` for MacOS
+- `sudo npm install -g pnpm` for Debian
 - `iwr https://get.pnpm.io/install.ps1 -useb | iex` for Windows
 
 Windows users may have trouble with the default installation folder of pnpm:
 `copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
-
-Debian user once Node.js and npm are installed, can install pnpm globally using the following npm command:
-
-    ```bash
-    sudo npm install -g pnpm
-    ```
 
 Documentation for installing pnpm https://pnpm.io/installation.
 
