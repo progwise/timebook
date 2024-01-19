@@ -6,11 +6,7 @@ This is a TurboRepo mono-repository. https://turbo.build/
 
 We use `pnpm` for this repository instead of `npm`.
 
-You need to install pnpm:
-
-- `brew install pnpm` for MacOS
-- `sudo npm install -g pnpm` for Debian
-- `iwr https://get.pnpm.io/install.ps1 -useb | iex` for Windows
+You need to install pnpm according to the instructions found [here](https://pnpm.io/installation).
 
 Windows users may have trouble with the default installation folder of pnpm:
 `copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
