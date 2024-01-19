@@ -14,21 +14,7 @@ You need to install pnpm:
 Windows users may have trouble with the default installation folder of pnpm:
 `copy %LOCALAPPDATA%\pnpm\pnpm.exe %WINDIR%`
 
-- Debian users can follow the instructions here:
-
-1.  **Install Node.js:**
-
-    **'pnpm'** is designed to work with Node.js, so you need to have Node.js installed. You can install it using the following commands:
-
-    ```bash
-    sudo apt update
-    sudo apt install nodejs
-    sudo apt install npm
-    ```
-
-2.  **Install pnpm:**
-
-    Once Node.js and npm are installed, you can install pnpm globally using the following npm command:
+Debian user once Node.js and npm are installed, can install pnpm globally using the following npm command:
 
     ```bash
     sudo npm install -g pnpm
@@ -41,7 +27,7 @@ Documentation for installing pnpm https://pnpm.io/installation.
 - **apps/web**  
   main nextjs web app with backend routes
 
-- **apps/web-e2e**  
+- **apps/web-e2e** 
   browser tests build with playwright
 
 - **packages/backend**  
