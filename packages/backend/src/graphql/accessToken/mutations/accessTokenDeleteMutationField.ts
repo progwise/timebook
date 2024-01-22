@@ -8,6 +8,11 @@ builder.mutationField('accessTokenDelete', (t) =>
     args: {
       id: t.arg.id(),
     },
-    resolve: (_query, _source, { id }) => prisma.accessToken.delete({ where: { id: id.toString() } }),
+    resolve: (query, _source, { id }) => prisma.accessToken.delete({ ...query, where: { id: id.toString() } }),
   }),
 )
+
+// return {
+//   isAdminByTask: workHour.taskId,
+//   hasUserId: workHour.userId,
+// }

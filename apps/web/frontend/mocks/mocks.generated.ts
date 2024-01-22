@@ -956,6 +956,12 @@ export type AccessTokenDeleteMutation = {
   accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
+export type AccessTokenCreateMutationVariables = Exact<{
+  name: Scalars['String']
+}>
+
+export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -1512,6 +1518,25 @@ export const mockAccessTokenDeleteMutation = (
     any
   >,
 ) => graphql.mutation<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>('accessTokenDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockAccessTokenCreateMutation((req, res, ctx) => {
+ *   const { name } = req.variables;
+ *   return res(
+ *     ctx.data({ accessTokenCreate })
+ *   )
+ * })
+ */
+export const mockAccessTokenCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<AccessTokenCreateMutationVariables>,
+    GraphQLContext<AccessTokenCreateMutation>,
+    any
+  >,
+) => graphql.mutation<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>('accessTokenCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

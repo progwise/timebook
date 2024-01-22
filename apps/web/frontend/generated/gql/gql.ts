@@ -109,6 +109,8 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n':
     types.AccessTokenDeleteDocument,
+  '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
+    types.AccessTokenCreateDocument,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
     types.ProjectDocument,
   '\n  mutation projectUpdate($id: ID!, $data: ProjectInput!) {\n    projectUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
@@ -439,6 +441,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n',
+): (typeof documents)['\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

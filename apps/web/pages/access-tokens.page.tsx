@@ -9,7 +9,7 @@ import { InputField } from '@progwise/timebook-ui'
 
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { FragmentType, graphql, useFragment } from '../frontend/generated/gql'
+import { FragmentType, graphql } from '../frontend/generated/gql'
 
 const DeleteAccessTokenButtonFragment = graphql(`
   fragment DeleteAccessTokenButton on AccessToken {
@@ -37,8 +37,8 @@ const AccessTokenDeleteMutationDocument = graphql(`
 `)
 
 const AccessTokenCreateMutationDocument = graphql(`
-  mutation accessTokenCreate($data: AccessTokenInput!) {
-    accessTokenCreate(data: $data)
+  mutation accessTokenCreate($name: String!) {
+    accessTokenCreate(name: $name)
   }
 `)
 
@@ -46,39 +46,37 @@ export interface DeleteAccessTokenButtonProps {
   accessToken: FragmentType<typeof DeleteAccessTokenButtonFragment>
 }
 
-export type AccessTokenFormData = Pick<AccessTokenInput, 'name'>
-
-const AccessTokensPage = ({ accessToken: accessTokenFragment }: DeleteAccessTokenButtonProps): JSX.Element => {
+const AccessTokensPage = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['AccessToken'] }), [])
   const [{ data, error, fetching: accessTokensLoading }] = useQuery({
     query: AccessTokensQueryDocument,
     context,
   })
-  const accessToken = useFragment(DeleteAccessTokenButtonFragment, accessTokenFragment)
-  const { register, handleSubmit, formState } = useForm<AccessTokenFormData>()
+  const { register, handleSubmit, formState, reset } = useForm<{ name: string }>()
   const [{ fetching }, accessTokenDelete] = useMutation(AccessTokenDeleteMutationDocument)
 
   const { isSubmitting, errors, isDirty, dirtyFields } = formState
 
-  const [, accessTokenCreate] = useMutation(AccessTokenCreateMutationDocument)
+  const [{ data: tokenCreateData }, accessTokenCreate] = useMutation(AccessTokenCreateMutationDocument)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' })
 
-  const handleDeleteAccessToken = async () => {
+  const handleDeleteAccessToken = async (accessTokenId: string) => {
     try {
-      await accessTokenDelete({ id: accessToken.id })
+      await accessTokenDelete({ id: accessTokenId })
     } catch {}
     dialogReference.current?.close()
   }
 
-  const handleCreateAccessToken = async (accessTokenData: AccessTokenFormData) => {
+  const handleCreateAccessToken = async ({ name }: { name: string }) => {
     try {
-      const result = await accessTokenCreate({
-        data: {
-          ...accessTokenData,
+      const result = await accessTokenCreate(
+        {
+          name,
         },
-      })
+        context,
+      )
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }
@@ -129,7 +127,9 @@ const AccessTokensPage = ({ accessToken: accessTokenFragment }: DeleteAccessToke
                             </form>
                             <button
                               className="btn btn-error btn-sm"
-                              onClick={handleDeleteAccessToken}
+                              onClick={() => {
+                                handleDeleteAccessToken(accessToken.id)
+                              }}
                               disabled={fetching}
                             >
                               Delete
@@ -147,7 +147,7 @@ const AccessTokensPage = ({ accessToken: accessTokenFragment }: DeleteAccessToke
             </tbody>
             <tfoot>
               <tr className="font-normal">
-                <td>
+                <td colSpan={2}>
                   <form onSubmit={handleSubmit(handleCreateAccessToken)} id="form-create-access-token">
                     <InputField
                       type="text"
@@ -158,7 +158,6 @@ const AccessTokensPage = ({ accessToken: accessTokenFragment }: DeleteAccessToke
                     />
                   </form>
                 </td>
-                <td />
                 <td>
                   <button
                     className="btn btn-primary btn-sm w-full"
@@ -172,6 +171,7 @@ const AccessTokensPage = ({ accessToken: accessTokenFragment }: DeleteAccessToke
               </tr>
             </tfoot>
           </table>
+          <div>{tokenCreateData?.accessTokenCreate}</div>
         </div>
       )}
     </ProtectedPage>

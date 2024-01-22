@@ -939,6 +939,12 @@ export type AccessTokenDeleteMutation = {
   accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
+export type AccessTokenCreateMutationVariables = Exact<{
+  name: Scalars['String']
+}>
+
+export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -3758,6 +3764,39 @@ export const AccessTokenDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>
+export const AccessTokenCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'accessTokenCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessTokenCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [
