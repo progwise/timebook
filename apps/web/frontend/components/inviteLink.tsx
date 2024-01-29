@@ -27,7 +27,11 @@ export const InviteLink = (props: InviteLinkProps) => {
   const [{ fetching: fetchingRegenerateInviteKey }, regenerateInviteKey] = useMutation(
     projectRegenerateInviteKeyMutation,
   )
-  const inviteLink = `${process.env.NEXTAUTH_URL}/projects/join/${project.inviteKey}`
+
+  // let nextAuthUrl = process.env.NEXTAUTH_URL || 'defaultFallbackURL'
+
+  const nextAuthUrl = process.env.NEXTAUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL
+  const inviteLink = `${nextAuthUrl}/projects/join/${project.inviteKey}`
 
   const handleCopyInviteLink = async () => {
     await navigator.clipboard.writeText(inviteLink)
