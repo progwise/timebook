@@ -28,9 +28,7 @@ export const InviteLink = (props: InviteLinkProps) => {
     projectRegenerateInviteKeyMutation,
   )
 
-  // let nextAuthUrl = process.env.NEXTAUTH_URL || 'defaultFallbackURL'
-
-  const nextAuthUrl = process.env.NEXTAUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL
+  const nextAuthUrl = process.env.NEXT_PUBLIC_APP_URL
   const inviteLink = `${nextAuthUrl}/projects/join/${project.inviteKey}`
 
   const handleCopyInviteLink = async () => {

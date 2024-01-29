@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["^build", "graphql:generate"],
       "outputs": ["dist/**", ".next/**"],
-      "env": ["NEXTAUTH_URL"]
+      "env": ["NEXT_PUBLIC_APP_URL"]
     },
     "lint": {
       "outputs": []
