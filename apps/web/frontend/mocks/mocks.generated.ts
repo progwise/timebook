@@ -460,6 +460,17 @@ export type WorkHourOfDay = {
   workHour?: Maybe<WorkHour>
 }
 
+export type AccessTokenRowFragment = { __typename?: 'AccessToken'; id: string; name: string; createdAt: string }
+
+export type AccessTokenDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type AccessTokenDeleteMutation = {
+  __typename?: 'Mutation'
+  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
+}
+
 export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
 
 export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
@@ -938,22 +949,11 @@ export type WeekGridTaskRowFragment = {
   } | null
 }
 
-export type DeleteAccessTokenButtonFragment = { __typename?: 'AccessToken'; id: string; name: string }
-
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
   accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
-}
-
-export type AccessTokenDeleteMutationVariables = Exact<{
-  id: Scalars['ID']
-}>
-
-export type AccessTokenDeleteMutation = {
-  __typename?: 'Mutation'
-  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
 export type AccessTokenCreateMutationVariables = Exact<{
@@ -1083,6 +1083,25 @@ export type WeekGridQuery = {
     }>
   }>
 }
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockAccessTokenDeleteMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ accessTokenDelete })
+ *   )
+ * })
+ */
+export const mockAccessTokenDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<AccessTokenDeleteMutationVariables>,
+    GraphQLContext<AccessTokenDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>('accessTokenDelete', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1499,25 +1518,6 @@ export const mockWorkHourUpdateMutation = (
 export const mockAccessTokensQuery = (
   resolver: ResponseResolver<GraphQLRequest<AccessTokensQueryVariables>, GraphQLContext<AccessTokensQuery>, any>,
 ) => graphql.query<AccessTokensQuery, AccessTokensQueryVariables>('accessTokens', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockAccessTokenDeleteMutation((req, res, ctx) => {
- *   const { id } = req.variables;
- *   return res(
- *     ctx.data({ accessTokenDelete })
- *   )
- * })
- */
-export const mockAccessTokenDeleteMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<AccessTokenDeleteMutationVariables>,
-    GraphQLContext<AccessTokenDeleteMutation>,
-    any
-  >,
-) => graphql.mutation<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>('accessTokenDelete', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

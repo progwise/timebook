@@ -1,22 +1,18 @@
 /* eslint-disable unicorn/filename-case */
-import { formatDistanceToNow, parseISO } from 'date-fns'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { BiTrash } from 'react-icons/bi'
+import { BiCopyAlt } from 'react-icons/bi'
 import { useMutation, useQuery } from 'urql'
 
 import { InputField } from '@progwise/timebook-ui'
+import { toastSuccess } from '@progwise/timebook-ui'
+import { accessTokenInputValidations } from '@progwise/timebook-validations'
 
+import { AccessTokenRow } from '../frontend/components/accessToken/accessTokenRow'
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
-import { FragmentType, graphql } from '../frontend/generated/gql'
-
-const DeleteAccessTokenButtonFragment = graphql(`
-  fragment DeleteAccessTokenButton on AccessToken {
-    id
-    name
-  }
-`)
+import { graphql } from '../frontend/generated/gql'
 
 const AccessTokensQueryDocument = graphql(`
   query accessTokens {
@@ -24,14 +20,7 @@ const AccessTokensQueryDocument = graphql(`
       createdAt
       id
       name
-    }
-  }
-`)
-
-const AccessTokenDeleteMutationDocument = graphql(`
-  mutation accessTokenDelete($id: ID!) {
-    accessTokenDelete(id: $id) {
-      id
+      ...AccessTokenRow
     }
   }
 `)
@@ -42,32 +31,20 @@ const AccessTokenCreateMutationDocument = graphql(`
   }
 `)
 
-export interface DeleteAccessTokenButtonProps {
-  accessToken: FragmentType<typeof DeleteAccessTokenButtonFragment>
-}
-
 const AccessTokensPage = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['AccessToken'] }), [])
   const [{ data, error, fetching: accessTokensLoading }] = useQuery({
     query: AccessTokensQueryDocument,
     context,
   })
-  const { register, handleSubmit, formState, reset } = useForm<{ name: string }>()
-  const [{ fetching }, accessTokenDelete] = useMutation(AccessTokenDeleteMutationDocument)
+  const { register, handleSubmit, formState, reset } = useForm<{ name: string }>({
+    resolver: zodResolver(accessTokenInputValidations),
+  })
+  const dialogReference = useRef<HTMLDialogElement>(null)
 
   const { isSubmitting, errors, isDirty, dirtyFields } = formState
 
-  const [{ data: tokenCreateData }, accessTokenCreate] = useMutation(AccessTokenCreateMutationDocument)
-
-  const dialogReference = useRef<HTMLDialogElement>(null)
-  const dateTimeFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' })
-
-  const handleDeleteAccessToken = async (accessTokenId: string) => {
-    try {
-      await accessTokenDelete({ id: accessTokenId })
-    } catch {}
-    dialogReference.current?.close()
-  }
+  const [{ data: tokenCreateData, fetching }, accessTokenCreate] = useMutation(AccessTokenCreateMutationDocument)
 
   const handleCreateAccessToken = async ({ name }: { name: string }) => {
     try {
@@ -81,6 +58,7 @@ const AccessTokensPage = (): JSX.Element => {
         throw new Error(`GraphQL Error ${result.error}`)
       }
       reset()
+      dialogReference.current?.showModal()
     } catch {}
   }
 
@@ -100,50 +78,9 @@ const AccessTokensPage = (): JSX.Element => {
               </tr>
             </thead>
             <tbody>
-              {data?.accessTokens.map((accessToken) => {
-                const createdAt = parseISO(accessToken.createdAt)
-                return (
-                  <tr key={accessToken.id}>
-                    <td>{accessToken.name}</td>
-                    <td title={dateTimeFormat.format(createdAt)}>{formatDistanceToNow(createdAt)} ago</td>
-                    <td>
-                      <button
-                        className="btn btn-outline btn-sm btn-block"
-                        aria-label="Delete the access token"
-                        title="Delete the access token"
-                        onClick={() => dialogReference.current?.showModal()}
-                      >
-                        <BiTrash />
-                      </button>
-                      <dialog className="modal" ref={dialogReference}>
-                        <div className="modal-box">
-                          <h3 className="text-lg font-bold">Delete access token</h3>
-                          <p className="py-4">Are you sure you want to delete {accessToken.name}?</p>
-                          <div className="modal-action">
-                            <form method="dialog">
-                              <button className="btn btn-ghost btn-sm" disabled={fetching}>
-                                Cancel
-                              </button>
-                            </form>
-                            <button
-                              className="btn btn-error btn-sm"
-                              onClick={() => {
-                                handleDeleteAccessToken(accessToken.id)
-                              }}
-                              disabled={fetching}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                        <form method="dialog" className="modal-backdrop">
-                          <button>close</button>
-                        </form>
-                      </dialog>
-                    </td>
-                  </tr>
-                )
-              })}
+              {data?.accessTokens.map((accessToken) => (
+                <AccessTokenRow accessToken={accessToken} key={accessToken.id} />
+              ))}
             </tbody>
             <tfoot>
               <tr className="font-normal">
@@ -155,6 +92,8 @@ const AccessTokensPage = (): JSX.Element => {
                       {...register('name')}
                       errorMessage={errors.name?.message}
                       isDirty={isDirty && dirtyFields.name}
+                      label="access token name"
+                      hideLabel
                     />
                   </form>
                 </td>
@@ -167,11 +106,45 @@ const AccessTokensPage = (): JSX.Element => {
                   >
                     Add
                   </button>
+                  <dialog className="modal" ref={dialogReference}>
+                    <div className="modal-box whitespace-normal text-neutral-content">
+                      <h3 className="mb-4 text-lg font-bold">New access token</h3>
+                      <div className="text-base">
+                        <p>Here is the new access token:</p>
+                        <div className="my-2 flex items-center">
+                          <input
+                            className="input input-bordered grow bg-neutral py-2 text-neutral-content"
+                            value={tokenCreateData?.accessTokenCreate ?? ''}
+                            readOnly
+                          />
+                          <button
+                            className="btn btn-circle btn-ghost ml-2 text-xl"
+                            onClick={() => {
+                              navigator.clipboard.writeText(tokenCreateData?.accessTokenCreate ?? '')
+                              toastSuccess('Successfully copied to clipboard!')
+                            }}
+                          >
+                            <BiCopyAlt />
+                          </button>
+                        </div>
+                        <span>Warning: You will no longer be able to see it once you close this dialog window.</span>
+                      </div>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          <button className="btn btn-ghost btn-sm" disabled={fetching}>
+                            Done
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
                 </td>
               </tr>
             </tfoot>
           </table>
-          <div>{tokenCreateData?.accessTokenCreate}</div>
         </div>
       )}
     </ProtectedPage>

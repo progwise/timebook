@@ -52,10 +52,18 @@ describe('accessTokenCreateMutationField', () => {
     })
 
     expect(response.data).toEqual({
-      accessTokenCreate: {
-        // id: expect.any(String),
-        name: 'new token',
-      },
+      accessTokenCreate: expect.any(String),
     })
+
+    const accessTokens = await prisma.accessToken.findMany()
+    expect(accessTokens).toEqual([
+      {
+        createdAt: expect.any(Date),
+        id: expect.any(String),
+        name: 'new token',
+        tokenHash: expect.any(String),
+        userId: '1',
+      },
+    ])
   })
 })

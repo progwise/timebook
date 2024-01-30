@@ -14,6 +14,10 @@ import * as types from './graphql'
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+  '\n  fragment AccessTokenRow on AccessToken {\n    id\n    name\n    createdAt\n  }\n':
+    types.AccessTokenRowFragmentDoc,
+  '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n':
+    types.AccessTokenDeleteDocument,
   '\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n':
     types.AddProjectMemberFormFragmentDoc,
   '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n':
@@ -103,12 +107,8 @@ const documents = {
     types.WorkHourUpdateDocument,
   '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
-  '\n  fragment DeleteAccessTokenButton on AccessToken {\n    id\n    name\n  }\n':
-    types.DeleteAccessTokenButtonFragmentDoc,
-  '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n    }\n  }\n':
+  '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n':
     types.AccessTokensDocument,
-  '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n':
-    types.AccessTokenDeleteDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
@@ -141,6 +141,18 @@ const documents = {
  */
 export function graphql(source: string): unknown
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment AccessTokenRow on AccessToken {\n    id\n    name\n    createdAt\n  }\n',
+): (typeof documents)['\n  fragment AccessTokenRow on AccessToken {\n    id\n    name\n    createdAt\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -427,20 +439,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment DeleteAccessTokenButton on AccessToken {\n    id\n    name\n  }\n',
-): (typeof documents)['\n  fragment DeleteAccessTokenButton on AccessToken {\n    id\n    name\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n    }\n  }\n',
-): (typeof documents)['\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n']
+  source: '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n',
+): (typeof documents)['\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
