@@ -512,6 +512,26 @@ export type ProjectRegenerateInviteKeyMutation = {
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
+export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+
+export type LockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type LockTaskMutation = {
+  __typename?: 'Mutation'
+  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
+export type UnlockTaskMutationVariables = Exact<{
+  taskId: Scalars['ID']
+}>
+
+export type UnlockTaskMutation = {
+  __typename?: 'Mutation'
+  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
+}
+
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectArchiveMutationVariables = Exact<{
@@ -722,6 +742,7 @@ export type TaskListProjectFragment = {
     canModify: boolean
     isLockedByAdmin: boolean
     hasWorkHours: boolean
+    isLockedByUser: boolean
   }>
 }
 
@@ -738,6 +759,7 @@ export type TaskRowFragment = {
   canModify: boolean
   isLockedByAdmin: boolean
   hasWorkHours: boolean
+  isLockedByUser: boolean
 }
 
 export type TaskUpdateMutationVariables = Exact<{
@@ -817,24 +839,6 @@ export type TrackingCancelMutation = {
 }
 
 export type TaskLockButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-
-export type LockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type LockTaskMutation = {
-  __typename?: 'Mutation'
-  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-}
-
-export type UnlockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type UnlockTaskMutation = {
-  __typename?: 'Mutation'
-  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-}
 
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
@@ -985,6 +989,7 @@ export type ProjectQuery = {
       canModify: boolean
       isLockedByAdmin: boolean
       hasWorkHours: boolean
+      isLockedByUser: boolean
     }>
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
@@ -1163,6 +1168,36 @@ export const mockProjectRegenerateInviteKeyMutation = (
     'projectRegenerateInviteKey',
     resolver,
   )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLockTaskMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ taskLock })
+ *   )
+ * })
+ */
+export const mockLockTaskMutation = (
+  resolver: ResponseResolver<GraphQLRequest<LockTaskMutationVariables>, GraphQLContext<LockTaskMutation>, any>,
+) => graphql.mutation<LockTaskMutation, LockTaskMutationVariables>('lockTask', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUnlockTaskMutation((req, res, ctx) => {
+ *   const { taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUnlock })
+ *   )
+ * })
+ */
+export const mockUnlockTaskMutation = (
+  resolver: ResponseResolver<GraphQLRequest<UnlockTaskMutationVariables>, GraphQLContext<UnlockTaskMutation>, any>,
+) => graphql.mutation<UnlockTaskMutation, UnlockTaskMutationVariables>('unlockTask', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1455,36 +1490,6 @@ export const mockTrackingCancelMutation = (
     any
   >,
 ) => graphql.mutation<TrackingCancelMutation, TrackingCancelMutationVariables>('trackingCancel', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockLockTaskMutation((req, res, ctx) => {
- *   const { taskId } = req.variables;
- *   return res(
- *     ctx.data({ taskLock })
- *   )
- * })
- */
-export const mockLockTaskMutation = (
-  resolver: ResponseResolver<GraphQLRequest<LockTaskMutationVariables>, GraphQLContext<LockTaskMutation>, any>,
-) => graphql.mutation<LockTaskMutation, LockTaskMutationVariables>('lockTask', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockUnlockTaskMutation((req, res, ctx) => {
- *   const { taskId } = req.variables;
- *   return res(
- *     ctx.data({ taskUnlock })
- *   )
- * })
- */
-export const mockUnlockTaskMutation = (
-  resolver: ResponseResolver<GraphQLRequest<UnlockTaskMutationVariables>, GraphQLContext<UnlockTaskMutation>, any>,
-) => graphql.mutation<UnlockTaskMutation, UnlockTaskMutationVariables>('unlockTask', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
