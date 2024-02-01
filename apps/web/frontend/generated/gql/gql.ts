@@ -107,7 +107,7 @@ const documents = {
     types.WorkHourUpdateDocument,
   '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...TaskLockButton\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
-  '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n':
+  '\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n':
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
@@ -439,8 +439,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n',
-): (typeof documents)['\n  query accessTokens {\n    accessTokens {\n      createdAt\n      id\n      name\n      ...AccessTokenRow\n    }\n  }\n']
+  source: '\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n',
+): (typeof documents)['\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

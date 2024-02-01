@@ -20,11 +20,7 @@ describe('accessTokenCreateMutationField', () => {
       data: [
         {
           id: '1',
-          name: 'Test User with project membership',
-        },
-        {
-          id: '2',
-          name: 'Test User without project membership',
+          name: 'Test user',
         },
       ],
     })

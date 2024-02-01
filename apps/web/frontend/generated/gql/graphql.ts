@@ -937,7 +937,7 @@ export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 export type AccessTokensQuery = {
   __typename?: 'Query'
   accessTokens: Array<
-    { __typename?: 'AccessToken'; createdAt: string; id: string; name: string } & {
+    { __typename?: 'AccessToken'; id: string } & {
       ' $fragmentRefs'?: { AccessTokenRowFragment: AccessTokenRowFragment }
     }
   >
@@ -3758,9 +3758,7 @@ export const AccessTokensDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AccessTokenRow' } },
               ],
             },

@@ -953,7 +953,7 @@ export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
-  accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+  accessTokens: Array<{ __typename?: 'AccessToken'; id: string; name: string; createdAt: string }>
 }
 
 export type AccessTokenCreateMutationVariables = Exact<{

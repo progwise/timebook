@@ -11,10 +11,10 @@ builder.mutationField('accessTokenCreate', (t) =>
       name: t.arg.string(),
     },
     resolve: async (_source, { name }, context) => {
-      const accessTokenCreateString = uuidv4()
-      const tokenHash = createHash('sha256').update(accessTokenCreateString).digest('hex')
+      const accessTokenString = uuidv4()
+      const tokenHash = createHash('sha256').update(accessTokenString).digest('hex')
       await prisma.accessToken.create({ data: { name, tokenHash, userId: context.session.user.id } })
-      return accessTokenCreateString
+      return accessTokenString
     },
   }),
 )

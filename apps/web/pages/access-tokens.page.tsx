@@ -17,9 +17,7 @@ import { graphql } from '../frontend/generated/gql'
 const AccessTokensQueryDocument = graphql(`
   query accessTokens {
     accessTokens {
-      createdAt
       id
-      name
       ...AccessTokenRow
     }
   }
