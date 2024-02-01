@@ -238,8 +238,8 @@ importers:
   apps/web-e2e:
     dependencies:
       '@playwright/test':
-        specifier: ^1.31.0
-        version: 1.31.0
+        specifier: ^1.40.1
+        version: 1.40.1
       date-fns:
         specifier: ^2.28.0
         version: 2.29.3
@@ -3893,15 +3893,12 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /@playwright/test@1.31.0:
-    resolution: {integrity: sha512-Ys5s/06Dg9g3zAIdCIb/UOBYim3U7Zjb3DvC6XBtnRmnglH5O47iwYzmtxXu9fhSyzI2Jn28apkXIOD81GgCdw==}
-    engines: {node: '>=14'}
+  /@playwright/test@1.40.1:
+    resolution: {integrity: sha512-EaaawMTOeEItCRvfmkI9v6rBkF1svM8wjl/YPRrg2N2Wmp+4qJYkWtJsbew1szfKKDm6fPLy4YAanBhIlf9dWw==}
+    engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      '@types/node': 18.14.6
-      playwright-core: 1.31.0
-    optionalDependencies:
-      fsevents: 2.3.2
+      playwright: 1.40.1
     dev: false
 
   /@pothos/core@3.30.0(graphql@16.6.0):
@@ -11691,10 +11688,20 @@ packages:
       find-up: 5.0.0
     dev: true
 
-  /playwright-core@1.31.0:
-    resolution: {integrity: sha512-/KquBjS5DcASCh8cGeNVHuC0kyb7c9plKTwaKxgOGtxT7+DZO2fjmFvPDBSXslEIK5CeOO/2kk5rOCktFXKEdA==}
-    engines: {node: '>=14'}
+  /playwright-core@1.40.1:
+    resolution: {integrity: sha512-+hkOycxPiV534c4HhpfX6yrlawqVUzITRKwHAmYfmsVreltEl6fAZJ3DPfLMOODw0H3s1Itd6MDCWmP1fl/QvQ==}
+    engines: {node: '>=16'}
     hasBin: true
+    dev: false
+
+  /playwright@1.40.1:
+    resolution: {integrity: sha512-2eHI7IioIpQ0bS1Ovg/HszsN/XKNwEG1kbzSDDmADpclKc7CyqkHw7Mg2JCz/bbCxg25QUPcjksoMW7JcIFQmw==}
+    engines: {node: '>=16'}
+    hasBin: true
+    dependencies:
+      playwright-core: 1.40.1
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: false
 
   /pluralize@8.0.0:

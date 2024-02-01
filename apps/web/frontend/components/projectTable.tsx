@@ -32,7 +32,9 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
           {projects.map((project) => {
             return (
               <tr key={project.id}>
-                <td>{project.title}</td>
+                <td>
+                  <Link href={`/projects/${project.id}`}>{project.title}</Link>
+                </td>
                 <td>
                   {project.startDate} - {project.endDate}
                 </td>
