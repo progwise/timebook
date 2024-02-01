@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { BiExit } from 'react-icons/bi'
+import { BiTrash } from 'react-icons/bi'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -49,7 +49,7 @@ export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonPr
         title="Remove user from project"
         type="button"
       >
-        <BiExit />
+        <BiTrash />
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
