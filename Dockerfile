@@ -1,5 +1,7 @@
 FROM node:19-alpine AS base
- 
+
+ARG NEXT_PUBLIC_APP_URL
+
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
 RUN apk update
