@@ -51,7 +51,6 @@ export const InviteLink = (props: InviteLinkProps) => {
           Copy link
         </button>
         {Role.Admin &&
-
         <button
           className="btn btn-primary btn-sm"
           onClick={handleRegenerateClick}
