@@ -50,15 +50,15 @@ export const InviteLink = (props: InviteLinkProps) => {
         <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
           Copy link
         </button>
-        {Role.Admin &&
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={handleRegenerateClick}
-          disabled={fetchingRegenerateInviteKey}
-        >
-          Regenerate link
-        </button>
-        }
+        {Role.Admin && (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleRegenerateClick}
+            disabled={fetchingRegenerateInviteKey}
+          >
+            Regenerate link
+          </button>
+        )}
       </div>
     </div>
   )
