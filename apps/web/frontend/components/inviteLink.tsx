@@ -3,7 +3,6 @@ import { useMutation } from 'urql'
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 import { Role } from '../generated/gql/graphql'
 
-
 interface InviteLinkProps {
   project: FragmentType<typeof InviteLinkProjectFragment>
 }
@@ -51,7 +50,7 @@ export const InviteLink = (props: InviteLinkProps) => {
         <button className="btn btn-primary btn-sm" onClick={handleCopyInviteLink}>
           Copy link
         </button>
-        {!Role.Admin &&
+        {Role.Admin &&
 
         <button
           className="btn btn-primary btn-sm"
