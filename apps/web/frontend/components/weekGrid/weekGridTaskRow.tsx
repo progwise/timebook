@@ -38,9 +38,10 @@ const WeekGridTaskRowFragment = graphql(`
 
 interface WeekGridTaskRowProps {
   task: FragmentType<typeof WeekGridTaskRowFragment>
+  isDataOutdated?: boolean
 }
 
-export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) => {
+export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const taskDurations = task.workHourOfDays
     .map((workHour) => workHour.workHour?.duration ?? 0)
@@ -63,6 +64,7 @@ export const WeekGridTaskRow = ({ task: taskFragment }: WeekGridTaskRowProps) =>
           taskId={task.id}
           duration={workHourOfDay.workHour?.duration ?? 0}
           key={workHourOfDay.date}
+          isDataOutdated={isDataOutdated}
         />
       ))}
       <div className="px-2 text-right" role="cell">
