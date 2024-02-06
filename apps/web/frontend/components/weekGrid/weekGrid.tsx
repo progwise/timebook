@@ -25,9 +25,10 @@ export interface WeekGridProps {
   tableData: FragmentType<typeof WeekGridProjectFragment>[]
   startDate: Date
   endDate: Date
+  isDataOutdated?: boolean
 }
 
-export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDate }) => {
+export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDate, isDataOutdated = false }) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
@@ -64,7 +65,12 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
 
       <WeekGridDateHeaderRow interval={interval} />
       {projects.map((project) => (
-        <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} />
+        <WeekGridProjectRowGroup
+          interval={interval}
+          project={project}
+          key={project.id}
+          isDataOutdated={isDataOutdated}
+        />
       ))}
       {projects.length === 0 && (
         <div className="z-20 col-span-2 col-start-1 flex justify-center p-5 py-10 text-center">
@@ -77,7 +83,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
           </p>
         </div>
       )}
-      <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
+      <WeekGridFooterRow interval={interval} workHours={allWorkHours} isDataOutdated={isDataOutdated} />
     </div>
   )
 }

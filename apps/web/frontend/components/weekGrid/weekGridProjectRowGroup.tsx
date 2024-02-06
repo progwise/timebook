@@ -27,9 +27,14 @@ export const WeekGridProjectRowGroupFragment = graphql(`
 interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
+  isDataOutdated?: boolean
 }
 
-export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: WeekGridProjectRowGroupProps) => {
+export const WeekGridProjectRowGroup = ({
+  interval,
+  project: projectFragment,
+  isDataOutdated = false,
+}: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
 
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
@@ -60,13 +65,17 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
           className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
-          <FormattedDuration title="" minutes={projectDuration} />
+          {isDataOutdated ? (
+            <div className="skeleton h-8 w-16" />
+          ) : (
+            <FormattedDuration title="" minutes={projectDuration} />
+          )}
         </div>
         <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>
       <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRow task={task} key={task.id} />
+          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />
         ))}
       </div>
     </>
