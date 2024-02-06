@@ -1,4 +1,5 @@
 import { differenceInDays, isWithinInterval } from 'date-fns'
+import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
@@ -51,7 +52,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
 
       {/* adds a background color to the header row and the footer row*/}
       <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full rounded-t-box bg-base-200" />
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full rounded-b-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-1] h-full w-full rounded-b-box bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
@@ -65,6 +66,17 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
       {projects.map((project) => (
         <WeekGridProjectRowGroup interval={interval} project={project} key={project.id} />
       ))}
+      {projects.length === 0 && (
+        <div className="z-20 col-span-2 col-start-1 flex justify-center p-5 py-10 text-center">
+          <p className="max-w-80 text-balance">
+            There are no projects for this week, click{' '}
+            <Link href="/projects/new" className="link link-primary">
+              here
+            </Link>{' '}
+            to add a new project.
+          </p>
+        </div>
+      )}
       <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
     </div>
   )
