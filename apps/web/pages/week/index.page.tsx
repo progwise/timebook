@@ -1,4 +1,4 @@
-import { format, startOfWeek, endOfWeek, isThisWeek } from 'date-fns'
+import { endOfWeek, format, isThisWeek, startOfWeek } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
@@ -37,12 +37,21 @@ const WeekPage = (props: WeekPageProps) => {
     router.push(isThisWeek(newDate) ? '/week' : `/week/${format(newDate, 'yyyy-MM-dd')}`)
   }
 
+  const projectCreateLink = () => {
+    router.push(`/projects/new`)
+  }
+
   return (
     <ProtectedPage>
       <div className="flex justify-center">
         <WeekSelector value={day} onChange={handleWeekChange} />
       </div>
       {weekGridData?.projects && <WeekGrid tableData={weekGridData.projects} startDate={startDate} endDate={endDate} />}
+      {weekGridData?.projects.length === 0 && (
+        <button className="btn btn-outline btn-sm" onClick={projectCreateLink}>
+          Create a project
+        </button>
+      )}
     </ProtectedPage>
   )
 }

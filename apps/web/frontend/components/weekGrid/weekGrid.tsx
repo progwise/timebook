@@ -33,6 +33,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
   const allTasks = projects.flatMap((project) => project.tasks)
   const numberOfRows = 1 + projects.length + allTasks.length + 1
+
   return (
     <div
       role="table"
