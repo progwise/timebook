@@ -1,8 +1,9 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
+import { ParsedUrlQuery } from 'querystring'
 import { Client, Provider } from 'urql'
 
 import '../../frontend/mocks/mockServer'
-import TimePage from './index.page'
+import { default as WeekPage } from './index.page'
 
 const client = new Client({ url: '/api/graphql' })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -13,15 +14,21 @@ jest.mock('next-auth/react', () => ({
   useSession: () => ({ status: 'authenticated', data: { user: { id: '1' } } }),
 }))
 
-describe('The time page...', () => {
+const testRouterQuery: ParsedUrlQuery = {}
+const testRouterPush = jest.fn()
+
+jest.mock('next/router', () => ({ useRouter: () => ({ query: testRouterQuery, push: testRouterPush }) }))
+
+describe('The week page...', () => {
   it('...displays the correct week, start and end dates', () => {
-    render(<TimePage day={new Date('2023-11-17')} />, { wrapper })
+    testRouterQuery.day = '2023-11-15'
+    render(<WeekPage />, { wrapper })
     const dateRangeDisplay = screen.getByText(/november 12 – 18, 2023/i)
     expect(dateRangeDisplay).toBeInTheDocument()
   })
 
   it('...renders the current projects table', async () => {
-    render(<TimePage />, { wrapper })
+    render(<WeekPage />, { wrapper })
     const table = await screen.findByRole('table')
     expect(table).toBeVisible()
     const projectCell = await screen.findByRole('cell', { name: /project 1/i })
@@ -31,7 +38,8 @@ describe('The time page...', () => {
   })
 
   it('should disable inputs when a report is locking the month', async () => {
-    render(<TimePage day={new Date(2023, 1, 27)} />, { wrapper })
+    testRouterQuery.day = '2023-02-27'
+    render(<WeekPage />, { wrapper })
 
     const task1Row = await screen.findByRole('row', { name: /task 1/i })
     const hourInputs = within(task1Row).queryAllByRole('textbox')
