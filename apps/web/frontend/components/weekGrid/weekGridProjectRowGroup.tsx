@@ -65,7 +65,11 @@ export const WeekGridProjectRowGroup = ({
           className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
-          <FormattedDuration title="" minutes={projectDuration} />
+          {isDataOutdated ? (
+            <div className="skeleton h-8 w-16" />
+          ) : (
+            <FormattedDuration title="" minutes={projectDuration} />
+          )}
         </div>
         <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>

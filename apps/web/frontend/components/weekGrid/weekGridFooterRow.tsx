@@ -16,9 +16,14 @@ const WeekGridFooterFragment = graphql(`
 interface WeekGridFooterRowProps {
   interval: { start: Date; end: Date }
   workHours: FragmentType<typeof WeekGridFooterFragment>[]
+  isDataOutdated?: boolean
 }
 
-export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: WeekGridFooterRowProps) => {
+export const WeekGridFooterRow = ({
+  interval,
+  workHours: workHoursFragment,
+  isDataOutdated = false,
+}: WeekGridFooterRowProps) => {
   const workHours = useFragment(WeekGridFooterFragment, workHoursFragment)
   const sumOfDurationsOfTheWeek = workHours
     .map((workHour) => workHour.workHour?.duration ?? 0)
@@ -38,12 +43,20 @@ export const WeekGridFooterRow = ({ interval, workHours: workHoursFragment }: We
             className="z-10 py-3 text-base-content [&:nth-child(2)]:rounded-bl-box [&:nth-last-child(2)]:rounded-br-box"
             key={day.toString()}
           >
-            <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
+            {isDataOutdated ? (
+              <div className="skeleton h-8 w-16" />
+            ) : (
+              <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
+            )}
           </div>
         )
       })}
       <div className="px-2 text-right font-bold">
-        <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
+        {isDataOutdated ? (
+          <div className="skeleton h-8 w-16" />
+        ) : (
+          <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
+        )}
       </div>
     </div>
   )

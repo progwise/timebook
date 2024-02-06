@@ -70,7 +70,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
           isDataOutdated={isDataOutdated}
         />
       ))}
-      <WeekGridFooterRow interval={interval} workHours={allWorkHours} />
+      <WeekGridFooterRow interval={interval} workHours={allWorkHours} isDataOutdated={isDataOutdated} />
     </div>
   )
 }
