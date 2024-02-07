@@ -34,7 +34,10 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
   const numberOfDays = differenceInDays(endDate, startDate) + 1
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
   const allTasks = projects.flatMap((project) => project.tasks)
-  const numberOfRows = 1 + projects.length + allTasks.length + 1
+  const numberOfRows =
+    projects.length === 0
+      ? 3 // header row + one empty row + footer row
+      : 1 + projects.length + allTasks.length + 1 // header row + project rows + task rows + footer row
 
   return (
     <div
@@ -53,7 +56,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
 
       {/* adds a background color to the header row and the footer row*/}
       <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full rounded-t-box bg-base-200" />
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-1] h-full w-full rounded-b-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full rounded-b-box bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
