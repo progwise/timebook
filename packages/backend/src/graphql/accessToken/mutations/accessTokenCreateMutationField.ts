@@ -12,8 +12,8 @@ builder.mutationField('accessTokenCreate', (t) =>
     args: {
       name: t.arg.string(),
     },
+    validate: { schema: accessTokenInputValidations },
     resolve: async (_source, { name }, context) => {
-      accessTokenInputValidations.parse(name)
       const accessTokenString = uuidv4()
       const tokenHash = createHash('sha256').update(accessTokenString).digest('hex')
       await prisma.accessToken.create({ data: { name, tokenHash, userId: context.session.user.id } })
