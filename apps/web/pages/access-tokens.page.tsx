@@ -97,7 +97,7 @@ const AccessTokensPage = (): JSX.Element => {
                 </td>
                 <td>
                   <button
-                    className="btn btn-primary btn-sm w-full"
+                    className="btn btn-primary btn-sm"
                     type="submit"
                     disabled={isSubmitting}
                     form="form-create-access-token"
@@ -105,7 +105,7 @@ const AccessTokensPage = (): JSX.Element => {
                     Add
                   </button>
                   <dialog className="modal" ref={dialogReference}>
-                    <div className="modal-box whitespace-normal text-neutral-content">
+                    <div className="modal-box whitespace-normal text-base-content">
                       <h3 className="mb-4 text-lg font-bold">New access token</h3>
                       <div className="text-base">
                         <p>Here is the new access token:</p>
@@ -116,7 +116,7 @@ const AccessTokensPage = (): JSX.Element => {
                             readOnly
                           />
                           <button
-                            className="btn btn-circle btn-ghost ml-2 text-xl"
+                            className="btn btn-circle btn-ghost gap-2 text-xl"
                             onClick={() => {
                               navigator.clipboard.writeText(tokenCreateData?.accessTokenCreate ?? '')
                               toastSuccess('Successfully copied to clipboard!')

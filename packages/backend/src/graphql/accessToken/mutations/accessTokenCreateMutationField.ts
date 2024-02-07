@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
 import { v4 as uuidv4 } from 'uuid'
 
+import { accessTokenInputValidations } from '@progwise/timebook-validations'
+
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
@@ -11,6 +13,7 @@ builder.mutationField('accessTokenCreate', (t) =>
       name: t.arg.string(),
     },
     resolve: async (_source, { name }, context) => {
+      accessTokenInputValidations.parse(name)
       const accessTokenString = uuidv4()
       const tokenHash = createHash('sha256').update(accessTokenString).digest('hex')
       await prisma.accessToken.create({ data: { name, tokenHash, userId: context.session.user.id } })
