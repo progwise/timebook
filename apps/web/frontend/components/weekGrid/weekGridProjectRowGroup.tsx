@@ -1,6 +1,6 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
-import { BiChevronRight } from 'react-icons/bi'
+import { FaAngleRight } from 'react-icons/fa6'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -50,7 +50,7 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
           className="col-span-2 flex items-center gap-1 self-stretch rounded-l-box bg-base-200 p-2 text-lg font-bold text-base-content"
           role="cell"
         >
-          <BiChevronRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
+          <FaAngleRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
