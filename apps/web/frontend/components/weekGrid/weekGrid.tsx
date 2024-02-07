@@ -76,7 +76,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
         />
       ))}
       {projects.length === 0 && (
-        <div className="z-20 col-span-2 col-start-1 flex justify-center p-5 py-10 text-center">
+        <div className="z-20 col-span-2 col-start-1 flex justify-center px-5 py-10 text-center">
           <p className="max-w-80 text-balance">
             There are no projects for this week, click{' '}
             <Link href="/projects/new" className="link link-primary">
