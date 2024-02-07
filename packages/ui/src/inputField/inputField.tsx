@@ -26,7 +26,7 @@ export const InputField = React.forwardRef(
   (
     {
       placeholder,
-
+      hideLabel = false,
       disabled,
       onChange,
       onKeyPress,
@@ -50,7 +50,7 @@ export const InputField = React.forwardRef(
     const inputId = useId()
     return (
       <div className="form-control w-full">
-        {label && (
+        {label && !hideLabel && (
           <label className="label" htmlFor={inputId}>
             <span className="label-text">{label}</span>
           </label>
