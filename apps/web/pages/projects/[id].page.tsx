@@ -75,8 +75,16 @@ const ProjectDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!projectUpdateResult.error}
       />
-      <TaskList project={selectedProject} />
-      <ProjectMemberList project={selectedProject} />
+      <div role="tablist" className="tabs tabs-lifted tabs-lg">
+        <input type="radio" name="tab" role="tab" className="tab" aria-label="Tasks" defaultChecked />
+        <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+          <TaskList project={selectedProject} />
+        </div>
+        <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
+        <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+          <ProjectMemberList project={selectedProject} />
+        </div>
+      </div>
     </ProtectedPage>
   )
 }
