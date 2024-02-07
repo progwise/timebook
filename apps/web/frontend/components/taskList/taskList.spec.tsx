@@ -47,7 +47,7 @@ describe('TaskList', () => {
     it('should display an error message when submitting a task without a title', async () => {
       render(<TaskList project={project} />, { wrapper })
 
-      const submitButton = screen.getByRole('button', { name: 'Add' })
+      const submitButton = screen.getByRole('button', { name: 'add' })
       const titleInput = screen.getByPlaceholderText('Enter a new task name')
 
       await userEvent.type(titleInput, ' ')
@@ -60,7 +60,7 @@ describe('TaskList', () => {
     it('should submit a new task to the backend and clean the form', async () => {
       render(<TaskList project={project} />, { wrapper })
 
-      const submitButton = screen.getByRole('button', { name: 'Add' })
+      const submitButton = screen.getByRole('button', { name: 'add' })
       const titleInput = screen.getByPlaceholderText('Enter a new task name')
 
       await userEvent.type(titleInput, 'New Task')
