@@ -72,17 +72,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   return (
     <div className={className}>
       <table className="table min-w-full [&_tr]:border-none">
-        <thead>
-          <tr className="font-normal">
-            <td className="text-xl text-base-content">Tasks</td>
-            {project.canModify && (
-              <>
-                <td className="w-px" />
-                <td className="w-px" />
-              </>
-            )}
-          </tr>
-        </thead>
         <tbody>
           {project.tasks.map((task) => (
             <TaskRow task={task} key={task.id} />
@@ -102,7 +91,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   />
                 </form>
               </td>
-              <td>
+              <td className="w-px">
                 <Controller
                   control={control}
                   name="isLocked"
@@ -116,7 +105,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   )}
                 />
               </td>
-              <td>
+              <td className="w-px">
                 <button
                   className="btn btn-primary btn-sm w-full"
                   type="submit"
