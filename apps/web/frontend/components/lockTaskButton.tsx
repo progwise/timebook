@@ -45,7 +45,7 @@ export const LockTaskButton = ({ task: taskFragment }: LockTaskButtonProps): JSX
 
   return (
     <button
-      className={`btn btn-sm btn-block ${task.isLockedByUser ? '' : 'btn-outline'}`}
+      className={`btn btn-sm btn-block ${task.isLockedByUser ? 'btn-warning' : 'btn-success'}`}
       onClick={handleClick}
       disabled={fetching}
     >
