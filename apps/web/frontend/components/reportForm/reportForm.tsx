@@ -1,7 +1,7 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useMemo } from 'react'
-import { BiPrinter } from 'react-icons/bi'
+import { FaPrint } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
@@ -176,7 +176,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   to={to}
                 />
                 <button className="btn btn-md print:hidden" onClick={() => print()}>
-                  <BiPrinter />
+                  <FaPrint />
                 </button>
               </>
             )}

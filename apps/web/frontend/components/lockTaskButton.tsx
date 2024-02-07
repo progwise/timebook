@@ -1,4 +1,4 @@
-import { BiLock, BiLockOpen } from 'react-icons/bi'
+import { FaLock, FaLockOpen } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
@@ -6,23 +6,14 @@ import { FragmentType, graphql, useFragment } from '../generated/gql'
 const LockTaskButtonFragment = graphql(`
   fragment LockTaskButton on Task {
     id
-    isLockedByUser
+    isLockedByAdmin
   }
 `)
 
-const LockTaskMutation = graphql(`
-  mutation lockTask($taskId: ID!) {
-    taskLock(taskId: $taskId) {
+const TaskUpdateMutationDocument = graphql(`
+  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {
+    taskUpdate(id: $id, data: $data) {
       id
-      isLockedByUser
-    }
-  }
-`)
-const UnlockTaskMutation = graphql(`
-  mutation unlockTask($taskId: ID!) {
-    taskUnlock(taskId: $taskId) {
-      id
-      isLockedByUser
     }
   }
 `)
@@ -33,23 +24,24 @@ interface LockTaskButtonProps {
 
 export const LockTaskButton = ({ task: taskFragment }: LockTaskButtonProps): JSX.Element => {
   const task = useFragment(LockTaskButtonFragment, taskFragment)
-  const [{ fetching }, lockTask] = useMutation(LockTaskMutation)
-  const [, unlockTask] = useMutation(UnlockTaskMutation)
+  const [{ fetching }, updateTaskLock] = useMutation(TaskUpdateMutationDocument)
 
   const handleClick = async () => {
-    const variables = { taskId: task.id }
-    try {
-      await (task.isLockedByUser ? unlockTask(variables) : lockTask(variables))
-    } catch {}
+    await updateTaskLock({
+      id: task.id,
+      data: {
+        isLocked: !task.isLockedByAdmin,
+      },
+    })
   }
 
   return (
     <button
-      className={`btn btn-sm btn-block ${task.isLockedByUser ? 'btn-warning' : 'btn-success'}`}
+      className={`btn btn-sm btn-block ${task.isLockedByAdmin ? 'btn-warning' : 'btn-success'}`}
       onClick={handleClick}
       disabled={fetching}
     >
-      {task.isLockedByUser ? <BiLock /> : <BiLockOpen />}
+      {task.isLockedByAdmin ? <FaLock /> : <FaLockOpen />}
     </button>
   )
 }

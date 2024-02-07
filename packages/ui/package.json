@@ -45,6 +45,6 @@
   "dependencies": {
     "csstype": "^3.0.10",
     "react-hot-toast": "^2.4.0",
-    "react-icons": "^4.8.0"
+    "react-icons": "^4.11.0"
   }
 }

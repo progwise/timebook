@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { FaPlus } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -104,12 +105,12 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               </td>
               <td>
                 <button
-                  className="btn btn-primary btn-sm w-full"
+                  className="btn btn-success btn-sm"
                   type="submit"
                   disabled={isSubmitting}
                   form="form-create-task"
                 >
-                  Add
+                  <FaPlus />
                 </button>
               </td>
               <td />

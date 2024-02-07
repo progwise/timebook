@@ -1,5 +1,5 @@
 import { endOfWeek, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
-import { BiCalendarCheck, BiSolidChevronLeft, BiSolidChevronRight } from 'react-icons/bi'
+import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
 import { CalendarSelector } from './calendarSelector'
 
@@ -31,11 +31,11 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           aria-label="Previous week"
           onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
         >
-          <BiSolidChevronLeft />
+          <FaChevronLeft />
         </button>
 
         <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>
-          <BiCalendarCheck />
+          <FaCalendarCheck />
           today
         </button>
         <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
@@ -44,7 +44,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           aria-label="Next week"
           onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
         >
-          <BiSolidChevronRight />
+          <FaChevronRight />
         </button>
       </div>
     </div>

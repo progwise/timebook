@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { BiTrash } from 'react-icons/bi'
+import { FaRegTrashCan } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
@@ -48,7 +48,7 @@ export const DeleteTaskButton = ({ task: taskFragment }: DeleteTaskButtonProps):
         title="Delete the task"
         onClick={() => dialogReference.current?.showModal()}
       >
-        <BiTrash />
+        <FaRegTrashCan />
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
