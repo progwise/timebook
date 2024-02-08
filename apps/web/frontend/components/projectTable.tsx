@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
@@ -8,6 +9,9 @@ export const ProjectTableItemFragment = graphql(`
     title
     startDate
     endDate
+    members {
+      image
+    }
   }
 `)
 
@@ -32,8 +36,20 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
           {projects.map((project) => {
             return (
               <tr key={project.id}>
-                <td>
+                <td className="flex ">
                   <Link href={`/projects/${project.id}`}>{project.title}</Link>
+                  <div className="avatar-group -my-1 -space-x-4 rtl:space-x-reverse ">
+                    {project.members.map((member, index) => (
+                      <Image
+                        key={index}
+                        className="avatar"
+                        width={36}
+                        height={32}
+                        src={member.image ?? 'image of the user'}
+                        alt={member.image ?? 'image of the user'}
+                      />
+                    ))}
+                  </div>
                 </td>
                 <td>
                   {project.startDate} - {project.endDate}

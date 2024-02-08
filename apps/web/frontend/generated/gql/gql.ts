@@ -49,7 +49,7 @@ const documents = {
     types.RemoveUserFromProjectButtonProjectFragmentDoc,
   '\n  mutation projectMembershipDelete($projectId: ID!, $userId: ID!) {\n    projectMembershipDelete(projectId: $projectId, userId: $userId) {\n      id\n    }\n  }\n':
     types.ProjectMembershipDeleteDocument,
-  '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n':
+  '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n    members {\n      image\n    }\n  }\n':
     types.ProjectTableItemFragmentDoc,
   '\n  mutation projectLock($date: MonthInput!, $projectId: ID!) {\n    projectLock(date: $date, projectId: $projectId) {\n      isLocked(date: $date)\n    }\n  }\n':
     types.ProjectLockDocument,
@@ -253,8 +253,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n',
-): (typeof documents)['\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n  }\n']
+  source: '\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n    members {\n      image\n    }\n  }\n',
+): (typeof documents)['\n  fragment ProjectTableItem on Project {\n    id\n    title\n    startDate\n    endDate\n    members {\n      image\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

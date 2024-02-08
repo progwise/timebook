@@ -605,6 +605,7 @@ export type ProjectTableItemFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
+  members: Array<{ __typename?: 'User'; image?: string | null }>
 } & { ' $fragmentName'?: 'ProjectTableItemFragment' }
 
 export type ProjectLockMutationVariables = Exact<{
@@ -1346,6 +1347,14 @@ export const ProjectTableItemFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'image' } }],
+            },
+          },
         ],
       },
     },
@@ -4031,6 +4040,14 @@ export const MyProjectsDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'image' } }],
+            },
+          },
         ],
       },
     },

@@ -578,6 +578,7 @@ export type ProjectTableItemFragment = {
   title: string
   startDate?: string | null
   endDate?: string | null
+  members: Array<{ __typename?: 'User'; image?: string | null }>
 }
 
 export type ProjectLockMutationVariables = Exact<{
@@ -981,6 +982,7 @@ export type MyProjectsQuery = {
     title: string
     startDate?: string | null
     endDate?: string | null
+    members: Array<{ __typename?: 'User'; image?: string | null }>
   }>
 }
 
