@@ -108,7 +108,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <BiCalendarAlt title="Calendar icon" />
+          <BiCalendarAlt />
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 

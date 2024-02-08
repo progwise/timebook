@@ -44,12 +44,12 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
       role="table"
       className="relative grid items-center [&_div]:border-base-content"
       style={{
-        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 2}, min-content)`,
+        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 1}, min-content)`,
         gridTemplateRows: `repeat(${numberOfRows}, min-content)`,
       }}
     >
       {/* adds a border around week day headers, all hour inputs and week day footers */}
-      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-3] h-full w-full rounded-box border opacity-50" />
+      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-2] h-full w-full rounded-box border opacity-50" />
 
       {/* adds a border around project row groups and task rows */}
       <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] h-full w-full rounded-box border opacity-50" />

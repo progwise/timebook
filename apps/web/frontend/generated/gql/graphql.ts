@@ -72,10 +72,6 @@ export type Mutation = {
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
-  /** Lock a task for the current user */
-  taskLock: Task
-  /** Unlock a task for the current user */
-  taskUnlock: Task
   /** Update a task */
   taskUpdate: Task
   /** The ongoing time tracking will be deleted */
@@ -165,14 +161,6 @@ export type MutationTaskCreateArgs = {
 
 export type MutationTaskDeleteArgs = {
   id: Scalars['ID']
-}
-
-export type MutationTaskLockArgs = {
-  taskId: Scalars['ID']
-}
-
-export type MutationTaskUnlockArgs = {
-  taskId: Scalars['ID']
 }
 
 export type MutationTaskUpdateArgs = {
@@ -366,8 +354,6 @@ export type Task = ModifyInterface & {
   isLocked: Scalars['Boolean']
   /** Is the task locked by an admin */
   isLockedByAdmin: Scalars['Boolean']
-  /** Is the task locked by the user */
-  isLockedByUser: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
@@ -803,7 +789,7 @@ export type TrackingButtonsTrackingFragment = {
   task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
 } & { ' $fragmentName'?: 'TrackingButtonsTrackingFragment' }
 
-export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string; isLocked: boolean } & {
+export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string } & {
   ' $fragmentName'?: 'TrackingButtonsTaskFragment'
 }
 
@@ -828,28 +814,6 @@ export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
 export type TrackingCancelMutation = {
   __typename?: 'Mutation'
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
-}
-
-export type TaskLockButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean } & {
-  ' $fragmentName'?: 'TaskLockButtonFragment'
-}
-
-export type LockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type LockTaskMutation = {
-  __typename?: 'Mutation'
-  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-}
-
-export type UnlockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type UnlockTaskMutation = {
-  __typename?: 'Mutation'
-  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
 }
 
 export type WeekGridProjectFragment = ({
@@ -925,12 +889,9 @@ export type WeekGridTaskRowFragment = ({
         ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment }
       })
     | null
-} & {
-  ' $fragmentRefs'?: {
-    TrackingButtonsTaskFragment: TrackingButtonsTaskFragment
-    TaskLockButtonFragment: TaskLockButtonFragment
-  }
-}) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
+} & { ' $fragmentRefs'?: { TrackingButtonsTaskFragment: TrackingButtonsTaskFragment } }) & {
+  ' $fragmentName'?: 'WeekGridTaskRowFragment'
+}
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1686,33 +1647,10 @@ export const TrackingButtonsTaskFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TrackingButtonsTask' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-        ],
-      },
+      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
   ],
 } as unknown as DocumentNode<TrackingButtonsTaskFragment, unknown>
-export const TaskLockButtonFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'TaskLockButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<TaskLockButtonFragment, unknown>
 export const WeekGridTaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1789,7 +1727,6 @@ export const WeekGridTaskRowFragmentDoc = {
           },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -1827,25 +1764,7 @@ export const WeekGridTaskRowFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TrackingButtonsTask' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'TaskLockButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-        ],
-      },
+      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
   ],
 } as unknown as DocumentNode<WeekGridTaskRowFragment, unknown>
@@ -1939,25 +1858,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TrackingButtonsTask' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'TaskLockButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-        ],
-      },
+      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
     {
       kind: 'FragmentDefinition',
@@ -2032,7 +1933,6 @@ export const WeekGridProjectRowGroupFragmentDoc = {
           },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -2126,25 +2026,7 @@ export const WeekGridProjectFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TrackingButtonsTask' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'TaskLockButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-        ],
-      },
+      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
     {
       kind: 'FragmentDefinition',
@@ -2219,7 +2101,6 @@ export const WeekGridProjectFragmentDoc = {
           },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },
@@ -3605,86 +3486,6 @@ export const TrackingCancelDocument = {
     },
   ],
 } as unknown as DocumentNode<TrackingCancelMutation, TrackingCancelMutationVariables>
-export const LockTaskDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'lockTask' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'taskLock' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'taskId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<LockTaskMutation, LockTaskMutationVariables>
-export const UnlockTaskDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'unlockTask' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'taskUnlock' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'taskId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UnlockTaskMutation, UnlockTaskMutationVariables>
 export const WorkHourUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -4481,25 +4282,7 @@ export const WeekGridDocument = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TrackingButtonsTask' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'TaskLockButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByUser' } },
-        ],
-      },
+      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
     {
       kind: 'FragmentDefinition',
@@ -4574,7 +4357,6 @@ export const WeekGridDocument = {
           },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TaskLockButton' } },
         ],
       },
     },

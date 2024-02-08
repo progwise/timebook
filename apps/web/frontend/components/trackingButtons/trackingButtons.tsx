@@ -22,7 +22,6 @@ const TrackingButtonsTrackingFragment = graphql(`
 const TrackingButtonsTaskFragment = graphql(`
   fragment TrackingButtonsTask on Task {
     id
-    isLocked
   }
 `)
 
@@ -124,7 +123,6 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
       <button
         className="btn btn-square btn-outline btn-primary btn-xs"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
-        disabled={taskToTrack.isLocked}
       >
         <BiPlay />
       </button>

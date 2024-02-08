@@ -71,7 +71,6 @@ export const WeekGridProjectRowGroup = ({
             <FormattedDuration title="" minutes={projectDuration} />
           )}
         </div>
-        <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>
       <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (

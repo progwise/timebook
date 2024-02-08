@@ -72,20 +72,10 @@ export const Task = builder.prismaObject('Task', {
       resolve: async (query, task, _argument, context) =>
         prisma.tracking.findUnique({ ...query, where: { userId: context.session.user.id, taskId: task.id } }),
     }),
-    isLockedByUser: t.withAuth({ isLoggedIn: true }).boolean({
-      select: { id: true },
-      description: 'Is the task locked by the user',
-      resolve: async (task, _arguments, context) => {
-        const lockedTask = await prisma.lockedTask.findUnique({
-          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
-        })
-        return !!lockedTask
-      },
-    }),
     isLockedByAdmin: t.exposeBoolean('isLocked', { description: 'Is the task locked by an admin' }),
     isLocked: t.withAuth({ isLoggedIn: true }).boolean({
       select: { projectId: true, id: true, isLocked: true, project: { select: { archivedAt: true } } },
-      resolve: async (task, _arguments, context) => {
+      resolve: async (task) => {
         if (task.isLocked || task.project.archivedAt) {
           return true
         }
@@ -100,14 +90,7 @@ export const Task = builder.prismaObject('Task', {
           },
         })
 
-        if (lockedMonth) {
-          return true
-        }
-
-        const lockedTask = await prisma.lockedTask.findUnique({
-          where: { taskId_userId: { taskId: task.id, userId: context.session.user.id } },
-        })
-        return !!lockedTask
+        return !!lockedMonth
       },
     }),
   }),
