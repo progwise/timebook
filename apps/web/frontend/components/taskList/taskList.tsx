@@ -109,7 +109,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                   type="submit"
                   disabled={isSubmitting}
                   form="form-create-task"
-                  aria-label="add"
+                  aria-label="Add"
                 >
                   <FaPlus />
                 </button>
