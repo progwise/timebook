@@ -512,6 +512,15 @@ export type ProjectRegenerateInviteKeyMutation = {
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
+export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean }
+
+export type TaskUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TaskUpdateInput
+}>
+
+export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
+
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectArchiveMutationVariables = Exact<{
@@ -739,13 +748,6 @@ export type TaskRowFragment = {
   isLockedByAdmin: boolean
   hasWorkHours: boolean
 }
-
-export type TaskUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
-  data: TaskUpdateInput
-}>
-
-export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
 
 export type SheetDayRowFragment = {
   __typename?: 'WorkHour'
@@ -1168,6 +1170,21 @@ export const mockProjectRegenerateInviteKeyMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockTaskUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUpdate })
+ *   )
+ * })
+ */
+export const mockTaskUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
+) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockProjectArchiveMutation((req, res, ctx) => {
  *   const { projectId } = req.variables;
  *   return res(
@@ -1360,21 +1377,6 @@ export const mockReportUsersQuery = (
 export const mockTaskCreateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskCreateMutationVariables>, GraphQLContext<TaskCreateMutation>, any>,
 ) => graphql.mutation<TaskCreateMutation, TaskCreateMutationVariables>('taskCreate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockTaskUpdateMutation((req, res, ctx) => {
- *   const { id, data } = req.variables;
- *   return res(
- *     ctx.data({ taskUpdate })
- *   )
- * })
- */
-export const mockTaskUpdateMutation = (
-  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
-) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

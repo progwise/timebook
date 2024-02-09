@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { BiPlus } from 'react-icons/bi'
+import { FaPlus } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -116,7 +116,7 @@ export const AddProjectMemberForm = (props: AddProjectMemberFormProps) => {
       />
 
       <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-sm">
-        <BiPlus />
+        <FaPlus />
         Add member
       </button>
     </form>
