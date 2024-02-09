@@ -42,6 +42,10 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Create an access token for the signed in user */
+  accessTokenCreate: Scalars['String']
+  /** Delete an access token for the signed in user */
+  accessTokenDelete: AccessToken
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -88,6 +92,14 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationAccessTokenCreateArgs = {
+  name: Scalars['String']
+}
+
+export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationProjectArchiveArgs = {
@@ -448,6 +460,17 @@ export type WorkHourOfDay = {
   workHour?: Maybe<WorkHour>
 }
 
+export type AccessTokenRowFragment = { __typename?: 'AccessToken'; id: string; name: string; createdAt: string }
+
+export type AccessTokenDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type AccessTokenDeleteMutation = {
+  __typename?: 'Mutation'
+  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
+}
+
 export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
 
 export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
@@ -488,6 +511,15 @@ export type ProjectRegenerateInviteKeyMutation = {
   __typename?: 'Mutation'
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
+
+export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean }
+
+export type TaskUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TaskUpdateInput
+}>
+
+export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
 
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
@@ -717,13 +749,6 @@ export type TaskRowFragment = {
   hasWorkHours: boolean
 }
 
-export type TaskUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
-  data: TaskUpdateInput
-}>
-
-export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
-
 export type SheetDayRowFragment = {
   __typename?: 'WorkHour'
   id: string
@@ -930,8 +955,14 @@ export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
-  accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+  accessTokens: Array<{ __typename?: 'AccessToken'; id: string; name: string; createdAt: string }>
 }
+
+export type AccessTokenCreateMutationVariables = Exact<{
+  name: Scalars['String']
+}>
+
+export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -1059,6 +1090,25 @@ export type WeekGridQuery = {
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockAccessTokenDeleteMutation((req, res, ctx) => {
+ *   const { id } = req.variables;
+ *   return res(
+ *     ctx.data({ accessTokenDelete })
+ *   )
+ * })
+ */
+export const mockAccessTokenDeleteMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<AccessTokenDeleteMutationVariables>,
+    GraphQLContext<AccessTokenDeleteMutation>,
+    any
+  >,
+) => graphql.mutation<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>('accessTokenDelete', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockProjectMembershipInviteByEmailMutation((req, res, ctx) => {
  *   const { email, projectId } = req.variables;
  *   return res(
@@ -1115,6 +1165,21 @@ export const mockProjectRegenerateInviteKeyMutation = (
     'projectRegenerateInviteKey',
     resolver,
   )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUpdate })
+ *   )
+ * })
+ */
+export const mockTaskUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
+) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1317,21 +1382,6 @@ export const mockTaskCreateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockTaskUpdateMutation((req, res, ctx) => {
- *   const { id, data } = req.variables;
- *   return res(
- *     ctx.data({ taskUpdate })
- *   )
- * })
- */
-export const mockTaskUpdateMutation = (
-  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
-) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
  * mockWorkHoursQuery((req, res, ctx) => {
  *   const { from, to } = req.variables;
  *   return res(
@@ -1470,6 +1520,25 @@ export const mockWorkHourUpdateMutation = (
 export const mockAccessTokensQuery = (
   resolver: ResponseResolver<GraphQLRequest<AccessTokensQueryVariables>, GraphQLContext<AccessTokensQuery>, any>,
 ) => graphql.query<AccessTokensQuery, AccessTokensQueryVariables>('accessTokens', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockAccessTokenCreateMutation((req, res, ctx) => {
+ *   const { name } = req.variables;
+ *   return res(
+ *     ctx.data({ accessTokenCreate })
+ *   )
+ * })
+ */
+export const mockAccessTokenCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<AccessTokenCreateMutationVariables>,
+    GraphQLContext<AccessTokenCreateMutation>,
+    any
+  >,
+) => graphql.mutation<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>('accessTokenCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -1,4 +1,4 @@
-import { BiLock, BiLockOpen } from 'react-icons/bi'
+import { FaLock, FaLockOpen } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { graphql } from '../../generated/gql'
@@ -42,11 +42,11 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
     <button onClick={handleClick} disabled={fetching} className="btn btn-md">
       {project.isLocked ? (
         <>
-          <BiLockOpen /> Unlock
+          <FaLockOpen /> Unlocked
         </>
       ) : (
         <>
-          <BiLock /> Lock
+          <FaLock /> Locked
         </>
       )}
     </button>

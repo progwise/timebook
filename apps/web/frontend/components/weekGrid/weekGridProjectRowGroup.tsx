@@ -1,6 +1,6 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
-import { BiChevronRight } from 'react-icons/bi'
+import { FaAngleRight } from 'react-icons/fa6'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -27,9 +27,14 @@ export const WeekGridProjectRowGroupFragment = graphql(`
 interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
+  isDataOutdated?: boolean
 }
 
-export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: WeekGridProjectRowGroupProps) => {
+export const WeekGridProjectRowGroup = ({
+  interval,
+  project: projectFragment,
+  isDataOutdated = false,
+}: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
 
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
@@ -50,7 +55,7 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
           className="col-span-2 flex items-center gap-1 self-stretch rounded-l-box bg-base-200 p-2 text-lg font-bold text-base-content"
           role="cell"
         >
-          <BiChevronRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
+          <FaAngleRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
           {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
         </div>
         {eachDayOfInterval(interval).map((day) => (
@@ -60,13 +65,17 @@ export const WeekGridProjectRowGroup = ({ interval, project: projectFragment }: 
           className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
-          <FormattedDuration title="" minutes={projectDuration} />
+          {isDataOutdated ? (
+            <div className="skeleton h-8 w-16" />
+          ) : (
+            <FormattedDuration title="" minutes={projectDuration} />
+          )}
         </div>
         <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>
       <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRow task={task} key={task.id} />
+          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />
         ))}
       </div>
     </>

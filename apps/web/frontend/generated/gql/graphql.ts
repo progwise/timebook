@@ -40,6 +40,10 @@ export type MonthInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  /** Create an access token for the signed in user */
+  accessTokenCreate: Scalars['String']
+  /** Delete an access token for the signed in user */
+  accessTokenDelete: AccessToken
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -86,6 +90,14 @@ export type Mutation = {
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
   workHourUpdate: WorkHour
+}
+
+export type MutationAccessTokenCreateArgs = {
+  name: Scalars['String']
+}
+
+export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationProjectArchiveArgs = {
@@ -446,6 +458,19 @@ export type WorkHourOfDay = {
   workHour?: Maybe<WorkHour>
 }
 
+export type AccessTokenRowFragment = { __typename?: 'AccessToken'; id: string; name: string; createdAt: string } & {
+  ' $fragmentName'?: 'AccessTokenRowFragment'
+}
+
+export type AccessTokenDeleteMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type AccessTokenDeleteMutation = {
+  __typename?: 'Mutation'
+  accessTokenDelete: { __typename?: 'AccessToken'; id: string }
+}
+
 export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string } & {
   ' $fragmentName'?: 'AddProjectMemberFormFragment'
 }
@@ -492,6 +517,17 @@ export type ProjectRegenerateInviteKeyMutation = {
   __typename?: 'Mutation'
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
+
+export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean } & {
+  ' $fragmentName'?: 'LockTaskButtonFragment'
+}
+
+export type TaskUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TaskUpdateInput
+}>
+
+export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
 
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string } & {
   ' $fragmentName'?: 'ArchiveProjectButtonFragment'
@@ -727,16 +763,12 @@ export type TaskRowFragment = ({
   title: string
   canModify: boolean
   isLockedByAdmin: boolean
-} & { ' $fragmentRefs'?: { DeleteTaskButtonFragment: DeleteTaskButtonFragment } }) & {
-  ' $fragmentName'?: 'TaskRowFragment'
-}
-
-export type TaskUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
-  data: TaskUpdateInput
-}>
-
-export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
+} & {
+  ' $fragmentRefs'?: {
+    DeleteTaskButtonFragment: DeleteTaskButtonFragment
+    LockTaskButtonFragment: LockTaskButtonFragment
+  }
+}) & { ' $fragmentName'?: 'TaskRowFragment' }
 
 export type SheetDayRowFragment = {
   __typename?: 'WorkHour'
@@ -911,8 +943,18 @@ export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
 export type AccessTokensQuery = {
   __typename?: 'Query'
-  accessTokens: Array<{ __typename?: 'AccessToken'; createdAt: string; id: string; name: string }>
+  accessTokens: Array<
+    { __typename?: 'AccessToken'; id: string } & {
+      ' $fragmentRefs'?: { AccessTokenRowFragment: AccessTokenRowFragment }
+    }
+  >
 }
+
+export type AccessTokenCreateMutationVariables = Exact<{
+  name: Scalars['String']
+}>
+
+export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
@@ -989,6 +1031,24 @@ export type WeekGridQuery = {
   >
 }
 
+export const AccessTokenRowFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AccessTokenRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'AccessToken' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokenRowFragment, unknown>
 export const DeleteProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1437,6 +1497,23 @@ export const DeleteTaskButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<DeleteTaskButtonFragment, unknown>
+export const LockTaskButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'LockTaskButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LockTaskButtonFragment, unknown>
 export const TaskRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1452,6 +1529,7 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'LockTaskButton' } },
         ],
       },
     },
@@ -1465,6 +1543,18 @@ export const TaskRowFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'LockTaskButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
         ],
       },
     },
@@ -1511,6 +1601,18 @@ export const TaskListProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'LockTaskButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -1521,6 +1623,7 @@ export const TaskListProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'LockTaskButton' } },
         ],
       },
     },
@@ -2244,6 +2347,43 @@ export const WeekGridProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekGridProjectFragment, unknown>
+export const AccessTokenDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'accessTokenDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessTokenDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokenDeleteMutation, AccessTokenDeleteMutationVariables>
 export const ProjectMembershipInviteByEmailDocument = {
   kind: 'Document',
   definitions: [
@@ -2454,6 +2594,53 @@ export const ProjectRegenerateInviteKeyDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>
+export const TaskUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'taskUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'TaskUpdateInput' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'taskUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskUpdateMutation, TaskUpdateMutationVariables>
 export const ProjectArchiveDocument = {
   kind: 'Document',
   definitions: [
@@ -3195,53 +3382,6 @@ export const TaskCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskCreateMutation, TaskCreateMutationVariables>
-export const TaskUpdateDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'taskUpdate' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'TaskUpdateInput' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'taskUpdate' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'data' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<TaskUpdateMutation, TaskUpdateMutationVariables>
 export const WorkHoursDocument = {
   kind: 'Document',
   definitions: [
@@ -3668,17 +3808,62 @@ export const AccessTokensDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AccessTokenRow' } },
               ],
             },
           },
         ],
       },
     },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AccessTokenRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'AccessToken' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+        ],
+      },
+    },
   ],
 } as unknown as DocumentNode<AccessTokensQuery, AccessTokensQueryVariables>
+export const AccessTokenCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'accessTokenCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'accessTokenCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'name' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [
@@ -3734,6 +3919,18 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'LockTaskButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'TaskRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
@@ -3744,6 +3941,7 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteTaskButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'LockTaskButton' } },
         ],
       },
     },

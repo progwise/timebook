@@ -9,6 +9,7 @@ import { taskInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TaskUpdateInput } from '../../generated/gql/graphql'
 import { DeleteTaskButton } from '../deleteTaskButton'
+import { LockTaskButton } from '../lockTaskButton'
 
 export const TaskRowFragment = graphql(`
   fragment TaskRow on Task {
@@ -17,6 +18,7 @@ export const TaskRowFragment = graphql(`
     canModify
     isLockedByAdmin
     ...DeleteTaskButton
+    ...LockTaskButton
   }
 `)
 
@@ -35,7 +37,6 @@ interface TaskRowProps {
 export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const task = useFragment(TaskRowFragment, taskFragment)
   const [{ fetching: fetchingTitle }, updateTaskTitle] = useMutation(TaskUpdateMutationDocument)
-  const [{ fetching: fetchingIsLocked }, updateIsLocked] = useMutation(TaskUpdateMutationDocument)
   const {
     setError,
     register,
@@ -67,10 +68,6 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
     }
   }, [isSubmitSuccessful, reset])
 
-  const handleLockChange = async (isLocked: boolean) => {
-    await updateIsLocked({ id: task.id, data: { isLocked } })
-  }
-
   return (
     <tr>
       <td className="flex items-center p-1">
@@ -86,15 +83,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
       {task.canModify && (
         <>
           <td>
-            <div>
-              <input
-                type="checkbox"
-                checked={task.isLockedByAdmin}
-                onChange={() => handleLockChange(!task.isLockedByAdmin)}
-                disabled={fetchingIsLocked}
-                className="toggle toggle-warning"
-              />
-            </div>
+            <LockTaskButton task={task} />
           </td>
           <td>
             <DeleteTaskButton task={task} />

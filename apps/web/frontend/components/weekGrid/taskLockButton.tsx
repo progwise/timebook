@@ -1,4 +1,4 @@
-import { BiLock, BiLockOpen } from 'react-icons/bi'
+import { FaLock, FaLockOpen } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -46,7 +46,7 @@ export const TaskLockButton = (props: TaskLockButtonProps) => {
       onClick={handleClick}
       className={`btn btn-square btn-error  btn-xs ${task.isLockedByUser ? '' : 'btn-outline'}`}
     >
-      {task.isLockedByUser ? <BiLock /> : <BiLockOpen />}
+      {task.isLockedByUser ? <FaLock /> : <FaLockOpen />}
     </button>
   )
 }
