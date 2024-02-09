@@ -24,10 +24,10 @@ interface LockTaskButtonProps {
 
 export const LockTaskButton = ({ task: taskFragment }: LockTaskButtonProps): JSX.Element => {
   const task = useFragment(LockTaskButtonFragment, taskFragment)
-  const [{ fetching }, updateTaskLock] = useMutation(TaskUpdateMutationDocument)
+  const [{ fetching }, updateTask] = useMutation(TaskUpdateMutationDocument)
 
   const handleClick = async () => {
-    await updateTaskLock({
+    await updateTask({
       id: task.id,
       data: {
         isLocked: !task.isLockedByAdmin,
@@ -37,7 +37,7 @@ export const LockTaskButton = ({ task: taskFragment }: LockTaskButtonProps): JSX
 
   return (
     <button
-      className={`btn btn-sm btn-block ${task.isLockedByAdmin ? 'btn-warning' : 'btn-success'}`}
+      className={`btn btn-sm ${task.isLockedByAdmin ? 'btn-warning' : 'btn-success'}`}
       onClick={handleClick}
       disabled={fetching}
     >
