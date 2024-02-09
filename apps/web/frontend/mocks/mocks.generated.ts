@@ -235,6 +235,7 @@ export type ProjectTasksArgs = {
 
 export enum ProjectFilter {
   Active = 'ACTIVE',
+  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
   All = 'ALL',
   Archived = 'ARCHIVED',
   Future = 'FUTURE',

@@ -80,11 +80,11 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const from = startOfMonth(date)
   const to = endOfMonth(date)
   const fromString = formatISO(from, { representation: 'date' })
-  const endString = formatISO(to, { representation: 'date' })
+  const toString = formatISO(to, { representation: 'date' })
 
   const [{ data: projectsData }] = useQuery({
     query: ReportProjectsQueryDocument,
-    variables: { from: fromString, filter: ProjectFilter.All, date: { year, month } },
+    variables: { from: fromString, to: toString, filter: ProjectFilter.ActiveOrArchived, date: { year, month } },
   })
   const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
@@ -110,7 +110,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       <div className="mb-2 border-b border-base-content">
         <div className="flex items-center justify-between">
           <PageHeading>
-            Detailed time report: {fromString} — {endString}
+            Detailed time report: {fromString} — {toString}
           </PageHeading>
         </div>
       </div>
