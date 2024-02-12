@@ -9,16 +9,6 @@ export const WorkHourOfDayAndTask = builder.objectType('WorkHourOfDay', {
     isLocked: t.field({
       type: 'Boolean',
       resolve: async (workHour) => {
-        const isTaskLockedByUser = Boolean(
-          await prisma.lockedTask.findUnique({
-            where: { taskId_userId: { taskId: workHour.taskId, userId: workHour.userId } },
-          }),
-        )
-
-        if (isTaskLockedByUser) {
-          return true
-        }
-
         const task = await prisma.task.findUniqueOrThrow({
           where: { id: workHour.taskId },
           select: {

@@ -54,28 +54,6 @@ describe('WorkHourOfDay', () => {
     })
   })
 
-  it('returns locked when task is locked by user', async () => {
-    await prisma.lockedTask.create({ data: { taskId: 'T1', userId: '1' } })
-
-    const response = await testServer.executeOperation({ query: projectsQuery })
-
-    expect(response.errors).toBeUndefined()
-    expect(response.data).toEqual({
-      projects: [
-        {
-          tasks: [
-            {
-              workHourOfDays: [
-                { date: '2022-12-31', isLocked: true, workHour: null },
-                { date: '2023-01-01', isLocked: true, workHour: null },
-              ],
-            },
-          ],
-        },
-      ],
-    })
-  })
-
   it('returns locked when task is locked by admin', async () => {
     await prisma.task.update({ where: { id: 'T1' }, data: { isLocked: true } })
 
