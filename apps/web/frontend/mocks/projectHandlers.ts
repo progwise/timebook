@@ -110,6 +110,7 @@ export const projectHandlers = [
                   isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
                 })),
                 project: { id: testProject1.id, isProjectMember: true, isArchived: false },
+                isLocked: false,
                 isLockedByAdmin: false,
               },
             ],
