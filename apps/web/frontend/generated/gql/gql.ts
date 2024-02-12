@@ -30,6 +30,9 @@ const documents = {
     types.InviteLinkProjectFragmentFragmentDoc,
   '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n':
     types.ProjectRegenerateInviteKeyDocument,
+  '\n  fragment LockTaskButton on Task {\n    id\n    isLockedByAdmin\n  }\n': types.LockTaskButtonFragmentDoc,
+  '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
+    types.TaskUpdateDocument,
   '\n  fragment ArchiveProjectButton on Project {\n    id\n    title\n  }\n': types.ArchiveProjectButtonFragmentDoc,
   '\n  mutation projectArchive($projectId: ID!) {\n    projectArchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectArchiveDocument,
@@ -73,10 +76,8 @@ const documents = {
     types.TaskListProjectFragmentDoc,
   '\n  mutation taskCreate($data: TaskInput!) {\n    taskCreate(data: $data) {\n      id\n    }\n  }\n':
     types.TaskCreateDocument,
-  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n':
+  '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n    ...LockTaskButton\n  }\n':
     types.TaskRowFragmentDoc,
-  '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
-    types.TaskUpdateDocument,
   '\n  fragment SheetDayRow on WorkHour {\n    id\n    duration\n    project {\n      title\n    }\n    task {\n      title\n    }\n    user {\n      name\n    }\n  }\n':
     types.SheetDayRowFragmentDoc,
   '\n  query workHours($from: Date!, $to: Date) {\n    workHours(from: $from, to: $to) {\n      date\n      ...SheetDayRow\n    }\n  }\n':
@@ -85,7 +86,7 @@ const documents = {
     types.CurrentTrackingDocument,
   '\n  fragment TrackingButtonsTracking on Tracking {\n    start\n    task {\n      id\n      title\n      project {\n        title\n      }\n    }\n  }\n':
     types.TrackingButtonsTrackingFragmentDoc,
-  '\n  fragment TrackingButtonsTask on Task {\n    id\n  }\n': types.TrackingButtonsTaskFragmentDoc,
+  '\n  fragment TrackingButtonsTask on Task {\n    id\n    isLocked\n  }\n': types.TrackingButtonsTaskFragmentDoc,
   '\n  mutation trackingStart($taskId: ID!) {\n    trackingStart(taskId: $taskId) {\n      start\n      task {\n        id\n      }\n    }\n  }\n':
     types.TrackingStartDocument,
   '\n  mutation trackingStop {\n    trackingStop {\n      id\n      task {\n        id\n      }\n    }\n  }\n':
@@ -184,6 +185,18 @@ export function graphql(
 export function graphql(
   source: '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n',
 ): (typeof documents)['\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment LockTaskButton on Task {\n    id\n    isLockedByAdmin\n  }\n',
+): (typeof documents)['\n  fragment LockTaskButton on Task {\n    id\n    isLockedByAdmin\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -326,14 +339,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n',
-): (typeof documents)['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n']
+  source: '\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n    ...LockTaskButton\n  }\n',
+): (typeof documents)['\n  fragment TaskRow on Task {\n    id\n    title\n    canModify\n    isLockedByAdmin\n    ...DeleteTaskButton\n    ...LockTaskButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -362,8 +369,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment TrackingButtonsTask on Task {\n    id\n  }\n',
-): (typeof documents)['\n  fragment TrackingButtonsTask on Task {\n    id\n  }\n']
+  source: '\n  fragment TrackingButtonsTask on Task {\n    id\n    isLocked\n  }\n',
+): (typeof documents)['\n  fragment TrackingButtonsTask on Task {\n    id\n    isLocked\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -498,6 +498,15 @@ export type ProjectRegenerateInviteKeyMutation = {
   projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
+export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean }
+
+export type TaskUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: TaskUpdateInput
+}>
+
+export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
+
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
 export type ProjectArchiveMutationVariables = Exact<{
@@ -726,13 +735,6 @@ export type TaskRowFragment = {
   hasWorkHours: boolean
 }
 
-export type TaskUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
-  data: TaskUpdateInput
-}>
-
-export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
-
 export type SheetDayRowFragment = {
   __typename?: 'WorkHour'
   id: string
@@ -777,7 +779,7 @@ export type TrackingButtonsTrackingFragment = {
   task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
 }
 
-export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string }
+export type TrackingButtonsTaskFragment = { __typename?: 'Task'; id: string; isLocked: boolean }
 
 export type TrackingStartMutationVariables = Exact<{
   taskId: Scalars['ID']
@@ -812,6 +814,7 @@ export type WeekGridProjectFragment = {
     id: string
     title: string
     isLockedByAdmin: boolean
+    isLocked: boolean
     workHourOfDays: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
@@ -850,6 +853,7 @@ export type WeekGridProjectRowGroupFragment = {
     id: string
     title: string
     isLockedByAdmin: boolean
+    isLocked: boolean
     workHourOfDays: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
@@ -888,6 +892,7 @@ export type WeekGridTaskRowFragment = {
   id: string
   title: string
   isLockedByAdmin: boolean
+  isLocked: boolean
   project: {
     __typename?: 'Project'
     startDate?: string | null
@@ -1019,6 +1024,7 @@ export type WeekGridQuery = {
       id: string
       title: string
       isLockedByAdmin: boolean
+      isLocked: boolean
       workHourOfDays: Array<{
         __typename?: 'WorkHourOfDay'
         date: string
@@ -1121,6 +1127,21 @@ export const mockProjectRegenerateInviteKeyMutation = (
     'projectRegenerateInviteKey',
     resolver,
   )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ taskUpdate })
+ *   )
+ * })
+ */
+export const mockTaskUpdateMutation = (
+  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
+) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1318,21 +1339,6 @@ export const mockReportUsersQuery = (
 export const mockTaskCreateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskCreateMutationVariables>, GraphQLContext<TaskCreateMutation>, any>,
 ) => graphql.mutation<TaskCreateMutation, TaskCreateMutationVariables>('taskCreate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockTaskUpdateMutation((req, res, ctx) => {
- *   const { id, data } = req.variables;
- *   return res(
- *     ctx.data({ taskUpdate })
- *   )
- * })
- */
-export const mockTaskUpdateMutation = (
-  resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
-) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -17,7 +17,7 @@ import {
   subMonths,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { BiCalendarAlt, BiCaretLeft, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
+import { FaAngleLeft, FaAngleRight, FaArrowTurnUp, FaRegCalendar } from 'react-icons/fa6'
 
 interface DayItemProps {
   day: Date
@@ -108,7 +108,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
-          <BiCalendarAlt />
+          <FaRegCalendar />
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
@@ -138,7 +138,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     type="button"
                     aria-label="go to previous month"
                   >
-                    <BiLeftArrow />
+                    <FaAngleLeft />
                   </button>
                   <div className="text-lg" role="heading">
                     {monthTitle}
@@ -149,7 +149,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     type="button"
                     aria-label="go to next month"
                   >
-                    <BiRightArrow />
+                    <FaAngleRight />
                   </button>
                 </header>
                 <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center">
@@ -182,8 +182,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                       onClick={goToToday}
                       aria-label="go to today"
                     >
-                      <BiCaretLeft />
                       Back to {currentMonth}
+                      <FaArrowTurnUp />
                     </button>
                   </>
                 )}

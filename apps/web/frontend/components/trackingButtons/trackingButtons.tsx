@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns'
 import { useRef } from 'react'
-import { BiBlock, BiPlay, BiSave } from 'react-icons/bi'
+import { FaFloppyDisk, FaPlay, FaRegCircleXmark } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -22,6 +22,7 @@ const TrackingButtonsTrackingFragment = graphql(`
 const TrackingButtonsTaskFragment = graphql(`
   fragment TrackingButtonsTask on Task {
     id
+    isLocked
   }
 `)
 
@@ -82,10 +83,10 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
       <>
         <div className="flex items-center gap-2">
           <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
-            <BiSave />
+            <FaFloppyDisk />
           </button>
           <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
-            <BiBlock />
+            <FaRegCircleXmark />
           </button>
         </div>
         <dialog className="modal text-base-content" ref={dialogReference}>
@@ -121,10 +122,11 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
   if (taskToTrack) {
     return (
       <button
-        className="btn btn-square btn-outline btn-primary btn-xs"
+        className="btn btn-square btn-outline btn-primary btn-xs pl-0.5"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
+        disabled={taskToTrack.isLocked}
       >
-        <BiPlay />
+        <FaPlay />
       </button>
     )
   }
