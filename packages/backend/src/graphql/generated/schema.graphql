@@ -133,16 +133,6 @@ type Mutation {
   ): Task!
 
   """
-  Lock a task for the current user
-  """
-  taskLock(taskId: ID!): Task!
-
-  """
-  Unlock a task for the current user
-  """
-  taskUnlock(taskId: ID!): Task!
-
-  """
   Update a task
   """
   taskUpdate(
@@ -423,11 +413,6 @@ type Task implements ModifyInterface {
   Is the task locked by an admin
   """
   isLockedByAdmin: Boolean!
-
-  """
-  Is the task locked by the user
-  """
-  isLockedByUser: Boolean!
   project: Project!
 
   """

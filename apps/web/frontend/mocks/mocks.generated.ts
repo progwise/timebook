@@ -74,10 +74,6 @@ export type Mutation = {
   taskCreate: Task
   /** Delete a task */
   taskDelete: Task
-  /** Lock a task for the current user */
-  taskLock: Task
-  /** Unlock a task for the current user */
-  taskUnlock: Task
   /** Update a task */
   taskUpdate: Task
   /** The ongoing time tracking will be deleted */
@@ -167,14 +163,6 @@ export type MutationTaskCreateArgs = {
 
 export type MutationTaskDeleteArgs = {
   id: Scalars['ID']
-}
-
-export type MutationTaskLockArgs = {
-  taskId: Scalars['ID']
-}
-
-export type MutationTaskUnlockArgs = {
-  taskId: Scalars['ID']
 }
 
 export type MutationTaskUpdateArgs = {
@@ -368,8 +356,6 @@ export type Task = ModifyInterface & {
   isLocked: Scalars['Boolean']
   /** Is the task locked by an admin */
   isLockedByAdmin: Scalars['Boolean']
-  /** Is the task locked by the user */
-  isLockedByUser: Scalars['Boolean']
   project: Project
   /** The user can identify the task in the UI */
   title: Scalars['String']
@@ -818,26 +804,6 @@ export type TrackingCancelMutation = {
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
-export type TaskLockButtonFragment = { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-
-export type LockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type LockTaskMutation = {
-  __typename?: 'Mutation'
-  taskLock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-}
-
-export type UnlockTaskMutationVariables = Exact<{
-  taskId: Scalars['ID']
-}>
-
-export type UnlockTaskMutation = {
-  __typename?: 'Mutation'
-  taskUnlock: { __typename?: 'Task'; id: string; isLockedByUser: boolean }
-}
-
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
@@ -849,7 +815,6 @@ export type WeekGridProjectFragment = {
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    isLockedByUser: boolean
     workHourOfDays: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
@@ -889,7 +854,6 @@ export type WeekGridProjectRowGroupFragment = {
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    isLockedByUser: boolean
     workHourOfDays: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
@@ -929,7 +893,6 @@ export type WeekGridTaskRowFragment = {
   title: string
   isLockedByAdmin: boolean
   isLocked: boolean
-  isLockedByUser: boolean
   project: {
     __typename?: 'Project'
     startDate?: string | null
@@ -1062,7 +1025,6 @@ export type WeekGridQuery = {
       title: string
       isLockedByAdmin: boolean
       isLocked: boolean
-      isLockedByUser: boolean
       workHourOfDays: Array<{
         __typename?: 'WorkHourOfDay'
         date: string
@@ -1457,36 +1419,6 @@ export const mockTrackingCancelMutation = (
     any
   >,
 ) => graphql.mutation<TrackingCancelMutation, TrackingCancelMutationVariables>('trackingCancel', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockLockTaskMutation((req, res, ctx) => {
- *   const { taskId } = req.variables;
- *   return res(
- *     ctx.data({ taskLock })
- *   )
- * })
- */
-export const mockLockTaskMutation = (
-  resolver: ResponseResolver<GraphQLRequest<LockTaskMutationVariables>, GraphQLContext<LockTaskMutation>, any>,
-) => graphql.mutation<LockTaskMutation, LockTaskMutationVariables>('lockTask', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockUnlockTaskMutation((req, res, ctx) => {
- *   const { taskId } = req.variables;
- *   return res(
- *     ctx.data({ taskUnlock })
- *   )
- * })
- */
-export const mockUnlockTaskMutation = (
-  resolver: ResponseResolver<GraphQLRequest<UnlockTaskMutationVariables>, GraphQLContext<UnlockTaskMutation>, any>,
-) => graphql.mutation<UnlockTaskMutation, UnlockTaskMutationVariables>('unlockTask', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
