@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { BiAddToQueue, BiArchive, BiCheckCircle, BiFolderOpen, BiSpreadsheet } from 'react-icons/bi'
+import { FaFolderClosed, FaFolderMinus, FaFolderOpen, FaFolderPlus, FaFolderTree } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { Listbox } from '@progwise/timebook-ui'
@@ -51,30 +51,30 @@ const Projects = (): JSX.Element => {
   const projectFilterKeyToLabel: Record<DisplayedProjectFilter, string | JSX.Element> = {
     ALL: (
       <>
-        <BiSpreadsheet className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
+        <FaFolderTree className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
       </>
     ),
     ACTIVE: (
       <>
-        <BiFolderOpen className="inline" /> current projects{' '}
+        <FaFolderOpen className="inline" /> current projects{' '}
         {projectCountsData ? `(${projectCountsData.activeCounts})` : ''}
       </>
     ),
     FUTURE: (
       <>
-        <BiAddToQueue className="inline" /> upcoming projects{' '}
+        <FaFolderPlus className="inline" /> upcoming projects{' '}
         {projectCountsData ? `(${projectCountsData.futureCounts})` : ''}
       </>
     ),
     PAST: (
       <>
-        <BiCheckCircle className="inline" /> finished projects{' '}
+        <FaFolderClosed className="inline" /> finished projects{' '}
         {projectCountsData ? `(${projectCountsData.pastCounts})` : ''}
       </>
     ),
     ARCHIVED: (
       <>
-        <BiArchive className="inline" /> archived projects{' '}
+        <FaFolderMinus className="inline" /> archived projects{' '}
         {projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}
       </>
     ),

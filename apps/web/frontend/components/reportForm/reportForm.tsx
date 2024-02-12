@@ -1,8 +1,7 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useMemo } from 'react'
-import { BiArchive, BiFolderOpen } from 'react-icons/bi'
-import { FaPrint } from 'react-icons/fa6'
+import { FaFolderMinus, FaFolderOpen, FaPrint } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
@@ -147,11 +146,11 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               getLabel={(project) =>
                 project.isArchived ? (
                   <>
-                    <BiArchive className="inline" /> {project.title}
+                    <FaFolderMinus className="inline" /> {project.title}
                   </>
                 ) : (
                   <>
-                    <BiFolderOpen className="inline" /> {project.title}
+                    <FaFolderOpen className="inline" /> {project.title}
                   </>
                 )
               }

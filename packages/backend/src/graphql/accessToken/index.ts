@@ -1,4 +1,4 @@
-// import './mutations'
+import './mutations'
 import './queries'
 
 export { AccessToken } from './accessToken'
