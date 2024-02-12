@@ -1,7 +1,7 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useMemo } from 'react'
-import { BiPrinter } from 'react-icons/bi'
+import { BiArchive, BiFolderOpen, BiPrinter } from 'react-icons/bi'
 import { useQuery } from 'urql'
 
 import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
@@ -18,6 +18,7 @@ export const ReportProjectFragment = graphql(`
     title
     role
     canModify
+    isArchived
     isLocked(date: $date)
   }
 `)
@@ -105,6 +106,14 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const selectedProject = projects?.find((project) => project.id === projectId)
   const userIsAdmin = selectedProject?.role === 'ADMIN'
 
+  const sortedProjects = useMemo(() => {
+    return projects
+      ? [...projects]
+          .sort((projectA, projectB) => projectA.title.localeCompare(projectB.title))
+          .sort((projectA, projectB) => Number(projectA.isArchived) - Number(projectB.isArchived))
+      : []
+  }, [projects])
+
   return (
     <>
       <div className="mb-2 border-b border-base-content">
@@ -134,7 +143,17 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           <div className="flex flex-row items-center gap-2">
             <ListboxWithUnselect
               value={selectedProject}
-              getLabel={(project) => project.title}
+              getLabel={(project) =>
+                project.isArchived ? (
+                  <>
+                    <BiArchive className="inline" /> {project.title}
+                  </>
+                ) : (
+                  <>
+                    <BiFolderOpen className="inline" /> {project.title}
+                  </>
+                )
+              }
               getKey={(project) => project.id}
               onChange={(newProject) =>
                 router.push({
@@ -142,7 +161,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   query: userId ? { userId } : undefined,
                 })
               }
-              options={projects ?? []}
+              options={sortedProjects ?? []}
               noOptionLabel="Select Project"
             />
             <input

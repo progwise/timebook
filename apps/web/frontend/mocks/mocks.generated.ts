@@ -607,6 +607,7 @@ export type ReportProjectFragment = {
   title: string
   role: string
   canModify: boolean
+  isArchived: boolean
   isLocked: boolean
 }
 
@@ -625,6 +626,7 @@ export type ReportProjectsQuery = {
     title: string
     role: string
     canModify: boolean
+    isArchived: boolean
     isLocked: boolean
   }>
 }
