@@ -55,8 +55,8 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
       <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] h-full w-full rounded-box border opacity-50" />
 
       {/* adds a background color to the header row and the footer row*/}
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 h-full w-full rounded-t-box bg-base-200" />
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] h-full w-full rounded-b-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-2] row-span-1 row-start-1 h-full w-full rounded-t-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-2] row-span-1 row-start-[-2] h-full w-full rounded-b-box bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
