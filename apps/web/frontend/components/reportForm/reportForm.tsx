@@ -106,13 +106,13 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const selectedProject = projects?.find((project) => project.id === projectId)
   const userIsAdmin = selectedProject?.role === 'ADMIN'
 
-  const sortedProjects = useMemo(() => {
-    return projects
-      ? [...projects]
-          .sort((projectA, projectB) => projectA.title.localeCompare(projectB.title))
-          .sort((projectA, projectB) => Number(projectA.isArchived) - Number(projectB.isArchived))
-      : []
-  }, [projects])
+  const sortedProjects = useMemo(
+    () =>
+      projects
+        ?.toSorted((projectA, projectB) => projectA.title.localeCompare(projectB.title))
+        .toSorted((projectA, projectB) => Number(projectA.isArchived) - Number(projectB.isArchived)) ?? [],
+    [projects],
+  )
 
   return (
     <>
@@ -141,6 +141,19 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row items-center gap-2">
+            <input
+              className="btn"
+              type="month"
+              value={format(date, 'yyyy-MM')}
+              onChange={(event) => {
+                if (event.target.value) {
+                  router.push({
+                    pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
+                    query: userId ? { userId } : undefined,
+                  })
+                }
+              }}
+            />
             <ListboxWithUnselect
               value={selectedProject}
               getLabel={(project) =>
@@ -161,21 +174,8 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   query: userId ? { userId } : undefined,
                 })
               }
-              options={sortedProjects ?? []}
+              options={sortedProjects}
               noOptionLabel="Select Project"
-            />
-            <input
-              className="btn"
-              type="month"
-              value={format(date, 'yyyy-MM')}
-              onChange={(event) => {
-                if (event.target.value) {
-                  router.push({
-                    pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
-                    query: userId ? { userId } : undefined,
-                  })
-                }
-              }}
             />
           </div>
           <div className="flex items-center gap-2">
