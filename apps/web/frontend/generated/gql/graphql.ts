@@ -233,6 +233,7 @@ export type ProjectTasksArgs = {
 
 export enum ProjectFilter {
   Active = 'ACTIVE',
+  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
   All = 'ALL',
   Archived = 'ARCHIVED',
   Future = 'FUTURE',
@@ -655,6 +656,7 @@ export type ReportProjectFragment = {
   title: string
   role: string
   canModify: boolean
+  isArchived: boolean
   isLocked: boolean
 } & { ' $fragmentName'?: 'ReportProjectFragment' }
 
@@ -1386,6 +1388,7 @@ export const ReportProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'role' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'isLocked' },
@@ -2956,6 +2959,7 @@ export const ReportProjectsDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'role' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'isLocked' },

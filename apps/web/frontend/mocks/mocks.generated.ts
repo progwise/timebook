@@ -235,6 +235,7 @@ export type ProjectTasksArgs = {
 
 export enum ProjectFilter {
   Active = 'ACTIVE',
+  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
   All = 'ALL',
   Archived = 'ARCHIVED',
   Future = 'FUTURE',
@@ -624,6 +625,7 @@ export type ReportProjectFragment = {
   title: string
   role: string
   canModify: boolean
+  isArchived: boolean
   isLocked: boolean
 }
 
@@ -642,6 +644,7 @@ export type ReportProjectsQuery = {
     title: string
     role: string
     canModify: boolean
+    isArchived: boolean
     isLocked: boolean
   }>
 }
