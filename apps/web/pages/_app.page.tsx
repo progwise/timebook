@@ -25,7 +25,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
   <SessionProvider session={session}>
     <div className="flex min-h-screen flex-col justify-between">
       <TopNavigation />
-      <main className="container mx-auto py-16 print:m-0 print:p-0 max-md:min-h-screen">
+      <main className="container mx-auto py-16 max-md:min-h-screen print:m-0 print:p-0">
         <Component {...pageProps} />
       </main>
       <footer className="footer justify-items-center bg-base-300 p-5">
