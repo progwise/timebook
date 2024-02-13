@@ -30,9 +30,11 @@ const projectCountsQueryDocument = graphql(`
   }
 `)
 
+type DisplayedProjectFilter = Exclude<ProjectFilter, ProjectFilter.ActiveOrArchived>
+
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
-  const [selectedProjectFilter, setSelectedProjectFilter] = useState(ProjectFilter.Active)
+  const [selectedProjectFilter, setSelectedProjectFilter] = useState<DisplayedProjectFilter>(ProjectFilter.Active)
   const router = useRouter()
   const from = format(new Date(), 'yyyy-MM-dd')
   const [{ data, error, fetching: projectsLoading }] = useQuery({
@@ -46,7 +48,7 @@ const Projects = (): JSX.Element => {
     variables: { from },
   })
 
-  const projectFilterKeyToLabel: Record<ProjectFilter, string | JSX.Element> = {
+  const projectFilterKeyToLabel: Record<DisplayedProjectFilter, string | JSX.Element> = {
     ALL: (
       <>
         <FaFolderTree className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
@@ -97,7 +99,9 @@ const Projects = (): JSX.Element => {
             getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
             getKey={(projectFilter) => projectFilter}
             onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
-            options={Object.values(ProjectFilter)}
+            options={Object.values(ProjectFilter).filter(
+              (filter): filter is DisplayedProjectFilter => filter !== ProjectFilter.ActiveOrArchived,
+            )}
           />
         </div>
         {error && <span>{error.message}</span>}

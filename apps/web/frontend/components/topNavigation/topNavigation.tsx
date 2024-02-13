@@ -99,7 +99,7 @@ export const TopNavigation = (): JSX.Element => {
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-error" />
+                  <span className="inline-block size-2 animate-pulse rounded-full bg-error" />
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>

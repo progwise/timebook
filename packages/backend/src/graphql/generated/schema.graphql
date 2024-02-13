@@ -241,6 +241,7 @@ type Project implements ModifyInterface {
 
 enum ProjectFilter {
   ACTIVE
+  ACTIVE_OR_ARCHIVED
   ALL
   ARCHIVED
   FUTURE
