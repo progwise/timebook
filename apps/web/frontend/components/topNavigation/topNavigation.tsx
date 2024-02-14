@@ -82,7 +82,12 @@ export const TopNavigation = (): JSX.Element => {
               </li>
               <li className="grow justify-end">
                 <div className="divider divider-neutral -m-2 gap-0" />
-                <span>Log out</span>
+              </li>
+              <li>
+                <a href="/access-tokens">Access tokens</a>
+              </li>
+              <li>
+                <span>Sign out</span>
               </li>
             </ul>
           </div>
@@ -99,7 +104,7 @@ export const TopNavigation = (): JSX.Element => {
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="inline-block size-2 animate-pulse rounded-full bg-error" />
+                  <span className="size-2 inline-block animate-pulse rounded-full bg-error" />
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>
@@ -131,10 +136,11 @@ export const TopNavigation = (): JSX.Element => {
             )}
           </label>
 
-          <ul tabIndex={0} className="menu dropdown-content rounded-box menu-sm w-40 bg-base-100 shadow">
-            <a onClick={() => signOut({ callbackUrl: '/' })} href="#">
+          <ul tabIndex={0} className="menu dropdown-content rounded-box menu-sm w-40 bg-base-100 shadow p-2">
+            <li><a href="/access-tokens" >Access tokens</a></li>
+            <li><a onClick={() => signOut({ callbackUrl: '/' })} href="#">
               Sign out
-            </a>
+            </a></li>
           </ul>
         </div>
         {session.status !== 'authenticated' && (
