@@ -12,8 +12,9 @@ export const getWhereFromProjectFilter = (
     case ProjectFilter.ALL:
       return {}
     case ProjectFilter.ACTIVE:
+    case ProjectFilter.ACTIVE_OR_ARCHIVED:
       return {
-        archivedAt: null,
+        archivedAt: projectFilter === ProjectFilter.ACTIVE ? null : undefined,
         AND: [
           {
             OR: [

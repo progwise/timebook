@@ -53,11 +53,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
   }
 
   return (
-    <table className="table mt-10">
+    <table className="table">
       <thead>
-        <tr className="border-none">
-          <th className="text-xl font-normal text-base-content">Project Members</th>
-        </tr>
         <tr className="border-none">
           <th colSpan={3} className="px-1 font-normal text-base-content">
             <InviteLink project={project} />
@@ -85,7 +82,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 </div>
               ) : (
                 <div className="avatar placeholder">
-                  <div className="h-16 w-16 rounded-box bg-neutral text-neutral-content" />
+                  <div className="size-16 rounded-box bg-neutral text-neutral-content" />
                 </div>
               )}
               {user.name}

@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-import { BiAddToQueue, BiArchive, BiCheckCircle, BiFolderOpen, BiSpreadsheet } from 'react-icons/bi'
+import { FaFolderClosed, FaFolderMinus, FaFolderOpen, FaFolderPlus, FaFolderTree } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { Listbox } from '@progwise/timebook-ui'
@@ -30,9 +30,11 @@ const projectCountsQueryDocument = graphql(`
   }
 `)
 
+type DisplayedProjectFilter = Exclude<ProjectFilter, ProjectFilter.ActiveOrArchived>
+
 const Projects = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Project'] }), [])
-  const [selectedProjectFilter, setSelectedProjectFilter] = useState(ProjectFilter.Active)
+  const [selectedProjectFilter, setSelectedProjectFilter] = useState<DisplayedProjectFilter>(ProjectFilter.Active)
   const router = useRouter()
   const from = format(new Date(), 'yyyy-MM-dd')
   const [{ data, error, fetching: projectsLoading }] = useQuery({
@@ -46,33 +48,33 @@ const Projects = (): JSX.Element => {
     variables: { from },
   })
 
-  const projectFilterKeyToLabel: Record<ProjectFilter, string | JSX.Element> = {
+  const projectFilterKeyToLabel: Record<DisplayedProjectFilter, string | JSX.Element> = {
     ALL: (
       <>
-        <BiSpreadsheet className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
+        <FaFolderTree className="inline" /> all projects {projectCountsData ? `(${projectCountsData.allCounts})` : ''}
       </>
     ),
     ACTIVE: (
       <>
-        <BiFolderOpen className="inline" /> current projects{' '}
+        <FaFolderOpen className="inline" /> current projects{' '}
         {projectCountsData ? `(${projectCountsData.activeCounts})` : ''}
       </>
     ),
     FUTURE: (
       <>
-        <BiAddToQueue className="inline" /> upcoming projects{' '}
+        <FaFolderPlus className="inline" /> upcoming projects{' '}
         {projectCountsData ? `(${projectCountsData.futureCounts})` : ''}
       </>
     ),
     PAST: (
       <>
-        <BiCheckCircle className="inline" /> finished projects{' '}
+        <FaFolderClosed className="inline" /> finished projects{' '}
         {projectCountsData ? `(${projectCountsData.pastCounts})` : ''}
       </>
     ),
     ARCHIVED: (
       <>
-        <BiArchive className="inline" /> archived projects{' '}
+        <FaFolderMinus className="inline" /> archived projects{' '}
         {projectCountsData ? `(${projectCountsData.archivedCounts})` : ''}
       </>
     ),
@@ -97,7 +99,9 @@ const Projects = (): JSX.Element => {
             getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
             getKey={(projectFilter) => projectFilter}
             onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
-            options={Object.values(ProjectFilter)}
+            options={Object.values(ProjectFilter).filter(
+              (filter): filter is DisplayedProjectFilter => filter !== ProjectFilter.ActiveOrArchived,
+            )}
           />
         </div>
         {error && <span>{error.message}</span>}

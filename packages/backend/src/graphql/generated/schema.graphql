@@ -34,6 +34,16 @@ input MonthInput {
 
 type Mutation {
   """
+  Create an access token for the signed in user
+  """
+  accessTokenCreate(name: String!): String!
+
+  """
+  Delete an access token for the signed in user
+  """
+  accessTokenDelete(id: ID!): AccessToken!
+
+  """
   Archive a project
   """
   projectArchive(projectId: ID!): Project!
@@ -121,16 +131,6 @@ type Mutation {
     """
     id: ID!
   ): Task!
-
-  """
-  Lock a task for the current user
-  """
-  taskLock(taskId: ID!): Task!
-
-  """
-  Unlock a task for the current user
-  """
-  taskUnlock(taskId: ID!): Task!
 
   """
   Update a task
@@ -241,6 +241,7 @@ type Project implements ModifyInterface {
 
 enum ProjectFilter {
   ACTIVE
+  ACTIVE_OR_ARCHIVED
   ALL
   ARCHIVED
   FUTURE
@@ -413,11 +414,6 @@ type Task implements ModifyInterface {
   Is the task locked by an admin
   """
   isLockedByAdmin: Boolean!
-
-  """
-  Is the task locked by the user
-  """
-  isLockedByUser: Boolean!
   project: Project!
 
   """

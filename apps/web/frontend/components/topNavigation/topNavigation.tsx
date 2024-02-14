@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useRef } from 'react'
 import { AiOutlineFieldTime } from 'react-icons/ai'
-import { BiMenu } from 'react-icons/bi'
+import { FaAlignJustify } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
@@ -47,7 +47,7 @@ export const TopNavigation = (): JSX.Element => {
           <input id="drawer" type="checkbox" className="drawer-toggle" ref={drawerCheckboxReference} />
           <span className="drawer-content">
             <label htmlFor="drawer" aria-label="open sidebar" className="btn btn-ghost text-2xl">
-              <BiMenu />
+              <FaAlignJustify />
             </label>
           </span>
           <div className="drawer-side">
@@ -99,7 +99,7 @@ export const TopNavigation = (): JSX.Element => {
               <div className="flex flex-col text-sm">
                 {data.currentTracking.task.title} - {data.currentTracking.task.project.title}
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-error" />
+                  <span className="inline-block size-2 animate-pulse rounded-full bg-error" />
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>

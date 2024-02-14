@@ -113,7 +113,6 @@ export const projectHandlers = [
                 })),
                 project: { id: testProject1.id, isProjectMember: true, isArchived: false },
                 isLocked: false,
-                isLockedByUser: false,
                 isLockedByAdmin: false,
               },
             ],

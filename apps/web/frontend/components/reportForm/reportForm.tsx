@@ -1,7 +1,7 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Fragment, useMemo } from 'react'
-import { BiPrinter } from 'react-icons/bi'
+import { FaFolderMinus, FaFolderOpen, FaPrint } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
@@ -18,6 +18,7 @@ export const ReportProjectFragment = graphql(`
     title
     role
     canModify
+    isArchived
     isLocked(date: $date)
   }
 `)
@@ -80,11 +81,11 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const from = startOfMonth(date)
   const to = endOfMonth(date)
   const fromString = formatISO(from, { representation: 'date' })
-  const endString = formatISO(to, { representation: 'date' })
+  const toString = formatISO(to, { representation: 'date' })
 
   const [{ data: projectsData }] = useQuery({
     query: ReportProjectsQueryDocument,
-    variables: { from: fromString, filter: ProjectFilter.All, date: { year, month } },
+    variables: { from: fromString, to: toString, filter: ProjectFilter.ActiveOrArchived, date: { year, month } },
   })
   const projects = useFragment(ReportProjectFragment, projectsData?.projects)
 
@@ -105,12 +106,20 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   const selectedProject = projects?.find((project) => project.id === projectId)
   const userIsAdmin = selectedProject?.role === 'ADMIN'
 
+  const sortedProjects = useMemo(
+    () =>
+      projects
+        ?.toSorted((projectA, projectB) => projectA.title.localeCompare(projectB.title))
+        .toSorted((projectA, projectB) => Number(projectA.isArchived) - Number(projectB.isArchived)) ?? [],
+    [projects],
+  )
+
   return (
     <>
       <div className="mb-2 border-b border-base-content">
         <div className="flex items-center justify-between">
           <PageHeading>
-            Detailed time report: {fromString} — {endString}
+            Detailed time report: {fromString} — {toString}
           </PageHeading>
         </div>
       </div>
@@ -132,19 +141,6 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row items-center gap-2">
-            <ListboxWithUnselect
-              value={selectedProject}
-              getLabel={(project) => project.title}
-              getKey={(project) => project.id}
-              onChange={(newProject) =>
-                router.push({
-                  pathname: `/reports/${format(date, 'yyyy-MM')}/${newProject?.id ?? ''}`,
-                  query: userId ? { userId } : undefined,
-                })
-              }
-              options={projects ?? []}
-              noOptionLabel="Select Project"
-            />
             <input
               className="btn"
               type="month"
@@ -157,6 +153,29 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   })
                 }
               }}
+            />
+            <ListboxWithUnselect
+              value={selectedProject}
+              getLabel={(project) =>
+                project.isArchived ? (
+                  <>
+                    <FaFolderMinus className="inline" /> {project.title}
+                  </>
+                ) : (
+                  <>
+                    <FaFolderOpen className="inline" /> {project.title}
+                  </>
+                )
+              }
+              getKey={(project) => project.id}
+              onChange={(newProject) =>
+                router.push({
+                  pathname: `/reports/${format(date, 'yyyy-MM')}/${newProject?.id ?? ''}`,
+                  query: userId ? { userId } : undefined,
+                })
+              }
+              options={sortedProjects}
+              noOptionLabel="Select Project"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -176,7 +195,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   to={to}
                 />
                 <button className="btn btn-md print:hidden" onClick={() => print()}>
-                  <BiPrinter />
+                  <FaPrint />
                 </button>
               </>
             )}

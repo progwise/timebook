@@ -31,7 +31,7 @@ export const WeekGridFooterRow = ({
 
   return (
     <div className="contents text-center text-lg">
-      <div className="col-span-2" />
+      <div className="col-span-2 col-start-1" />
       {eachDayOfInterval(interval).map((day) => {
         const workHoursOfTheDay = workHours.filter((workHour) => isSameDay(parseISO(workHour.date), day))
         const sumOfDurationsOfTheDay = workHoursOfTheDay

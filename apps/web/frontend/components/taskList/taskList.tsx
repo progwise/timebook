@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
+import { FaPlus } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -44,7 +45,7 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const { register, handleSubmit, reset, formState, control, setFocus } = useForm<TaskFormData>({
+  const { register, handleSubmit, reset, formState, setFocus } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
     defaultValues: { title: '' },
   })
@@ -72,17 +73,6 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
   return (
     <div className={className}>
       <table className="table min-w-full [&_tr]:border-none">
-        <thead>
-          <tr className="font-normal">
-            <td className="text-xl text-base-content">Tasks</td>
-            {project.canModify && (
-              <>
-                <td className="w-px" />
-                <td className="w-px" />
-              </>
-            )}
-          </tr>
-        </thead>
         <tbody>
           {project.tasks.map((task) => (
             <TaskRow task={task} key={task.id} />
@@ -103,29 +93,17 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
                 </form>
               </td>
               <td>
-                <Controller
-                  control={control}
-                  name="isLocked"
-                  render={({ field: { onChange, value } }) => (
-                    <input
-                      type="checkbox"
-                      checked={value ?? false}
-                      onChange={onChange}
-                      className="toggle toggle-warning"
-                    />
-                  )}
-                />
-              </td>
-              <td>
                 <button
-                  className="btn btn-primary btn-sm w-full"
+                  className="btn btn-success btn-sm"
                   type="submit"
                   disabled={isSubmitting}
                   form="form-create-task"
+                  aria-label="Add"
                 >
-                  Add
+                  <FaPlus />
                 </button>
               </td>
+              <td />
             </tr>
           </tfoot>
         )}
