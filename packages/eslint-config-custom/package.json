@@ -4,19 +4,19 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.39.0",
-    "@typescript-eslint/parser": "^5.39.0",
-    "eslint": "^8.6.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
     "eslint-config-next": "^13.0.0",
     "eslint-config-turbo": "^1.0.0",
-    "eslint-plugin-jest": "^27.1.0",
+    "eslint-plugin-jest": "^27.6.3",
     "eslint-plugin-jest-dom": "^4.0.2",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-testing-library": "^5.7.2",
-    "eslint-plugin-unicorn": "^46.0.0"
+    "eslint-plugin-unicorn": "^51.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   },
   "publishConfig": {
     "access": "public"

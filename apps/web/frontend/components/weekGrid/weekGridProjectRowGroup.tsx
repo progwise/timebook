@@ -62,7 +62,7 @@ export const WeekGridProjectRowGroup = ({
           <div key={day.toDateString()} className="self-stretch bg-base-200" role="cell" />
         ))}
         <div
-          className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
+          className="flex items-center justify-end self-stretch rounded-r-box bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
           {isDataOutdated ? (
@@ -71,7 +71,6 @@ export const WeekGridProjectRowGroup = ({
             <FormattedDuration title="" minutes={projectDuration} />
           )}
         </div>
-        <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       </div>
       <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
         {project.tasks.map((task) => (
