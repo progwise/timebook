@@ -11,20 +11,22 @@ import {
   mockWeekGridQuery,
 } from './mocks.generated'
 
-const testProject1 = { id: 'project1', title: 'Project 1', isArchived: false }
-const testProject2 = { id: 'project2', title: 'Project 2', isArchived: false }
+const testProject1 = { id: 'project1', title: 'Project 1', isArchived: false, members: [{ id: '1', image: undefined }] }
+const testProject2 = { id: 'project2', title: 'Project 2', isArchived: false, members: [{ id: '2', image: undefined }] }
 
 let members: ProjectMemberListProjectFragment['members'] = [
   {
     id: '1',
     name: 'Admin of the project',
     role: Role.Admin,
+    image: undefined,
     __typename: 'User',
   },
   {
     id: '2',
     name: ' Member of the project',
     role: Role.Member,
+    image: undefined,
     __typename: 'User',
   },
 ]
