@@ -22,7 +22,7 @@ export const context = async ({
     }
   }
 
-  const accessTokenString = request.headers.authorization?.toString().split(' ').at(1)
+  const accessTokenString = request.headers.authorization?.toString().split(/\s+/).at(1)
   if (!accessTokenString) {
     // eslint-disable-next-line unicorn/no-null
     return { session: null }
