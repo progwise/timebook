@@ -2,9 +2,9 @@ import { parseISO } from 'date-fns'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AiOutlineFieldTime } from 'react-icons/ai'
-import { FaAlignJustify } from 'react-icons/fa6'
+import { FaAlignJustify, FaAngleDown } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
@@ -33,6 +33,20 @@ export const TopNavigation = (): JSX.Element => {
   const [{ data }] = useQuery({ query: CurrentTrackingQueryDocument, context: currentTrackingContext })
   const session = useSession()
   const drawerCheckboxReference = useRef<HTMLInputElement>(null)
+
+  const [theme, setTheme] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'winter'
+    }
+    return 'winter'
+  })
+  useEffect(() => {
+    document.body.dataset.theme = theme
+    localStorage.setItem('theme', theme)
+  }, [theme])
+  const handleThemeChange = (selectedTheme: string) => {
+    setTheme(selectedTheme)
+  }
 
   const handleMenuLinkClick = () => {
     if (drawerCheckboxReference.current) {
@@ -110,9 +124,47 @@ export const TopNavigation = (): JSX.Element => {
       </h1>
 
       <div className="navbar-end gap-1 max-md:hidden">
+        <div className="dropdown ">
+          <div tabIndex={0} role="button" className="btn btn-ghost m-1">
+            Theme
+            <FaAngleDown />
+          </div>
+          <ul tabIndex={0} className="dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow-2xl">
+            <li>
+              <input
+                onChange={() => handleThemeChange('system')}
+                type="radio"
+                name="theme-dropdown"
+                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                aria-label="Default"
+                value="default"
+              />
+            </li>
+            <li>
+              <input
+                onChange={() => handleThemeChange('winter')}
+                type="radio"
+                name="theme-dropdown"
+                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                aria-label="Winter"
+                value="winter"
+              />
+            </li>
+            <li>
+              <input
+                onChange={() => handleThemeChange('forest')}
+                type="radio"
+                name="theme-dropdown"
+                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                aria-label="Forest"
+                value="forest"
+              />
+            </li>
+          </ul>
+        </div>
+        <div className="divider divider-horizontal m-0" />
         <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
-        <div className="divider divider-horizontal m-0" />
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
         {/* Ignore the next line because prettier sorts dropdown classes sometimes differently */}
