@@ -56,7 +56,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                               width={36}
                               height={36}
                               src={member.image}
-                              alt={member.image ?? 'image of the user'}
+                              alt={member.name ?? 'image of the user'}
                             />
                           </div>
                         </div>
