@@ -84,10 +84,14 @@ export const TopNavigation = (): JSX.Element => {
                 <div className="divider divider-neutral -m-2 gap-0" />
               </li>
               <li>
-                <a href="/access-tokens">Access tokens</a>
+                <TopNavigationMenuLink href="/access-tokens" onClick={handleMenuLinkClick}>
+                  Access tokens
+                </TopNavigationMenuLink>
               </li>
               <li>
-                <span>Sign out</span>
+                <a onClick={() => signOut({ callbackUrl: '/' })} href="#">
+                  Sign out
+                </a>
               </li>
             </ul>
           </div>
@@ -123,7 +127,7 @@ export const TopNavigation = (): JSX.Element => {
         {/* Ignore the next line because prettier sorts dropdown classes sometimes differently */}
         {/* We have absolutely no idea or control over this, so we just ignore it */}
         {/* prettier-ignore */}
-        <div className="dropdown dropdown-end leading-none">
+        <div className="dropdown dropdown-end leading-none dropdown-hover">
           <label tabIndex={0} className="avatar btn btn-circle btn-ghost">
             {session.data?.user.image && (
               <Image
@@ -137,7 +141,7 @@ export const TopNavigation = (): JSX.Element => {
           </label>
 
           <ul tabIndex={0} className="menu dropdown-content rounded-box menu-sm w-40 bg-base-100 shadow p-2">
-            <li><a href="/access-tokens" >Access tokens</a></li>
+            <li><Link href="/access-tokens" onClick={(event) => event.currentTarget.blur()}>Access tokens</Link></li>
             <li><a onClick={() => signOut({ callbackUrl: '/' })} href="#">
               Sign out
             </a></li>
