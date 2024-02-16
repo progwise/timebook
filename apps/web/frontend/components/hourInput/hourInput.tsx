@@ -1,5 +1,5 @@
 import { hoursToMinutes } from 'date-fns'
-import { KeyboardEventHandler, SyntheticEvent, useRef, useState } from 'react'
+import { KeyboardEventHandler, SyntheticEvent, useEffect, useRef, useState } from 'react'
 
 import { InputField } from '@progwise/timebook-ui'
 
@@ -27,6 +27,10 @@ export const HourInput = (props: {
   disabled?: boolean
 }): JSX.Element => {
   const [formattedDuration, setFormattedDuration] = useState<string>(getFormattedDuration(props.duration))
+  useEffect(() => {
+    setFormattedDuration(getFormattedDuration(props.duration))
+  }, [props.duration])
+
   const previousDuration = useRef(props.duration)
 
   const handleBlur = (event: SyntheticEvent<HTMLInputElement>) => {
