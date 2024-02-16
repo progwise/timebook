@@ -70,7 +70,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
 
   return (
     <tr>
-      <td className="flex items-center p-1">
+      <td className="flex w-full items-center p-1">
         <InputField
           {...register('title', { required: true })}
           onBlur={handleSubmit(handleTitleSubmit)}
@@ -82,10 +82,10 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
       </td>
       {task.canModify && (
         <>
-          <td>
+          <td className="w-px">
             <LockTaskButton task={task} />
           </td>
-          <td>
+          <td className="w-px">
             <DeleteTaskButton task={task} />
           </td>
         </>
