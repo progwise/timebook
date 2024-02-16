@@ -1,18 +1,24 @@
 /* eslint-disable no-console */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 
 import { HourInput } from './hourInput'
+
+const HourInputHelper = () => {
+  const [duration, setDuration] = useState(0)
+  return (
+    <>
+      <HourInput duration={duration} onChange={jest.fn()} />
+      <button onDoubleClick={() => setDuration(60)}>Click me!</button>
+    </>
+  )
+}
 
 describe('the hour input control should display ...', () => {
   beforeEach(() => {
     // eslint-disable-next-line testing-library/no-render-in-setup
-    render(
-      <>
-        <HourInput duration={0} onChange={jest.fn()} />
-        <button>Click me!</button>
-      </>,
-    )
+    render(<HourInputHelper />)
   })
 
   it('... 0:00 in the beginning', () => {
@@ -125,5 +131,12 @@ describe('the hour input control should display ...', () => {
     await userEvent.click(screen.getByRole('button'))
     const resultElement = await screen.findByDisplayValue('4:00')
     expect(resultElement).toBeInTheDocument()
+  })
+
+  it('updates when duration changes', async () => {
+    const button = screen.getByRole('button')
+    await userEvent.dblClick(button)
+    const hourBox = screen.getByRole('textbox')
+    expect(hourBox).toHaveDisplayValue('1:00')
   })
 })
