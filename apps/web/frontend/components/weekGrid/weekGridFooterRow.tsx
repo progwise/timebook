@@ -40,11 +40,11 @@ export const WeekGridFooterRow = ({
 
         return (
           <div
-            className="z-10 py-3 text-base-content [&:nth-child(2)]:rounded-bl-box [&:nth-last-child(2)]:rounded-br-box"
+            className="z-10 flex justify-center py-3 text-base-content [&:nth-child(2)]:rounded-bl-box [&:nth-last-child(2)]:rounded-br-box"
             key={day.toString()}
           >
             {isDataOutdated ? (
-              <div className="skeleton h-8 w-16" />
+              <div className="skeleton h-7 w-16" />
             ) : (
               <FormattedDuration title="" minutes={sumOfDurationsOfTheDay} />
             )}
@@ -53,7 +53,7 @@ export const WeekGridFooterRow = ({
       })}
       <div className="px-2 text-right font-bold">
         {isDataOutdated ? (
-          <div className="skeleton h-8 w-16" />
+          <div className="skeleton h-7 w-9" />
         ) : (
           <FormattedDuration title="" minutes={sumOfDurationsOfTheWeek} />
         )}
