@@ -9,7 +9,7 @@ export const WeekGridDateHeaderRow = ({ interval }: WeekGridDateHeaderRowProps) 
     <div className="col-span-2" />
     {eachDayOfInterval(interval).map((day) => (
       <div
-        className="z-10 px-6 pt-1 text-center text-xl font-bold text-base-content [&:nth-child(2)]:rounded-tl-box [&:nth-last-child(2)]:rounded-tr-box"
+        className="z-10 min-w-24 px-6 pt-1 text-center text-xl font-bold text-base-content [&:nth-child(2)]:rounded-tl-box [&:nth-last-child(2)]:rounded-tr-box"
         key={day.toString()}
       >
         <div className="relative z-50">
