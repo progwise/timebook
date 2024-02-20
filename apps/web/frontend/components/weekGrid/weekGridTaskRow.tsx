@@ -66,11 +66,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: 
         />
       ))}
       <div className="px-2 text-right" role="cell">
-        {isDataOutdated ? (
-          <div className="skeleton h-8 w-16" />
-        ) : (
-          <FormattedDuration minutes={taskDurations} title="" />
-        )}
+        {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
       </div>
     </div>
   )

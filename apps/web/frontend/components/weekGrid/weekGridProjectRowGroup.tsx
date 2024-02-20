@@ -66,13 +66,13 @@ export const WeekGridProjectRowGroup = ({
           role="cell"
         >
           {isDataOutdated ? (
-            <div className="skeleton h-8 w-16" />
+            <div className="skeleton h-8 w-9" />
           ) : (
             <FormattedDuration title="" minutes={projectDuration} />
           )}
         </div>
       </div>
-      <div className={`contents ${isCollapsed ? 'hidden' : ''}`}>
+      <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
           <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />
         ))}
