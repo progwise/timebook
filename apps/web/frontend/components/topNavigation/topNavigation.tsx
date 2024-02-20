@@ -1,10 +1,11 @@
+import { useLocalStorageValue } from '@react-hookz/web'
 import { parseISO } from 'date-fns'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { AiOutlineFieldTime } from 'react-icons/ai'
-import { FaAlignJustify, FaAngleDown } from 'react-icons/fa6'
+import { FaAlignJustify, FaAngleDown, FaComputer, FaMoon, FaSun } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
@@ -34,19 +35,10 @@ export const TopNavigation = (): JSX.Element => {
   const session = useSession()
   const drawerCheckboxReference = useRef<HTMLInputElement>(null)
 
-  const [theme, setTheme] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') || 'winter'
-    }
-    return 'winter'
+  const { value: theme, set: setTheme } = useLocalStorageValue<'system' | 'light' | 'dark'>('theme', {
+    defaultValue: 'system',
+    initializeWithValue: false,
   })
-  useEffect(() => {
-    document.body.dataset.theme = theme
-    localStorage.setItem('theme', theme)
-  }, [theme])
-  const handleThemeChange = (selectedTheme: string) => {
-    setTheme(selectedTheme)
-  }
 
   const handleMenuLinkClick = () => {
     if (drawerCheckboxReference.current) {
@@ -94,8 +86,37 @@ export const TopNavigation = (): JSX.Element => {
                   Reports
                 </TopNavigationMenuLink>
               </li>
-              <li className="grow justify-end">
-                <div className="divider divider-neutral -m-2 gap-0" />
+              <div className="join grow items-end">
+                <input
+                  onChange={() => setTheme('system')}
+                  type="radio"
+                  name="theme-buttons"
+                  className="theme-controller btn join-item min-w-24"
+                  aria-label="Default"
+                  value="default"
+                  checked={theme === 'system'}
+                />
+                <input
+                  onChange={() => setTheme('light')}
+                  type="radio"
+                  name="theme-buttons"
+                  className="theme-controller btn join-item min-w-24"
+                  aria-label="Light"
+                  value="winter"
+                  checked={theme === 'light'}
+                />
+                <input
+                  onChange={() => setTheme('dark')}
+                  type="radio"
+                  name="theme-buttons"
+                  className="theme-controller btn join-item min-w-24"
+                  aria-label="Dark"
+                  value="forest"
+                  checked={theme === 'dark'}
+                />
+              </div>
+              <div className="divider divider-neutral" />
+              <li>
                 <span>Log out</span>
               </li>
             </ul>
@@ -124,41 +145,59 @@ export const TopNavigation = (): JSX.Element => {
       </h1>
 
       <div className="navbar-end gap-1 max-md:hidden">
-        <div className="dropdown ">
-          <div tabIndex={0} role="button" className="btn btn-ghost m-1">
+        <div className="dropdown">
+          <div tabIndex={0} role="button" className="btn btn-ghost min-w-28">
             Theme
             <FaAngleDown />
           </div>
-          <ul tabIndex={0} className="dropdown-content z-[1] w-52 rounded-box bg-base-300 p-2 shadow-2xl">
+          <ul tabIndex={0} className="dropdown-content min-w-32 rounded-box bg-base-300 p-2 shadow-2xl">
             <li>
-              <input
-                onChange={() => handleThemeChange('system')}
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
-                aria-label="Default"
-                value="default"
-              />
+              <div className="relative">
+                <span className="absolute right-2 top-2">
+                  <FaComputer />
+                </span>
+                <input
+                  onChange={() => setTheme('system')}
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  aria-label="Default"
+                  value="default"
+                  checked={theme === 'system'}
+                />
+              </div>
             </li>
             <li>
-              <input
-                onChange={() => handleThemeChange('winter')}
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
-                aria-label="Winter"
-                value="winter"
-              />
+              <div className="relative">
+                <span className="absolute right-2 top-2">
+                  <FaSun />
+                </span>
+                <input
+                  onChange={() => setTheme('light')}
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  aria-label="Light"
+                  value="winter"
+                  checked={theme === 'light'}
+                />
+              </div>
             </li>
             <li>
-              <input
-                onChange={() => handleThemeChange('forest')}
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
-                aria-label="Forest"
-                value="forest"
-              />
+              <div className="relative">
+                <span className="absolute right-2 top-2">
+                  <FaMoon />
+                </span>
+                <input
+                  onChange={() => setTheme('dark')}
+                  type="radio"
+                  name="theme-dropdown"
+                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  aria-label="Dark"
+                  value="forest"
+                  checked={theme === 'dark'}
+                />
+              </div>
             </li>
           </ul>
         </div>
