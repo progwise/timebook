@@ -65,7 +65,6 @@ export const TopNavigation = (): JSX.Element => {
                   timebook
                 </span>
               </li>
-
               <li>
                 <TopNavigationMenuLink href="/week" onClick={handleMenuLinkClick}>
                   Week
@@ -86,7 +85,8 @@ export const TopNavigation = (): JSX.Element => {
                   Reports
                 </TopNavigationMenuLink>
               </li>
-              <div className="join grow items-end">
+              <div className="divider divider-neutral" />
+              <div className="join">
                 <input
                   onChange={() => setTheme('system')}
                   type="radio"
@@ -115,8 +115,8 @@ export const TopNavigation = (): JSX.Element => {
                   checked={theme === 'dark'}
                 />
               </div>
-              <div className="divider divider-neutral" />
-              <li>
+              {/* <div className="divider divider-neutral" /> */}
+              <li className="grow justify-end">
                 <TopNavigationMenuLink href="/access-tokens" onClick={handleMenuLinkClick}>
                   Access tokens
                 </TopNavigationMenuLink>
