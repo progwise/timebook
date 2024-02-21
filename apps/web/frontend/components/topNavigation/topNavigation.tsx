@@ -85,38 +85,47 @@ export const TopNavigation = (): JSX.Element => {
                   Reports
                 </TopNavigationMenuLink>
               </li>
-              <div className="divider divider-neutral" />
-              <div className="join">
-                <input
-                  onChange={() => setTheme('system')}
-                  type="radio"
-                  name="theme-buttons"
-                  className="theme-controller btn join-item min-w-24"
-                  aria-label="Default"
-                  value="default"
-                  checked={theme === 'system'}
-                />
-                <input
-                  onChange={() => setTheme('light')}
-                  type="radio"
-                  name="theme-buttons"
-                  className="theme-controller btn join-item min-w-24"
-                  aria-label="Light"
-                  value="winter"
-                  checked={theme === 'light'}
-                />
-                <input
-                  onChange={() => setTheme('dark')}
-                  type="radio"
-                  name="theme-buttons"
-                  className="theme-controller btn join-item min-w-24"
-                  aria-label="Dark"
-                  value="forest"
-                  checked={theme === 'dark'}
-                />
+              <div className="flex grow items-end">
+                <div
+                  className="join no-animation border border-neutral"
+                  style={
+                    {
+                      '--fallback-p': 'oklch(var(--n))',
+                      '--fallback-pc': 'oklch(var(--nc))',
+                    } as React.CSSProperties
+                  }
+                >
+                  <input
+                    onChange={() => setTheme('system')}
+                    type="radio"
+                    name="theme-buttons"
+                    className="theme-controller btn join-item min-w-24"
+                    aria-label="Default"
+                    value="default"
+                    checked={theme === 'system'}
+                  />
+                  <input
+                    onChange={() => setTheme('light')}
+                    type="radio"
+                    name="theme-buttons"
+                    className="theme-controller btn join-item min-w-24"
+                    aria-label="Light"
+                    value="winter"
+                    checked={theme === 'light'}
+                  />
+                  <input
+                    onChange={() => setTheme('dark')}
+                    type="radio"
+                    name="theme-buttons"
+                    className="theme-controller btn join-item min-w-24"
+                    aria-label="Dark"
+                    value="forest"
+                    checked={theme === 'dark'}
+                  />
+                </div>
               </div>
-              {/* <div className="divider divider-neutral" /> */}
-              <li className="grow justify-end">
+              <div className="divider divider-neutral" />
+              <li>
                 <TopNavigationMenuLink href="/access-tokens" onClick={handleMenuLinkClick}>
                   Access tokens
                 </TopNavigationMenuLink>
