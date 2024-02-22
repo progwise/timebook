@@ -87,7 +87,7 @@ export const TopNavigation = (): JSX.Element => {
               </li>
               <div className="flex grow items-end">
                 <div
-                  className="join no-animation border border-neutral"
+                  className="join no-animation grow border border-neutral *:grow *:basis-0"
                   style={
                     {
                       '--fallback-p': 'oklch(var(--n))',
@@ -99,7 +99,7 @@ export const TopNavigation = (): JSX.Element => {
                     onChange={() => setTheme('system')}
                     type="radio"
                     name="theme-buttons"
-                    className="theme-controller btn join-item min-w-24"
+                    className="theme-controller btn join-item"
                     aria-label="Default"
                     value="default"
                     checked={theme === 'system'}
@@ -108,7 +108,7 @@ export const TopNavigation = (): JSX.Element => {
                     onChange={() => setTheme('light')}
                     type="radio"
                     name="theme-buttons"
-                    className="theme-controller btn join-item min-w-24"
+                    className="theme-controller btn join-item"
                     aria-label="Light"
                     value="winter"
                     checked={theme === 'light'}
@@ -117,7 +117,7 @@ export const TopNavigation = (): JSX.Element => {
                     onChange={() => setTheme('dark')}
                     type="radio"
                     name="theme-buttons"
-                    className="theme-controller btn join-item min-w-24"
+                    className="theme-controller btn join-item"
                     aria-label="Dark"
                     value="forest"
                     checked={theme === 'dark'}
@@ -162,57 +162,57 @@ export const TopNavigation = (): JSX.Element => {
 
       <div className="navbar-end gap-1 max-md:hidden">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost min-w-28">
+          <div tabIndex={0} role="button" className="btn btn-ghost flex-nowrap">
             Theme
             <FaAngleDown />
           </div>
           <ul tabIndex={0} className="dropdown-content min-w-32 rounded-box bg-base-300 p-2 shadow-2xl">
             <li>
               <div className="relative">
-                <span className="absolute right-2 top-2">
-                  <FaComputer />
-                </span>
                 <input
                   onChange={() => setTheme('system')}
                   type="radio"
                   name="theme-dropdown"
-                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  className="peer theme-controller btn btn-ghost btn-sm btn-block justify-start"
                   aria-label="Default"
                   value="default"
                   checked={theme === 'system'}
                 />
+                <span className="absolute right-2 top-2 peer-checked:text-primary-content">
+                  <FaComputer />
+                </span>
               </div>
             </li>
             <li>
               <div className="relative">
-                <span className="absolute right-2 top-2">
-                  <FaSun />
-                </span>
                 <input
                   onChange={() => setTheme('light')}
                   type="radio"
                   name="theme-dropdown"
-                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  className="peer theme-controller btn btn-ghost btn-sm btn-block justify-start"
                   aria-label="Light"
                   value="winter"
                   checked={theme === 'light'}
                 />
+                <span className="absolute right-2 top-2 peer-checked:text-primary-content">
+                  <FaSun />
+                </span>
               </div>
             </li>
             <li>
               <div className="relative">
-                <span className="absolute right-2 top-2">
-                  <FaMoon />
-                </span>
                 <input
                   onChange={() => setTheme('dark')}
                   type="radio"
                   name="theme-dropdown"
-                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
+                  className="peer theme-controller btn btn-ghost btn-sm btn-block justify-start"
                   aria-label="Dark"
                   value="forest"
                   checked={theme === 'dark'}
                 />
+                <span className="absolute right-2 top-2 peer-checked:text-primary-content">
+                  <FaMoon />
+                </span>
               </div>
             </li>
           </ul>
