@@ -152,7 +152,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     <FaAngleRight />
                   </button>
                 </header>
-                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center">
+                <div className="grid grid-cols-7 gap-2 pt-2 text-center">
                   <div>Mon</div>
                   <div>Tue</div>
                   <div>Wed</div>
@@ -178,7 +178,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   <>
                     <div className="divider col-span-7 -my-1" />
                     <button
-                      className="btn btn-ghost no-animation btn-xs btn-block mt-1"
+                      className="btn btn-ghost no-animation btn-xs btn-block"
                       onClick={goToToday}
                       aria-label="go to today"
                     >

@@ -133,7 +133,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
                     <FaAngleRight />
                   </button>
                 </header>
-                <div className="grid auto-cols-min grid-flow-row grid-cols-4 gap-2 pt-2 text-center">
+                <div className="grid grid-cols-4 gap-2 pt-2 text-center">
                   {monthsToRender.map((month) => (
                     <MonthItem
                       key={month.toString()}
@@ -151,7 +151,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
                   <>
                     <div className="divider col-span-4 -my-1" />
                     <button
-                      className="btn btn-ghost no-animation btn-xs btn-block mt-1"
+                      className="btn btn-ghost no-animation btn-xs btn-block"
                       onClick={goToToday}
                       aria-label="go to today"
                     >
