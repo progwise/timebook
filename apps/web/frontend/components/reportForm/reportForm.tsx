@@ -9,6 +9,7 @@ import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
 import { PageHeading } from '../pageHeading'
+import { CalendarMonthSelector } from './calendarMonthSelector'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
@@ -69,6 +70,7 @@ const ReportQueryDocument = graphql(`
   }
 `)
 interface ReportFormProps {
+  onSubmit: () => Promise<void>
   date: Date
   projectId?: string
   userId?: string
@@ -141,14 +143,13 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row items-center gap-2">
-            <input
-              className="btn"
-              type="month"
-              value={format(date, 'yyyy-MM')}
-              onChange={(event) => {
-                if (event.target.value) {
+            <CalendarMonthSelector
+              selectLabel
+              date={date}
+              onDateChange={(newDate) => {
+                if (newDate) {
                   router.push({
-                    pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
+                    pathname: `/reports/${format(newDate, 'yyyy-MM')}/${projectId ?? ''}`,
                     query: userId ? { userId } : undefined,
                   })
                 }
