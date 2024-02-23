@@ -70,7 +70,6 @@ const ReportQueryDocument = graphql(`
   }
 `)
 interface ReportFormProps {
-  onSubmit: () => Promise<void>
   date: Date
   projectId?: string
   userId?: string
