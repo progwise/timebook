@@ -555,6 +555,7 @@ export type ProjectFormFragment = {
   hasWorkHours: boolean
   id: string
   isArchived: boolean
+  inviteKey: string
 }
 
 export type ProjectMemberListProjectFragment = {
