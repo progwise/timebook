@@ -17,7 +17,6 @@ import { FaAngleLeft, FaAngleRight, FaArrowTurnUp, FaRegCalendar } from 'react-i
 interface MonthItemProps {
   month: Date
   selectedDate?: Date
-  shownDate: Date
   onClick: () => void
 }
 
@@ -84,7 +83,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
 
   return (
     <section className={props.className}>
-      <Popover className="">
+      <Popover>
         <Popover.Button
           ref={reference}
           aria-label="select date"
@@ -139,7 +138,6 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
                       key={month.toString()}
                       month={month}
                       selectedDate={props.date}
-                      shownDate={shownYear}
                       onClick={() => {
                         props.onDateChange(month)
                         close()

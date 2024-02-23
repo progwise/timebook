@@ -100,7 +100,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   return (
     <section className={props.className}>
-      <Popover className="flex justify-center">
+      <Popover>
         <Popover.Button
           ref={reference}
           aria-label="select date"
