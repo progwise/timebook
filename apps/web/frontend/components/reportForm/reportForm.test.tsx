@@ -32,7 +32,6 @@ beforeAll(() => {
               title: 'Project 1',
               __typename: 'Project',
               isLocked,
-              role: 'NONE',
               canModify: false,
               isArchived: false,
             },
