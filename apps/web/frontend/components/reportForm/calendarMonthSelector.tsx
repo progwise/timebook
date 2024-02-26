@@ -1,4 +1,4 @@
-import { offset, shift, useFloating } from '@floating-ui/react-dom'
+import { autoUpdate, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { Popover, Transition } from '@headlessui/react'
 import {
   addYears,
@@ -73,9 +73,9 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
   const yearTitle = format(shownYear, 'yyyy')
 
   const { x, y, reference, floating, strategy } = useFloating({
-    placement: 'bottom',
-    strategy: 'absolute',
+    strategy: 'fixed',
     middleware: [offset(10), shift({ crossAxis: true })],
+    whileElementsMounted: autoUpdate,
   })
 
   const currentMonth = new Date()
