@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/no-useless-undefined */
-import { flip, offset, useFloating } from '@floating-ui/react-dom'
+import { autoUpdate, flip, offset, useFloating } from '@floating-ui/react-dom'
 import { Listbox as HuListbox } from '@headlessui/react'
 
 import { ListboxButton } from './listboxButton'
@@ -15,15 +15,15 @@ export interface ListboxProps<TType> {
 }
 
 export const Listbox = <TType = string,>({ getLabel, options, getKey, value, onChange }: ListboxProps<TType>) => {
-  const { x, y, strategy, refs } = useFloating({
+  const { floatingStyles, refs } = useFloating({
     middleware: [flip(), offset(4)],
+    whileElementsMounted: autoUpdate,
   })
-
   return (
     <HuListbox value={value} onChange={onChange}>
       <div className="z-10 w-64 py-2">
         <ListboxButton ref={refs.setReference}>{getLabel(value)}</ListboxButton>
-        <ListboxOptions ref={refs.setFloating} style={{ position: strategy, top: y ?? 0, left: x ?? 0 }}>
+        <ListboxOptions ref={refs.setFloating} style={floatingStyles}>
           {options.map((option) => (
             <ListboxOption key={getKey(option)} value={option}>
               {getLabel(option)}
