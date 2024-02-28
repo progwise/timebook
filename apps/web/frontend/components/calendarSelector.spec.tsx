@@ -52,12 +52,12 @@ describe('when opening the popup', () => {
     expect(heading).toHaveTextContent('January 2021')
   })
 
-  it('should mark the given date as selected', async () => {
+  it('should marks the given date as selected', async () => {
     const selectedDayElement = screen.getByTitle(/^selected day/i)
     expect(selectedDayElement).toHaveTextContent('1')
   })
 
-  it('should be possible to select a different date', async () => {
+  it('should be possible to selected a different date', async () => {
     const day14 = screen.getByRole('button', { name: '14' })
     await userEvent.click(day14)
 

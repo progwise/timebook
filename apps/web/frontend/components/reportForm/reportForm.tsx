@@ -9,7 +9,6 @@ import { FormattedDuration, ListboxWithUnselect } from '@progwise/timebook-ui'
 import { graphql, useFragment } from '../../generated/gql'
 import { ProjectFilter } from '../../generated/gql/graphql'
 import { PageHeading } from '../pageHeading'
-import { CalendarMonthSelector } from './calendarMonthSelector'
 import { ProjectLockButton } from './projectLockButton'
 import { ReportUserSelect } from './reportUserSelect'
 
@@ -140,13 +139,14 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       <div className="flex flex-col">
         <div className="flex justify-between">
           <div className="flex flex-row items-center gap-2">
-            <CalendarMonthSelector
-              selectLabel
-              date={date}
-              onDateChange={(newDate) => {
-                if (newDate) {
+            <input
+              className="btn"
+              type="month"
+              value={format(date, 'yyyy-MM')}
+              onChange={(event) => {
+                if (event.target.value) {
                   router.push({
-                    pathname: `/reports/${format(newDate, 'yyyy-MM')}/${projectId ?? ''}`,
+                    pathname: `/reports/${event.target.value}/${projectId ?? ''}`,
                     query: userId ? { userId } : undefined,
                   })
                 }

@@ -90,6 +90,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   const monthTitle = format(shownDate, 'MMMM yyyy')
 
   const { floatingStyles, refs } = useFloating({
+    placement: 'bottom',
+    strategy: 'absolute',
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
   })
@@ -99,12 +101,12 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   return (
     <section className={props.className}>
-      <Popover>
+      <Popover className="flex justify-center">
         <Popover.Button
           ref={refs.setReference}
           aria-label="select date"
           className="btn no-animation btn-sm"
-          disabled={props.disabled}
+          disabled={props.disabled ?? false}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
           <FaRegCalendar />
@@ -147,7 +149,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                     <FaAngleRight />
                   </button>
                 </header>
-                <div className="grid grid-cols-7 gap-2 pt-2 text-center">
+                <div className="grid auto-cols-min grid-flow-row grid-cols-7 gap-2 pt-2 text-center">
                   <div>Mon</div>
                   <div>Tue</div>
                   <div>Wed</div>
@@ -173,7 +175,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                   <>
                     <div className="divider col-span-7 -my-1" />
                     <button
-                      className="btn btn-ghost no-animation btn-xs btn-block"
+                      className="btn btn-ghost no-animation btn-xs btn-block mt-1"
                       onClick={goToToday}
                       aria-label="go to today"
                     >
