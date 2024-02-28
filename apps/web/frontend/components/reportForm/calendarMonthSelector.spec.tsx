@@ -8,7 +8,7 @@ import { CalendarMonthSelector } from './calendarMonthSelector'
 it('should display the given month and year', () => {
   render(<CalendarMonthSelector date={new Date('2021-01')} onDateChange={jest.fn()} />)
 
-  const selectButton = screen.getByRole('button', { name: /select date/i })
+  const selectButton = screen.getByRole('button', { name: /select month/i })
   expect(selectButton).toHaveTextContent('January 2021')
 })
 
@@ -18,15 +18,15 @@ it('should update the date when the props updates', async () => {
     return (
       <>
         <CalendarMonthSelector date={date} onDateChange={jest.fn()} />
-        <button onClick={() => setDate(new Date('2022-12'))}>update date</button>
+        <button onClick={() => setDate(new Date('2022-12'))}>update month</button>
       </>
     )
   }
 
   render(<CalendarMonthSelectorHelper />)
 
-  const selectButton = screen.getByRole('button', { name: /select date/i })
-  const updateButton = screen.getByRole('button', { name: /update date/i })
+  const selectButton = screen.getByRole('button', { name: /select month/i })
+  const updateButton = screen.getByRole('button', { name: /update month/i })
   expect(selectButton).toHaveTextContent('January 2021')
 
   await userEvent.click(updateButton)
@@ -58,8 +58,8 @@ describe('when opening the popup', () => {
   })
 
   it('should be possible to select a different month', async () => {
-    const april = screen.getByRole('button', { name: 'Apr' })
-    await userEvent.click(april)
+    const aprilButton = screen.getByRole('button', { name: 'Apr' })
+    await userEvent.click(aprilButton)
 
     const expectedMonth = startOfMonth(new Date('2021-04'))
     expect(onDateChange).toHaveBeenCalledWith(expectedMonth)

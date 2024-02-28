@@ -89,7 +89,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthTitle = format(shownDate, 'MMMM yyyy')
 
-  const { x, y, reference, floating, strategy } = useFloating({
+  const { floatingStyles, refs } = useFloating({
     strategy: 'absolute',
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
@@ -102,10 +102,10 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
     <section className={props.className}>
       <Popover>
         <Popover.Button
-          ref={reference}
+          ref={refs.setReference}
           aria-label="select date"
           className="btn no-animation btn-sm"
-          disabled={props.disabled ?? false}
+          disabled={props.disabled}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
           <FaRegCalendar />
@@ -120,12 +120,8 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           leave="transition duration-100 ease-out"
           leaveFrom="transform scale-100 opacity-100"
           leaveTo="transform scale-75 opacity-0"
-          style={{
-            position: strategy,
-            top: y ?? 0,
-            left: x ?? 0,
-          }}
-          ref={floating}
+          style={floatingStyles}
+          ref={refs.setFloating}
           data-testid="calendar-popover"
         >
           <Popover.Panel>
