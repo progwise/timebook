@@ -10,7 +10,7 @@ export const ListboxOptions = forwardRef<HTMLDivElement, ListboxOptionsProps>(({
   <div style={style} ref={reference}>
     <Transition
       enter="transition"
-      enterFrom="opacity-0 "
+      enterFrom="opacity-0 scale-y-75"
       enterTo="opacity-100 scale-y-100"
       leave="transition"
       leaveFrom="opacity-100"
