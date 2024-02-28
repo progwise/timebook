@@ -1,48 +1,34 @@
 import { autoUpdate, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { Popover, Transition } from '@headlessui/react'
 import {
-  addMonths,
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
+  addYears,
+  eachMonthOfInterval,
+  endOfYear,
   format,
-  getDate,
-  isSameDay,
   isSameMonth,
   isThisMonth,
-  isToday,
-  isWeekend,
-  startOfMonth,
-  startOfWeek,
-  subMonths,
+  isThisYear,
+  startOfYear,
+  subYears,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { FaAngleLeft, FaAngleRight, FaArrowTurnUp, FaRegCalendar } from 'react-icons/fa6'
 
-interface DayItemProps {
-  day: Date
+interface MonthItemProps {
+  month: Date
   selectedDate?: Date
-  shownDate: Date
   onClick: () => void
 }
 
-const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
+const MonthItem = ({ month, selectedDate, onClick }: MonthItemProps): JSX.Element => {
   const classNames = ['btn btn-sm']
 
-  if (!isSameMonth(day, shownDate)) {
-    classNames.push('opacity-50')
-  }
+  let title = format(month, 'yyyy')
 
-  let title = format(day, 'do MMM yyyy')
-
-  if (isWeekend(day)) {
-    classNames.push('opacity-50')
-  }
-
-  if (selectedDate && isSameDay(day, selectedDate)) {
+  if (selectedDate && isSameMonth(month, selectedDate)) {
     classNames.push('btn-primary')
-    title = `Selected Day, ${title}`
-  } else if (isToday(day)) {
+    title = `Selected Month, ${title}`
+  } else if (isThisMonth(month)) {
     classNames.push('btn-neutral')
   } else {
     classNames.push('btn-ghost')
@@ -50,67 +36,63 @@ const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.E
 
   return (
     <button title={title} className={classNames.join(' ')} onClick={onClick} type="button">
-      {getDate(day)}
+      {format(month, 'MMM')}
     </button>
   )
 }
 
-export interface CalendarSelectorProps {
+export interface CalendarMonthSelectorProps {
   onDateChange: (newDate: Date) => void
   date?: Date
   selectLabel?: boolean
-  hideLabel?: boolean
   className?: string
   disabled?: boolean
 }
 
-export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
-  const [shownDate, setShownDate] = useState(props.date ?? new Date())
+export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.Element => {
+  const [shownYear, setShownYear] = useState(props.date ?? new Date())
 
   useEffect(() => {
-    setShownDate(props.date ?? new Date())
-  }, [props.date, setShownDate])
+    setShownYear(props.date ?? new Date())
+  }, [props.date, setShownYear])
 
-  const goToToday = () => setShownDate(new Date())
+  const goToToday = () => setShownYear(new Date())
 
-  const monthStart = startOfMonth(shownDate)
-  const monthEnd = endOfMonth(shownDate)
-  const startFirstWeek = startOfWeek(monthStart)
-  const endLastWeek = endOfWeek(monthEnd)
-  const daysToRender = eachDayOfInterval({ start: startFirstWeek, end: endLastWeek })
+  const yearStart = startOfYear(shownYear)
+  const yearEnd = endOfYear(shownYear)
+  const monthsToRender = eachMonthOfInterval({ start: yearStart, end: yearEnd })
 
-  const gotoPreviousMonth = () => {
-    setShownDate((oldDate) => subMonths(oldDate, 1))
+  const gotoPreviousYear = () => {
+    setShownYear((oldDate) => subYears(oldDate, 1))
   }
 
-  const gotoNextMonth = () => {
-    setShownDate((oldDate) => addMonths(oldDate, 1))
+  const gotoNextYear = () => {
+    setShownYear((oldDate) => addYears(oldDate, 1))
   }
 
-  const monthTitle = format(shownDate, 'MMMM yyyy')
+  const yearTitle = format(shownYear, 'yyyy')
 
   const { floatingStyles, refs } = useFloating({
+    strategy: 'fixed',
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
   })
 
-  const currentDate = new Date()
-  const currentMonth = format(currentDate, 'MMMM yyyy')
+  const currentMonth = new Date()
+  const currentYear = format(currentMonth, 'yyyy')
 
   return (
     <section className={props.className}>
       <Popover>
         <Popover.Button
           ref={refs.setReference}
-          aria-label="select date"
-          className="btn no-animation btn-sm"
+          aria-label="select month"
+          className="btn no-animation btn-md min-w-40"
           disabled={props.disabled}
         >
-          {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
           <FaRegCalendar />
-          {props.selectLabel && <span>select</span>}
+          <span>{props.date && format(props.date, 'MMMM yyyy')}</span>
         </Popover.Button>
-
         <Transition
           className="z-40 rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
           enter="transition duration-100 ease-out"
@@ -121,7 +103,6 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           leaveTo="transform scale-75 opacity-0"
           style={floatingStyles}
           ref={refs.setFloating}
-          data-testid="calendar-popover"
         >
           <Popover.Panel>
             {({ close }) => (
@@ -129,55 +110,46 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
                 <header className="flex items-center justify-between font-bold">
                   <button
                     className="btn btn-ghost btn-xs"
-                    onClick={gotoPreviousMonth}
+                    onClick={gotoPreviousYear}
                     type="button"
-                    aria-label="go to previous month"
+                    aria-label="go to previous year"
                   >
                     <FaAngleLeft />
                   </button>
                   <div className="text-lg" role="heading">
-                    {monthTitle}
+                    {yearTitle}
                   </div>
                   <button
                     className="btn btn-ghost btn-xs"
-                    onClick={gotoNextMonth}
+                    onClick={gotoNextYear}
                     type="button"
-                    aria-label="go to next month"
+                    aria-label="go to next year"
                   >
                     <FaAngleRight />
                   </button>
                 </header>
-                <div className="grid grid-cols-7 gap-2 pt-2 text-center">
-                  <div>Mon</div>
-                  <div>Tue</div>
-                  <div>Wed</div>
-                  <div>Thu</div>
-                  <div>Fri</div>
-                  <div className="opacity-50">Sat</div>
-                  <div className="opacity-50">Sun</div>
-                  <div className="divider col-span-7 -my-2" />
-                  {daysToRender.map((day) => (
-                    <DayItem
-                      key={day.toString()}
-                      day={day}
+                <div className="grid grid-cols-4 gap-2 pt-2 text-center">
+                  {monthsToRender.map((month) => (
+                    <MonthItem
+                      key={month.toString()}
+                      month={month}
                       selectedDate={props.date}
-                      shownDate={shownDate}
                       onClick={() => {
-                        props.onDateChange(day)
+                        props.onDateChange(month)
                         close()
                       }}
                     />
                   ))}
                 </div>
-                {!isThisMonth(shownDate) && (
+                {!isThisYear(shownYear) && (
                   <>
-                    <div className="divider col-span-7 -my-1" />
+                    <div className="divider col-span-4 -my-1" />
                     <button
                       className="btn btn-ghost no-animation btn-xs btn-block"
                       onClick={goToToday}
                       aria-label="go to today"
                     >
-                      Back to {currentMonth}
+                      Back to {currentYear}
                       <FaArrowTurnUp />
                     </button>
                   </>
