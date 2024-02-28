@@ -72,7 +72,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
 
   const yearTitle = format(shownYear, 'yyyy')
 
-  const { x, y, reference, floating, strategy } = useFloating({
+  const { x, y, strategy, refs } = useFloating({
     strategy: 'fixed',
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
@@ -85,7 +85,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
     <section className={props.className}>
       <Popover>
         <Popover.Button
-          ref={reference}
+          ref={refs.setReference}
           aria-label="select date"
           className="btn no-animation btn-md min-w-40"
           disabled={props.disabled ?? false}
@@ -106,7 +106,7 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
             top: y ?? 0,
             left: x ?? 0,
           }}
-          ref={floating}
+          ref={refs.setFloating}
         >
           <Popover.Panel>
             {({ close }) => (
