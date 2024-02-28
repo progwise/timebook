@@ -89,7 +89,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
 
   const monthTitle = format(shownDate, 'MMMM yyyy')
 
-  const { x, y, reference, floating, strategy } = useFloating({
+  const { x, y, strategy, refs } = useFloating({
     placement: 'bottom',
     strategy: 'absolute',
     middleware: [offset(10), shift({ crossAxis: true })],
@@ -102,7 +102,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
     <section className={props.className}>
       <Popover className="flex justify-center">
         <Popover.Button
-          ref={reference}
+          ref={refs.setReference}
           aria-label="select date"
           className="btn no-animation btn-sm"
           disabled={props.disabled ?? false}
@@ -125,7 +125,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
             top: y ?? 0,
             left: x ?? 0,
           }}
-          ref={floating}
+          ref={refs.setFloating}
           data-testid="calendar-popover"
         >
           <Popover.Panel>
