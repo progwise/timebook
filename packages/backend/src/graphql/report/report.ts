@@ -1,3 +1,5 @@
+import { isSameDay } from 'date-fns'
+
 import { builder } from '../builder'
 import { prisma } from '../prisma'
 import { ReportGroupedByDate } from './reportGroupedByDate'
@@ -10,7 +12,7 @@ export const Report = builder.objectType('Report', {
     groupedByTask: t.field({
       type: [ReportGroupedByTask],
       resolve: async ({ projectId, from, to, userId }) => {
-        const groupByTaskResult = await prisma.workHour.groupBy({
+        const groupedByTaskResult = await prisma.workHour.groupBy({
           by: ['taskId'],
           where: {
             task: { projectId },
@@ -23,23 +25,28 @@ export const Report = builder.objectType('Report', {
           },
         })
 
-        return groupByTaskResult.map(async ({ taskId, _sum: { duration } }) => ({
-          task: prisma.task.findUniqueOrThrow({
-            select: { id: true },
-            where: { id: taskId },
-          }),
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          duration: duration!,
-          workHours: await prisma.workHour.findMany({
-            select: { id: true },
-            where: {
-              taskId,
-              date: { gte: from, lte: to },
-              userId,
-              duration: { not: 0 },
-            },
-          }),
-        }))
+        const allTaskIds = groupedByTaskResult.map(({ taskId }) => taskId)
+        const allWorkHours = await prisma.workHour.findMany({
+          select: { id: true, taskId: true },
+          where: {
+            taskId: { in: allTaskIds },
+            date: { gte: from, lte: to },
+            userId,
+            duration: { not: 0 },
+          },
+        })
+
+        return Promise.all(
+          groupedByTaskResult.map(async ({ taskId, _sum: { duration } }) => ({
+            task: await prisma.task.findUniqueOrThrow({
+              select: { id: true },
+              where: { id: taskId },
+            }),
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            duration: duration!,
+            workHours: allWorkHours.filter((workHour) => workHour.taskId === taskId),
+          })),
+        )
       },
     }),
     groupedByUser: t.field({
@@ -58,20 +65,23 @@ export const Report = builder.objectType('Report', {
           },
         })
 
+        const allUserIds = groupedByUserResult.map(({ userId }) => userId)
+        const allWorkHours = await prisma.workHour.findMany({
+          select: { id: true, userId: true },
+          where: {
+            task: { projectId },
+            userId: { in: allUserIds },
+            date: { gte: from, lte: to },
+            duration: { not: 0 },
+          },
+        })
+
         return groupedByUserResult.map(async ({ userId, _sum: { duration } }) => ({
           user: await prisma.user.findUniqueOrThrow({
             select: { id: true },
             where: { id: userId },
           }),
-          workHours: await prisma.workHour.findMany({
-            select: { id: true },
-            where: {
-              task: { projectId },
-              userId,
-              date: { gte: from, lte: to },
-              duration: { not: 0 },
-            },
-          }),
+          workHours: allWorkHours.filter((workHour) => workHour.userId === userId),
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           duration: duration!,
         }))
@@ -80,7 +90,7 @@ export const Report = builder.objectType('Report', {
     groupedByDate: t.field({
       type: [ReportGroupedByDate],
       resolve: async ({ projectId, from, to, userId }) => {
-        const groupByDateResult = await prisma.workHour.groupBy({
+        const groupedByDateResult = await prisma.workHour.groupBy({
           by: ['date'],
           where: {
             task: { projectId },
@@ -93,19 +103,22 @@ export const Report = builder.objectType('Report', {
           },
         })
 
-        return groupByDateResult.map(async ({ date, _sum: { duration } }) => ({
+        const allDates = groupedByDateResult.map(({ date }) => date)
+        const allWorkHours = await prisma.workHour.findMany({
+          select: { id: true, date: true },
+          where: {
+            task: { projectId },
+            date: { in: allDates },
+            userId,
+            duration: { not: 0 },
+          },
+        })
+
+        return groupedByDateResult.map(async ({ date, _sum: { duration } }) => ({
           date,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           duration: duration!,
-          workHours: await prisma.workHour.findMany({
-            select: { id: true },
-            where: {
-              task: { projectId },
-              date: { equals: date },
-              userId,
-              duration: { not: 0 },
-            },
-          }),
+          workHours: allWorkHours.filter((workHour) => isSameDay(workHour.date, date)),
         }))
       },
     }),

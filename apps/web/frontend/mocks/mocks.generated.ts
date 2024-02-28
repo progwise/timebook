@@ -624,7 +624,6 @@ export type ReportProjectFragment = {
   __typename?: 'Project'
   id: string
   title: string
-  role: string
   canModify: boolean
   isArchived: boolean
   isLocked: boolean
@@ -643,7 +642,6 @@ export type ReportProjectsQuery = {
     __typename?: 'Project'
     id: string
     title: string
-    role: string
     canModify: boolean
     isArchived: boolean
     isLocked: boolean

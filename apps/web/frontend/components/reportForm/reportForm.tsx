@@ -17,7 +17,6 @@ export const ReportProjectFragment = graphql(`
   fragment ReportProject on Project {
     id
     title
-    role
     canModify
     isArchived
     isLocked(date: $date)
@@ -105,7 +104,6 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   })
 
   const selectedProject = projects?.find((project) => project.id === projectId)
-  const userIsAdmin = selectedProject?.role === 'ADMIN'
 
   const sortedProjects = useMemo(
     () =>
@@ -124,7 +122,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           </PageHeading>
         </div>
       </div>
-      {projectId && reportGroupedData && userIsAdmin && (
+      {projectId && reportGroupedData && (
         <div className="stats shadow">
           <div className="stat">
             <div className="stat-title">Total hours</div>
@@ -202,7 +200,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
           </div>
         </div>
 
-        {projectId && reportGroupedData && userIsAdmin && (
+        {projectId && reportGroupedData && (
           <>
             <div>
               <table className="table text-base">

@@ -90,7 +90,6 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   const monthTitle = format(shownDate, 'MMMM yyyy')
 
   const { floatingStyles, refs } = useFloating({
-    strategy: 'absolute',
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
   })
