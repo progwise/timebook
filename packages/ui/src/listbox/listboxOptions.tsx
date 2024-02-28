@@ -6,7 +6,7 @@ interface ListboxOptionsProps {
   style?: React.CSSProperties
 }
 
-export const ListboxOptions = forwardRef<HTMLUListElement, ListboxOptionsProps>(({ children, style }, reference) => (
+export const ListboxOptions = forwardRef<HTMLDivElement, ListboxOptionsProps>(({ children, style }, reference) => (
   <div style={style} ref={reference}>
     <Transition
       enter="transition"
