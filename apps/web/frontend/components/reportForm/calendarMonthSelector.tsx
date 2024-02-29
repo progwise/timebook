@@ -93,71 +93,71 @@ export const CalendarMonthSelector = (props: CalendarMonthSelectorProps): JSX.El
           <FaRegCalendar />
           <span>{props.date && format(props.date, 'MMMM yyyy')}</span>
         </Popover.Button>
-        <Transition
-          className="z-40 rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
-          enter="transition duration-100 ease-out"
-          enterFrom="transform scale-75 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-100 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-75 opacity-0"
-          style={floatingStyles}
-          ref={refs.setFloating}
-        >
-          <Popover.Panel>
-            {({ close }) => (
-              <>
-                <header className="flex items-center justify-between font-bold">
-                  <button
-                    className="btn btn-ghost btn-xs"
-                    onClick={gotoPreviousYear}
-                    type="button"
-                    aria-label="go to previous year"
-                  >
-                    <FaAngleLeft />
-                  </button>
-                  <div className="text-lg" role="heading">
-                    {yearTitle}
-                  </div>
-                  <button
-                    className="btn btn-ghost btn-xs"
-                    onClick={gotoNextYear}
-                    type="button"
-                    aria-label="go to next year"
-                  >
-                    <FaAngleRight />
-                  </button>
-                </header>
-                <div className="grid grid-cols-4 gap-2 pt-2 text-center">
-                  {monthsToRender.map((month) => (
-                    <MonthItem
-                      key={month.toString()}
-                      month={month}
-                      selectedDate={props.date}
-                      onClick={() => {
-                        props.onDateChange(month)
-                        close()
-                      }}
-                    />
-                  ))}
-                </div>
-                {!isThisYear(shownYear) && (
-                  <>
-                    <div className="divider col-span-4 -my-1" />
+        <div style={floatingStyles} ref={refs.setFloating} className="z-40">
+          <Transition
+            className="rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
+            enter="transition duration-100 ease-out"
+            enterFrom="transform scale-75 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-100 ease-out"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-75 opacity-0"
+          >
+            <Popover.Panel>
+              {({ close }) => (
+                <>
+                  <header className="flex items-center justify-between font-bold">
                     <button
-                      className="btn btn-ghost no-animation btn-xs btn-block"
-                      onClick={goToToday}
-                      aria-label="go to today"
+                      className="btn btn-ghost btn-xs"
+                      onClick={gotoPreviousYear}
+                      type="button"
+                      aria-label="go to previous year"
                     >
-                      Back to {currentYear}
-                      <FaArrowTurnUp />
+                      <FaAngleLeft />
                     </button>
-                  </>
-                )}
-              </>
-            )}
-          </Popover.Panel>
-        </Transition>
+                    <div className="text-lg" role="heading">
+                      {yearTitle}
+                    </div>
+                    <button
+                      className="btn btn-ghost btn-xs"
+                      onClick={gotoNextYear}
+                      type="button"
+                      aria-label="go to next year"
+                    >
+                      <FaAngleRight />
+                    </button>
+                  </header>
+                  <div className="grid grid-cols-4 gap-2 pt-2 text-center">
+                    {monthsToRender.map((month) => (
+                      <MonthItem
+                        key={month.toString()}
+                        month={month}
+                        selectedDate={props.date}
+                        onClick={() => {
+                          props.onDateChange(month)
+                          close()
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {!isThisYear(shownYear) && (
+                    <>
+                      <div className="divider col-span-4 -my-1" />
+                      <button
+                        className="btn btn-ghost no-animation btn-xs btn-block"
+                        onClick={goToToday}
+                        aria-label="go to today"
+                      >
+                        Back to {currentYear}
+                        <FaArrowTurnUp />
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </Popover.Panel>
+          </Transition>
+        </div>
       </Popover>
     </section>
   )
