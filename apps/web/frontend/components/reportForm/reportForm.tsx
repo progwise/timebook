@@ -1,6 +1,7 @@
 import { endOfMonth, format, formatISO, getMonth, getYear, startOfMonth } from 'date-fns'
 import { useRouter } from 'next/router'
-import { Fragment, useMemo } from 'react'
+import groupby from 'object.groupby'
+import { Fragment, useMemo, useState } from 'react'
 import { FaFolderMinus, FaFolderOpen, FaPrint } from 'react-icons/fa6'
 import { useQuery } from 'urql'
 
@@ -44,9 +45,11 @@ const ReportQueryDocument = graphql(`
           id
           duration
           user {
+            id
             name
           }
           task {
+            id
             title
           }
         }
@@ -104,6 +107,8 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
   })
 
   const selectedProject = projects?.find((project) => project.id === projectId)
+
+  const [groupedBy, setGroupedBy] = useState<'grouped by user' | 'grouped by task' | undefined>()
 
   const sortedProjects = useMemo(
     () =>
@@ -175,6 +180,16 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               options={sortedProjects}
               noOptionLabel="Select Project"
             />
+            <ListboxWithUnselect
+              value={groupedBy}
+              options={['grouped by user', 'grouped by task'] as const}
+              getKey={(value) => value}
+              getLabel={(value) => value}
+              noOptionLabel="all details"
+              onChange={(newGroupedBy) => {
+                setGroupedBy(newGroupedBy)
+              }}
+            />
           </div>
           <div className="flex items-center gap-2">
             {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
@@ -226,15 +241,50 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                           />
                         </td>
                       </tr>
-                      {group.workHours.map((workHour) => (
-                        <tr key={workHour.id}>
-                          <td className="pl-8">{workHour.task.title}</td>
-                          <td>{workHour.user?.name}</td>
-                          <td className="text-right">
-                            <FormattedDuration title="Work duration" minutes={workHour.duration} />
-                          </td>
-                        </tr>
-                      ))}
+                      {groupedBy === undefined &&
+                        group.workHours.map((workHour) => (
+                          <tr key={workHour.id}>
+                            <td className="pl-8">{workHour.task.title}</td>
+                            <td>{workHour.user?.name}</td>
+                            <td className="text-right">
+                              <FormattedDuration title="Work duration" minutes={workHour.duration} />
+                            </td>
+                          </tr>
+                        ))}
+                      {groupedBy === 'grouped by task' &&
+                        Object.entries(groupby(group.workHours, (workHour) => workHour.task.id)).map(
+                          ([taskId, workHours]) => (
+                            <tr key={taskId}>
+                              <td className="pl-8">{workHours[0].task.title}</td>
+                              <td>{workHours.map((user) => user.user.name).join(', ')}</td>
+                              <td className="text-right">
+                                <FormattedDuration
+                                  title="Combined hours of all users"
+                                  minutes={workHours
+                                    .map((WorkHourDuration) => WorkHourDuration.duration)
+                                    .reduce((sum, duration) => duration + sum, 0)}
+                                />
+                              </td>
+                            </tr>
+                          ),
+                        )}
+                      {groupedBy === 'grouped by user' &&
+                        Object.entries(groupby(group.workHours, (workHour) => workHour.user.id)).map(
+                          ([userId, workHours]) => (
+                            <tr key={userId}>
+                              <td className="pl-8">{workHours.map((task) => task.task.title).join(', ')}</td>
+                              <td>{workHours[0].user.name}</td>
+                              <td className="text-right">
+                                <FormattedDuration
+                                  title="Combined hours for all tasks"
+                                  minutes={workHours
+                                    .map((WorkHourDuration) => WorkHourDuration.duration)
+                                    .reduce((sum, duration) => duration + sum, 0)}
+                                />
+                              </td>
+                            </tr>
+                          ),
+                        )}
                     </Fragment>
                   ))}
                 </tbody>
