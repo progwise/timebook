@@ -111,81 +111,81 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
           {props.selectLabel && <span>select</span>}
         </Popover.Button>
 
-        <Transition
-          className="z-40 rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
-          enter="transition duration-100 ease-out"
-          enterFrom="transform scale-75 opacity-0"
-          enterTo="transform scale-100 opacity-100"
-          leave="transition duration-100 ease-out"
-          leaveFrom="transform scale-100 opacity-100"
-          leaveTo="transform scale-75 opacity-0"
-          style={floatingStyles}
-          ref={refs.setFloating}
-          data-testid="calendar-popover"
-        >
-          <Popover.Panel>
-            {({ close }) => (
-              <>
-                <header className="flex items-center justify-between font-bold">
-                  <button
-                    className="btn btn-ghost btn-xs"
-                    onClick={gotoPreviousMonth}
-                    type="button"
-                    aria-label="go to previous month"
-                  >
-                    <FaAngleLeft />
-                  </button>
-                  <div className="text-lg" role="heading">
-                    {monthTitle}
-                  </div>
-                  <button
-                    className="btn btn-ghost btn-xs"
-                    onClick={gotoNextMonth}
-                    type="button"
-                    aria-label="go to next month"
-                  >
-                    <FaAngleRight />
-                  </button>
-                </header>
-                <div className="grid grid-cols-7 gap-2 pt-2 text-center">
-                  <div>Mon</div>
-                  <div>Tue</div>
-                  <div>Wed</div>
-                  <div>Thu</div>
-                  <div>Fri</div>
-                  <div className="opacity-50">Sat</div>
-                  <div className="opacity-50">Sun</div>
-                  <div className="divider col-span-7 -my-2" />
-                  {daysToRender.map((day) => (
-                    <DayItem
-                      key={day.toString()}
-                      day={day}
-                      selectedDate={props.date}
-                      shownDate={shownDate}
-                      onClick={() => {
-                        props.onDateChange(day)
-                        close()
-                      }}
-                    />
-                  ))}
-                </div>
-                {!isThisMonth(shownDate) && (
-                  <>
-                    <div className="divider col-span-7 -my-1" />
+        <div style={floatingStyles} ref={refs.setFloating} className="z-40">
+          <Transition
+            className="rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md"
+            enter="transition duration-100 ease-out"
+            enterFrom="transform scale-75 opacity-0"
+            enterTo="transform scale-100 opacity-100"
+            leave="transition duration-100 ease-out"
+            leaveFrom="transform scale-100 opacity-100"
+            leaveTo="transform scale-75 opacity-0"
+            data-testid="calendar-popover"
+          >
+            <Popover.Panel>
+              {({ close }) => (
+                <>
+                  <header className="flex items-center justify-between font-bold">
                     <button
-                      className="btn btn-ghost no-animation btn-xs btn-block"
-                      onClick={goToToday}
-                      aria-label="go to today"
+                      className="btn btn-ghost btn-xs"
+                      onClick={gotoPreviousMonth}
+                      type="button"
+                      aria-label="go to previous month"
                     >
-                      Back to {currentMonth}
-                      <FaArrowTurnUp />
+                      <FaAngleLeft />
                     </button>
-                  </>
-                )}
-              </>
-            )}
-          </Popover.Panel>
-        </Transition>
+                    <div className="text-lg" role="heading">
+                      {monthTitle}
+                    </div>
+                    <button
+                      className="btn btn-ghost btn-xs"
+                      onClick={gotoNextMonth}
+                      type="button"
+                      aria-label="go to next month"
+                    >
+                      <FaAngleRight />
+                    </button>
+                  </header>
+                  <div className="grid grid-cols-7 gap-2 pt-2 text-center">
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div className="opacity-50">Sat</div>
+                    <div className="opacity-50">Sun</div>
+                    <div className="divider col-span-7 -my-2" />
+                    {daysToRender.map((day) => (
+                      <DayItem
+                        key={day.toString()}
+                        day={day}
+                        selectedDate={props.date}
+                        shownDate={shownDate}
+                        onClick={() => {
+                          props.onDateChange(day)
+                          close()
+                        }}
+                      />
+                    ))}
+                  </div>
+                  {!isThisMonth(shownDate) && (
+                    <>
+                      <div className="divider col-span-7 -my-1" />
+                      <button
+                        className="btn btn-ghost no-animation btn-xs btn-block"
+                        onClick={goToToday}
+                        aria-label="go to today"
+                      >
+                        Back to {currentMonth}
+                        <FaArrowTurnUp />
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </Popover.Panel>
+          </Transition>
+        </div>
       </Popover>
     </section>
   )
