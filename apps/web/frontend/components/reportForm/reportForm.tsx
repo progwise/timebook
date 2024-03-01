@@ -108,7 +108,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
 
   const selectedProject = projects?.find((project) => project.id === projectId)
 
-  const [groupedBy, setGroupedBy] = useState<'grouped by user' | 'grouped by task' | undefined>()
+  const [groupedBy, setGroupedBy] = useState<'Grouped by User' | 'Grouped by Task' | undefined>()
 
   const sortedProjects = useMemo(
     () =>
@@ -180,16 +180,6 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
               options={sortedProjects}
               noOptionLabel="Select Project"
             />
-            <ListboxWithUnselect
-              value={groupedBy}
-              options={['grouped by user', 'grouped by task'] as const}
-              getKey={(value) => value}
-              getLabel={(value) => value}
-              noOptionLabel="all details"
-              onChange={(newGroupedBy) => {
-                setGroupedBy(newGroupedBy)
-              }}
-            />
           </div>
           <div className="flex items-center gap-2">
             {selectedProject && <ProjectLockButton year={year} month={month} project={selectedProject} />}
@@ -210,6 +200,16 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 <button className="btn btn-md print:hidden" onClick={() => print()}>
                   <FaPrint />
                 </button>
+                <ListboxWithUnselect
+              value={groupedBy}
+              options={['Grouped by User', 'Grouped by Task'] as const}
+              getKey={(value) => value}
+              getLabel={(value) => value}
+              noOptionLabel="All Details"
+              onChange={(newGroupedBy) => {
+                setGroupedBy(newGroupedBy)
+              }}
+            />
               </>
             )}
           </div>
@@ -251,7 +251,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                             </td>
                           </tr>
                         ))}
-                      {groupedBy === 'grouped by task' &&
+                      {groupedBy === 'Grouped by Task' &&
                         Object.entries(groupby(group.workHours, (workHour) => workHour.task.id)).map(
                           ([taskId, workHours]) => (
                             <tr key={taskId}>
@@ -268,7 +268,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                             </tr>
                           ),
                         )}
-                      {groupedBy === 'grouped by user' &&
+                      {groupedBy === 'Grouped by User' &&
                         Object.entries(groupby(group.workHours, (workHour) => workHour.user.id)).map(
                           ([userId, workHours]) => (
                             <tr key={userId}>
