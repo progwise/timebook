@@ -128,18 +128,23 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
         </div>
       </div>
       {projectId && reportGroupedData && (
-        <div className="stats shadow">
-          <div className="stat">
-            <div className="stat-title">Total hours</div>
-            <div className="stat-value">
-              <FormattedDuration
-                title="Total work hours of the selected project"
-                minutes={reportGroupedData?.report.groupedByDate
-                  .map((WorkHourDuration) => WorkHourDuration.duration)
-                  .reduce((sum, duration) => duration + sum, 0)}
-              />
+        <div className="flex items-end justify-between">
+          <div className="stats shadow">
+            <div className="stat">
+              <div className="stat-title">Total hours</div>
+              <div className="stat-value">
+                <FormattedDuration
+                  title="Total work hours of the selected project"
+                  minutes={reportGroupedData?.report.groupedByDate
+                    .map((WorkHourDuration) => WorkHourDuration.duration)
+                    .reduce((sum, duration) => duration + sum, 0)}
+                />
+              </div>
             </div>
           </div>
+          <button className="btn btn-lg print:hidden" onClick={() => print()}>
+            <FaPrint />
+          </button>
         </div>
       )}
       <div className="flex flex-col">
@@ -197,9 +202,6 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   from={from}
                   to={to}
                 />
-                <button className="btn btn-md print:hidden" onClick={() => print()}>
-                  <FaPrint />
-                </button>
                 <ListboxWithUnselect
                   value={groupedBy}
                   options={['Grouped by User', 'Grouped by Task'] as const}

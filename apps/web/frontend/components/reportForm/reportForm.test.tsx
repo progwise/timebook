@@ -45,7 +45,10 @@ beforeAll(() => {
         context.data({
           project: {
             id: 'project1',
-            members: [{ id: '1', name: 'User 1', durationWorkedOnProject: 0, __typename: 'User' }],
+            members: [
+              { id: '1', name: 'User 1', durationWorkedOnProject: 5, __typename: 'User' },
+              { id: '2', name: 'User 2', durationWorkedOnProject: 10, __typename: 'User' },
+            ],
             __typename: 'Project',
           },
           __typename: 'Query',
@@ -85,4 +88,23 @@ it('should be possible to lock and unlock a report', async () => {
   await user.click(lockButton)
   await waitFor(() => expect(lockButton).not.toBeChecked())
   expect(isLocked).toBeFalsy()
+})
+
+it('should be possible to group by task', async () => {
+  const user = userEvent.setup()
+  render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
+
+  const groupedByButton = await screen.findByRole('button', { name: /^All Details/ })
+  await user.click(groupedByButton)
+
+  const groupedByTask = await screen.findByText('Grouped by Task')
+  await user.click(groupedByTask)
+
+  const rows = screen.getAllByRole('row')
+  await waitFor(() => expect(rows).toHaveTextContent('User 1, User 2'))
+
+  // expect(await screen.findByText('User 1, User 2')).toBeInTheDocument()
+
+  // const rows = screen.getAllByRole('row')
+  // expect(rows).toHaveLength(4)
 })
