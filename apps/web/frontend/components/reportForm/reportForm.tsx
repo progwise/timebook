@@ -201,15 +201,15 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                   <FaPrint />
                 </button>
                 <ListboxWithUnselect
-              value={groupedBy}
-              options={['Grouped by User', 'Grouped by Task'] as const}
-              getKey={(value) => value}
-              getLabel={(value) => value}
-              noOptionLabel="All Details"
-              onChange={(newGroupedBy) => {
-                setGroupedBy(newGroupedBy)
-              }}
-            />
+                  value={groupedBy}
+                  options={['Grouped by User', 'Grouped by Task'] as const}
+                  getKey={(value) => value}
+                  getLabel={(value) => value}
+                  noOptionLabel="All Details"
+                  onChange={(newGroupedBy) => {
+                    setGroupedBy(newGroupedBy)
+                  }}
+                />
               </>
             )}
           </div>
