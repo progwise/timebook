@@ -81,7 +81,7 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                   {project.startDate} - {project.endDate}
                 </td>
                 <td className="text-right">
-                  <Link className="btn btn-outline btn-sm" href={`/projects/${project.id}`}>
+                  <Link className="btn btn-outline btn-secondary btn-sm" href={`/projects/${project.id}`}>
                     Details
                   </Link>
                 </td>
