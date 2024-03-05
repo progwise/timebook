@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns'
 import { useRef } from 'react'
-import { FaFloppyDisk, FaPlay, FaRegCircleXmark } from 'react-icons/fa6'
+import { FaCheck, FaPlay, FaXmark } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -82,11 +82,11 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
     return (
       <>
         <div className="flex items-center gap-2">
-          <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
-            <FaFloppyDisk />
-          </button>
           <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
-            <FaRegCircleXmark />
+            <FaXmark />
+          </button>
+          <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
+            <FaCheck />
           </button>
         </div>
         <dialog className="modal text-base-content" ref={dialogReference}>
