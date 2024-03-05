@@ -669,8 +669,8 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
-        user: { __typename?: 'User'; name?: string | null }
-        task: { __typename?: 'Task'; title: string }
+        user: { __typename?: 'User'; id: string; name?: string | null }
+        task: { __typename?: 'Task'; id: string; title: string }
       }>
     }>
     groupedByTask: Array<{

@@ -45,7 +45,10 @@ beforeAll(() => {
         context.data({
           project: {
             id: 'project1',
-            members: [{ id: '1', name: 'User 1', durationWorkedOnProject: 0, __typename: 'User' }],
+            members: [
+              { id: '1', name: 'User 1', durationWorkedOnProject: 5, __typename: 'User' },
+              { id: '2', name: 'User 2', durationWorkedOnProject: 10, __typename: 'User' },
+            ],
             __typename: 'Project',
           },
           __typename: 'Query',
@@ -56,7 +59,64 @@ beforeAll(() => {
       response(
         context.data({
           project: { canModify: true },
-          report: { groupedByDate: [], groupedByTask: [], groupedByUser: [], __typename: 'Report' },
+          report: {
+            groupedByDate: [
+              {
+                date: '2024-02-16',
+                duration: 487,
+                workHours: [
+                  {
+                    id: '1',
+                    duration: 300,
+                    user: {
+                      id: '1',
+                      name: 'User 1',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '1',
+                      title: 'Task 1',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                  {
+                    id: '2',
+                    duration: 180,
+                    user: {
+                      id: '2',
+                      name: 'User 2',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '1',
+                      title: 'Task 1',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                  {
+                    id: '3',
+                    duration: 180,
+                    user: {
+                      id: '2',
+                      name: 'User 2',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '2',
+                      title: 'Task 2',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                ],
+              },
+            ],
+            groupedByTask: [],
+            groupedByUser: [],
+            __typename: 'Report',
+          },
           __typename: 'Query',
         }),
       ),
@@ -85,4 +145,36 @@ it('should be possible to lock and unlock a report', async () => {
   await user.click(lockButton)
   await waitFor(() => expect(lockButton).not.toBeChecked())
   expect(isLocked).toBeFalsy()
+})
+
+it('should be possible to group by task', async () => {
+  const user = userEvent.setup()
+  render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
+
+  const groupedByButton = await screen.findByRole('button', { name: /^All Details/ })
+  await user.click(groupedByButton)
+
+  const groupedByTask = await screen.findByText('Grouped by Task')
+  await user.click(groupedByTask)
+
+  const cell = await screen.findByRole('cell', {
+    name: /user 1, user 2/i,
+  })
+  expect(cell).toBeInTheDocument()
+})
+
+it('should be possible to group by user', async () => {
+  const user = userEvent.setup()
+  render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
+
+  const groupedByButton = await screen.findByRole('button', { name: /^All Details/ })
+  await user.click(groupedByButton)
+
+  const groupedByUser = await screen.findByText('Grouped by User')
+  await user.click(groupedByUser)
+
+  const cell = await screen.findByRole('cell', {
+    name: /task 1, task 2/i,
+  })
+  expect(cell).toBeInTheDocument()
 })
