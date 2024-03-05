@@ -14,7 +14,7 @@ export class ProjectsPage {
 
   public async addProject(projectName: string, startDate?: Date, endDate?: Date) {
     await this._gotoProjectPage()
-    await this._page.getByRole('button', { name: 'Add' }).click()
+    await this._page.getByRole('button', { name: 'New project' }).click()
     await this._page.fill('[placeholder="Enter project name"]', projectName)
     if (startDate) {
       await this._page.fill('text="Start"', format(startDate, 'yyyy-MM-dd'))
