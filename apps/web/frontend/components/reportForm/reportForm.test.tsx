@@ -157,10 +157,10 @@ it('should be possible to group by task', async () => {
   const groupedByTask = await screen.findByText('Grouped by Task')
   await user.click(groupedByTask)
 
-  const cells = await screen.findAllByRole('cell', {
+  const cells = await screen.findByRole('cell', {
     name: /user 1, user 2/i,
   })
-  expect(cells).toHaveLength(1)
+  expect(cells).toBeInTheDocument()
 })
 
 it('should be possible to group by user', async () => {
@@ -173,8 +173,8 @@ it('should be possible to group by user', async () => {
   const groupedByUser = await screen.findByText('Grouped by User')
   await user.click(groupedByUser)
 
-  const cells = await screen.findAllByRole('cell', {
+  const cells = await screen.findByRole('cell', {
     name: /task 1, task 2/i,
   })
-  expect(cells).toHaveLength(1)
+  expect(cells).toBeInTheDocument()
 })
