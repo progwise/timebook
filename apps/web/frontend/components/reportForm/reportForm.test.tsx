@@ -59,7 +59,64 @@ beforeAll(() => {
       response(
         context.data({
           project: { canModify: true },
-          report: { groupedByDate: [], groupedByTask: [], groupedByUser: [], __typename: 'Report' },
+          report: {
+            groupedByDate: [
+              {
+                date: '2024-02-16',
+                duration: 487,
+                workHours: [
+                  {
+                    id: '1',
+                    duration: 300,
+                    user: {
+                      id: '1',
+                      name: 'User 1',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '1',
+                      title: 'Task 1',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                  {
+                    id: '2',
+                    duration: 180,
+                    user: {
+                      id: '2',
+                      name: 'User 2',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '1',
+                      title: 'Task 1',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                  {
+                    id: '3',
+                    duration: 180,
+                    user: {
+                      id: '2',
+                      name: 'User 2',
+                      __typename: 'User',
+                    },
+                    task: {
+                      id: '2',
+                      title: 'Task 2',
+                      __typename: 'Task',
+                    },
+                    __typename: 'WorkHour',
+                  },
+                ],
+              },
+            ],
+            groupedByTask: [],
+            groupedByUser: [],
+            __typename: 'Report',
+          },
           __typename: 'Query',
         }),
       ),
@@ -100,11 +157,24 @@ it('should be possible to group by task', async () => {
   const groupedByTask = await screen.findByText('Grouped by Task')
   await user.click(groupedByTask)
 
-  // const rows = screen.getAllByRole('row')
-  // await waitFor(() => expect(rows).toHaveTextContent('User 1, User 2'))
+  const cells = await screen.findAllByRole('cell', {
+    name: /user 1, user 2/i,
+  })
+  expect(cells).toHaveLength(1)
+})
 
-  // expect(await screen.findByText('User 1, User 2')).toBeInTheDocument()
+it('should be possible to group by user', async () => {
+  const user = userEvent.setup()
+  render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
 
-  // const rows = screen.getAllByRole('row')
-  // expect(rows).toHaveLength(4)
+  const groupedByButton = await screen.findByRole('button', { name: /^All Details/ })
+  await user.click(groupedByButton)
+
+  const groupedByUser = await screen.findByText('Grouped by User')
+  await user.click(groupedByUser)
+
+  const cells = await screen.findAllByRole('cell', {
+    name: /task 1, task 2/i,
+  })
+  expect(cells).toHaveLength(1)
 })
