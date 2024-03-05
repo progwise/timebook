@@ -693,8 +693,8 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
-        user: { __typename?: 'User'; name?: string | null }
-        task: { __typename?: 'Task'; title: string }
+        user: { __typename?: 'User'; id: string; name?: string | null }
+        task: { __typename?: 'Task'; id: string; title: string }
       }>
     }>
     groupedByTask: Array<{
@@ -3087,7 +3087,10 @@ export const ReportDocument = {
                               name: { kind: 'Name', value: 'user' },
                               selectionSet: {
                                 kind: 'SelectionSet',
-                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
                               },
                             },
                             {
@@ -3095,7 +3098,10 @@ export const ReportDocument = {
                               name: { kind: 'Name', value: 'task' },
                               selectionSet: {
                                 kind: 'SelectionSet',
-                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                                ],
                               },
                             },
                           ],

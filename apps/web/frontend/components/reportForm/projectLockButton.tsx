@@ -42,11 +42,11 @@ export const ProjectLockButton = ({ year, month, project }: ProjectLockButtonPro
     <button onClick={handleClick} disabled={fetching} className="btn btn-md">
       {project.isLocked ? (
         <>
-          <FaLockOpen /> Unlocked
+          <FaLockOpen /> Unlock
         </>
       ) : (
         <>
-          <FaLock /> Locked
+          <FaLock /> Lock
         </>
       )}
     </button>

@@ -3,7 +3,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "lint": "eslint *.ts*",
     "typecheck": "tsc --noEmit",
     "migrate:dev": "prisma migrate dev",
