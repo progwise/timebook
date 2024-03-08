@@ -154,7 +154,7 @@ export const TopNavigation = (): JSX.Element => {
                   <LiveDuration start={parseISO(data.currentTracking.start)} />
                 </div>
               </div>
-              <TrackingButtons tracking={data.currentTracking} />
+              <TrackingButtons tracking={data.currentTracking} interactiveButtons={true} />
             </div>
           </>
         )}
