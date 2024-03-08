@@ -3,7 +3,7 @@ import { parseISO } from 'date-fns'
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { TrackingButtons } from '../trackingButtons/trackingButtons'
+import { TrackingButton } from './trackingButton'
 import { WeekGridTaskDayCell } from './weekGridTaskDayCell'
 
 const WeekGridTaskRowFragment = graphql(`
@@ -49,7 +49,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: 
     <div className="contents" role="row">
       <div className="pl-3" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
-          <TrackingButtons tracking={task.tracking} taskToTrack={task} />
+          <TrackingButton tracking={task.tracking} taskToTrack={task} />
         )}
       </div>
       <div className="px-3" role="cell">
