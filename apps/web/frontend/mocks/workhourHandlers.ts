@@ -5,8 +5,8 @@ import { testWorkHour } from './testData'
 
 const workHours: WorkHoursQuery['workHours'] = [{ ...testWorkHour, date: format(new Date(), 'yyyy-MM-dd') }]
 
-export const workhourHandlers = [
-  mockWorkHoursQuery((request, response, context) => {
+export const workHourHandlers = [
+  mockWorkHoursQuery((_request, response, context) => {
     return response(
       context.data({
         __typename: 'Query',

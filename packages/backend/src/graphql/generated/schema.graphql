@@ -463,6 +463,10 @@ type UserNotFoundError {
 }
 
 type WorkHour {
+  """
+  Comment for the work hour
+  """
+  comment: String
   date: Date!
 
   """

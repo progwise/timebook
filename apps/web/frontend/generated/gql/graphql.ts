@@ -419,6 +419,8 @@ export type UserNotFoundError = {
 
 export type WorkHour = {
   __typename?: 'WorkHour'
+  /** Comment for the work hour */
+  comment?: Maybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
