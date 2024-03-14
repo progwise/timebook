@@ -1,6 +1,6 @@
 import { parseISO } from 'date-fns'
 import { useRef } from 'react'
-import { FaCheck, FaPlay, FaXmark } from 'react-icons/fa6'
+import { FaCheck, FaPlay, FaRegClock, FaXmark } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -62,6 +62,7 @@ const TrackingCancelMutationDocument = graphql(`
 interface TrackingButtonsProps {
   tracking?: FragmentType<typeof TrackingButtonsTrackingFragment> | null
   taskToTrack?: FragmentType<typeof TrackingButtonsTaskFragment> | null
+  interactiveButtons?: boolean
 }
 
 export const TrackingButtons = (props: TrackingButtonsProps) => {
@@ -81,40 +82,48 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
 
     return (
       <>
-        <div className="flex items-center gap-2">
-          <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
-            <FaXmark />
-          </button>
-          <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
-            <FaCheck />
-          </button>
-        </div>
-        <dialog className="modal text-base-content" ref={dialogReference}>
-          <div className="modal-box">
-            <h3 className="text-lg font-bold">Delete Tracking</h3>
-            <p className="py-4">
-              Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (
-              {tracking.task.project.title})?
-            </p>
-            <div className="modal-action">
-              <form method="dialog">
-                <button className="btn btn-ghost btn-sm">Cancel</button>
-              </form>
-              <button
-                className="btn btn-error btn-sm"
-                onClick={async () => {
-                  await cancelTracking({})
-                  dialogReference.current?.close()
-                }}
-              >
-                Delete
+        {props.interactiveButtons ? (
+          <>
+            <div className="flex items-center gap-2">
+              <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
+                <FaXmark />
+              </button>
+              <button className="btn btn-square btn-success btn-xs" onClick={() => stopTracking({})}>
+                <FaCheck />
               </button>
             </div>
+            <dialog className="modal text-base-content" ref={dialogReference}>
+              <div className="modal-box">
+                <h3 className="text-lg font-bold">Delete Tracking</h3>
+                <p className="py-4">
+                  Do you want to delete <LiveDuration start={start} /> tracking on {tracking.task.title} (
+                  {tracking.task.project.title})?
+                </p>
+                <div className="modal-action">
+                  <form method="dialog">
+                    <button className="btn btn-ghost btn-sm">Cancel</button>
+                  </form>
+                  <button
+                    className="btn btn-error btn-sm"
+                    onClick={async () => {
+                      await cancelTracking({})
+                      dialogReference.current?.close()
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+              </form>
+            </dialog>
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <FaRegClock />
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </>
     )
   }
