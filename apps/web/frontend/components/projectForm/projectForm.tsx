@@ -209,9 +209,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         </div>
       </form>
       <div className="mb-8 flex w-full gap-2">
-        {project?.canModify && <DeleteOrArchiveProjectButton project={project} disabled={isSubmitting} />}
         <button
-          className="btn btn-outline btn-sm"
+          className="btn btn-secondary btn-sm"
           disabled={isSubmitting}
           onClick={onCancel}
           title="Cancel the changes"
@@ -219,9 +218,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         >
           Cancel
         </button>
+        {project?.canModify && <DeleteOrArchiveProjectButton project={project} disabled={isSubmitting} />}
         {!isProjectFormReadOnly && (
           <button
-            className="btn btn-outline btn-sm"
+            className="btn btn-primary btn-sm"
             type="submit"
             disabled={isSubmitting}
             title={isNewProject ? 'Create' : 'Save'}
