@@ -14,6 +14,7 @@ import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { PageHeading } from '../pageHeading'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
+import { InviteLink } from '../inviteLink'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
   if (!dateString) {
@@ -66,6 +67,7 @@ export const ProjectFormFragment = graphql(`
     canModify
     hasWorkHours
     ...DeleteOrArchiveProjectButton
+    ...InviteLinkProjectFragment
   }
 `)
 
@@ -230,6 +232,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             {isNewProject ? 'Create' : 'Save'}
           </button>
         )}
+
+        {project && 
+          
+          <InviteLink project={project}/>
+      }
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
       </div>
     </div>
