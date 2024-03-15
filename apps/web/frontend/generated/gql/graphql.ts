@@ -496,15 +496,6 @@ export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: st
   ' $fragmentName'?: 'InviteLinkProjectFragmentFragment'
 }
 
-export type ProjectRegenerateInviteKeyMutationVariables = Exact<{
-  projectId: Scalars['ID']
-}>
-
-export type ProjectRegenerateInviteKeyMutation = {
-  __typename?: 'Mutation'
-  projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
-}
-
 export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean } & {
   ' $fragmentName'?: 'LockTaskButtonFragment'
 }
@@ -2489,46 +2480,6 @@ export const TaskDeleteDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskDeleteMutation, TaskDeleteMutationVariables>
-export const ProjectRegenerateInviteKeyDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'projectRegenerateInviteKey' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'projectRegenerateInviteKey' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'inviteKey' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>
 export const TaskUpdateDocument = {
   kind: 'Document',
   definitions: [

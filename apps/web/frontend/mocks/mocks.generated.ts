@@ -490,15 +490,6 @@ export type TaskDeleteMutation = {
 
 export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
 
-export type ProjectRegenerateInviteKeyMutationVariables = Exact<{
-  projectId: Scalars['ID']
-}>
-
-export type ProjectRegenerateInviteKeyMutation = {
-  __typename?: 'Mutation'
-  projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
-}
-
 export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean }
 
 export type TaskUpdateMutationVariables = Exact<{
@@ -1108,29 +1099,6 @@ export const mockProjectMembershipInviteByEmailMutation = (
 export const mockTaskDeleteMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
 ) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockProjectRegenerateInviteKeyMutation((req, res, ctx) => {
- *   const { projectId } = req.variables;
- *   return res(
- *     ctx.data({ projectRegenerateInviteKey })
- *   )
- * })
- */
-export const mockProjectRegenerateInviteKeyMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<ProjectRegenerateInviteKeyMutationVariables>,
-    GraphQLContext<ProjectRegenerateInviteKeyMutation>,
-    any
-  >,
-) =>
-  graphql.mutation<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>(
-    'projectRegenerateInviteKey',
-    resolver,
-  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
