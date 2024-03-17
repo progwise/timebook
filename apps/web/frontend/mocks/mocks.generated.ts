@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /* eslint-disable unicorn/prevent-abbreviations */
-import { graphql, ResponseResolver, GraphQLRequest, GraphQLContext } from 'msw'
+import { GraphQLContext, GraphQLRequest, ResponseResolver, graphql } from 'msw'
 
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
@@ -743,6 +743,7 @@ export type SheetDayRowFragment = {
   __typename?: 'WorkHour'
   id: string
   duration: number
+  comment?: string
   project: { __typename?: 'Project'; title: string }
   task: { __typename?: 'Task'; title: string }
   user: { __typename?: 'User'; name?: string | null }
