@@ -824,7 +824,7 @@ export type WeekGridProjectFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; id: string; date: string; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -863,7 +863,7 @@ export type WeekGridProjectRowGroupFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; id: string; date: string; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -910,13 +910,31 @@ export type WeekGridTaskRowFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number; id: string; date: string; comment?: string | null } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+}
+
+export type WorkHourCommentsQueryVariables = Exact<{
+  from: Scalars['Date']
+  to?: InputMaybe<Scalars['Date']>
+}>
+
+export type WorkHourCommentsQuery = {
+  __typename?: 'Query'
+  workHours: Array<{ __typename?: 'WorkHour'; id: string; comment?: string | null; date: string; duration: number }>
+}
+
+export type WorkHourCommentFragment = {
+  __typename?: 'WorkHour'
+  id: string
+  date: string
+  duration: number
+  comment?: string | null
 }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
@@ -1035,7 +1053,13 @@ export type WeekGridQuery = {
         __typename?: 'WorkHourOfDay'
         date: string
         isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+        workHour?: {
+          __typename?: 'WorkHour'
+          duration: number
+          id: string
+          date: string
+          comment?: string | null
+        } | null
       }>
       project: {
         __typename?: 'Project'
@@ -1444,6 +1468,25 @@ export const mockWorkHourUpdateMutation = (
     any
   >,
 ) => graphql.mutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>('workHourUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWorkHourCommentsQuery((req, res, ctx) => {
+ *   const { from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ workHours })
+ *   )
+ * })
+ */
+export const mockWorkHourCommentsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<WorkHourCommentsQueryVariables>,
+    GraphQLContext<WorkHourCommentsQuery>,
+    any
+  >,
+) => graphql.query<WorkHourCommentsQuery, WorkHourCommentsQueryVariables>('workHourComments', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
