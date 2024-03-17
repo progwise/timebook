@@ -4,7 +4,6 @@ export const testWorkHour: SheetDayRowFragment = {
   __typename: 'WorkHour',
   id: '123',
   duration: 123,
-  comment: 'comment 1',
   project: { title: 'Project 1' },
   user: {
     __typename: 'User',
