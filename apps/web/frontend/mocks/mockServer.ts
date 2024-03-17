@@ -3,9 +3,9 @@ import { setupServer } from 'msw/node'
 import { accessTokenHandlers } from './accessTokenHandlers'
 import { projectHandlers } from './projectHandlers'
 import { taskHandlers } from './taskHandlers'
-import { workHourHandlers } from './workHourHandlers'
+import { workhourHandlers } from './workhourHandlers'
 
-const allHandlers = [...workHourHandlers, ...projectHandlers, ...taskHandlers, ...accessTokenHandlers]
+const allHandlers = [...workhourHandlers, ...projectHandlers, ...taskHandlers, ...accessTokenHandlers]
 export const mockServer = setupServer(...allHandlers)
 
 beforeAll(() =>
