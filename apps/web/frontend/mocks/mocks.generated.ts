@@ -436,6 +436,7 @@ export type WorkHour = {
 }
 
 export type WorkHourInput = {
+  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
