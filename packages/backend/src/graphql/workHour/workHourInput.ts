@@ -9,5 +9,6 @@ export const WorkHourInput = builder.inputType('WorkHourInput', {
     date: t.field({ type: DateScalar }),
     duration: t.int({ description: 'Duration of the work hour in minutes' }),
     taskId: t.id(),
+    comment: t.string({required: false }),
   }),
 })

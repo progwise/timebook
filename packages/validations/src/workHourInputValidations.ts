@@ -7,4 +7,5 @@ export const workHourInputValidations = z.object({
     .min(0, 'duration must be positive')
     .max(24 * 60, 'duration is too long'),
   taskId: z.string(),
+  comment: z.optional(z.string()),
 })
