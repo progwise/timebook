@@ -62,7 +62,7 @@ export const WeekGridProjectRowGroup = ({
           <div key={day.toDateString()} className="self-stretch bg-base-200" role="cell" />
         ))}
         <div
-          className="flex items-center justify-end self-stretch rounded-r-box bg-base-200 px-2 text-right text-lg font-bold text-base-content"
+          className="flex items-center justify-end self-stretch bg-base-200 px-2 text-right text-lg font-bold text-base-content"
           role="cell"
         >
           {isDataOutdated ? (
@@ -72,6 +72,7 @@ export const WeekGridProjectRowGroup = ({
           )}
         </div>
       </div>
+      <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
           <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />

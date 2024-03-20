@@ -19,6 +19,6 @@ export const WeekGridDateHeaderRow = ({ interval }: WeekGridDateHeaderRowProps) 
         </div>
       </div>
     ))}
-    <div />
+    <div className="col-span-2" />
   </div>
 )

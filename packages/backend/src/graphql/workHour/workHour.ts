@@ -7,6 +7,7 @@ export const WorkHour = builder.prismaObject('WorkHour', {
     id: t.exposeID('id', { description: 'Identifies the work hour' }),
     date: t.expose('date', { type: DateScalar }),
     duration: t.exposeInt('duration', { description: 'Duration of the work hour in minutes' }),
+    comment: t.exposeString('comment', { description: 'Comment for the work hour', nullable: true }),
     user: t.relation('user', { description: 'User who booked the work hours' }),
     project: t.field({
       type: 'Project',
