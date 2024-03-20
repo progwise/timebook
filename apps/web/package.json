@@ -26,7 +26,7 @@
     "@progwise/timebook-validations": "workspace:*",
     "@react-hookz/web": "^23.0.0",
     "@types/object.groupby": "^1.0.3",
-    "apollo-server-core": "^3.10.2",
+    "@apollo/server": "^4.0.0",
     "apollo-server-micro": "^3.6.7",
     "csstype": "^3.0.10",
     "daisyui": "^4.4.22",
