@@ -1,44 +1,13 @@
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { FaRegCommentDots } from 'react-icons/fa6'
-import { useQuery } from 'urql'
 
-import { FragmentType, graphql } from '../generated/gql'
+import { WorkHoursSheet } from './timeSheetView/workHoursSheet'
 
-const WorkHourCommentsQueryDocument = graphql(`
-  query workHourComments($from: Date!, $to: Date) {
-    workHours(from: $from, to: $to) {
-      id
-      comment
-      date
-      duration
-    }
-  }
-`)
-
-const WorkHourCommentFragment = graphql(`
-  fragment WorkHourComment on WorkHour {
-    id
-    date
-    duration
-    comment
-  }
-`)
-
-interface WorkHourCommentProps {
-  workHourComment: FragmentType<typeof WorkHourCommentFragment>
-}
-
-export const WorkHourComment = (props: WorkHourCommentProps) => {
+export const WorkHourComment = (): JSX.Element => {
   const dialogReference = useRef<HTMLDialogElement>(null)
   const openDialog = () => {
     dialogReference.current?.showModal()
   }
-
-  const context = useMemo(() => ({ additionalTypenames: ['WorkHourComment'] }), [])
-  const [{ data, error, fetching: workHourCommentsLoading }] = useQuery({
-    query: WorkHourCommentsQueryDocument,
-    context,
-  })
 
   return (
     <>
@@ -51,20 +20,19 @@ export const WorkHourComment = (props: WorkHourCommentProps) => {
       <dialog className="modal text-base-content" ref={dialogReference}>
         <div className="modal-box">
           <h3 className="text-lg font-bold">Comments</h3>
-          {error && <span>{error.message}</span>}
-          {workHourCommentsLoading && <span className="loading loading-spinner" />}
-          {data && (
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>placeholder</th>
-                  </tr>
-                </thead>
-                <tbody>{data?.workHours.map((WorkHourComment) => <div key={WorkHourComment.id}>123</div>)}</tbody>
-              </table>
-            </div>
-          )}
+          {/*<div>
+            <table>
+              <thead>
+                <tr>
+                  <th>placeholder</th>
+                </tr>
+              </thead>
+              <tbody>
+                <div>placeholder</div>
+              </tbody>
+            </table>
+          </div> */}
+          <WorkHoursSheet />
         </div>
 
         <form method="dialog" className="modal-backdrop">

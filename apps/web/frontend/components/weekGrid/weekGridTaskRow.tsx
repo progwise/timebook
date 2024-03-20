@@ -19,7 +19,6 @@ const WeekGridTaskRowFragment = graphql(`
       date
       workHour {
         duration
-        ...WorkHourComment
       }
       isLocked
     }
@@ -42,17 +41,11 @@ interface WeekGridTaskRowProps {
   comment: FragmentType<typeof WeekGridTaskRowFragment>
 }
 
-export const WeekGridTaskRow = ({
-  task: taskFragment,
-  isDataOutdated = false,
-  comment: workHourCommentFragment,
-}: WeekGridTaskRowProps) => {
+export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const taskDurations = task.workHourOfDays
     .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
-
-  const workHourComment = useFragment(WeekGridTaskRowFragment, workHourCommentFragment)
 
   return (
     <div className="contents" role="row">
@@ -78,7 +71,7 @@ export const WeekGridTaskRow = ({
         {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
       </div>
       <div className="px-2" role="cell">
-        <WorkHourComment workHourComment={workHourComment} />
+        <WorkHourComment />
       </div>
     </div>
   )
