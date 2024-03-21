@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form'
 import { BiCopyAlt } from 'react-icons/bi'
 import { useMutation, useQuery } from 'urql'
 
-import { InputField } from '@progwise/timebook-ui'
-import { toastSuccess } from '@progwise/timebook-ui'
+import { InputField, toastSuccess } from '@progwise/timebook-ui'
 import { accessTokenInputValidations } from '@progwise/timebook-validations'
 
 import { AccessTokenRow } from '../frontend/components/accessToken/accessTokenRow'
+import { Clock } from '../frontend/components/clock/clock'
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 import { graphql } from '../frontend/generated/gql'
@@ -62,6 +62,7 @@ const AccessTokensPage = (): JSX.Element => {
 
   return (
     <ProtectedPage>
+      <Clock />
       <PageHeading>Access Tokens</PageHeading>
       {error && <span>{error.message}</span>}
       {accessTokensLoading && <span className="loading loading-spinner" />}
