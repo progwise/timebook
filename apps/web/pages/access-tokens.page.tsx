@@ -5,8 +5,7 @@ import { useForm } from 'react-hook-form'
 import { BiCopyAlt } from 'react-icons/bi'
 import { useMutation, useQuery } from 'urql'
 
-import { InputField } from '@progwise/timebook-ui'
-import { toastSuccess } from '@progwise/timebook-ui'
+import { InputField, toastSuccess } from '@progwise/timebook-ui'
 import { accessTokenInputValidations } from '@progwise/timebook-validations'
 
 import { AccessTokenRow } from '../frontend/components/accessToken/accessTokenRow'
