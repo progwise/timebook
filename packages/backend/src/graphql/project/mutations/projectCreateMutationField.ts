@@ -10,8 +10,6 @@ builder.mutationField('projectCreate', (t) =>
       data: t.arg({ type: ProjectInput }),
     },
     resolve: async (query, _source, { data: { title, start, end } }, context) => {
-      const now = new Date()
-
       return prisma.project.create({
         ...query,
         data: {
@@ -20,8 +18,6 @@ builder.mutationField('projectCreate', (t) =>
           endDate: end,
           projectMemberships: {
             create: {
-              inviteAcceptedAt: now,
-              invitedAt: now,
               userId: context.session.user.id,
               role: 'ADMIN',
             },

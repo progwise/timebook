@@ -61,7 +61,7 @@ export const Project = builder.prismaObject('Project', {
           orderBy: { name: 'asc' },
         }),
     }),
-    inviteKey: t.exposeString('inviteKey'),
+    // inviteKey: t.exposeString('inviteKey'),
     role: t.withAuth({ isLoggedIn: true }).string({
       description: 'Can the user modify the entity',
       select: { id: true },

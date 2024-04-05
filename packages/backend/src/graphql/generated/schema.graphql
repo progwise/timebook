@@ -75,21 +75,6 @@ type Mutation {
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
 
   """
-  Assign user to a project by e-mail.
-  """
-  projectMembershipInviteByEmail(email: String!, projectId: ID!): MutationProjectMembershipInviteByEmailResult!
-
-  """
-  Add a user to a project using the invite key.
-  """
-  projectMembershipJoin(inviteKey: String!): Project!
-
-  """
-  Regenerate the invite key of a project. The old key will be outdated.
-  """
-  projectRegenerateInviteKey(projectId: ID!): Project!
-
-  """
   Unarchive a project
   """
   projectUnarchive(projectId: ID!): Project!
@@ -180,12 +165,6 @@ type Mutation {
   workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
 
-union MutationProjectMembershipInviteByEmailResult = MutationProjectMembershipInviteByEmailSuccess | UserNotFoundError
-
-type MutationProjectMembershipInviteByEmailSuccess {
-  data: Project!
-}
-
 type Project implements ModifyInterface {
   """
   Can the user modify the entity
@@ -198,7 +177,6 @@ type Project implements ModifyInterface {
   identifies the project
   """
   id: ID!
-  inviteKey: String!
   isArchived: Boolean!
 
   """
@@ -456,10 +434,6 @@ type User {
   Role of the user in a project
   """
   role(projectId: ID!): Role!
-}
-
-type UserNotFoundError {
-  email: String!
 }
 
 type WorkHour {
