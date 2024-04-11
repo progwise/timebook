@@ -1,9 +1,10 @@
 import { parseISO } from 'date-fns'
 import { useRef } from 'react'
-import { FaCheck, FaPlay, FaRegClock, FaXmark } from 'react-icons/fa6'
+import { FaCheck, FaPlay, FaXmark } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { Clock } from '../clock/clock'
 import { LiveDuration } from '../liveDuration/liveDuration'
 
 const TrackingButtonsTrackingFragment = graphql(`
@@ -121,7 +122,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
           </>
         ) : (
           <div className="flex justify-center">
-            <FaRegClock />
+            <Clock />
           </div>
         )}
       </>
