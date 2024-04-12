@@ -73,6 +73,12 @@ type Mutation {
   Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
+  projectMembershipInvitationCreate(projectId: ID!): ProjectInvitation!
+
+  """
+  Add a user to a project using the invite key.
+  """
+  projectMembershipJoin(invitationKey: String!): Project!
 
   """
   Unarchive a project
@@ -230,6 +236,13 @@ input ProjectInput {
   end: Date
   start: Date
   title: String!
+}
+
+type ProjectInvitation {
+  expireDate: Date!
+  id: ID!
+  invitationKey: String!
+  project: Project!
 }
 
 type Query {

@@ -13,6 +13,7 @@ import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { PageHeading } from '../pageHeading'
+import { ProjectInvitation } from '../projectInvitation'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
@@ -66,6 +67,7 @@ export const ProjectFormFragment = graphql(`
     canModify
     hasWorkHours
     ...DeleteOrArchiveProjectButton
+    ...ProjectInvitationFragment
   }
 `)
 
@@ -210,7 +212,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       </form>
       <div className="mb-8 flex w-full gap-2">
         <button
-          className="btn btn-secondary btn-sm"
+          className="btn btn-outline btn-sm"
           disabled={isSubmitting}
           onClick={onCancel}
           title="Cancel the changes"
@@ -231,6 +233,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
+        <ProjectInvitation project={project} />
       </div>
     </div>
   )

@@ -57,6 +57,9 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user from a project */
   projectMembershipDelete: Project
+  projectMembershipInvitationCreate: ProjectInvitation
+  /** Add a user to a project using the invite key. */
+  projectMembershipJoin: Project
   /** Unarchive a project */
   projectUnarchive: Project
   projectUnlock: Project
@@ -118,6 +121,14 @@ export type MutationProjectMembershipCreateArgs = {
 export type MutationProjectMembershipDeleteArgs = {
   projectId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationProjectMembershipInvitationCreateArgs = {
+  projectId: Scalars['ID']
+}
+
+export type MutationProjectMembershipJoinArgs = {
+  invitationKey: Scalars['String']
 }
 
 export type MutationProjectUnarchiveArgs = {
@@ -217,6 +228,14 @@ export type ProjectInput = {
   end?: InputMaybe<Scalars['Date']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
+}
+
+export type ProjectInvitation = {
+  __typename?: 'ProjectInvitation'
+  expireDate: Scalars['Date']
+  id: Scalars['ID']
+  invitationKey: Scalars['String']
+  project: Project
 }
 
 export type Query = {
@@ -493,6 +512,22 @@ export type ProjectFormFragment = {
   hasWorkHours: boolean
   id: string
   isArchived: boolean
+}
+
+export type ProjectInvitationFragmentFragment = { __typename?: 'Project'; id: string }
+
+export type ProjectMembershipInvitationMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInvitationMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInvitationCreate: {
+    __typename?: 'ProjectInvitation'
+    id: string
+    invitationKey: string
+    expireDate: string
+  }
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -1083,6 +1118,29 @@ export const mockProjectUnarchiveMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipInvitationMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipInvitationCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipInvitationMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipInvitationMutationVariables>,
+    GraphQLContext<ProjectMembershipInvitationMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipInvitationMutation, ProjectMembershipInvitationMutationVariables>(
+    'projectMembershipInvitation',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
