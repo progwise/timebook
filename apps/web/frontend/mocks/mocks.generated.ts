@@ -824,7 +824,7 @@ export type WeekGridProjectFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -863,7 +863,7 @@ export type WeekGridProjectRowGroupFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -910,13 +910,23 @@ export type WeekGridTaskRowFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+}
+
+export type WorkHourCommentFragmentFragment = {
+  __typename?: 'Task'
+  title: string
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    workHour?: { __typename?: 'WorkHour'; id: string; comment?: string | null } | null
+  }>
 }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
@@ -1035,7 +1045,7 @@ export type WeekGridQuery = {
         __typename?: 'WorkHourOfDay'
         date: string
         isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
       }>
       project: {
         __typename?: 'Project'

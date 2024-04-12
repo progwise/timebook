@@ -894,7 +894,7 @@ export type WeekGridTaskRowFragment = ({
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
   }>
   tracking?:
     | ({ __typename?: 'Tracking' } & {
@@ -904,6 +904,16 @@ export type WeekGridTaskRowFragment = ({
 } & { ' $fragmentRefs'?: { TrackingButtonsTaskFragment: TrackingButtonsTaskFragment } }) & {
   ' $fragmentName'?: 'WeekGridTaskRowFragment'
 }
+
+export type WorkHourCommentFragmentFragment = {
+  __typename?: 'Task'
+  title: string
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    workHour?: { __typename?: 'WorkHour'; id: string; comment?: string | null } | null
+  }>
+} & { ' $fragmentName'?: 'WorkHourCommentFragmentFragment' }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1771,7 +1781,10 @@ export const WeekGridTaskRowFragmentDoc = {
                   name: { kind: 'Name', value: 'workHour' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
+                    ],
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
@@ -1989,7 +2002,10 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                   name: { kind: 'Name', value: 'workHour' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
+                    ],
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
@@ -2163,7 +2179,10 @@ export const WeekGridProjectFragmentDoc = {
                   name: { kind: 'Name', value: 'workHour' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
+                    ],
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
@@ -2269,6 +2288,55 @@ export const WeekGridProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekGridProjectFragment, unknown>
+export const WorkHourCommentFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WorkHourCommentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WorkHourCommentFragmentFragment, unknown>
 export const AccessTokenDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -4456,7 +4524,10 @@ export const WeekGridDocument = {
                   name: { kind: 'Name', value: 'workHour' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
+                    ],
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },

@@ -19,6 +19,7 @@ const WeekGridTaskRowFragment = graphql(`
       date
       workHour {
         duration
+        comment
       }
       isLocked
     }
@@ -71,7 +72,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: 
         {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
       </div>
       <div className="px-2" role="cell">
-        <WorkHourComment />
+        <WorkHourComment comment={task.workHourOfDays.workHour?.comment} />
       </div>
     </div>
   )
