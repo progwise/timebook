@@ -966,6 +966,15 @@ export type ProjectCountsQuery = {
   archivedCounts: number
 }
 
+export type ProjectMembershipJoinMutationVariables = Exact<{
+  invitationKey: Scalars['String']
+}>
+
+export type ProjectMembershipJoinMutation = {
+  __typename?: 'Mutation'
+  projectMembershipJoin: { __typename?: 'Project'; id: string }
+}
+
 export type ProjectCreateMutationVariables = Exact<{
   data: ProjectInput
 }>
@@ -1477,6 +1486,29 @@ export const mockMyProjectsQuery = (
 export const mockProjectCountsQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectCountsQueryVariables>, GraphQLContext<ProjectCountsQuery>, any>,
 ) => graphql.query<ProjectCountsQuery, ProjectCountsQueryVariables>('projectCounts', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipJoinMutation((req, res, ctx) => {
+ *   const { invitationKey } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipJoin })
+ *   )
+ * })
+ */
+export const mockProjectMembershipJoinMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipJoinMutationVariables>,
+    GraphQLContext<ProjectMembershipJoinMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipJoinMutation, ProjectMembershipJoinMutationVariables>(
+    'projectMembershipJoin',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

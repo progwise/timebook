@@ -1,5 +1,8 @@
 import { useRef } from 'react'
+import { BiCopyAlt } from 'react-icons/bi'
 import { useMutation } from 'urql'
+
+import { toastSuccess } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
@@ -25,7 +28,7 @@ interface ProjectInvitationProps {
 
 export const ProjectInvitation = (props: ProjectInvitationProps) => {
   const project = useFragment(ProjectInvitationFragment, props.project)
-  const [{ data }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
+  const [{ data, fetching }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
   return (
@@ -41,24 +44,34 @@ export const ProjectInvitation = (props: ProjectInvitationProps) => {
         Invite
       </button>
       <dialog className="modal" ref={dialogReference}>
-        <div className="modal-box">
-          <div className="label">
-            <label className="label-text" htmlFor="invitation-link">
-              Invitation link
-            </label>
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <input
-              className="input input-bordered w-full"
-              readOnly
-              value={data?.projectMembershipInvitationCreate.invitationKey}
-              id="invitation-link"
-            />
-            <div className="flex gap-2">
-              <button className="btn btn-primary btn-sm" onClick={() => console.log('Invite key copied')}>
-                Copy
+        <div className="modal-box whitespace-normal text-base-content">
+          <h3 className="mb-4 text-lg font-bold">Invitation key</h3>
+          <div className="text-base">
+            <p>Here is the invitation key:</p>
+            <div className="my-2 flex items-center">
+              <input
+                className="input input-bordered grow bg-neutral py-2 text-neutral-content"
+                value={data?.projectMembershipInvitationCreate.invitationKey}
+                readOnly
+              />
+              <button
+                className="btn btn-circle btn-ghost gap-2 text-xl"
+                onClick={() => {
+                  navigator.clipboard.writeText(data?.projectMembershipInvitationCreate.invitationKey ?? '')
+                  toastSuccess('Successfully copied to clipboard!')
+                }}
+              >
+                <BiCopyAlt />
               </button>
             </div>
+            <span>Warning: You will no longer be able to see it once you close this dialog window.</span>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-ghost btn-sm" disabled={fetching}>
+                Done
+              </button>
+            </form>
           </div>
         </div>
         <form method="dialog" className="modal-backdrop">

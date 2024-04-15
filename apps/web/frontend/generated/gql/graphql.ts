@@ -937,6 +937,15 @@ export type ProjectCountsQuery = {
   archivedCounts: number
 }
 
+export type ProjectMembershipJoinMutationVariables = Exact<{
+  invitationKey: Scalars['String']
+}>
+
+export type ProjectMembershipJoinMutation = {
+  __typename?: 'Mutation'
+  projectMembershipJoin: { __typename?: 'Project'; id: string }
+}
+
 export type ProjectCreateMutationVariables = Exact<{
   data: ProjectInput
 }>
@@ -4035,6 +4044,43 @@ export const ProjectCountsDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectCountsQuery, ProjectCountsQueryVariables>
+export const ProjectMembershipJoinDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipJoin' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'invitationKey' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipJoin' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'invitationKey' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'invitationKey' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipJoinMutation, ProjectMembershipJoinMutationVariables>
 export const ProjectCreateDocument = {
   kind: 'Document',
   definitions: [

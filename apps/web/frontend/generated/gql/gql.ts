@@ -110,6 +110,8 @@ const documents = {
     types.MyProjectsDocument,
   '\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n':
     types.ProjectCountsDocument,
+  '\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n':
+    types.ProjectMembershipJoinDocument,
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
   '\n  query weekGrid($from: Date!, $to: Date) {\n    projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {\n      ...WeekGridProject\n    }\n  }\n':
@@ -436,6 +438,12 @@ export function graphql(
 export function graphql(
   source: '\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n',
 ): (typeof documents)['\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
