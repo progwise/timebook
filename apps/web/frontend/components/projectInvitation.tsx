@@ -31,6 +31,9 @@ export const ProjectInvitation = (props: ProjectInvitationProps) => {
   const [{ data, fetching }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
+
+  const invitationLink = `${process.env.NEXT_PUBLIC_APP_URL}/projects/join/${data?.projectMembershipInvitationCreate.invitationKey}`
+
   return (
     <>
       <button
@@ -51,13 +54,13 @@ export const ProjectInvitation = (props: ProjectInvitationProps) => {
             <div className="my-2 flex items-center">
               <input
                 className="input input-bordered grow bg-neutral py-2 text-neutral-content"
-                value={data?.projectMembershipInvitationCreate.invitationKey}
+                value={invitationLink}
                 readOnly
               />
               <button
                 className="btn btn-circle btn-ghost gap-2 text-xl"
                 onClick={() => {
-                  navigator.clipboard.writeText(data?.projectMembershipInvitationCreate.invitationKey ?? '')
+                  navigator.clipboard.writeText(invitationLink ?? '')
                   toastSuccess('Successfully copied to clipboard!')
                 }}
               >
