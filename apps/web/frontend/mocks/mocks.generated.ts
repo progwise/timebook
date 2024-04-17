@@ -506,11 +506,11 @@ export type ProjectUnarchiveMutation = {
 export type ProjectFormFragment = {
   __typename?: 'Project'
   title: string
+  id: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
   hasWorkHours: boolean
-  id: string
   isArchived: boolean
 }
 

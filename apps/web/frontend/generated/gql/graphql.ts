@@ -521,16 +521,14 @@ export type ProjectUnarchiveMutation = {
 export type ProjectFormFragment = ({
   __typename?: 'Project'
   title: string
+  id: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
   hasWorkHours: boolean
-} & {
-  ' $fragmentRefs'?: {
-    DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment
-    ProjectInvitationFragmentFragment: ProjectInvitationFragmentFragment
-  }
-}) & { ' $fragmentName'?: 'ProjectFormFragment' }
+} & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
+  ' $fragmentName'?: 'ProjectFormFragment'
+}
 
 export type ProjectInvitationFragmentFragment = { __typename?: 'Project'; id: string } & {
   ' $fragmentName'?: 'ProjectInvitationFragmentFragment'
@@ -1090,17 +1088,6 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<DeleteOrArchiveProjectButtonFragment, unknown>
-export const ProjectInvitationFragmentFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
-    },
-  ],
-} as unknown as DocumentNode<ProjectInvitationFragmentFragment, unknown>
 export const ProjectFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1112,12 +1099,12 @@ export const ProjectFormFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationFragment' } },
         ],
       },
     },
@@ -1173,6 +1160,11 @@ export const ProjectFormFragmentDoc = {
         ],
       },
     },
+  ],
+} as unknown as DocumentNode<ProjectFormFragment, unknown>
+export const ProjectInvitationFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
     {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProjectInvitationFragment' },
@@ -1180,7 +1172,7 @@ export const ProjectFormFragmentDoc = {
       selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
     },
   ],
-} as unknown as DocumentNode<ProjectFormFragment, unknown>
+} as unknown as DocumentNode<ProjectInvitationFragmentFragment, unknown>
 export const RemoveUserFromProjectButtonProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -3684,12 +3676,6 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -3743,12 +3729,12 @@ export const ProjectDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationFragment' } },
         ],
       },
     },

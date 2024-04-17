@@ -62,12 +62,12 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
 export const ProjectFormFragment = graphql(`
   fragment ProjectForm on Project {
     title
+    id
     startDate
     endDate
     canModify
     hasWorkHours
     ...DeleteOrArchiveProjectButton
-    ...ProjectInvitationFragment
   }
 `)
 
@@ -233,7 +233,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
-        {project && <ProjectInvitation project={project} />}
+        {project && <ProjectInvitation projectId={project.id} />}
       </div>
     </div>
   )

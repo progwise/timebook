@@ -4,7 +4,7 @@ import { useMutation } from 'urql'
 
 import { toastSuccess } from '@progwise/timebook-ui'
 
-import { FragmentType, graphql, useFragment } from '../generated/gql'
+import { graphql } from '../generated/gql'
 
 export const ProjectInvitationFragment = graphql(`
   fragment ProjectInvitationFragment on Project {
@@ -23,11 +23,10 @@ const projectMembershipInvitationMutation = graphql(`
 `)
 
 interface ProjectInvitationProps {
-  project: FragmentType<typeof ProjectInvitationFragment>
+  projectId: string
 }
 
-export const ProjectInvitation = (props: ProjectInvitationProps) => {
-  const project = useFragment(ProjectInvitationFragment, props.project)
+export const ProjectInvitation = ({ projectId }: ProjectInvitationProps) => {
   const [{ data, fetching }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
@@ -41,7 +40,7 @@ export const ProjectInvitation = (props: ProjectInvitationProps) => {
         type="button"
         onClick={() => {
           dialogReference.current?.showModal()
-          invitationKeyCreate({ projectId: project.id })
+          invitationKeyCreate({ projectId })
         }}
       >
         Invite
