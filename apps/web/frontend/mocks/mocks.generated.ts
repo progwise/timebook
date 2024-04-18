@@ -82,6 +82,8 @@ export type Mutation = {
   trackingStart: Tracking
   /** The ongoing time tracking will be stopped and converted to work hours */
   trackingStop: Array<WorkHour>
+  /** Updates a comment of a work hour or creates one */
+  workHourCommentUpdate: WorkHour
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -171,6 +173,12 @@ export type MutationTaskUpdateArgs = {
 }
 
 export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
+}
+
+export type MutationWorkHourCommentUpdateArgs = {
+  comment: Scalars['String']
+  date: Scalars['Date']
   taskId: Scalars['ID']
 }
 
@@ -921,24 +929,25 @@ export type WeekGridTaskRowFragment = {
 
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
+  id: string
   title: string
   workHourOfDays: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
+    isLocked: boolean
     workHour?: { __typename?: 'WorkHour'; id: string; comment?: string | null } | null
   }>
 }
 
-export type CommentCreateMutationVariables = Exact<{
+export type CommentUpdateMutationVariables = Exact<{
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
-  duration: Scalars['Int']
 }>
 
-export type CommentCreateMutation = {
+export type CommentUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; comment?: string | null }
+  workHourCommentUpdate: { __typename?: 'WorkHour'; comment?: string | null }
 }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
@@ -1471,20 +1480,20 @@ export const mockWorkHourUpdateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockCommentCreateMutation((req, res, ctx) => {
- *   const { comment, date, taskId, duration } = req.variables;
+ * mockCommentUpdateMutation((req, res, ctx) => {
+ *   const { comment, date, taskId } = req.variables;
  *   return res(
- *     ctx.data({ workHourUpdate })
+ *     ctx.data({ workHourCommentUpdate })
  *   )
  * })
  */
-export const mockCommentCreateMutation = (
+export const mockCommentUpdateMutation = (
   resolver: ResponseResolver<
-    GraphQLRequest<CommentCreateMutationVariables>,
-    GraphQLContext<CommentCreateMutation>,
+    GraphQLRequest<CommentUpdateMutationVariables>,
+    GraphQLContext<CommentUpdateMutation>,
     any
   >,
-) => graphql.mutation<CommentCreateMutation, CommentCreateMutationVariables>('commentCreate', resolver)
+) => graphql.mutation<CommentUpdateMutation, CommentUpdateMutationVariables>('commentUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -160,6 +160,11 @@ type Mutation {
   trackingStop: [WorkHour!]!
 
   """
+  Updates a comment of a work hour or creates one
+  """
+  workHourCommentUpdate(comment: String!, date: Date!, taskId: ID!): WorkHour!
+
+  """
   Create a new WorkHour
   """
   workHourCreate(data: WorkHourInput!): WorkHour!

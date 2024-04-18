@@ -1,17 +1,15 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { format, isEqual, parseISO } from 'date-fns'
-import { useMemo, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { format, max, min, parseISO } from 'date-fns'
+import { useRef } from 'react'
 import { FaRegCommentDots } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 
-import { InputField } from '@progwise/timebook-ui'
-import { workHourInputValidations } from '@progwise/timebook-validations'
+import { toastError } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
 
 export const WorkHourCommentFragment = graphql(`
   fragment WorkHourCommentFragment on Task {
+    id
     title
     workHourOfDays(from: $from, to: $to) {
       date
@@ -19,6 +17,7 @@ export const WorkHourCommentFragment = graphql(`
         id
         comment
       }
+      isLocked
     }
   }
 `)
@@ -28,12 +27,8 @@ interface WorkHourCommentProps {
 }
 
 const CommentCreateMutationDocument = graphql(`
-  mutation commentCreate($comment: String!, $date: Date!, $taskId: ID!, $duration: Int!) {
-    workHourUpdate(
-      data: { comment: $comment, date: $date, duration: $duration, taskId: $taskId }
-      date: $date
-      taskId: $taskId
-    ) {
+  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {
+    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {
       comment
     }
   }
@@ -45,34 +40,26 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
     dialogReference.current?.showModal()
   }
 
-  const comment = useFragment(WorkHourCommentFragment, commentFragment)
+  const task = useFragment(WorkHourCommentFragment, commentFragment)
+  const [, commentUpdate] = useMutation(CommentCreateMutationDocument)
+  const handleBlur = (date: string) => async (event: React.FocusEvent<HTMLTextAreaElement>) => {
+    try {
+      const result = await commentUpdate({
+        comment: event.target.value,
+        date: date,
+        taskId: task.id,
+      })
+      if (result.error) {
+        throw new Error(`GraphQL Error ${result.error}`)
+      }
+    } catch {
+      toastError('Error, comment was not saved')
+    }
+  }
 
-  console.log(comment)
-  const context = useMemo(() => ({ additionalTypenames: ['Comment'] }), [])
-  const { register, handleSubmit, formState, reset } = useForm<{ comment: string }>({
-    resolver: zodResolver(workHourInputValidations),
-  })
-
-  const { isSubmitting, errors, isDirty, dirtyFields } = formState
-  const [, commentCreate] = useMutation(CommentCreateMutationDocument)
-
-  // const handleCreateComment = async ({ comment }: { comment: string }) => {
-  //   try {
-  //     const result = await commentCreate(
-  //       {
-  //         comment,
-  //       },
-  //       context,
-  //     )
-  //     if (result.error) {
-  //       throw new Error(`GraphQL Error ${result.error}`)
-  //     }
-  //     reset()
-  //   } catch {}
-  // }
-
-  const [openCommentDate, setOpenCommentDate] = useState<Date | undefined>()
-  console.log(openCommentDate)
+  const firstDay = min(task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date)))
+  const lastDay = max(task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date)))
+  const dateTimeFormat = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' })
 
   return (
     <>
@@ -84,70 +71,33 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
 
       <dialog className="modal text-base-content" ref={dialogReference}>
         <div className="modal-box">
-          <h3 className="text-lg font-bold">Comments</h3>
+          <h3 className="pb-3 text-lg font-bold">
+            Comments for {task.title} ({dateTimeFormat.formatRange(firstDay, lastDay)})
+          </h3>
           <div className="flex flex-col gap-2">
-            {comment?.workHourOfDays.map((workHourOfDay) => {
+            {task?.workHourOfDays.map((workHourOfDay) => {
               const date = parseISO(workHourOfDay.date)
-              const isOpen = openCommentDate && isEqual(openCommentDate, date)
-              const hasComment = !!workHourOfDay.workHour?.comment
               return (
                 <div key={workHourOfDay.date}>
-                  <div className="flex items-center justify-between rounded-box   py-1">
+                  <div className="flex items-center justify-between rounded-box py-1">
                     {format(date, 'EEEE, MMMM do')}
-                    {/* {isOpen ? (
-                      <button className="btn btn-primary btn-sm">Save</button>
-                    ) : (
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => {
-                          setOpenCommentDate(date)
-                        }}
-                      >
-                        Edit
-                      </button>
-                    )} */}
                   </div>
-                  {/* {workHourOfDay.workHour?.comment ? (
-                  <div>{workHourOfDay.workHour.comment}</div>
-                ) : (
-                  <div className="h-5" />
-                )}
-                {openCommentDate && isEqual(openCommentDate, parseISO(workHourOfDay.date)) && <InputField />} */}
-                  {/* {!isOpen && !hasComment ? (
-                    <div className="h-5" />
-                  ) : ( */}
-                  <input
-                    // readOnly={!isOpen}
+
+                  <textarea
                     defaultValue={workHourOfDay.workHour?.comment ?? undefined}
-                    className="input input-sm w-full bg-base-200 hover:input-bordered"
+                    rows={3}
+                    className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
+                    onBlur={handleBlur(workHourOfDay.date)}
+                    disabled={workHourOfDay.isLocked}
                   />
-                  {/* )} */}
                 </div>
               )
             })}
           </div>
-          <div className="flex">
-            <div>
-              <form id="form-create-comment">
-                <InputField
-                  type="text"
-                  placeholder="Enter a new comment"
-                  {...register('comment')}
-                  errorMessage={errors.comment?.message}
-                  isDirty={isDirty && dirtyFields.comment}
-                />
-              </form>
-            </div>
-            <div>
-              <button
-                className="btn btn-primary btn-sm"
-                type="submit"
-                disabled={isSubmitting}
-                form="form-create-comment"
-              >
-                Add
-              </button>
-            </div>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-primary btn-sm">Close</button>
+            </form>
           </div>
         </div>
 

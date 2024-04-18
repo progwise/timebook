@@ -103,10 +103,10 @@ const documents = {
     types.WorkHourUpdateDocument,
   '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      startDate\n      endDate\n    }\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        duration\n        comment\n      }\n      isLocked\n    }\n    project {\n      id\n      isProjectMember\n      isArchived\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
-  '\n  fragment WorkHourCommentFragment on Task {\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n    }\n  }\n':
+  '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n      isLocked\n    }\n  }\n':
     types.WorkHourCommentFragmentFragmentDoc,
-  '\n  mutation commentCreate($comment: String!, $date: Date!, $taskId: ID!, $duration: Int!) {\n    workHourUpdate(\n      data: { comment: $comment, date: $date, duration: $duration, taskId: $taskId }\n      date: $date\n      taskId: $taskId\n    ) {\n      comment\n    }\n  }\n':
-    types.CommentCreateDocument,
+  '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n':
+    types.CommentUpdateDocument,
   '\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n':
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
@@ -427,14 +427,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WorkHourCommentFragment on Task {\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n    }\n  }\n',
-): (typeof documents)['\n  fragment WorkHourCommentFragment on Task {\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n    }\n  }\n']
+  source: '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n      isLocked\n    }\n  }\n',
+): (typeof documents)['\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to) {\n      date\n      workHour {\n        id\n        comment\n      }\n      isLocked\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation commentCreate($comment: String!, $date: Date!, $taskId: ID!, $duration: Int!) {\n    workHourUpdate(\n      data: { comment: $comment, date: $date, duration: $duration, taskId: $taskId }\n      date: $date\n      taskId: $taskId\n    ) {\n      comment\n    }\n  }\n',
-): (typeof documents)['\n  mutation commentCreate($comment: String!, $date: Date!, $taskId: ID!, $duration: Int!) {\n    workHourUpdate(\n      data: { comment: $comment, date: $date, duration: $duration, taskId: $taskId }\n      date: $date\n      taskId: $taskId\n    ) {\n      comment\n    }\n  }\n']
+  source: '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n',
+): (typeof documents)['\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

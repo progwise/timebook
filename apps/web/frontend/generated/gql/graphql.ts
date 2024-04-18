@@ -80,6 +80,8 @@ export type Mutation = {
   trackingStart: Tracking
   /** The ongoing time tracking will be stopped and converted to work hours */
   trackingStop: Array<WorkHour>
+  /** Updates a comment of a work hour or creates one */
+  workHourCommentUpdate: WorkHour
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -169,6 +171,12 @@ export type MutationTaskUpdateArgs = {
 }
 
 export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
+}
+
+export type MutationWorkHourCommentUpdateArgs = {
+  comment: Scalars['String']
+  date: Scalars['Date']
   taskId: Scalars['ID']
 }
 
@@ -910,24 +918,25 @@ export type WeekGridTaskRowFragment = ({
 
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
+  id: string
   title: string
   workHourOfDays: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
+    isLocked: boolean
     workHour?: { __typename?: 'WorkHour'; id: string; comment?: string | null } | null
   }>
 } & { ' $fragmentName'?: 'WorkHourCommentFragmentFragment' }
 
-export type CommentCreateMutationVariables = Exact<{
+export type CommentUpdateMutationVariables = Exact<{
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
-  duration: Scalars['Int']
 }>
 
-export type CommentCreateMutation = {
+export type CommentUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; comment?: string | null }
+  workHourCommentUpdate: { __typename?: 'WorkHour'; comment?: string | null }
 }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
@@ -1759,6 +1768,7 @@ export const WorkHourCommentFragmentFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
@@ -1790,6 +1800,7 @@ export const WorkHourCommentFragmentFragmentDoc = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -1930,6 +1941,7 @@ export const WeekGridTaskRowFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
@@ -1961,6 +1973,7 @@ export const WeekGridTaskRowFragmentDoc = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -2074,6 +2087,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
@@ -2105,6 +2119,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -2296,6 +2311,7 @@ export const WeekGridProjectFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
@@ -2327,6 +2343,7 @@ export const WeekGridProjectFragmentDoc = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -3858,13 +3875,13 @@ export const WorkHourUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>
-export const CommentCreateDocument = {
+export const CommentUpdateDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'commentCreate' },
+      name: { kind: 'Name', value: 'commentUpdate' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -3881,48 +3898,14 @@ export const CommentCreateDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'duration' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } } },
-        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'workHourUpdate' },
+            name: { kind: 'Name', value: 'workHourCommentUpdate' },
             arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'data' },
-                value: {
-                  kind: 'ObjectValue',
-                  fields: [
-                    {
-                      kind: 'ObjectField',
-                      name: { kind: 'Name', value: 'comment' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'comment' } },
-                    },
-                    {
-                      kind: 'ObjectField',
-                      name: { kind: 'Name', value: 'date' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'date' } },
-                    },
-                    {
-                      kind: 'ObjectField',
-                      name: { kind: 'Name', value: 'duration' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'duration' } },
-                    },
-                    {
-                      kind: 'ObjectField',
-                      name: { kind: 'Name', value: 'taskId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
-                    },
-                  ],
-                },
-              },
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'date' },
@@ -3932,6 +3915,11 @@ export const CommentCreateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'taskId' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'comment' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'comment' } },
               },
             ],
             selectionSet: {
@@ -3943,7 +3931,7 @@ export const CommentCreateDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<CommentCreateMutation, CommentCreateMutationVariables>
+} as unknown as DocumentNode<CommentUpdateMutation, CommentUpdateMutationVariables>
 export const AccessTokensDocument = {
   kind: 'Document',
   definitions: [
@@ -4723,6 +4711,7 @@ export const WeekGridDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
@@ -4754,6 +4743,7 @@ export const WeekGridDocument = {
                     ],
                   },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
