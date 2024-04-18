@@ -44,17 +44,17 @@ describe('ProjectMemberList', () => {
     render(<ProjectMemberList project={project} />, { wrapper })
 
     const rows = screen.getAllByRole('row')
-    expect(rows).toHaveLength(4)
-    expect(rows[2]).toHaveTextContent('Admin of the project')
-    expect(rows[3]).toHaveTextContent('Member of the project')
+    expect(rows).toHaveLength(2)
+    expect(rows[0]).toHaveTextContent('Admin of the project')
+    expect(rows[1]).toHaveTextContent('Member of the project')
   })
 
   it('should display the correct role labels', async () => {
     render(<ProjectMemberList project={project} />, { wrapper })
 
     const rows = screen.getAllByRole('row')
-    expect(rows[2]).toHaveTextContent('Admin')
-    expect(rows[3]).toHaveTextContent('Member')
+    expect(rows[0]).toHaveTextContent('Admin')
+    expect(rows[1]).toHaveTextContent('Member')
   })
 
   it('should not display role change buttons if the current user is only a member', async () => {
