@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@headlessui/react": "^1.7.13",
-    "@headlessui/tailwindcss": "^0.1.2",
+    "@headlessui/tailwindcss": "^0.2.0",
     "@storybook/addon-essentials": "^7.0.0-beta.38",
     "@storybook/addon-interactions": "^7.0.0-beta.38",
     "@storybook/react": "^7.0.0-beta.38",
