@@ -212,7 +212,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       </form>
       <div className="mb-8 flex w-full gap-2">
         <button
-          className="btn btn-outline btn-sm"
+          className="btn btn-secondary btn-sm"
           disabled={isSubmitting}
           onClick={onCancel}
           title="Cancel the changes"
