@@ -58,7 +58,7 @@ export type Mutation = {
   /** Unassign user from a project */
   projectMembershipDelete: Project
   projectMembershipInvitationCreate: ProjectInvitation
-  /** Add a user to a project using the invite key. */
+  /** Add a user to a project using the invitationKey. */
   projectMembershipJoin: Project
   /** Unarchive a project */
   projectUnarchive: Project

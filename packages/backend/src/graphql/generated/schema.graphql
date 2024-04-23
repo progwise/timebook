@@ -76,7 +76,7 @@ type Mutation {
   projectMembershipInvitationCreate(projectId: ID!): ProjectInvitation!
 
   """
-  Add a user to a project using the invite key.
+  Add a user to a project using the invitation key.
   """
   projectMembershipJoin(invitationKey: String!): Project!
 
