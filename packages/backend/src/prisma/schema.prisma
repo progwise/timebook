@@ -44,7 +44,6 @@ model ProjectMembership {
   projectId String
 
   invitedAt        DateTime  @default(now())
-  inviteAcceptedAt DateTime?
   updatedAt        DateTime  @updatedAt
   role             Role      @default(MEMBER)
 
