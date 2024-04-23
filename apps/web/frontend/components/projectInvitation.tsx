@@ -59,7 +59,7 @@ export const ProjectInvitation = ({ projectId }: ProjectInvitationProps) => {
               <button
                 className="btn btn-circle btn-ghost gap-2 text-xl"
                 onClick={() => {
-                  navigator.clipboard.writeText(invitationLink ?? '')
+                  navigator.clipboard.writeText(invitationLink)
                   toastSuccess('Successfully copied to clipboard!')
                 }}
               >
