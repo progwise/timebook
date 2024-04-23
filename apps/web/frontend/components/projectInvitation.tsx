@@ -27,7 +27,7 @@ interface ProjectInvitationProps {
 }
 
 export const ProjectInvitation = ({ projectId }: ProjectInvitationProps) => {
-  const [{ data, fetching }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
+  const [{ data }, invitationKeyCreate] = useMutation(projectMembershipInvitationMutation)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
 
@@ -70,9 +70,7 @@ export const ProjectInvitation = ({ projectId }: ProjectInvitationProps) => {
           </div>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-ghost btn-sm" disabled={fetching}>
-                Done
-              </button>
+              <button className="btn btn-ghost btn-sm">Done</button>
             </form>
           </div>
         </div>
