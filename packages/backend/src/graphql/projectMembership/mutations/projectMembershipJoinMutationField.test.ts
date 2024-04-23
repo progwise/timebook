@@ -132,7 +132,6 @@ it('should not throw error when user is already a member of the project', async 
     query: projectMembershipJoin,
     variables: {
       invitationKey: 'test-invite-key',
-      expireDate: undefined,
     },
   })
 
