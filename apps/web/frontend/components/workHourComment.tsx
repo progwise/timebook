@@ -61,12 +61,21 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
   const lastDay = max(task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date)))
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' })
 
+  const commentCount = task.workHourOfDays.filter((workHourOfDay) => workHourOfDay.workHour?.comment).length
+
   return (
     <>
       <div>
-        <button className="btn btn-square btn-info btn-xs" title="Comments" onClick={openDialog}>
-          <FaRegCommentDots />
-        </button>
+        <div className="indicator">
+          {commentCount > 0 && (
+            <span className="badge indicator-item badge-secondary badge-xs" title="indicator">
+              {commentCount}
+            </span>
+          )}
+          <button className="btn btn-square btn-outline btn-xs" title="Comments" onClick={openDialog}>
+            <FaRegCommentDots />
+          </button>
+        </div>
       </div>
 
       <dialog className="modal text-base-content" ref={dialogReference}>
@@ -82,8 +91,8 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
                   <div className="flex items-center justify-between rounded-box py-1">
                     {format(date, 'EEEE, MMMM do')}
                   </div>
-
                   <textarea
+                    title="comment"
                     defaultValue={workHourOfDay.workHour?.comment ?? undefined}
                     rows={3}
                     className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"

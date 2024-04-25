@@ -41,12 +41,29 @@ test.describe('week page', () => {
 
     let currentHours = 0
 
-    for (const textbox of await taskRow.getByRole('textbox').all()) {
+    for (const textbox of await taskRow.getByRole('textbox', { name: 'duration' }).all()) {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
 
       await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
     }
+  })
+
+  test('it should be possible to enter a comment', async ({ page, projectsPage }) => {
+    await projectsPage.addProject('Test Project')
+    await projectsPage.addTask('Test Project', 'Test Task')
+
+    await page.getByRole('link', { name: 'Week' }).click()
+
+    const commentsDialog = await page.getByRole('button', { name: 'Comments' })
+    commentsDialog.click()
+
+    await page.getByRole('textbox', { name: 'comment' }).first().fill('a comment')
+
+    await page.getByRole('button', { name: 'Close', exact: true }).click()
+
+    const indicator = await page.getByTitle('indicator')
+    await expect(indicator).toBeVisible()
   })
 })

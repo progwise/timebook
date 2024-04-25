@@ -65,6 +65,8 @@ export const HourInput = (props: {
 
   return (
     <InputField
+      label="duration"
+      hideLabel
       disabled={props.disabled}
       value={formattedDuration}
       onChange={(event) => setFormattedDuration(event.target.value)}
