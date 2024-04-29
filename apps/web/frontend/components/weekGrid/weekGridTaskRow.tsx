@@ -4,7 +4,7 @@ import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
-import { WorkHourComment } from '../workHourComment'
+import { WorkHourComment } from '../workHourCommentButton'
 import { WeekGridTaskDayCell } from './weekGridTaskDayCell'
 
 const WeekGridTaskRowFragment = graphql(`
@@ -19,7 +19,6 @@ const WeekGridTaskRowFragment = graphql(`
       date
       workHour {
         duration
-        comment
       }
       isLocked
     }
@@ -73,7 +72,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: 
         {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
       </div>
       <div className="px-2" role="cell">
-        <WorkHourComment comment={task} />
+        <WorkHourComment task={task} />
       </div>
     </div>
   )

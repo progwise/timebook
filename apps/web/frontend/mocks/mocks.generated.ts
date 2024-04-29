@@ -444,7 +444,6 @@ export type WorkHour = {
 }
 
 export type WorkHourInput = {
-  comment?: InputMaybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -832,7 +831,7 @@ export type WeekGridProjectFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null; id: string } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -871,7 +870,7 @@ export type WeekGridProjectRowGroupFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null; id: string } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -918,7 +917,7 @@ export type WeekGridTaskRowFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null; id: string } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
@@ -935,7 +934,7 @@ export type WorkHourCommentFragmentFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; id: string; comment?: string | null } | null
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
   }>
 }
 
@@ -1066,7 +1065,7 @@ export type WeekGridQuery = {
         __typename?: 'WorkHourOfDay'
         date: string
         isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null; id: string } | null
+        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
       }>
       project: {
         __typename?: 'Project'

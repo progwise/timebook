@@ -16,33 +16,16 @@ builder.mutationField('workHourCommentUpdate', (t) =>
       return { isMemberByTask: taskId.toString() }
     },
     resolve: async (query, _source, { taskId, date, comment }, context) => {
-      const previousTask = await prisma.task.findUnique({
+      const task = await prisma.task.findUniqueOrThrow({
         select: { projectId: true, isLocked: true },
         where: { id: taskId.toString() },
       })
 
-      if (previousTask?.isLocked) {
+      if (task.isLocked) {
         throw new Error('task is locked')
       }
 
-      if (previousTask && (await isProjectLocked({ date, projectId: previousTask.projectId }))) {
-        throw new Error('project is locked for the given month')
-      }
-
-      const newAssignedTask = await prisma.task.findUniqueOrThrow({
-        select: { projectId: true, isLocked: true, project: { select: { archivedAt: true } } },
-        where: { id: taskId.toString() },
-      })
-
-      if (newAssignedTask.isLocked) {
-        throw new Error('task is locked')
-      }
-
-      if (newAssignedTask.project.archivedAt) {
-        throw new Error('project is archived')
-      }
-
-      if (await isProjectLocked({ projectId: newAssignedTask.projectId, date: date })) {
+      if (task && (await isProjectLocked({ date, projectId: task.projectId }))) {
         throw new Error('project is locked for the given month')
       }
 

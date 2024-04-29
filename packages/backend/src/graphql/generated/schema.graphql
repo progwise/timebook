@@ -497,7 +497,6 @@ type WorkHour {
 }
 
 input WorkHourInput {
-  comment: String
   date: Date!
 
   """

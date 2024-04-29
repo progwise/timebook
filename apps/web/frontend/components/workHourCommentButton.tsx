@@ -14,7 +14,6 @@ export const WorkHourCommentFragment = graphql(`
     workHourOfDays(from: $from, to: $to) {
       date
       workHour {
-        id
         comment
       }
       isLocked
@@ -23,10 +22,10 @@ export const WorkHourCommentFragment = graphql(`
 `)
 
 interface WorkHourCommentProps {
-  comment: FragmentType<typeof WorkHourCommentFragment>
+  task: FragmentType<typeof WorkHourCommentFragment>
 }
 
-const CommentCreateMutationDocument = graphql(`
+const CommentUpdateMutationDocument = graphql(`
   mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {
     workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {
       comment
@@ -34,19 +33,19 @@ const CommentCreateMutationDocument = graphql(`
   }
 `)
 
-export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentProps) => {
+export const WorkHourComment = ({ task: commentFragment }: WorkHourCommentProps) => {
   const dialogReference = useRef<HTMLDialogElement>(null)
   const openDialog = () => {
     dialogReference.current?.showModal()
   }
 
   const task = useFragment(WorkHourCommentFragment, commentFragment)
-  const [, commentUpdate] = useMutation(CommentCreateMutationDocument)
+  const [, commentUpdate] = useMutation(CommentUpdateMutationDocument)
   const handleBlur = (date: string) => async (event: React.FocusEvent<HTMLTextAreaElement>) => {
     try {
       const result = await commentUpdate({
         comment: event.target.value,
-        date: date,
+        date,
         taskId: task.id,
       })
       if (result.error) {
@@ -57,25 +56,27 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
     }
   }
 
-  const firstDay = min(task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date)))
-  const lastDay = max(task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date)))
+  const allDays = task.workHourOfDays.map((workHourOfDay) => parseISO(workHourOfDay.date))
+  const firstDay = min(allDays)
+  const lastDay = max(allDays)
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' })
 
   const commentCount = task.workHourOfDays.filter((workHourOfDay) => workHourOfDay.workHour?.comment).length
 
   return (
     <>
-      <div>
-        <div className="indicator">
-          {commentCount > 0 && (
-            <span className="badge indicator-item badge-secondary badge-xs" title="indicator">
-              {commentCount}
-            </span>
-          )}
-          <button className="btn btn-square btn-outline btn-xs" title="Comments" onClick={openDialog}>
-            <FaRegCommentDots />
-          </button>
-        </div>
+      <div className="indicator">
+        {commentCount > 0 && (
+          <span
+            className="badge indicator-item badge-secondary badge-xs"
+            title={commentCount === 1 ? `1 comment` : `${commentCount} comments`}
+          >
+            {commentCount}
+          </span>
+        )}
+        <button className="btn btn-square btn-outline btn-xs" title="Comments" onClick={openDialog}>
+          <FaRegCommentDots />
+        </button>
       </div>
 
       <dialog className="modal text-base-content" ref={dialogReference}>
@@ -84,7 +85,7 @@ export const WorkHourComment = ({ comment: commentFragment }: WorkHourCommentPro
             Comments for {task.title} ({dateTimeFormat.formatRange(firstDay, lastDay)})
           </h3>
           <div className="flex flex-col gap-2">
-            {task?.workHourOfDays.map((workHourOfDay) => {
+            {task.workHourOfDays.map((workHourOfDay) => {
               const date = parseISO(workHourOfDay.date)
               return (
                 <div key={workHourOfDay.date}>

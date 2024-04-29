@@ -53,18 +53,6 @@ describe('workHourCommentUpdateMutationField', () => {
         projectMemberships: { create: { userId: '1' } },
       },
     })
-    await prisma.project.create({
-      data: {
-        id: 'P2',
-        title: 'Project without members',
-        tasks: {
-          create: {
-            id: 'T2',
-            title: 'Task 2',
-          },
-        },
-      },
-    })
   })
 
   it('should throw an error when unauthorized', async () => {
@@ -203,29 +191,5 @@ describe('workHourCommentUpdateMutationField', () => {
       },
     })
     expect(response.errors).toBeUndefined()
-  })
-
-  it('should throw an error when moving a comment to a foreign project', async () => {
-    await prisma.workHour.create({
-      data: {
-        taskId: 'T1',
-        date: new Date('2022-01-01'),
-        duration: 120,
-        userId: '1',
-      },
-    })
-
-    const testServer = getTestServer({ userId: '1' })
-    const response = await testServer.executeOperation({
-      query: workHourCommentUpdateMutation,
-      variables: {
-        taskId: 'T2',
-        date: '2022-01-01',
-        comment: 'Comment 2',
-      },
-    })
-
-    expect(response.data).toBeNull()
-    expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 })

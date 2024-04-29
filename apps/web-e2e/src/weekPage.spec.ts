@@ -56,14 +56,13 @@ test.describe('week page', () => {
 
     await page.getByRole('link', { name: 'Week' }).click()
 
-    const commentsDialog = await page.getByRole('button', { name: 'Comments' })
-    commentsDialog.click()
+    await page.getByRole('button', { name: 'Comments' }).click()
 
     await page.getByRole('textbox', { name: 'comment' }).first().fill('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
 
-    const indicator = await page.getByTitle('indicator')
+    const indicator = await page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
   })
 })
