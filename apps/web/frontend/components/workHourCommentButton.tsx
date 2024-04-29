@@ -33,7 +33,7 @@ const CommentUpdateMutationDocument = graphql(`
   }
 `)
 
-export const WorkHourComment = ({ task: commentFragment }: WorkHourCommentProps) => {
+export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourCommentProps) => {
   const dialogReference = useRef<HTMLDialogElement>(null)
   const openDialog = () => {
     dialogReference.current?.showModal()
