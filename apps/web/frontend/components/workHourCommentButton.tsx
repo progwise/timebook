@@ -80,28 +80,47 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
       </div>
 
       <dialog className="modal text-base-content" ref={dialogReference}>
-        <div className="modal-box">
+        <div className="modal-box max-w-5xl">
           <h3 className="pb-3 text-lg font-bold">
             Comments for {task.title} ({dateTimeFormat.formatRange(firstDay, lastDay)})
           </h3>
           <div className="flex flex-col gap-2">
-            {task.workHourOfDays.map((workHourOfDay) => {
+            {task.workHourOfDays.map((workHourOfDay, index) => {
               const date = parseISO(workHourOfDay.date)
-              return (
-                <div key={workHourOfDay.date}>
-                  <div className="flex items-center justify-between rounded-box py-1">
-                    {format(date, 'EEEE, MMMM do')}
+
+              if (index % 2 === 0) {
+                return (
+                  <div key={workHourOfDay.date} className="flex gap-2">
+                    <div className="w-1/2">
+                      <div className="flex rounded-box py-1">{format(date, 'EEEE, MMMM do')}</div>
+                      <textarea
+                        title="comment"
+                        defaultValue={workHourOfDay.workHour?.comment ?? undefined}
+                        rows={3}
+                        className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
+                        onBlur={handleBlur(workHourOfDay.date)}
+                        disabled={workHourOfDay.isLocked}
+                      />
+                    </div>
+
+                    {task.workHourOfDays[index + 1] && (
+                      <div className="w-1/2">
+                        <div className="flex rounded-box py-1">
+                          {format(parseISO(task.workHourOfDays[index + 1].date), 'EEEE, MMMM do')}
+                        </div>
+                        <textarea
+                          title="comment"
+                          defaultValue={task.workHourOfDays[index + 1].workHour?.comment ?? undefined}
+                          rows={3}
+                          className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
+                          onBlur={handleBlur(task.workHourOfDays[index + 1].date)}
+                          disabled={task.workHourOfDays[index + 1].isLocked}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <textarea
-                    title="comment"
-                    defaultValue={workHourOfDay.workHour?.comment ?? undefined}
-                    rows={3}
-                    className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
-                    onBlur={handleBlur(workHourOfDay.date)}
-                    disabled={workHourOfDay.isLocked}
-                  />
-                </div>
-              )
+                )
+              }
             })}
           </div>
           <div className="modal-action">
