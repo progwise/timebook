@@ -2,6 +2,7 @@ import { setDefaultOptions } from 'date-fns'
 import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
+import Head from 'next/head'
 import Link from 'next/link'
 
 import { TimebookToaster } from '@progwise/timebook-ui'
@@ -23,11 +24,16 @@ interface TimebookProps {
 
 const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Element => (
   <SessionProvider session={session}>
+    <Head>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </Head>
     <div className="flex min-h-screen flex-col justify-between">
       <TopNavigation />
-      <main className="container mx-auto py-16 max-md:min-h-screen print:m-0 print:p-0">
-        <Component {...pageProps} />
-      </main>
+      <div className="overflow-x-auto">
+        <main className="container mx-auto py-16 max-md:min-h-screen print:m-0 print:p-0">
+          <Component {...pageProps} />
+        </main>
+      </div>
       <footer className="footer justify-items-center bg-base-300 p-5">
         <Link href="/impress" className="link-hover link">
           Impress
