@@ -80,11 +80,11 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
       </div>
 
       <dialog className="modal text-base-content" ref={dialogReference}>
-        <div className="@container modal-box max-w-5xl">
+        <div className="modal-box max-w-5xl @container">
           <h3 className="pb-3 text-lg font-bold">
             Comments for {task.title} ({dateTimeFormat.formatRange(firstDay, lastDay)})
           </h3>
-          <div className=" @2xl:grid-cols-2 grid gap-2 gap-x-8">
+          <div className="grid gap-2 gap-x-8 @2xl:grid-cols-2">
             {task.workHourOfDays.map((workHourOfDay) => {
               const date = parseISO(workHourOfDay.date)
               return (
