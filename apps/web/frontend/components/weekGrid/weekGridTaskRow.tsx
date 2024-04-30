@@ -52,7 +52,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: 
     <div className="contents" role="row">
       <div className="pl-3" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
-          <TrackingButtons tracking={task.tracking} taskToTrack={task} />
+          <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
         )}
       </div>
       <div className="px-3" role="cell">

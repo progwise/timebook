@@ -41,7 +41,7 @@ export const ArchiveProjectButton = ({ project: projectFragment }: ArchiveProjec
 
   return (
     <>
-      <button className="btn btn-outline btn-sm" type="button" onClick={() => dialogReference.current?.showModal()}>
+      <button className="btn btn-secondary btn-sm" type="button" onClick={() => dialogReference.current?.showModal()}>
         Archive
       </button>
       <dialog className="modal" ref={dialogReference}>
