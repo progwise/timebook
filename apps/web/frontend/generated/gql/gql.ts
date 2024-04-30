@@ -38,7 +38,6 @@ const documents = {
     types.ProjectUnarchiveDocument,
   '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
     types.ProjectFormFragmentDoc,
-  '\n  fragment ProjectInvitationFragment on Project {\n    id\n  }\n': types.ProjectInvitationFragmentFragmentDoc,
   '\n  mutation projectMembershipInvitation($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n':
     types.ProjectMembershipInvitationDocument,
   '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
@@ -216,12 +215,6 @@ export function graphql(
 export function graphql(
   source: '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n',
 ): (typeof documents)['\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment ProjectInvitationFragment on Project {\n    id\n  }\n',
-): (typeof documents)['\n  fragment ProjectInvitationFragment on Project {\n    id\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

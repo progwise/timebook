@@ -230,7 +230,7 @@ export type ProjectInput = {
 
 export type ProjectInvitation = {
   __typename?: 'ProjectInvitation'
-  expireDate: Scalars['Date']
+  expireDate: Scalars['DateTime']
   id: Scalars['ID']
   invitationKey: Scalars['String']
   project: Project
@@ -528,10 +528,6 @@ export type ProjectFormFragment = ({
   hasWorkHours: boolean
 } & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
   ' $fragmentName'?: 'ProjectFormFragment'
-}
-
-export type ProjectInvitationFragmentFragment = { __typename?: 'Project'; id: string } & {
-  ' $fragmentName'?: 'ProjectInvitationFragmentFragment'
 }
 
 export type ProjectMembershipInvitationMutationVariables = Exact<{
@@ -1162,17 +1158,6 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
-export const ProjectInvitationFragmentFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
-    },
-  ],
-} as unknown as DocumentNode<ProjectInvitationFragmentFragment, unknown>
 export const RemoveUserFromProjectButtonProjectFragmentDoc = {
   kind: 'Document',
   definitions: [

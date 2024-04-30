@@ -239,7 +239,7 @@ input ProjectInput {
 }
 
 type ProjectInvitation {
-  expireDate: Date!
+  expireDate: DateTime!
   id: ID!
   invitationKey: String!
   project: Project!

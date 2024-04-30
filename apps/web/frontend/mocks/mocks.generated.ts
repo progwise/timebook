@@ -232,7 +232,7 @@ export type ProjectInput = {
 
 export type ProjectInvitation = {
   __typename?: 'ProjectInvitation'
-  expireDate: Scalars['Date']
+  expireDate: Scalars['DateTime']
   id: Scalars['ID']
   invitationKey: Scalars['String']
   project: Project
@@ -513,8 +513,6 @@ export type ProjectFormFragment = {
   hasWorkHours: boolean
   isArchived: boolean
 }
-
-export type ProjectInvitationFragmentFragment = { __typename?: 'Project'; id: string }
 
 export type ProjectMembershipInvitationMutationVariables = Exact<{
   projectId: Scalars['ID']
