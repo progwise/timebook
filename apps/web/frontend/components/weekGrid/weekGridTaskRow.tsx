@@ -39,7 +39,6 @@ const WeekGridTaskRowFragment = graphql(`
 interface WeekGridTaskRowProps {
   task: FragmentType<typeof WeekGridTaskRowFragment>
   isDataOutdated?: boolean
-  comment: FragmentType<typeof WeekGridTaskRowFragment>
 }
 
 export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: WeekGridTaskRowProps) => {

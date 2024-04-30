@@ -76,7 +76,7 @@ export const WeekGridProjectRowGroup = ({
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} comment={task} />
+          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />
         ))}
       </div>
     </>
