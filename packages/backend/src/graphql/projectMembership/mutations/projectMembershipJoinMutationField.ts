@@ -18,11 +18,11 @@ builder.mutationField('projectMembershipJoin', (t) =>
       })
 
       if (!projectInvitation) {
-        throw new Error('Invalid invite key')
+        throw new Error('Invalid invitation key.')
       }
 
       if (isPast(projectInvitation.expireDate)) {
-        throw new Error('Expired invite key')
+        throw new Error('Expired invitation key.')
       }
 
       // Add the user to the project
@@ -32,6 +32,7 @@ builder.mutationField('projectMembershipJoin', (t) =>
         create: {
           userId: context.session.user.id,
           projectId: projectInvitation.projectId,
+          invitationId: projectInvitation.id,
         },
         update: {},
       })

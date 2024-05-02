@@ -73,6 +73,10 @@ type Mutation {
   Unassign user from a project
   """
   projectMembershipDelete(projectId: ID!, userId: ID!): Project!
+
+  """
+  Create a project invitation
+  """
   projectMembershipInvitationCreate(projectId: ID!): ProjectInvitation!
 
   """

@@ -6,6 +6,7 @@ import { prisma } from '../../prisma'
 builder.mutationField('projectMembershipInvitationCreate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'ProjectInvitation',
+    description: 'Create a project invitation',
     authScopes: async (_source, { projectId }) => ({ isAdminByProject: projectId.toString() }),
     args: {
       projectId: t.arg.id(),

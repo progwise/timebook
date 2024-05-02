@@ -53,7 +53,6 @@ it('should throw error when user is unauthorized', async () => {
     query: projectMembershipJoin,
     variables: {
       invitationKey: 'test-invite-key',
-      expireDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     },
   })
 
@@ -68,11 +67,10 @@ it('should throw error when invite key is invalid', async () => {
     query: projectMembershipJoin,
     variables: {
       invitationKey: 'invalid-invite-key',
-      expireDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     },
   })
 
-  expect(response.errors).toEqual([new GraphQLError('Invalid invite key')])
+  expect(response.errors).toEqual([new GraphQLError('Invalid invitation key.')])
   expect(response.data).toBeNull()
 })
 
@@ -114,7 +112,7 @@ it('should throw error when invite key is expired', async () => {
     },
   })
 
-  expect(response.errors).toEqual([new GraphQLError('Expired invite key')])
+  expect(response.errors).toEqual([new GraphQLError('Expired invitation key.')])
   expect(response.data).toBeNull()
 })
 
