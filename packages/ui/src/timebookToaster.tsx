@@ -9,6 +9,9 @@ export const TimebookToaster = () => {
           ariaProps: { role: 'alert', 'aria-live': 'assertive' },
         },
         position: 'bottom-center',
+        style: {
+          zIndex: 1000,
+        },
       }}
     />
   )
