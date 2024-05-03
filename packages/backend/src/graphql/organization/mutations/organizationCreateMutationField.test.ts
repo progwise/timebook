@@ -21,16 +21,17 @@ beforeEach(async () => {
   await prisma.organization.deleteMany()
 
   await prisma.user.createMany({
-    data: [
-      { id: '1', name: 'User with role admin' },
-    ],
+    data: [{ id: '1', name: 'User with role admin' }],
   })
 })
 
 it('should throw an error when user is unauthenticated', async () => {
   const testServer = getTestServer({ noSession: true })
 
-  const response = await testServer.executeOperation({ query: orgCreateMutation, variables: { data: { title: 'org 1', address: 'Teststr'} } })
+  const response = await testServer.executeOperation({
+    query: orgCreateMutation,
+    variables: { data: { title: 'org 1', address: 'Teststr' } },
+  })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
@@ -40,19 +41,25 @@ it('should throw an error without title', async () => {
   const testServer = getTestServer({ userId: '1' })
 
   //ZOD
-  const response = await testServer.executeOperation({ query: orgCreateMutation, variables: { data: { title: null, address: 'Teststr'} } })
+  const response = await testServer.executeOperation({
+    query: orgCreateMutation,
+    variables: { data: { title: null, address: 'Teststr' } },
+  })
 
   expect(response.data).toBeUndefined()
-  expect(response.errors?.at(0)?.message).toEqual("Variable \"$data\" got invalid value null at \"data.title\"; Expected non-nullable type \"String!\" not to be null.")
+  expect(response.errors?.at(0)?.message).toEqual(
+    'Variable "$data" got invalid value null at "data.title"; Expected non-nullable type "String!" not to be null.',
+  )
 })
-
 
 it('should throw an error without title', async () => {
   const testServer = getTestServer({ userId: '1' })
 
-  const response = await testServer.executeOperation({ query: orgCreateMutation, variables: { data: { title: 'org 1', address: 'Teststr'} } })
+  const response = await testServer.executeOperation({
+    query: orgCreateMutation,
+    variables: { data: { title: 'org 1', address: 'Teststr' } },
+  })
 
   expect(response.errors).toBeUndefined()
-  expect(response.data).toEqual({"organizationCreate": {"address": "Teststr", "id": expect.any(String), "title": "org 1"}})
-
+  expect(response.data).toEqual({ organizationCreate: { address: 'Teststr', id: expect.any(String), title: 'org 1' } })
 })
