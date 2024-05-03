@@ -18,7 +18,6 @@ export const WeekGridProjectRowGroupFragment = graphql(`
       workHourOfDays(from: $from, to: $to) {
         workHour {
           duration
-          comment
         }
       }
     }
