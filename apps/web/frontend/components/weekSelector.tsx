@@ -1,4 +1,4 @@
-import { endOfWeek, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
+import { endOfWeek, isThisWeek, nextMonday, previousMonday, startOfWeek } from 'date-fns'
 import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
 import { CalendarSelector } from './calendarSelector'

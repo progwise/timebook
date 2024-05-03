@@ -80,6 +80,8 @@ export type Mutation = {
   trackingStart: Tracking
   /** The ongoing time tracking will be stopped and converted to work hours */
   trackingStop: Array<WorkHour>
+  /** Updates a comment of a work hour or creates one */
+  workHourCommentUpdate: WorkHour
   /** Create a new WorkHour */
   workHourCreate: WorkHour
   /** Delete a work hour entry */
@@ -164,6 +166,12 @@ export type MutationTaskUpdateArgs = {
 }
 
 export type MutationTrackingStartArgs = {
+  taskId: Scalars['ID']
+}
+
+export type MutationWorkHourCommentUpdateArgs = {
+  comment: Scalars['String']
+  date: Scalars['Date']
   taskId: Scalars['ID']
 }
 
@@ -407,6 +415,8 @@ export type UserRoleArgs = {
 
 export type WorkHour = {
   __typename?: 'WorkHour'
+  /** Comment for the work hour */
+  comment?: Maybe<Scalars['String']>
   date: Scalars['Date']
   /** Duration of the work hour in minutes */
   duration: Scalars['Int']
@@ -792,7 +802,7 @@ export type WeekGridProjectFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -831,7 +841,7 @@ export type WeekGridProjectRowGroupFragment = {
       __typename?: 'WorkHourOfDay'
       date: string
       isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
     }>
     project: {
       __typename?: 'Project'
@@ -878,13 +888,36 @@ export type WeekGridTaskRowFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+}
+
+export type WorkHourCommentFragmentFragment = {
+  __typename?: 'Task'
+  id: string
+  title: string
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
+}
+
+export type CommentUpdateMutationVariables = Exact<{
+  comment: Scalars['String']
+  date: Scalars['Date']
+  taskId: Scalars['ID']
+}>
+
+export type CommentUpdateMutation = {
+  __typename?: 'Mutation'
+  workHourCommentUpdate: { __typename?: 'WorkHour'; comment?: string | null }
 }
 
 export type AccessTokensQueryVariables = Exact<{ [key: string]: never }>
@@ -1002,7 +1035,7 @@ export type WeekGridQuery = {
         __typename?: 'WorkHourOfDay'
         date: string
         isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
       }>
       project: {
         __typename?: 'Project'
@@ -1388,6 +1421,25 @@ export const mockWorkHourUpdateMutation = (
     any
   >,
 ) => graphql.mutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>('workHourUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCommentUpdateMutation((req, res, ctx) => {
+ *   const { comment, date, taskId } = req.variables;
+ *   return res(
+ *     ctx.data({ workHourCommentUpdate })
+ *   )
+ * })
+ */
+export const mockCommentUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<CommentUpdateMutationVariables>,
+    GraphQLContext<CommentUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<CommentUpdateMutation, CommentUpdateMutationVariables>('commentUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

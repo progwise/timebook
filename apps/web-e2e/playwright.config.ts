@@ -1,6 +1,9 @@
 /* eslint-disable unicorn/prefer-module */
 import type { PlaywrightTestConfig } from '@playwright/test'
 import { devices } from '@playwright/test'
+import { config as dotenvConfig } from 'dotenv'
+
+dotenvConfig({ path: '../../.env' })
 
 const config: PlaywrightTestConfig = {
   testDir: './src',
