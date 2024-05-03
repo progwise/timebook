@@ -31,7 +31,7 @@ const JoinProject = () => {
 
   if (result.error) {
     return (
-      <div className="flex h-96 items-center justify-center text-2xl">
+      <div className="flex h-96 items-center justify-center">
         <h1 className="alert alert-error max-w-max">
           An error has occurred: {result.error.message}. Please ask the project owner to send a new invite.
         </h1>
@@ -40,7 +40,7 @@ const JoinProject = () => {
   }
 
   return (
-    <div className="flex h-96 items-center justify-center text-2xl">
+    <div className="flex h-96 items-center justify-center">
       <div className="alert alert-info max-w-max">Please wait, you will be added to the project....</div>
     </div>
   )
