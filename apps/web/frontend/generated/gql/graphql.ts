@@ -867,7 +867,7 @@ export type WeekGridProjectRowGroupFragment = {
       id: string
       workHourOfDays: Array<{
         __typename?: 'WorkHourOfDay'
-        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
       }>
     } & { ' $fragmentRefs'?: { WeekGridTaskRowFragment: WeekGridTaskRowFragment } }
   >
@@ -2016,10 +2016,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                         name: { kind: 'Name', value: 'workHour' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
-                          ],
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
                         },
                       },
                     ],
@@ -2471,10 +2468,7 @@ export const WeekGridProjectFragmentDoc = {
                         name: { kind: 'Name', value: 'workHour' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
-                          ],
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
                         },
                       },
                     ],
@@ -4849,10 +4843,7 @@ export const WeekGridDocument = {
                         name: { kind: 'Name', value: 'workHour' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [
-                            { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
-                          ],
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
                         },
                       },
                     ],

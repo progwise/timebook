@@ -97,7 +97,7 @@ const documents = {
     types.WeekGridProjectFragmentDoc,
   '\n  fragment WeekGridFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n':
     types.WeekGridFooterFragmentDoc,
-  '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n          comment\n        }\n      }\n    }\n  }\n':
+  '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n':
     types.WeekGridProjectRowGroupFragmentDoc,
   '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
@@ -409,8 +409,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n          comment\n        }\n      }\n    }\n  }\n',
-): (typeof documents)['\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n          comment\n        }\n      }\n    }\n  }\n']
+  source: '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n',
+): (typeof documents)['\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      workHourOfDays(from: $from, to: $to) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
