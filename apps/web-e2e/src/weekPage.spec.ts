@@ -15,7 +15,7 @@ test.describe('week page', () => {
     const currentMonthString = format(new Date(), 'MMMM')
 
     await page.getByRole('link', { name: 'Week' }).click()
-    const header = await page.getByText(currentMonthString)
+    const header = await page.getByRole('heading', {name: currentMonthString})
     await expect(header).toBeVisible()
   })
 

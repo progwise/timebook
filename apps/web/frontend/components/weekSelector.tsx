@@ -1,4 +1,4 @@
-import { endOfWeek, isThisWeek, startOfWeek, nextMonday, previousMonday } from 'date-fns'
+import { endOfWeek, isThisWeek, nextMonday, previousMonday, startOfWeek } from 'date-fns'
 import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
 import { CalendarSelector } from './calendarSelector'
@@ -21,10 +21,10 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
 
   return (
     <div className="inline-flex flex-col items-center gap-2 p-4">
-      <div className="text-lg font-bold">
+      <h2 className="text-lg font-bold">
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
-      </div>
+      </h2>
       <div className="flex gap-2 text-sm">
         <button
           className="btn btn-outline btn-neutral btn-sm"
