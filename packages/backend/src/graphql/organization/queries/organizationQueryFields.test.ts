@@ -61,3 +61,11 @@ describe('org where the user is a member', () => {
         expect(response.data?.organizations).toEqual([{ id: '100', title: 'org 1', address: 'Teststr. 123' }])
     })
 })
+
+describe('users without orgs', () => {
+    it('should receive no orgs', async () => {
+        const testServer = getTestServer({ userId: '2' })
+        const response = await testServer.executeOperation({ query: organizationsQuery })
+        expect(response.data?.organizations).toEqual([])
+    })
+})
