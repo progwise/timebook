@@ -234,7 +234,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
 
-        {project?.canModify && project && <ProjectInvitationButton projectId={project.id} />}
+        {project?.canModify && <ProjectInvitationButton projectId={project.id} />}
       </div>
     </div>
   )

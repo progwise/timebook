@@ -515,11 +515,11 @@ export type ProjectFormFragment = {
   isArchived: boolean
 }
 
-export type ProjectMembershipInvitationMutationVariables = Exact<{
+export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
   projectId: Scalars['ID']
 }>
 
-export type ProjectMembershipInvitationMutation = {
+export type ProjectMembershipInvitationCreateMutation = {
   __typename?: 'Mutation'
   projectMembershipInvitationCreate: {
     __typename?: 'ProjectInvitation'
@@ -1131,22 +1131,22 @@ export const mockProjectUnarchiveMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockProjectMembershipInvitationMutation((req, res, ctx) => {
+ * mockProjectMembershipInvitationCreateMutation((req, res, ctx) => {
  *   const { projectId } = req.variables;
  *   return res(
  *     ctx.data({ projectMembershipInvitationCreate })
  *   )
  * })
  */
-export const mockProjectMembershipInvitationMutation = (
+export const mockProjectMembershipInvitationCreateMutation = (
   resolver: ResponseResolver<
-    GraphQLRequest<ProjectMembershipInvitationMutationVariables>,
-    GraphQLContext<ProjectMembershipInvitationMutation>,
+    GraphQLRequest<ProjectMembershipInvitationCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipInvitationCreateMutation>,
     any
   >,
 ) =>
-  graphql.mutation<ProjectMembershipInvitationMutation, ProjectMembershipInvitationMutationVariables>(
-    'projectMembershipInvitation',
+  graphql.mutation<ProjectMembershipInvitationCreateMutation, ProjectMembershipInvitationCreateMutationVariables>(
+    'projectMembershipInvitationCreate',
     resolver,
   )
 

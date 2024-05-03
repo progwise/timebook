@@ -22,7 +22,7 @@ const JoinProject = () => {
     if (invitationKey) {
       joinProject({ invitationKey: invitationKey.toString() }).then(({ data, error }) => {
         if (error) {
-          return error
+          return
         }
         router.push(`/projects/${data?.projectMembershipJoin.id}`) // Redirect the user to the projects page after successfully joining the project.
       })
@@ -32,9 +32,9 @@ const JoinProject = () => {
   if (result.error) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <h1 className="alert alert-error max-w-max">
+        <div className="alert alert-error">
           An error has occurred: {result.error.message}. Please ask the project owner to send a new invite.
-        </h1>
+        </div>
       </div>
     )
   }

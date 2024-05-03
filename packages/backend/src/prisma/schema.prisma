@@ -43,13 +43,14 @@ model ProjectMembership {
   userId    String
   projectId String
 
-  joinedAt  DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role     @default(MEMBER)
+  joinedAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  role         Role     @default(MEMBER)
+  invitationId String?
 
-  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  invitationId String? @default(cuid())
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project    Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  invitation ProjectInvitation? @relation(fields: [invitationId], references: [id])
 
   @@id([userId, projectId])
 }
@@ -177,5 +178,6 @@ model ProjectInvitation {
   expireDate    DateTime
   projectId     String
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectMemberships ProjectMembership[]
 }

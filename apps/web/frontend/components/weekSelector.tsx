@@ -21,7 +21,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
 
   return (
     <div className="inline-flex flex-col items-center gap-2 p-4">
-      <h2 className="text-lg font-bold" role="heading">
+      <h2 className="text-lg font-bold">
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
       </h2>

@@ -8,7 +8,7 @@ import { InputField, toastSuccess } from '@progwise/timebook-ui'
 import { graphql } from '../generated/gql'
 
 export const projectMembershipInvitationMutation = graphql(`
-  mutation projectMembershipInvitation($projectId: ID!) {
+  mutation projectMembershipInvitationCreate($projectId: ID!) {
     projectMembershipInvitationCreate(projectId: $projectId) {
       id
       invitationKey
@@ -30,7 +30,7 @@ export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonPr
 
   const invitationLink = `${process.env.NEXT_PUBLIC_APP_URL}/projects/join/${data?.projectMembershipInvitationCreate.invitationKey}`
 
-  const invitationExpireDate = data && formatDistanceToNow(new Date(data?.projectMembershipInvitationCreate.expireDate))
+  const invitationExpireDate = data && formatDistanceToNow(new Date(data.projectMembershipInvitationCreate.expireDate))
 
   return (
     <>
@@ -71,7 +71,7 @@ export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonPr
                 </button>
               </div>
               {!invitationLoading && (
-                <span className="mx-2">{`This invitation link will expire in ${invitationExpireDate}`}</span>
+                <span className="mx-2">This invitation link will expire in ${invitationExpireDate}`</span>
               )}
             </div>
             <div className="modal-action">

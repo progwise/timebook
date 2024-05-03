@@ -531,11 +531,11 @@ export type ProjectFormFragment = ({
   ' $fragmentName'?: 'ProjectFormFragment'
 }
 
-export type ProjectMembershipInvitationMutationVariables = Exact<{
+export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
   projectId: Scalars['ID']
 }>
 
-export type ProjectMembershipInvitationMutation = {
+export type ProjectMembershipInvitationCreateMutation = {
   __typename?: 'Mutation'
   projectMembershipInvitationCreate: {
     __typename?: 'ProjectInvitation'
@@ -2454,13 +2454,13 @@ export const ProjectUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>
-export const ProjectMembershipInvitationDocument = {
+export const ProjectMembershipInvitationCreateDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'projectMembershipInvitation' },
+      name: { kind: 'Name', value: 'projectMembershipInvitationCreate' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -2494,7 +2494,10 @@ export const ProjectMembershipInvitationDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<ProjectMembershipInvitationMutation, ProjectMembershipInvitationMutationVariables>
+} as unknown as DocumentNode<
+  ProjectMembershipInvitationCreateMutation,
+  ProjectMembershipInvitationCreateMutationVariables
+>
 export const ProjectMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
