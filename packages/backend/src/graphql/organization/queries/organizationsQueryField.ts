@@ -6,9 +6,9 @@ builder.queryField('organizations', (t) =>
     type: ['Organization'],
     description: 'Returns all organizations of the signed in user that are active',
     args: {
-        includeArchived: t.arg.boolean({ required: false }),
+      includeArchived: t.arg.boolean({ required: false }),
     },
-    resolve: (query, _source, { includeArchived}, context) =>
+    resolve: (query, _source, { includeArchived }, context) =>
       prisma.organization.findMany({
         ...query,
         where: {
@@ -17,7 +17,7 @@ builder.queryField('organizations', (t) =>
               userId: context.session.user.id,
             },
           },
-          archivedAt: includeArchived ? undefined : null
+          archivedAt: includeArchived ? undefined : null,
         },
         orderBy: { title: 'asc' },
       }),

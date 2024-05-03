@@ -46,6 +46,12 @@ export type Mutation = {
   accessTokenCreate: Scalars['String']
   /** Delete an access token for the signed in user */
   accessTokenDelete: AccessToken
+  /** Create a new organization */
+  organizationCreate: Organization
+  /** Delete an organization */
+  organizationDelete: Organization
+  /** Update an organization */
+  organizationUpdate: Organization
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -95,6 +101,19 @@ export type MutationAccessTokenCreateArgs = {
 }
 
 export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationOrganizationCreateArgs = {
+  data: OrganizationInput
+}
+
+export type MutationOrganizationDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationOrganizationUpdateArgs = {
+  data: OrganizationInput
   id: Scalars['ID']
 }
 
@@ -197,6 +216,22 @@ export type MutationProjectMembershipInviteByEmailSuccess = {
   data: Project
 }
 
+export type Organization = ModifyInterface & {
+  __typename?: 'Organization'
+  address?: Maybe<Scalars['String']>
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
+  /** identifies the project */
+  id: Scalars['ID']
+  isArchived: Scalars['Boolean']
+  title: Scalars['String']
+}
+
+export type OrganizationInput = {
+  address?: InputMaybe<Scalars['String']>
+  title: Scalars['String']
+}
+
 export type Project = ModifyInterface & {
   __typename?: 'Project'
   /** Can the user modify the entity */
@@ -253,6 +288,10 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns a single Organization */
+  organization: Organization
+  /** Returns all organizations of the signed in user that are active */
+  organizations: Array<Organization>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -266,6 +305,14 @@ export type Query = {
   user: User
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
+}
+
+export type QueryOrganizationArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type QueryOrganizationsArgs = {
+  includeArchived?: InputMaybe<Scalars['Boolean']>
 }
 
 export type QueryProjectArgs = {

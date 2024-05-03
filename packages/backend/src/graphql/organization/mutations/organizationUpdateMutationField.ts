@@ -3,9 +3,10 @@ import { prisma } from '../../prisma'
 import { OrganizationInput } from '../organizationInput'
 
 builder.mutationField('organizationUpdate', (t) =>
-  t.withAuth({ isLoggedIn: true }).prismaField({
+  t.prismaField({
     type: 'Organization',
     description: 'Update an organization',
+    authScopes: async (_source, { id }) => ({ isAdminByOrganization: id.toString() }),
     args: {
       id: t.arg.id(),
       data: t.arg({ type: OrganizationInput }),
@@ -18,11 +19,7 @@ builder.mutationField('organizationUpdate', (t) =>
         data: {
           title,
           address,
-          organizationMemberships: {
-            create: {
-              userId: context.session.user.id,
-            },
-          },
+          updatedAt: new Date(),
         },
         where: {
           id: id.toString(),
