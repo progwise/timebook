@@ -18,6 +18,19 @@ generator pothos {
   output   = "../../node_modules/.pothos/plugin-prisma/generated.ts"
 }
 
+model Organization {
+  id      String  @id @default(cuid())
+  title   String  @db.VarChar(255)
+  address String?
+}
+
+model OrganizationMembership {
+  userId         String
+  organizationId String
+
+  @@id([userId, organizationId])
+}
+
 model Project {
   id        String    @id @default(cuid())
   title     String    @db.VarChar(255)

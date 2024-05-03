@@ -6,7 +6,6 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "lint": "eslint *.ts*",
     "typecheck": "tsc --noEmit",
-    "migrate:dev": "prisma migrate dev",
     "seed": "prisma db seed",
     "postinstall": "prisma generate",
     "migrate-db": "prisma migrate deploy",
