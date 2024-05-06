@@ -20,23 +20,29 @@ const projectMembershipJoin = gql`
 `
 
 beforeEach(async () => {
+  await prisma.user.createMany({
+    data: [
+      { id: '1', name: 'User with project membership' },
+      { id: '2', name: 'User without project membership' },
+    ],
+  })
+
   await prisma.project.create({
     data: {
       title: 'P1',
       id: 'project1',
+      projectMemberships: {
+        create: {
+          userId: '1',
+        },
+      },
       invitations: {
         create: {
           invitationKey: 'test-invite-key',
           expireDate: addDays(new Date(), 3),
+          createdByUserId: '1',
         },
       },
-    },
-  })
-
-  await prisma.user.create({
-    data: {
-      id: '1',
-      name: 'User without project membership',
     },
   })
 })
@@ -61,7 +67,7 @@ it('should throw error when user is unauthorized', async () => {
 })
 
 it('should throw error when invite key is invalid', async () => {
-  const testServer = getTestServer({ userId: '1' })
+  const testServer = getTestServer({ userId: '2' })
 
   const response = await testServer.executeOperation({
     query: projectMembershipJoin,
@@ -75,7 +81,7 @@ it('should throw error when invite key is invalid', async () => {
 })
 
 it('should join project when invite key is valid', async () => {
-  const testServer = getTestServer({ userId: '1' })
+  const testServer = getTestServer({ userId: '2' })
 
   const response = await testServer.executeOperation({
     query: projectMembershipJoin,
@@ -88,7 +94,7 @@ it('should join project when invite key is valid', async () => {
   expect(response.data).toEqual({
     projectMembershipJoin: {
       title: 'P1',
-      members: [{ name: 'User without project membership' }],
+      members: [{ name: 'User without project membership' }, { name: 'User with project membership' }],
     },
   })
 })
@@ -103,7 +109,7 @@ it('should throw error when invite key is expired', async () => {
     },
   })
 
-  const testServer = getTestServer({ userId: '1' })
+  const testServer = getTestServer({ userId: '2' })
 
   const response = await testServer.executeOperation({
     query: projectMembershipJoin,
@@ -119,12 +125,12 @@ it('should throw error when invite key is expired', async () => {
 it('should not throw error when user is already a member of the project', async () => {
   await prisma.projectMembership.create({
     data: {
-      userId: '1',
+      userId: '2',
       projectId: 'project1',
     },
   })
 
-  const testServer = getTestServer({ userId: '1' })
+  const testServer = getTestServer({ userId: '2' })
 
   const response = await testServer.executeOperation({
     query: projectMembershipJoin,
@@ -137,7 +143,7 @@ it('should not throw error when user is already a member of the project', async 
   expect(response.data).toEqual({
     projectMembershipJoin: {
       title: 'P1',
-      members: [{ name: 'User without project membership' }],
+      members: [{ name: 'User without project membership' }, { name: 'User with project membership' }],
     },
   })
 })
