@@ -23,7 +23,6 @@ model Project {
   title     String    @db.VarChar(255)
   startDate DateTime? @db.Date
   endDate   DateTime? @db.Date
-  inviteKey String    @unique @default(cuid())
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -32,6 +31,7 @@ model Project {
   projectMemberships ProjectMembership[]
   tasks              Task[]
   reports            LockedMonth[]
+  invitations        ProjectInvitation[]
 }
 
 enum Role {
@@ -43,13 +43,14 @@ model ProjectMembership {
   userId    String
   projectId String
 
-  invitedAt        DateTime? @default(now())
-  inviteAcceptedAt DateTime?
-  updatedAt        DateTime  @updatedAt
-  role             Role      @default(MEMBER)
+  joinedAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  role         Role     @default(MEMBER)
+  invitationId String?
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project    Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  invitation ProjectInvitation? @relation(fields: [invitationId], references: [id])
 
   @@id([userId, projectId])
 }
@@ -129,10 +130,11 @@ model User {
   sessions Session[]
 
   // Relations outside of next-auth:
-  workhours          WorkHour[]
-  projectMemberships ProjectMembership[]
-  tracking           Tracking?
-  accessTokens       AccessToken[]
+  workhours                 WorkHour[]
+  projectMemberships        ProjectMembership[]
+  tracking                  Tracking?
+  accessTokens              AccessToken[]
+  createdProjectInvitations ProjectInvitation[]
 }
 
 model VerificationToken {
@@ -170,4 +172,16 @@ model AccessToken {
   name      String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProjectInvitation {
+  id              String   @id @default(cuid())
+  invitationKey   String   @unique @default(cuid())
+  expireDate      DateTime
+  projectId       String
+  createdByUserId String
+
+  project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdByUser      User                @relation(fields: [createdByUserId], references: [id])
+  projectMemberships ProjectMembership[]
 }

@@ -57,12 +57,10 @@ export type Mutation = {
   projectMembershipCreate: Project
   /** Unassign user from a project */
   projectMembershipDelete: Project
-  /** Assign user to a project by e-mail. */
-  projectMembershipInviteByEmail: MutationProjectMembershipInviteByEmailResult
-  /** Add a user to a project using the invite key. */
+  /** Create a project invitation */
+  projectMembershipInvitationCreate: ProjectInvitation
+  /** Add a user to a project using the invitation key. */
   projectMembershipJoin: Project
-  /** Regenerate the invite key of a project. The old key will be outdated. */
-  projectRegenerateInviteKey: Project
   /** Unarchive a project */
   projectUnarchive: Project
   projectUnlock: Project
@@ -128,17 +126,12 @@ export type MutationProjectMembershipDeleteArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationProjectMembershipInviteByEmailArgs = {
-  email: Scalars['String']
+export type MutationProjectMembershipInvitationCreateArgs = {
   projectId: Scalars['ID']
 }
 
 export type MutationProjectMembershipJoinArgs = {
-  inviteKey: Scalars['String']
-}
-
-export type MutationProjectRegenerateInviteKeyArgs = {
-  projectId: Scalars['ID']
+  invitationKey: Scalars['String']
 }
 
 export type MutationProjectUnarchiveArgs = {
@@ -196,15 +189,6 @@ export type MutationWorkHourUpdateArgs = {
   taskId: Scalars['ID']
 }
 
-export type MutationProjectMembershipInviteByEmailResult =
-  | MutationProjectMembershipInviteByEmailSuccess
-  | UserNotFoundError
-
-export type MutationProjectMembershipInviteByEmailSuccess = {
-  __typename?: 'MutationProjectMembershipInviteByEmailSuccess'
-  data: Project
-}
-
 export type Project = ModifyInterface & {
   __typename?: 'Project'
   /** Can the user modify the entity */
@@ -213,7 +197,6 @@ export type Project = ModifyInterface & {
   hasWorkHours: Scalars['Boolean']
   /** identifies the project */
   id: Scalars['ID']
-  inviteKey: Scalars['String']
   isArchived: Scalars['Boolean']
   /** Is the project locked for the given month */
   isLocked: Scalars['Boolean']
@@ -254,6 +237,14 @@ export type ProjectInput = {
   end?: InputMaybe<Scalars['Date']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
+}
+
+export type ProjectInvitation = {
+  __typename?: 'ProjectInvitation'
+  expireDate: Scalars['DateTime']
+  id: Scalars['ID']
+  invitationKey: Scalars['String']
+  project: Project
 }
 
 export type Query = {
@@ -422,11 +413,6 @@ export type UserRoleArgs = {
   projectId: Scalars['ID']
 }
 
-export type UserNotFoundError = {
-  __typename?: 'UserNotFoundError'
-  email: Scalars['String']
-}
-
 export type WorkHour = {
   __typename?: 'WorkHour'
   /** Comment for the work hour */
@@ -468,23 +454,6 @@ export type AccessTokenDeleteMutation = {
   accessTokenDelete: { __typename?: 'AccessToken'; id: string }
 }
 
-export type AddProjectMemberFormFragment = { __typename?: 'Project'; id: string; inviteKey: string; title: string }
-
-export type ProjectMembershipInviteByEmailMutationVariables = Exact<{
-  email: Scalars['String']
-  projectId: Scalars['ID']
-}>
-
-export type ProjectMembershipInviteByEmailMutation = {
-  __typename?: 'Mutation'
-  projectMembershipInviteByEmail:
-    | {
-        __typename: 'MutationProjectMembershipInviteByEmailSuccess'
-        data: { __typename?: 'Project'; title: string; members: Array<{ __typename?: 'User'; name?: string | null }> }
-      }
-    | { __typename: 'UserNotFoundError'; email: string }
-}
-
 export type DeleteTaskButtonFragment = { __typename?: 'Task'; id: string; hasWorkHours: boolean; title: string }
 
 export type TaskDeleteMutationVariables = Exact<{
@@ -496,17 +465,6 @@ export type TaskDeleteMutation = {
   __typename?: 'Mutation'
   taskDelete?: { __typename?: 'Task'; id: string }
   taskArchive?: { __typename?: 'Task'; id: string }
-}
-
-export type InviteLinkProjectFragmentFragment = { __typename?: 'Project'; id: string; inviteKey: string }
-
-export type ProjectRegenerateInviteKeyMutationVariables = Exact<{
-  projectId: Scalars['ID']
-}>
-
-export type ProjectRegenerateInviteKeyMutation = {
-  __typename?: 'Mutation'
-  projectRegenerateInviteKey: { __typename?: 'Project'; title: string; inviteKey: string }
 }
 
 export type LockTaskButtonFragment = { __typename?: 'Task'; id: string; isLockedByAdmin: boolean }
@@ -559,12 +517,26 @@ export type ProjectUnarchiveMutation = {
 export type ProjectFormFragment = {
   __typename?: 'Project'
   title: string
+  id: string
   startDate?: string | null
   endDate?: string | null
   canModify: boolean
   hasWorkHours: boolean
-  id: string
   isArchived: boolean
+}
+
+export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+}>
+
+export type ProjectMembershipInvitationCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipInvitationCreate: {
+    __typename?: 'ProjectInvitation'
+    id: string
+    invitationKey: string
+    expireDate: string
+  }
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -572,7 +544,6 @@ export type ProjectMemberListProjectFragment = {
   id: string
   canModify: boolean
   title: string
-  inviteKey: string
   members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
 }
 
@@ -977,7 +948,6 @@ export type ProjectQuery = {
     endDate?: string | null
     hasWorkHours: boolean
     isArchived: boolean
-    inviteKey: string
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -1029,7 +999,7 @@ export type ProjectCountsQuery = {
 }
 
 export type ProjectMembershipJoinMutationVariables = Exact<{
-  inviteKey: Scalars['String']
+  invitationKey: Scalars['String']
 }>
 
 export type ProjectMembershipJoinMutation = {
@@ -1107,29 +1077,6 @@ export const mockAccessTokenDeleteMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockProjectMembershipInviteByEmailMutation((req, res, ctx) => {
- *   const { email, projectId } = req.variables;
- *   return res(
- *     ctx.data({ projectMembershipInviteByEmail })
- *   )
- * })
- */
-export const mockProjectMembershipInviteByEmailMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<ProjectMembershipInviteByEmailMutationVariables>,
-    GraphQLContext<ProjectMembershipInviteByEmailMutation>,
-    any
-  >,
-) =>
-  graphql.mutation<ProjectMembershipInviteByEmailMutation, ProjectMembershipInviteByEmailMutationVariables>(
-    'projectMembershipInviteByEmail',
-    resolver,
-  )
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
  * mockTaskDeleteMutation((req, res, ctx) => {
  *   const { id, hasWorkHours } = req.variables;
  *   return res(
@@ -1140,29 +1087,6 @@ export const mockProjectMembershipInviteByEmailMutation = (
 export const mockTaskDeleteMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskDeleteMutationVariables>, GraphQLContext<TaskDeleteMutation>, any>,
 ) => graphql.mutation<TaskDeleteMutation, TaskDeleteMutationVariables>('taskDelete', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockProjectRegenerateInviteKeyMutation((req, res, ctx) => {
- *   const { projectId } = req.variables;
- *   return res(
- *     ctx.data({ projectRegenerateInviteKey })
- *   )
- * })
- */
-export const mockProjectRegenerateInviteKeyMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<ProjectRegenerateInviteKeyMutationVariables>,
-    GraphQLContext<ProjectRegenerateInviteKeyMutation>,
-    any
-  >,
-) =>
-  graphql.mutation<ProjectRegenerateInviteKeyMutation, ProjectRegenerateInviteKeyMutationVariables>(
-    'projectRegenerateInviteKey',
-    resolver,
-  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1235,6 +1159,29 @@ export const mockProjectUnarchiveMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipInvitationCreateMutation((req, res, ctx) => {
+ *   const { projectId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipInvitationCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipInvitationCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipInvitationCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipInvitationCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipInvitationCreateMutation, ProjectMembershipInvitationCreateMutationVariables>(
+    'projectMembershipInvitationCreate',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1596,7 +1543,7 @@ export const mockProjectCountsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectMembershipJoinMutation((req, res, ctx) => {
- *   const { inviteKey } = req.variables;
+ *   const { invitationKey } = req.variables;
  *   return res(
  *     ctx.data({ projectMembershipJoin })
  *   )
