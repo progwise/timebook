@@ -11,10 +11,14 @@ builder.mutationField('projectMembershipInvitationCreate', (t) =>
     args: {
       projectId: t.arg.id(),
     },
-    resolve: (query, _source, { projectId }) =>
+    resolve: (query, _source, { projectId }, context) =>
       prisma.projectInvitation.create({
         ...query,
-        data: { projectId: projectId.toString(), expireDate: addDays(new Date(), 3) },
+        data: {
+          projectId: projectId.toString(),
+          expireDate: addDays(new Date(), 3),
+          createdByUserId: context.session.user.id,
+        },
       }),
   }),
 )

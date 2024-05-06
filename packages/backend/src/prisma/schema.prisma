@@ -130,10 +130,11 @@ model User {
   sessions Session[]
 
   // Relations outside of next-auth:
-  workhours          WorkHour[]
-  projectMemberships ProjectMembership[]
-  tracking           Tracking?
-  accessTokens       AccessToken[]
+  workhours                 WorkHour[]
+  projectMemberships        ProjectMembership[]
+  tracking                  Tracking?
+  accessTokens              AccessToken[]
+  createdProjectInvitations ProjectInvitation[]
 }
 
 model VerificationToken {
@@ -174,11 +175,13 @@ model AccessToken {
 }
 
 model ProjectInvitation {
-  id            String   @id @default(cuid())
-  invitationKey String   @unique @default(cuid())
-  expireDate    DateTime
-  projectId     String
+  id              String   @id @default(cuid())
+  invitationKey   String   @unique @default(cuid())
+  expireDate      DateTime
+  projectId       String
+  createdByUserId String
 
   project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdByUser      User                @relation(fields: [createdByUserId], references: [id])
   projectMemberships ProjectMembership[]
 }
