@@ -4,8 +4,6 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
-import { AddProjectMemberForm } from '../addProjectMemberForm'
-import { InviteLink } from '../inviteLink'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
 import { RoleButton } from './roleButton'
 import { RoleLabel } from './roleLabel'
@@ -15,7 +13,6 @@ export const ProjectMemberListProjectFragment = graphql(`
     id
     canModify
     ...RemoveUserFromProjectButtonProject
-    ...AddProjectMemberForm
     members {
       id
       image
@@ -23,7 +20,6 @@ export const ProjectMemberListProjectFragment = graphql(`
       role(projectId: $projectId)
       ...RemoveUserFromProjectButtonUser
     }
-    ...InviteLinkProjectFragment
   }
 `)
 
@@ -54,18 +50,6 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
 
   return (
     <table className="table">
-      <thead>
-        <tr className="border-none">
-          <th colSpan={3} className="px-1 font-normal text-base-content">
-            <InviteLink project={project} />
-          </th>
-        </tr>
-        <tr className="border-b border-base-content">
-          <th colSpan={3} className="px-1 font-normal">
-            <AddProjectMemberForm project={project} />
-          </th>
-        </tr>
-      </thead>
       <tbody>
         {project.members.map((user) => (
           <tr key={user.id}>

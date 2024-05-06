@@ -53,17 +53,4 @@ describe('ProjectDetails', () => {
     await userEvent.click(confirmRemoveButton)
     await waitFor(() => expect(button).not.toBeInTheDocument())
   })
-
-  it('should regenerate invite link', async () => {
-    render(<ProjectDetails />, { wrapper })
-
-    const button = await screen.findByRole('button', { name: 'Regenerate link' })
-    const regenerateInviteKeyTextBox = screen.getByRole('textbox', { name: 'Invite link' })
-
-    expect(button).toBeInTheDocument()
-    expect(regenerateInviteKeyTextBox).toHaveValue('undefined/projects/join/2')
-
-    await userEvent.click(button)
-    await waitFor(() => expect(regenerateInviteKeyTextBox).toHaveValue('undefined/projects/join/3'))
-  })
 })

@@ -7,7 +7,6 @@ import {
   mockProjectMembershipDeleteMutation,
   mockProjectMembershipUpdateMutation,
   mockProjectQuery,
-  mockProjectRegenerateInviteKeyMutation,
   mockWeekGridQuery,
 } from './mocks.generated'
 
@@ -31,8 +30,6 @@ let members: ProjectMemberListProjectFragment['members'] = [
   },
 ]
 
-let inviteKey = '2'
-
 export const projectHandlers = [
   mockProjectQuery((_request, response, context) => {
     const result = response(
@@ -47,7 +44,6 @@ export const projectHandlers = [
           endDate: undefined,
           hasWorkHours: false,
           isArchived: false,
-          inviteKey,
           members,
           __typename: 'Project',
         },
@@ -122,17 +118,4 @@ export const projectHandlers = [
       }),
     ),
   ),
-  mockProjectRegenerateInviteKeyMutation((_request, response, context) => {
-    inviteKey = '3'
-    return response(
-      context.data({
-        __typename: 'Mutation',
-        projectRegenerateInviteKey: {
-          title: 'title',
-          inviteKey,
-          __typename: 'Project',
-        },
-      }),
-    )
-  }),
 ]
