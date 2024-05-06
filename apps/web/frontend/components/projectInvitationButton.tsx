@@ -71,7 +71,7 @@ export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonPr
                 </button>
               </div>
               {!invitationLoading && (
-                <span className="mx-2">This invitation link will expire in ${invitationExpireDate}`</span>
+                <span className="mx-2">This invitation link will expire in {invitationExpireDate}</span>
               )}
             </div>
             <div className="modal-action">
