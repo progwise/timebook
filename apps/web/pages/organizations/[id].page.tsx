@@ -61,7 +61,7 @@ const OrganizationDetails = (): JSX.Element => {
   }
 
   if (!selectedOrganization) {
-    return <div>{`Organization ${id} not found`}</div>
+    return <div>Organization {id} not found</div>
   }
 
   return (

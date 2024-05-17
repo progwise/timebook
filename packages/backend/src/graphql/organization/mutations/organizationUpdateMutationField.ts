@@ -11,9 +11,7 @@ builder.mutationField('organizationUpdate', (t) =>
       id: t.arg.id(),
       data: t.arg({ type: OrganizationInput }),
     },
-    resolve: async (query, _source, { id, data: { title, address } }, context) => {
-      const now = new Date()
-
+    resolve: async (query, _source, { id, data: { title, address } }) => {
       return prisma.organization.update({
         ...query,
         data: {

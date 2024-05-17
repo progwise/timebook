@@ -65,6 +65,9 @@ export const TopNavigation = (): JSX.Element => {
                   timebook
                 </span>
               </li>
+              <TopNavigationMenuLink href="/organizations" onClick={handleMenuLinkClick}>
+                Organizations
+              </TopNavigationMenuLink>
               <li>
                 <TopNavigationMenuLink href="/week" onClick={handleMenuLinkClick}>
                   Week
@@ -218,6 +221,7 @@ export const TopNavigation = (): JSX.Element => {
           </ul>
         </div>
         <div className="divider divider-horizontal m-0" />
+        <TopNavigationLink href="/organizations">Organization</TopNavigationLink>
         <TopNavigationLink href="/week">Week</TopNavigationLink>
         <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>

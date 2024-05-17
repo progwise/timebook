@@ -225,7 +225,7 @@ type Organization implements ModifyInterface {
   canModify: Boolean!
 
   """
-  identifies the project
+  identifies the organization
   """
   id: ID!
   isArchived: Boolean!

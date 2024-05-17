@@ -233,7 +233,7 @@ export type Organization = ModifyInterface & {
   address?: Maybe<Scalars['String']>
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
-  /** identifies the project */
+  /** identifies the organization */
   id: Scalars['ID']
   isArchived: Scalars['Boolean']
   title: Scalars['String']

@@ -10,8 +10,6 @@ builder.mutationField('organizationCreate', (t) =>
       data: t.arg({ type: OrganizationInput }),
     },
     resolve: async (query, _source, { data: { title, address } }, context) => {
-      const now = new Date()
-
       return prisma.organization.create({
         ...query,
         data: {

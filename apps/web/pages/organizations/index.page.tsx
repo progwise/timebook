@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
 import { OrganizationTable } from '../../frontend/components/organizationTable'
@@ -15,11 +16,13 @@ const MyOrganizationsQueryDocument = graphql(`
 `)
 
 const Organizations = (): JSX.Element => {
+  const context = useMemo(() => ({ additionalTypenames: ['Organization'] }), [])
+  const router = useRouter()
+
   const [{ data, error, fetching: organizationsLoading }] = useQuery({
     query: MyOrganizationsQueryDocument,
+    context,
   })
-
-  const router = useRouter()
 
   const handleAddOrganization = async () => {
     await router.push('/organizations/new')
