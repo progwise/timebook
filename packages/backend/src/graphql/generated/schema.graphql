@@ -44,19 +44,24 @@ type Mutation {
   accessTokenDelete(id: ID!): AccessToken!
 
   """
+  Archive an organization
+  """
+  organizationArchive(
+    """
+    id of the organization
+    """
+    organizationId: ID!
+  ): Organization!
+
+  """
   Create a new organization
   """
   organizationCreate(data: OrganizationInput!): Organization!
 
   """
-  Delete an organization
+  Unarchive an organization
   """
-  organizationDelete(
-    """
-    id of the organization
-    """
-    id: ID!
-  ): Organization!
+  organizationUnarchive(organizationId: ID!): Organization!
 
   """
   Update an organization

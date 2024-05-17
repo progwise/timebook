@@ -1,3 +1,4 @@
+import './organizationArchiveMutationField'
 import './organizationCreateMutationField'
-import './organizationDeleteMutationField'
+import './organizationUnarchiveMutationField'
 import './organizationUpdateMutationField'

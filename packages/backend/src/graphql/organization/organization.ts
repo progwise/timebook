@@ -1,8 +1,5 @@
-import { getMonth, getYear } from 'date-fns'
-
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
-import { prisma } from '../prisma'
 
 export const Organization = builder.prismaObject('Organization', {
   select: {},
