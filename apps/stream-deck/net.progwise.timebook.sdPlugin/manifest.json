@@ -6,27 +6,14 @@
   "Author": "Progwise",
   "Actions": [
     {
-      "Name": "Counter",
-      "UUID": "net.progwise.timebook.increment",
-      "Icon": "imgs/actions/counter/icon",
-      "Tooltip": "Displays a count, which increments by one on press.",
-      "Controllers": ["Keypad"],
-      "States": [
-        {
-          "Image": "imgs/actions/counter/key",
-          "TitleAlignment": "middle"
-        }
-      ]
-    },
-    {
       "Name": "Time tracking",
       "UUID": "net.progwise.timebook.tracking",
-      "Icon": "imgs/actions/counter/icon",
+      "Icon": "imgs/actions/tracking/icon",
       "Tooltip": "Tracks time.",
       "Controllers": ["Keypad"],
       "States": [
         {
-          "Image": "imgs/actions/counter/key",
+          "Image": "imgs/actions/tracking/key",
           "TitleAlignment": "middle"
         }
       ]
