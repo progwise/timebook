@@ -51,15 +51,6 @@ const CurrentTrackingQueryDocument = gql`
   }
 `
 
-const CurrentTaskTitleDocument = gql`
-  query Task($taskId: ID!) {
-    task(taskId: $taskId) {
-      title
-      id
-    }
-  }
-`
-
 const MyProjectsQueryDocument = gql`
   query myProjects($from: Date!) {
     projects(from: $from) {
@@ -103,7 +94,7 @@ export class Tracking extends SingletonAction<TrackingSettings> {
       this.interval = setInterval(async () => {
         await this.updateCurrentTrackingTitle()
       }, 1000)
-      await this.fetchProjects(event.action)
+      await this.fetchProjects()
     }
   }
 
@@ -146,11 +137,10 @@ export class Tracking extends SingletonAction<TrackingSettings> {
     }
   }
 
-  private async stopCurrentTracking(action: Action<TrackingSettings>) {
+  private async stopCurrentTracking() {
     const client = await getClient()
 
     await client.request(StopTrackingMutationDocument)
-    action.setTitle('Not\ntracking')
   }
 
   async onKeyDown(event: KeyDownEvent<TrackingSettings>): Promise<void> {
@@ -163,7 +153,7 @@ export class Tracking extends SingletonAction<TrackingSettings> {
       }>(CurrentTrackingQueryDocument)
 
       await (response.currentTracking && taskID === response.currentTracking?.task.id
-        ? this.stopCurrentTracking(event.action)
+        ? this.stopCurrentTracking()
         : client.request(StartTrackingMutationDocument, { taskId: taskID }))
     } catch {
       await event.action.showAlert()
@@ -186,13 +176,8 @@ export class Tracking extends SingletonAction<TrackingSettings> {
     })
   }
 
-  private async fetchProjects(action: Action<TrackingSettings>) {
-    const { taskID } = await action.getSettings()
+  private async fetchProjects() {
     const client = await getClient()
-
-    await client.request<{
-      task: { title: string; id: string } | null
-    }>(CurrentTaskTitleDocument, { taskId: taskID })
 
     const projectsResponse = await client.request<{
       projects: Project[]
