@@ -240,6 +240,8 @@ export const TopNavigation = (): JSX.Element => {
 
           <ul tabIndex={0} className="menu dropdown-content rounded-box menu-sm w-40 bg-base-100 shadow p-2">
             <li><Link href="/access-tokens" onClick={(event) => event.currentTarget.blur()}>Access tokens</Link></li>
+            <li><Link href="/stream-deck-plugin" onClick={(event) => event.currentTarget.blur()}>Stream deck</Link></li>
+            <div className="divider m-0" />
             <li><a onClick={() => signOut({ callbackUrl: '/' })} href="#">
               Sign out
             </a></li>
