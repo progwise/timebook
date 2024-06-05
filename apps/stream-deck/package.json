@@ -1,7 +1,9 @@
 {
+  "name": "@progwise/timebook-streamdeck-plugin",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w --watch.onEnd=\"streamdeck restart net.progwise.timebook\""
+    "dev": "rollup -c -w --watch.onEnd=\"streamdeck restart net.progwise.timebook\"",
+    "bundle": "streamdeck bundle --output build --force ./net.progwise.timebook.sdPlugin"
   },
   "type": "module",
   "devDependencies": {
