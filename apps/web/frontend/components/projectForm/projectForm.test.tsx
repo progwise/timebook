@@ -47,6 +47,7 @@ describe('projectForm', () => {
       <ProjectForm
         project={makeFragmentData(
           {
+            id: '1',
             title: 'old project',
             startDate: '2022-03-21',
             endDate: '2022-03-21',
@@ -83,6 +84,7 @@ describe('projectForm', () => {
       <ProjectForm
         project={makeFragmentData(
           {
+            id: '1',
             title: 'test project',
             startDate: '2022-04-12',
             endDate: '',
@@ -117,6 +119,7 @@ describe('projectForm', () => {
       <ProjectForm
         project={makeFragmentData(
           {
+            id: '1',
             title: 'test project',
             startDate: '2022-04-12',
             endDate: '2022-05-12',

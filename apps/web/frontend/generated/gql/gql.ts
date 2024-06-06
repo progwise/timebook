@@ -18,18 +18,10 @@ const documents = {
     types.AccessTokenRowFragmentDoc,
   '\n  mutation accessTokenDelete($id: ID!) {\n    accessTokenDelete(id: $id) {\n      id\n    }\n  }\n':
     types.AccessTokenDeleteDocument,
-  '\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n':
-    types.AddProjectMemberFormFragmentDoc,
-  '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n':
-    types.ProjectMembershipInviteByEmailDocument,
   '\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n':
     types.DeleteTaskButtonFragmentDoc,
   '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n':
     types.TaskDeleteDocument,
-  '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n':
-    types.InviteLinkProjectFragmentFragmentDoc,
-  '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n':
-    types.ProjectRegenerateInviteKeyDocument,
   '\n  fragment LockTaskButton on Task {\n    id\n    isLockedByAdmin\n  }\n': types.LockTaskButtonFragmentDoc,
   '\n  mutation taskUpdate($id: ID!, $data: TaskUpdateInput!) {\n    taskUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.TaskUpdateDocument,
@@ -58,9 +50,11 @@ const documents = {
   '\n  fragment UnarchiveProjectButton on Project {\n    id\n    title\n  }\n': types.UnarchiveProjectButtonFragmentDoc,
   '\n  mutation projectUnarchive($projectId: ID!) {\n    projectUnarchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectUnarchiveDocument,
-  '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
+  '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
     types.ProjectFormFragmentDoc,
-  '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n    ...InviteLinkProjectFragment\n  }\n':
+  '\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n':
+    types.ProjectMembershipInvitationCreateDocument,
+  '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
     types.ProjectMemberListProjectFragmentDoc,
   '\n  mutation projectMembershipUpdate($projectId: ID!, $userId: ID!, $role: Role!) {\n    projectMembershipCreate(projectId: $projectId, userId: $userId, role: $role) {\n      id\n    }\n  }\n':
     types.ProjectMembershipUpdateDocument,
@@ -141,7 +135,7 @@ const documents = {
     types.MyProjectsDocument,
   '\n  query projectCounts($from: Date!, $to: Date) {\n    allCounts: projectsCount(from: $from, to: $to, filter: ALL)\n    activeCounts: projectsCount(from: $from, to: $to, filter: ACTIVE)\n    futureCounts: projectsCount(from: $from, to: $to, filter: FUTURE)\n    pastCounts: projectsCount(from: $from, to: $to, filter: PAST)\n    archivedCounts: projectsCount(from: $from, to: $to, filter: ARCHIVED)\n  }\n':
     types.ProjectCountsDocument,
-  '\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n':
+  '\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n':
     types.ProjectMembershipJoinDocument,
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
@@ -179,18 +173,6 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n',
-): (typeof documents)['\n  fragment AddProjectMemberForm on Project {\n    id\n    inviteKey\n    title\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n',
-): (typeof documents)['\n  mutation projectMembershipInviteByEmail($email: String!, $projectId: ID!) {\n    projectMembershipInviteByEmail(email: $email, projectId: $projectId) {\n      ... on MutationProjectMembershipInviteByEmailSuccess {\n        data {\n          title\n          members {\n            name\n          }\n        }\n      }\n      ... on UserNotFoundError {\n        email\n      }\n      __typename\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
   source: '\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n',
 ): (typeof documents)['\n  fragment DeleteTaskButton on Task {\n    id\n    hasWorkHours\n    title\n  }\n']
 /**
@@ -199,18 +181,6 @@ export function graphql(
 export function graphql(
   source: '\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation taskDelete($id: ID!, $hasWorkHours: Boolean!) {\n    taskDelete(id: $id) @skip(if: $hasWorkHours) {\n      id\n    }\n    taskArchive(taskId: $id) @include(if: $hasWorkHours) {\n      id\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n',
-): (typeof documents)['\n  fragment InviteLinkProjectFragment on Project {\n    id\n    inviteKey\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n',
-): (typeof documents)['\n  mutation projectRegenerateInviteKey($projectId: ID!) {\n    projectRegenerateInviteKey(projectId: $projectId) {\n      title\n      inviteKey\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -311,14 +281,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n',
-): (typeof documents)['\n  fragment ProjectForm on Project {\n    title\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n']
+  source: '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n',
+): (typeof documents)['\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n    ...InviteLinkProjectFragment\n  }\n',
-): (typeof documents)['\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    ...AddProjectMemberForm\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n    ...InviteLinkProjectFragment\n  }\n']
+  source: '\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n',
+): (typeof documents)['\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n',
+): (typeof documents)['\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -563,8 +539,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation projectMembershipJoin($inviteKey: String!) {\n    projectMembershipJoin(inviteKey: $inviteKey) {\n      id\n    }\n  }\n']
+  source: '\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation projectMembershipJoin($invitationKey: String!) {\n    projectMembershipJoin(invitationKey: $invitationKey) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

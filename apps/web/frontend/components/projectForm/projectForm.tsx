@@ -13,6 +13,7 @@ import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
 import { PageHeading } from '../pageHeading'
+import { ProjectInvitationButton } from '../projectInvitationButton'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
 
 const getDate = (dateString: string | undefined | null): Date | undefined => {
@@ -61,6 +62,7 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
 export const ProjectFormFragment = graphql(`
   fragment ProjectForm on Project {
     title
+    id
     startDate
     endDate
     canModify
@@ -231,6 +233,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
+
+        {project?.canModify && <ProjectInvitationButton projectId={project.id} />}
       </div>
     </div>
   )
