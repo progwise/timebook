@@ -5,7 +5,7 @@ import { PrismaClient } from '@progwise/timebook-prisma'
 
 import { getTestServer } from '../../../getTestServer'
 
-const orgCreateMutation = gql`
+const organizationCreateMutation = gql`
   mutation organizationCreate($data: OrganizationInput!) {
     organizationCreate(data: $data) {
       id
@@ -29,7 +29,7 @@ it('should throw an error when user is unauthenticated', async () => {
   const testServer = getTestServer({ noSession: true })
 
   const response = await testServer.executeOperation({
-    query: orgCreateMutation,
+    query: organizationCreateMutation,
     variables: { data: { title: 'org 1', address: 'Teststr' } },
   })
 
@@ -42,21 +42,22 @@ it('should throw an error without title', async () => {
 
   //ZOD
   const response = await testServer.executeOperation({
-    query: orgCreateMutation,
-    variables: { data: { title: null, address: 'Teststr' } },
+    query: organizationCreateMutation,
+    variables: { data: { title: '', address: 'Teststr' } },
   })
 
   expect(response.data).toBeUndefined()
+  // eslint-disable-next-line jest/prefer-to-be
   expect(response.errors?.at(0)?.message).toEqual(
     'Variable "$data" got invalid value null at "data.title"; Expected non-nullable type "String!" not to be null.',
   )
 })
 
-it('should throw an error without title', async () => {
+it('should create a new organization', async () => {
   const testServer = getTestServer({ userId: '1' })
 
   const response = await testServer.executeOperation({
-    query: orgCreateMutation,
+    query: organizationCreateMutation,
     variables: { data: { title: 'org 1', address: 'Teststr' } },
   })
 

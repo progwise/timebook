@@ -39,15 +39,14 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
     })
   }
 
-  const isNewOrganization = !organization
-  const isOrganizationFormReadOnly = !organization?.canModify && !isNewOrganization
+  const isOrganizationFormReadOnly = !!organization && !organization.canModify
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
-        {isNewOrganization ? (
-          <PageHeading>Create a new organization</PageHeading>
-        ) : (
+        {organization ? (
           <PageHeading>{isOrganizationFormReadOnly ? 'View' : 'Edit'} organization</PageHeading>
+        ) : (
+          <PageHeading>Create a new organization</PageHeading>
         )}
         <InputField
           label="Name"
@@ -75,14 +74,8 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           <ArchiveOrUnarchiveOrganizationButton organization={organization} disabled={isSubmitting} />
         )}
         {!isOrganizationFormReadOnly && (
-          <button
-            className="btn btn-primary btn-sm"
-            type="submit"
-            disabled={isSubmitting}
-            title={isNewOrganization ? 'Create' : 'Save'}
-            form="organization-form"
-          >
-            {isNewOrganization ? 'Create' : 'Save'}
+          <button className="btn btn-primary btn-sm" type="submit" disabled={isSubmitting} form="organization-form">
+            {organization ? 'Save' : 'Create'}
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save organization.</span>}

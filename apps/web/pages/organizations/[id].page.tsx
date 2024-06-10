@@ -12,7 +12,6 @@ const OrganizationQueryDocument = graphql(`
     organization(organizationId: $organizationId) {
       id
       ...OrganizationForm
-      #   ...ProjectMemberListProject
     }
   }
 `)
@@ -72,9 +71,6 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
-      {/* <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
-          <ProjectMemberList project={selectedOrganization} />
-        </div> */}
     </ProtectedPage>
   )
 }

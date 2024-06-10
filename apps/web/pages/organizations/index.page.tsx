@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
@@ -17,25 +17,20 @@ const MyOrganizationsQueryDocument = graphql(`
 
 const Organizations = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Organization'] }), [])
-  const router = useRouter()
 
   const [{ data, error, fetching: organizationsLoading }] = useQuery({
     query: MyOrganizationsQueryDocument,
     context,
   })
 
-  const handleAddOrganization = async () => {
-    await router.push('/organizations/new')
-  }
-
   return (
     <ProtectedPage>
       <article>
         <PageHeading>Organizations</PageHeading>
-        <div className="flex items-center justify-between gap-4">
-          <button className="btn btn-primary btn-sm" onClick={handleAddOrganization}>
+        <div className="flex items-center justify-between py-2">
+          <Link className="btn btn-primary btn-sm" href="/organizations/new">
             New organization
-          </button>
+          </Link>
         </div>
 
         {error && <span>{error.message}</span>}

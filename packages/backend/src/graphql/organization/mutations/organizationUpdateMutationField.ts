@@ -17,7 +17,6 @@ builder.mutationField('organizationUpdate', (t) =>
         data: {
           title,
           address,
-          updatedAt: new Date(),
         },
         where: {
           id: id.toString(),

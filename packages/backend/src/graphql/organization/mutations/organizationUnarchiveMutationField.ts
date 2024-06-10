@@ -20,11 +20,6 @@ builder.mutationField('organizationUnarchive', (t) =>
       if (!organization) {
         throw new Error('Organization not found')
       }
-
-      if (organization.archivedAt === null) {
-        return prisma.organization.findUniqueOrThrow({ ...query, where: { id: organizationId } })
-      }
-
       return prisma.organization.update({
         ...query,
         where: { id: organizationId },

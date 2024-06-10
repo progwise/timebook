@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/no-null */
 import { gql } from 'apollo-server-core'
-import { format } from 'date-fns'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -10,7 +9,7 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const organizationsQuery = gql`
-  query orgs {
+  query organizations {
     organizations {
       id
       title
@@ -45,7 +44,7 @@ beforeEach(async () => {
   })
 })
 
-it('user is not signed in', async () => {
+it('should throw an error if the user is not signed in', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({ query: organizationsQuery })
 
@@ -53,8 +52,8 @@ it('user is not signed in', async () => {
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-describe('org where the user is a member', () => {
-  it('should  be returned', async () => {
+describe('organization where the user is a member', () => {
+  it('should be returned', async () => {
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({ query: organizationsQuery })
     expect(response.data?.organizations).toEqual([{ id: '100', title: 'org 1', address: 'Teststr. 123' }])

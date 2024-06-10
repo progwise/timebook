@@ -23,7 +23,7 @@ export const Organization = builder.prismaObject('Organization', {
           where: { userId_organizationId: { organizationId: organization.id, userId: context.session.user.id } },
         })
 
-        return organizationMembership?.userId === context.session.user.id
+        return !!organizationMembership
       },
     }),
   }),
