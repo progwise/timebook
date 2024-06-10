@@ -65,7 +65,7 @@ const MyProjectsQueryDocument = gql`
 `
 
 type TrackingSettings = {
-  taskID?: string
+  taskId?: string
 }
 
 type GlobalSettings = {
@@ -118,9 +118,9 @@ export class Tracking extends SingletonAction<TrackingSettings> {
     const startDate = response.currentTracking ? parseISO(response.currentTracking.start) : undefined
 
     for (const action of this.activeButtons.values()) {
-      const { taskID } = await action.getSettings()
-      const taskTitle = this.projects.flatMap((project) => project.tasks).find((task) => taskID === task.id)?.title
-      if (startDate && taskID === response.currentTracking?.task.id) {
+      const { taskId } = await action.getSettings()
+      const taskTitle = this.projects.flatMap((project) => project.tasks).find((task) => taskId === task.id)?.title
+      if (startDate && taskId === response.currentTracking?.task.id) {
         const newDifference = differenceInSeconds(new Date(), startDate)
         await action.setTitle(`${taskTitle}\n${this.getDurationString(newDifference)}`)
       } else {
@@ -144,7 +144,7 @@ export class Tracking extends SingletonAction<TrackingSettings> {
   }
 
   async onKeyDown(event: KeyDownEvent<TrackingSettings>): Promise<void> {
-    const { taskID } = await event.action.getSettings()
+    const { taskId } = await event.action.getSettings()
     const client = await getClient()
 
     try {
@@ -152,9 +152,9 @@ export class Tracking extends SingletonAction<TrackingSettings> {
         currentTracking?: { start: string; task: { id: string } }
       }>(CurrentTrackingQueryDocument)
 
-      await (response.currentTracking && taskID === response.currentTracking?.task.id
+      await (response.currentTracking && taskId === response.currentTracking.task.id
         ? this.stopCurrentTracking()
-        : client.request(StartTrackingMutationDocument, { taskId: taskID }))
+        : client.request(StartTrackingMutationDocument, { taskId: taskId }))
     } catch {
       await event.action.showAlert()
     }
@@ -164,7 +164,7 @@ export class Tracking extends SingletonAction<TrackingSettings> {
 
   async onPropertyInspectorDidAppear(event: PropertyInspectorDidAppearEvent<TrackingSettings>): Promise<void> {
     await event.action.sendToPropertyInspector<DataSourcePayload>({
-      event: 'getProjects',
+      event: 'getTasks',
       items: this.projects.map((project) => ({
         label: project.title,
         children: project.tasks.map((task) => ({
