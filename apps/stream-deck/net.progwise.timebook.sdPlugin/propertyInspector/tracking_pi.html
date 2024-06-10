@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <title>net.progwise.timebook PI</title>
+    <script src="https://cdn.jsdelivr.net/gh/geekyeggo/sdpi-components@v2/dist/sdpi-components.js"></script>
+  </head>
+  <body>
+    <sdpi-wrapper>
+      <sdpi-item label="Task">
+        <sdpi-select
+          setting="taskId"
+          datasource="getTasks"
+          loading="Fetching tasks..."
+          placeholder="Please choose a task"
+          hot-reload
+        ></sdpi-select>
+      </sdpi-item>
+      <sdpi-item>
+        <hr class="tab-separator" style="border-color: var(--font-color)" />
+        Global settings (shared between the buttons):
+      </sdpi-item>
+      <sdpi-item label="URL">
+        <sdpi-textfield setting="url" global placeholder="https://timebook.progwise.net"></sdpi-textfield>
+      </sdpi-item>
+      <sdpi-item label="Access Token">
+        <sdpi-password setting="accessToken" global required></sdpi-password>
+      </sdpi-item>
+    </sdpi-wrapper>
+  </body>
+</html>

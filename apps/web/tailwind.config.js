@@ -16,5 +16,10 @@ module.exports = {
     themes: ['winter', 'forest'],
     darkTheme: 'forest',
   },
-  plugins: [require('@headlessui/tailwindcss'), require('daisyui'), require('@tailwindcss/container-queries')],
+  plugins: [
+    require('@headlessui/tailwindcss'),
+    require('daisyui'),
+    require('@tailwindcss/container-queries'),
+    require('@tailwindcss/typography'),
+  ],
 }
