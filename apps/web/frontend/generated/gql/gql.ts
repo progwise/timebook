@@ -35,7 +35,7 @@ const documents = {
     types.UnarchiveOrganizationButtonFragmentDoc,
   '\n  mutation organizationUnarchive($organizationId: ID!) {\n    organizationUnarchive(organizationId: $organizationId) {\n      id\n      isArchived\n    }\n  }\n':
     types.OrganizationUnarchiveDocument,
-  '\n  fragment OrganizationForm on Organization {\n    title\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n':
+  '\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n':
     types.OrganizationFormFragmentDoc,
   '\n  fragment OrganizationTableItem on Organization {\n    id\n    title\n  }\n':
     types.OrganizationTableItemFragmentDoc,
@@ -227,8 +227,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment OrganizationForm on Organization {\n    title\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n',
-): (typeof documents)['\n  fragment OrganizationForm on Organization {\n    title\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n']
+  source: '\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n',
+): (typeof documents)['\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

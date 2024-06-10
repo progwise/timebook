@@ -315,7 +315,7 @@ export type QueryOrganizationArgs = {
 }
 
 export type QueryOrganizationsArgs = {
-  includeArchived?: InputMaybe<Scalars['Boolean']>
+  includeArchived?: Scalars['Boolean']
 }
 
 export type QueryProjectArgs = {
@@ -570,7 +570,12 @@ export type OrganizationUnarchiveMutation = {
   organizationUnarchive: { __typename?: 'Organization'; id: string; isArchived: boolean }
 }
 
-export type OrganizationFormFragment = ({ __typename?: 'Organization'; title: string; canModify: boolean } & {
+export type OrganizationFormFragment = ({
+  __typename?: 'Organization'
+  title: string
+  address?: string | null
+  canModify: boolean
+} & {
   ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
 
@@ -1240,6 +1245,7 @@ export const OrganizationFormFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
         ],
@@ -4256,6 +4262,7 @@ export const OrganizationDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
         ],

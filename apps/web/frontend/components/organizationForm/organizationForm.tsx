@@ -10,6 +10,7 @@ import { ArchiveOrUnarchiveOrganizationButton } from './archiveOrUnarchiveOrgani
 export const OrganizationFormFragment = graphql(`
   fragment OrganizationForm on Organization {
     title
+    address
     canModify
     ...ArchiveOrUnarchiveOrganizationButton
   }
@@ -28,6 +29,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   const { register, handleSubmit, formState } = useForm<OrganizationInput>({
     defaultValues: {
       title: organization?.title,
+      address: organization?.address,
     },
   })
 
@@ -54,9 +56,20 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           disabled={isSubmitting}
           readOnly={isOrganizationFormReadOnly}
           {...register('title')}
-          placeholder="Enter organization name"
+          placeholder="Enter an organization name"
           size={30}
           errorMessage={errors.title?.message}
+          isDirty={isDirty}
+        />
+        <InputField
+          label="Address"
+          type="text"
+          disabled={isSubmitting}
+          readOnly={isOrganizationFormReadOnly}
+          {...register('address')}
+          placeholder="Enter an organization address"
+          size={30}
+          errorMessage={errors.address?.message}
           isDirty={isDirty}
         />
       </form>

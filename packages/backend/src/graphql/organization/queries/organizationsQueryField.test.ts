@@ -52,18 +52,14 @@ it('should throw an error if the user is not signed in', async () => {
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-describe('organization where the user is a member', () => {
-  it('should be returned', async () => {
-    const testServer = getTestServer({ userId: '1' })
-    const response = await testServer.executeOperation({ query: organizationsQuery })
-    expect(response.data?.organizations).toEqual([{ id: '100', title: 'org 1', address: 'Teststr. 123' }])
-  })
+it('should return an organization of the user', async () => {
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({ query: organizationsQuery })
+  expect(response.data?.organizations).toEqual([{ id: '100', title: 'org 1', address: 'Teststr. 123' }])
 })
 
-describe('users without orgs', () => {
-  it('should receive no orgs', async () => {
-    const testServer = getTestServer({ userId: '2' })
-    const response = await testServer.executeOperation({ query: organizationsQuery })
-    expect(response.data?.organizations).toEqual([])
-  })
+it('should receive no organizations, if the user has no organizations', async () => {
+  const testServer = getTestServer({ userId: '2' })
+  const response = await testServer.executeOperation({ query: organizationsQuery })
+  expect(response.data?.organizations).toEqual([])
 })

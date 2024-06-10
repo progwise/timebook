@@ -320,7 +320,7 @@ type Query {
   """
   Returns all organizations of the signed in user that are active
   """
-  organizations(includeArchived: Boolean): [Organization!]!
+  organizations(includeArchived: Boolean! = false): [Organization!]!
 
   """
   Returns a single project

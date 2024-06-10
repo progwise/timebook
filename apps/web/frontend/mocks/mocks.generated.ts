@@ -317,7 +317,7 @@ export type QueryOrganizationArgs = {
 }
 
 export type QueryOrganizationsArgs = {
-  includeArchived?: InputMaybe<Scalars['Boolean']>
+  includeArchived?: Scalars['Boolean']
 }
 
 export type QueryProjectArgs = {
@@ -561,6 +561,7 @@ export type OrganizationUnarchiveMutation = {
 export type OrganizationFormFragment = {
   __typename?: 'Organization'
   title: string
+  address?: string | null
   canModify: boolean
   id: string
   isArchived: boolean
@@ -1031,7 +1032,14 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = {
   __typename?: 'Query'
-  organization: { __typename?: 'Organization'; id: string; title: string; canModify: boolean; isArchived: boolean }
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    title: string
+    address?: string | null
+    canModify: boolean
+    isArchived: boolean
+  }
 }
 
 export type OrganizationUpdateMutationVariables = Exact<{
