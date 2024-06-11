@@ -46,11 +46,9 @@ it('should throw an error without title', async () => {
     variables: { data: { title: '', address: 'Teststr' } },
   })
 
-  expect(response.data).toBeUndefined()
+  expect(response.data).toBeNull()
   // eslint-disable-next-line jest/prefer-to-be
-  expect(response.errors?.at(0)?.message).toEqual(
-    'Variable "$data" got invalid value null at "data.title"; Expected non-nullable type "String!" not to be null.',
-  )
+  expect(response.errors?.at(0)?.message).toEqual('title is required')
 })
 
 it('should create a new organization', async () => {
