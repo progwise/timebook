@@ -22,6 +22,7 @@ const OrganizationArchiveMutationDocument = graphql(`
 
 interface ArchiveOrganizationButtonProps {
   organization: FragmentType<typeof ArchiveOrganizationButtonFragment>
+  disabled: boolean
 }
 
 export const ArchiveOrganizationButton = ({

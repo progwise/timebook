@@ -20,8 +20,8 @@ export const ArchiveOrUnarchiveOrganizationButton = (props: ArchiveOrUnarchiveOr
   const organization = useFragment(ArchiveOrUnarchiveOrganizationButtonFragment, props.organization)
 
   if (organization.isArchived) {
-    return <UnarchiveOrganizationButton organization={organization} />
+    return <UnarchiveOrganizationButton organization={organization} disabled={props.disabled} />
   }
 
-  return <ArchiveOrganizationButton organization={organization} />
+  return <ArchiveOrganizationButton organization={organization} disabled={props.disabled} />
 }

@@ -22,6 +22,7 @@ const OrganizationUnarchiveMutationDocument = graphql(`
 
 interface UnarchiveOrganizationButtonProps {
   organization: FragmentType<typeof UnarchiveOrganizationButtonFragment>
+  disabled: boolean
 }
 
 export const UnarchiveOrganizationButton = ({
