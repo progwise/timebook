@@ -20,8 +20,11 @@ beforeEach(async () => {
   await prisma.user.deleteMany()
   await prisma.organization.deleteMany()
 
-  await prisma.user.create({
-    data: { id: '1', name: 'Unauthenticated user' },
+  await prisma.user.createMany({
+    data: [
+      { id: '1', name: 'user with an organization membership' },
+      { id: '2', name: 'user without an organization membership' },
+    ],
   })
 
   await prisma.organization.create({
@@ -36,9 +39,16 @@ beforeEach(async () => {
   })
 })
 
-it('should throw an error when the user is unauthenticated', async () => {
+it('should throw an error when user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
+  const response = await testServer.executeOperation({ query: organizationUnarchiveMutation })
 
+  expect(response.data).toBeNull()
+  expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+})
+
+it('should throw an error when user is not an organization member', async () => {
+  const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({ query: organizationUnarchiveMutation })
 
   expect(response.data).toBeNull()

@@ -20,11 +20,11 @@ beforeEach(async () => {
   await prisma.user.deleteMany()
   await prisma.organization.deleteMany()
 
-  await prisma.user.create({
-    data: {
-      id: '1',
-      name: 'test user without an organization membership',
-    },
+  await prisma.user.createMany({
+    data: [
+      { id: '1', name: 'user with an organization membership' },
+      { id: '2', name: 'user without an organization membership' },
+    ],
   })
 
   await prisma.organization.create({
@@ -38,12 +38,12 @@ beforeEach(async () => {
   })
 })
 
-it('should throw an error when the user is unauthenticated', async () => {
+it('should throw an error when the user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
     query: organizationUpdateMutation,
     variables: {
-      id: '1',
+      id: 'O1',
       data: {
         title: 'new organization title',
       },
@@ -54,12 +54,12 @@ it('should throw an error when the user is unauthenticated', async () => {
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-it('should throw error when user is not an organization member', async () => {
-  const testServer = getTestServer({ userId: '1' })
+it('should throw an error when the user is not an organization member', async () => {
+  const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
     query: organizationUpdateMutation,
     variables: {
-      id: '1',
+      id: 'O1',
       data: {
         title: 'new organization title',
       },
@@ -68,4 +68,25 @@ it('should throw error when user is not an organization member', async () => {
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+})
+
+it('should update an organization', async () => {
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({
+    query: organizationUpdateMutation,
+    variables: {
+      id: 'O1',
+      data: {
+        title: 'new organization title',
+      },
+    },
+  })
+
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toEqual({
+    organizationUpdate: {
+      id: 'O1',
+      title: 'new organization title',
+    },
+  })
 })
