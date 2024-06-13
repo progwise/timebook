@@ -8,7 +8,7 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const organizationUpdateMutation = gql`
-  mutation organizationUpdateMutation($id: ID!, $data: OrganizationInput!) {
+  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {
     organizationUpdate(id: $id, data: $data) {
       id
       title
