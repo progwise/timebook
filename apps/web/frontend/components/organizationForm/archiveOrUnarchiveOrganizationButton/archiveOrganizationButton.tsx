@@ -27,6 +27,7 @@ interface ArchiveOrganizationButtonProps {
 
 export const ArchiveOrganizationButton = ({
   organization: organizationFragment,
+  disabled,
 }: ArchiveOrganizationButtonProps): JSX.Element => {
   const organization = useFragment(ArchiveOrganizationButtonFragment, organizationFragment)
   const [{ fetching }, organizationArchive] = useMutation(OrganizationArchiveMutationDocument)
@@ -44,7 +45,12 @@ export const ArchiveOrganizationButton = ({
 
   return (
     <>
-      <button className="btn btn-secondary btn-sm" type="button" onClick={() => dialogReference.current?.showModal()}>
+      <button
+        className="btn btn-secondary btn-sm"
+        type="button"
+        onClick={() => dialogReference.current?.showModal()}
+        disabled={disabled}
+      >
         Archive
       </button>
       <dialog className="modal" ref={dialogReference}>

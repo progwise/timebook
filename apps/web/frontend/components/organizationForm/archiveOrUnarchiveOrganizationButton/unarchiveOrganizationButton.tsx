@@ -27,6 +27,7 @@ interface UnarchiveOrganizationButtonProps {
 
 export const UnarchiveOrganizationButton = ({
   organization: organizationFragment,
+  disabled,
 }: UnarchiveOrganizationButtonProps): JSX.Element => {
   const organization = useFragment(UnarchiveOrganizationButtonFragment, organizationFragment)
   const [{ fetching }, organizationUnarchive] = useMutation(OrganizationUnarchiveMutationDocument)
@@ -44,7 +45,12 @@ export const UnarchiveOrganizationButton = ({
 
   return (
     <>
-      <button className="btn btn-outline btn-sm" type="button" onClick={() => dialogReference.current?.showModal()}>
+      <button
+        className="btn btn-outline btn-sm"
+        type="button"
+        onClick={() => dialogReference.current?.showModal()}
+        disabled={disabled}
+      >
         Unarchive
       </button>
       <dialog className="modal" ref={dialogReference}>
