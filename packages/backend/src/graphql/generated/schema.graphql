@@ -44,6 +44,31 @@ type Mutation {
   accessTokenDelete(id: ID!): AccessToken!
 
   """
+  Archive an organization
+  """
+  organizationArchive(
+    """
+    id of the organization
+    """
+    organizationId: ID!
+  ): Organization!
+
+  """
+  Create a new organization
+  """
+  organizationCreate(data: OrganizationInput!): Organization!
+
+  """
+  Unarchive an organization
+  """
+  organizationUnarchive(organizationId: ID!): Organization!
+
+  """
+  Update an organization
+  """
+  organizationUpdate(data: OrganizationInput!, id: ID!): Organization!
+
+  """
   Archive a project
   """
   projectArchive(projectId: ID!): Project!
@@ -180,6 +205,27 @@ type Mutation {
   workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
 }
 
+type Organization implements ModifyInterface {
+  address: String
+
+  """
+  Can the user modify the entity
+  """
+  canModify: Boolean!
+
+  """
+  identifies the organization
+  """
+  id: ID!
+  isArchived: Boolean!
+  title: String!
+}
+
+input OrganizationInput {
+  address: String
+  title: String!
+}
+
 type Project implements ModifyInterface {
   """
   Can the user modify the entity
@@ -260,6 +306,21 @@ type Query {
   """
   accessTokens: [AccessToken!]!
   currentTracking: Tracking
+
+  """
+  Returns a single Organization
+  """
+  organization(
+    """
+    Identifier for the Organization
+    """
+    organizationId: ID!
+  ): Organization!
+
+  """
+  Returns all organizations of the signed in user that are active
+  """
+  organizations(includeArchived: Boolean! = false): [Organization!]!
 
   """
   Returns a single project

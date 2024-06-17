@@ -71,15 +71,21 @@ export const TopNavigation = (): JSX.Element => {
                 </TopNavigationMenuLink>
               </li>
               <li>
-                <TopNavigationMenuLink href="/sheet" onClick={handleMenuLinkClick}>
-                  Sheet
-                </TopNavigationMenuLink>
-              </li>
-              <li>
                 <TopNavigationMenuLink href="/projects" onClick={handleMenuLinkClick}>
                   Projects
                 </TopNavigationMenuLink>
               </li>
+              <li>
+                <TopNavigationMenuLink href="/organizations" onClick={handleMenuLinkClick}>
+                  Organization
+                </TopNavigationMenuLink>
+              </li>
+              <li>
+                <TopNavigationMenuLink href="/sheet" onClick={handleMenuLinkClick}>
+                  Sheet
+                </TopNavigationMenuLink>
+              </li>
+
               <li>
                 <TopNavigationMenuLink href="/reports" onClick={handleMenuLinkClick}>
                   Reports
@@ -219,8 +225,9 @@ export const TopNavigation = (): JSX.Element => {
         </div>
         <div className="divider divider-horizontal m-0" />
         <TopNavigationLink href="/week">Week</TopNavigationLink>
-        <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/projects">Projects</TopNavigationLink>
+        <TopNavigationLink href="/organizations">Organization</TopNavigationLink>
+        <TopNavigationLink href="/sheet">Sheet</TopNavigationLink>
         <TopNavigationLink href="/reports">Reports</TopNavigationLink>
         {/* Ignore the next line because prettier sorts dropdown classes sometimes differently */}
         {/* We have absolutely no idea or control over this, so we just ignore it */}
