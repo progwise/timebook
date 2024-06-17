@@ -46,6 +46,14 @@ export type Mutation = {
   accessTokenCreate: Scalars['String']
   /** Delete an access token for the signed in user */
   accessTokenDelete: AccessToken
+  /** Archive an organization */
+  organizationArchive: Organization
+  /** Create a new organization */
+  organizationCreate: Organization
+  /** Unarchive an organization */
+  organizationUnarchive: Organization
+  /** Update an organization */
+  organizationUpdate: Organization
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -95,6 +103,23 @@ export type MutationAccessTokenCreateArgs = {
 }
 
 export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationOrganizationArchiveArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationCreateArgs = {
+  data: OrganizationInput
+}
+
+export type MutationOrganizationUnarchiveArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationUpdateArgs = {
+  data: OrganizationInput
   id: Scalars['ID']
 }
 
@@ -189,6 +214,22 @@ export type MutationWorkHourUpdateArgs = {
   taskId: Scalars['ID']
 }
 
+export type Organization = ModifyInterface & {
+  __typename?: 'Organization'
+  address?: Maybe<Scalars['String']>
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
+  /** identifies the organization */
+  id: Scalars['ID']
+  isArchived: Scalars['Boolean']
+  title: Scalars['String']
+}
+
+export type OrganizationInput = {
+  address?: InputMaybe<Scalars['String']>
+  title: Scalars['String']
+}
+
 export type Project = ModifyInterface & {
   __typename?: 'Project'
   /** Can the user modify the entity */
@@ -252,6 +293,10 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns a single Organization */
+  organization: Organization
+  /** Returns all organizations of the signed in user that are active */
+  organizations: Array<Organization>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -265,6 +310,14 @@ export type Query = {
   user: User
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
+}
+
+export type QueryOrganizationArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type QueryOrganizationsArgs = {
+  includeArchived?: Scalars['Boolean']
 }
 
 export type QueryProjectArgs = {
@@ -475,6 +528,46 @@ export type TaskUpdateMutationVariables = Exact<{
 }>
 
 export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
+
+export type ArchiveOrUnarchiveOrganizationButtonFragment = {
+  __typename?: 'Organization'
+  id: string
+  isArchived: boolean
+  title: string
+}
+
+export type ArchiveOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string }
+
+export type OrganizationArchiveMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationArchiveMutation = {
+  __typename?: 'Mutation'
+  organizationArchive: { __typename?: 'Organization'; id: string; isArchived: boolean }
+}
+
+export type UnarchiveOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string }
+
+export type OrganizationUnarchiveMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationUnarchiveMutation = {
+  __typename?: 'Mutation'
+  organizationUnarchive: { __typename?: 'Organization'; id: string; isArchived: boolean }
+}
+
+export type OrganizationFormFragment = {
+  __typename?: 'Organization'
+  title: string
+  address?: string | null
+  canModify: boolean
+  id: string
+  isArchived: boolean
+}
+
+export type OrganizationTableItemFragment = { __typename?: 'Organization'; id: string; title: string }
 
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string }
 
@@ -933,6 +1026,48 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
+export type OrganizationQueryVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationQuery = {
+  __typename?: 'Query'
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    title: string
+    address?: string | null
+    canModify: boolean
+    isArchived: boolean
+  }
+}
+
+export type OrganizationUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: OrganizationInput
+}>
+
+export type OrganizationUpdateMutation = {
+  __typename?: 'Mutation'
+  organizationUpdate: { __typename?: 'Organization'; id: string }
+}
+
+export type MyOrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyOrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string }>
+}
+
+export type OrganizationCreateMutationVariables = Exact<{
+  data: OrganizationInput
+}>
+
+export type OrganizationCreateMutation = {
+  __typename?: 'Mutation'
+  organizationCreate: { __typename?: 'Organization'; id: string }
+}
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -1102,6 +1237,49 @@ export const mockTaskDeleteMutation = (
 export const mockTaskUpdateMutation = (
   resolver: ResponseResolver<GraphQLRequest<TaskUpdateMutationVariables>, GraphQLContext<TaskUpdateMutation>, any>,
 ) => graphql.mutation<TaskUpdateMutation, TaskUpdateMutationVariables>('taskUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationArchiveMutation((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationArchive })
+ *   )
+ * })
+ */
+export const mockOrganizationArchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationArchiveMutationVariables>,
+    GraphQLContext<OrganizationArchiveMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationArchiveMutation, OrganizationArchiveMutationVariables>('organizationArchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationUnarchiveMutation((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationUnarchive })
+ *   )
+ * })
+ */
+export const mockOrganizationUnarchiveMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationUnarchiveMutationVariables>,
+    GraphQLContext<OrganizationUnarchiveMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>(
+    'organizationUnarchive',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1473,6 +1651,73 @@ export const mockAccessTokenCreateMutation = (
     any
   >,
 ) => graphql.mutation<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>('accessTokenCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationQuery((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organization })
+ *   )
+ * })
+ */
+export const mockOrganizationQuery = (
+  resolver: ResponseResolver<GraphQLRequest<OrganizationQueryVariables>, GraphQLContext<OrganizationQuery>, any>,
+) => graphql.query<OrganizationQuery, OrganizationQueryVariables>('organization', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationUpdate })
+ *   )
+ * })
+ */
+export const mockOrganizationUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationUpdateMutationVariables>,
+    GraphQLContext<OrganizationUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>('organizationUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMyOrganizationsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ organizations })
+ *   )
+ * })
+ */
+export const mockMyOrganizationsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<MyOrganizationsQueryVariables>, GraphQLContext<MyOrganizationsQuery>, any>,
+) => graphql.query<MyOrganizationsQuery, MyOrganizationsQueryVariables>('myOrganizations', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationCreate })
+ *   )
+ * })
+ */
+export const mockOrganizationCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationCreateMutationVariables>,
+    GraphQLContext<OrganizationCreateMutation>,
+    any
+  >,
+) => graphql.mutation<OrganizationCreateMutation, OrganizationCreateMutationVariables>('organizationCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

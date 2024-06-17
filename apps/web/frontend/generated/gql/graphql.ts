@@ -44,6 +44,14 @@ export type Mutation = {
   accessTokenCreate: Scalars['String']
   /** Delete an access token for the signed in user */
   accessTokenDelete: AccessToken
+  /** Archive an organization */
+  organizationArchive: Organization
+  /** Create a new organization */
+  organizationCreate: Organization
+  /** Unarchive an organization */
+  organizationUnarchive: Organization
+  /** Update an organization */
+  organizationUpdate: Organization
   /** Archive a project */
   projectArchive: Project
   /** Create a new project */
@@ -93,6 +101,23 @@ export type MutationAccessTokenCreateArgs = {
 }
 
 export type MutationAccessTokenDeleteArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationOrganizationArchiveArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationCreateArgs = {
+  data: OrganizationInput
+}
+
+export type MutationOrganizationUnarchiveArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationUpdateArgs = {
+  data: OrganizationInput
   id: Scalars['ID']
 }
 
@@ -187,6 +212,22 @@ export type MutationWorkHourUpdateArgs = {
   taskId: Scalars['ID']
 }
 
+export type Organization = ModifyInterface & {
+  __typename?: 'Organization'
+  address?: Maybe<Scalars['String']>
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
+  /** identifies the organization */
+  id: Scalars['ID']
+  isArchived: Scalars['Boolean']
+  title: Scalars['String']
+}
+
+export type OrganizationInput = {
+  address?: InputMaybe<Scalars['String']>
+  title: Scalars['String']
+}
+
 export type Project = ModifyInterface & {
   __typename?: 'Project'
   /** Can the user modify the entity */
@@ -250,6 +291,10 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns a single Organization */
+  organization: Organization
+  /** Returns all organizations of the signed in user that are active */
+  organizations: Array<Organization>
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -263,6 +308,14 @@ export type Query = {
   user: User
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
+}
+
+export type QueryOrganizationArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type QueryOrganizationsArgs = {
+  includeArchived?: Scalars['Boolean']
 }
 
 export type QueryProjectArgs = {
@@ -479,6 +532,56 @@ export type TaskUpdateMutationVariables = Exact<{
 }>
 
 export type TaskUpdateMutation = { __typename?: 'Mutation'; taskUpdate: { __typename?: 'Task'; id: string } }
+
+export type ArchiveOrUnarchiveOrganizationButtonFragment = ({
+  __typename?: 'Organization'
+  id: string
+  isArchived: boolean
+} & {
+  ' $fragmentRefs'?: {
+    UnarchiveOrganizationButtonFragment: UnarchiveOrganizationButtonFragment
+    ArchiveOrganizationButtonFragment: ArchiveOrganizationButtonFragment
+  }
+}) & { ' $fragmentName'?: 'ArchiveOrUnarchiveOrganizationButtonFragment' }
+
+export type ArchiveOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string } & {
+  ' $fragmentName'?: 'ArchiveOrganizationButtonFragment'
+}
+
+export type OrganizationArchiveMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationArchiveMutation = {
+  __typename?: 'Mutation'
+  organizationArchive: { __typename?: 'Organization'; id: string; isArchived: boolean }
+}
+
+export type UnarchiveOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string } & {
+  ' $fragmentName'?: 'UnarchiveOrganizationButtonFragment'
+}
+
+export type OrganizationUnarchiveMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationUnarchiveMutation = {
+  __typename?: 'Mutation'
+  organizationUnarchive: { __typename?: 'Organization'; id: string; isArchived: boolean }
+}
+
+export type OrganizationFormFragment = ({
+  __typename?: 'Organization'
+  title: string
+  address?: string | null
+  canModify: boolean
+} & {
+  ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
+}) & { ' $fragmentName'?: 'OrganizationFormFragment' }
+
+export type OrganizationTableItemFragment = { __typename?: 'Organization'; id: string; title: string } & {
+  ' $fragmentName'?: 'OrganizationTableItemFragment'
+}
 
 export type ArchiveProjectButtonFragment = { __typename?: 'Project'; id: string; title: string } & {
   ' $fragmentName'?: 'ArchiveProjectButtonFragment'
@@ -920,6 +1023,47 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
+export type OrganizationQueryVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationQuery = {
+  __typename?: 'Query'
+  organization: { __typename?: 'Organization'; id: string } & {
+    ' $fragmentRefs'?: { OrganizationFormFragment: OrganizationFormFragment }
+  }
+}
+
+export type OrganizationUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: OrganizationInput
+}>
+
+export type OrganizationUpdateMutation = {
+  __typename?: 'Mutation'
+  organizationUpdate: { __typename?: 'Organization'; id: string }
+}
+
+export type MyOrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyOrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<
+    { __typename?: 'Organization' } & {
+      ' $fragmentRefs'?: { OrganizationTableItemFragment: OrganizationTableItemFragment }
+    }
+  >
+}
+
+export type OrganizationCreateMutationVariables = Exact<{
+  data: OrganizationInput
+}>
+
+export type OrganizationCreateMutation = {
+  __typename?: 'Mutation'
+  organizationCreate: { __typename?: 'Organization'; id: string }
+}
+
 export type ProjectQueryVariables = Exact<{
   projectId: Scalars['ID']
 }>
@@ -1013,6 +1157,157 @@ export const AccessTokenRowFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenRowFragment, unknown>
+export const UnarchiveOrganizationButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UnarchiveOrganizationButtonFragment, unknown>
+export const ArchiveOrganizationButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ArchiveOrganizationButtonFragment, unknown>
+export const ArchiveOrUnarchiveOrganizationButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ArchiveOrUnarchiveOrganizationButtonFragment, unknown>
+export const OrganizationFormFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationFormFragment, unknown>
+export const OrganizationTableItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationTableItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationTableItemFragment, unknown>
 export const DeleteProjectButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2553,6 +2848,86 @@ export const TaskUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<TaskUpdateMutation, TaskUpdateMutationVariables>
+export const OrganizationArchiveDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationArchive' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationArchive' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationArchiveMutation, OrganizationArchiveMutationVariables>
+export const OrganizationUnarchiveDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationUnarchive' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationUnarchive' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>
 export const ProjectArchiveDocument = {
   kind: 'Document',
   definitions: [
@@ -3803,6 +4178,223 @@ export const AccessTokenCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
+export const OrganizationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organization' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationQuery, OrganizationQueryVariables>
+export const OrganizationUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'OrganizationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>
+export const MyOrganizationsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'myOrganizations' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizations' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationTableItem' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationTableItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MyOrganizationsQuery, MyOrganizationsQueryVariables>
+export const OrganizationCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'OrganizationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationCreateMutation, OrganizationCreateMutationVariables>
 export const ProjectDocument = {
   kind: 'Document',
   definitions: [

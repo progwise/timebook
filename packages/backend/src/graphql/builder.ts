@@ -23,6 +23,7 @@ export const builder = new SchemaBuilder<{
     isAdminByProject: string
     isAdminByProjects: string[]
     isAdminByTask: string
+    isAdminByOrganization: string
   }
   AuthContexts: {
     isLoggedIn: LoggedInContext
@@ -33,6 +34,7 @@ export const builder = new SchemaBuilder<{
     isAdminByProject: LoggedInContext
     isAdminByProjects: LoggedInContext
     isAdminByTask: LoggedInContext
+    isAdminByOrganization: LoggedInContext
   }
   Scalars: {
     Date: {
@@ -112,6 +114,21 @@ export const builder = new SchemaBuilder<{
       })
 
       return !!projectMembership
+    },
+    isAdminByOrganization: async (organizationId) => {
+      if (!context.session) {
+        return false
+      }
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
     },
     isAdminByProject: async (projectId) => {
       if (!context.session) {

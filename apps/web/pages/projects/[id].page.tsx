@@ -64,7 +64,7 @@ const ProjectDetails = (): JSX.Element => {
   }
 
   if (!selectedProject) {
-    return <div>{`Project ${id} not found`}</div>
+    return <div>Project {id} not found</div>
   }
 
   return (
