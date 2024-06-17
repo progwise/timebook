@@ -225,6 +225,13 @@ export type Organization = ModifyInterface & {
   title: Scalars['String']
 }
 
+export enum OrganizationFilter {
+  Active = 'ACTIVE',
+  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
+  All = 'ALL',
+  Archived = 'ARCHIVED',
+}
+
 export type OrganizationInput = {
   address?: InputMaybe<Scalars['String']>
   title: Scalars['String']
@@ -297,6 +304,7 @@ export type Query = {
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
   organizations: Array<Organization>
+  organizationsCount: Scalars['Int']
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -317,7 +325,12 @@ export type QueryOrganizationArgs = {
 }
 
 export type QueryOrganizationsArgs = {
+  filter?: OrganizationFilter
   includeArchived?: Scalars['Boolean']
+}
+
+export type QueryOrganizationsCountArgs = {
+  filter: OrganizationFilter
 }
 
 export type QueryProjectArgs = {
@@ -1052,11 +1065,22 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
-export type MyOrganizationsQueryVariables = Exact<{ [key: string]: never }>
+export type MyOrganizationsQueryVariables = Exact<{
+  filter?: InputMaybe<OrganizationFilter>
+}>
 
 export type MyOrganizationsQuery = {
   __typename?: 'Query'
   organizations: Array<{ __typename?: 'Organization'; id: string; title: string }>
+}
+
+export type OrganizationCountsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationCountsQuery = {
+  __typename?: 'Query'
+  allCounts: number
+  activeCounts: number
+  archivedCounts: number
 }
 
 export type OrganizationCreateMutationVariables = Exact<{
@@ -1691,6 +1715,7 @@ export const mockOrganizationUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockMyOrganizationsQuery((req, res, ctx) => {
+ *   const { filter } = req.variables;
  *   return res(
  *     ctx.data({ organizations })
  *   )
@@ -1699,6 +1724,24 @@ export const mockOrganizationUpdateMutation = (
 export const mockMyOrganizationsQuery = (
   resolver: ResponseResolver<GraphQLRequest<MyOrganizationsQueryVariables>, GraphQLContext<MyOrganizationsQuery>, any>,
 ) => graphql.query<MyOrganizationsQuery, MyOrganizationsQueryVariables>('myOrganizations', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationCountsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ organizationsCount, organizationsCount, organizationsCount })
+ *   )
+ * })
+ */
+export const mockOrganizationCountsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationCountsQueryVariables>,
+    GraphQLContext<OrganizationCountsQuery>,
+    any
+  >,
+) => graphql.query<OrganizationCountsQuery, OrganizationCountsQueryVariables>('organizationCounts', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

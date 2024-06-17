@@ -223,6 +223,13 @@ export type Organization = ModifyInterface & {
   title: Scalars['String']
 }
 
+export enum OrganizationFilter {
+  Active = 'ACTIVE',
+  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
+  All = 'ALL',
+  Archived = 'ARCHIVED',
+}
+
 export type OrganizationInput = {
   address?: InputMaybe<Scalars['String']>
   title: Scalars['String']
@@ -295,6 +302,7 @@ export type Query = {
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
   organizations: Array<Organization>
+  organizationsCount: Scalars['Int']
   /** Returns a single project */
   project: Project
   /** Returns all project of the signed in user that are active */
@@ -315,7 +323,12 @@ export type QueryOrganizationArgs = {
 }
 
 export type QueryOrganizationsArgs = {
+  filter?: OrganizationFilter
   includeArchived?: Scalars['Boolean']
+}
+
+export type QueryOrganizationsCountArgs = {
+  filter: OrganizationFilter
 }
 
 export type QueryProjectArgs = {
@@ -1044,7 +1057,9 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
-export type MyOrganizationsQueryVariables = Exact<{ [key: string]: never }>
+export type MyOrganizationsQueryVariables = Exact<{
+  filter?: InputMaybe<OrganizationFilter>
+}>
 
 export type MyOrganizationsQuery = {
   __typename?: 'Query'
@@ -1053,6 +1068,15 @@ export type MyOrganizationsQuery = {
       ' $fragmentRefs'?: { OrganizationTableItemFragment: OrganizationTableItemFragment }
     }
   >
+}
+
+export type OrganizationCountsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationCountsQuery = {
+  __typename?: 'Query'
+  allCounts: number
+  activeCounts: number
+  archivedCounts: number
 }
 
 export type OrganizationCreateMutationVariables = Exact<{
@@ -4327,12 +4351,26 @@ export const MyOrganizationsDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'myOrganizations' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'OrganizationFilter' } },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organizations' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'filter' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationTableItem' } }],
@@ -4355,6 +4393,53 @@ export const MyOrganizationsDocument = {
     },
   ],
 } as unknown as DocumentNode<MyOrganizationsQuery, MyOrganizationsQueryVariables>
+export const OrganizationCountsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organizationCounts' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'allCounts' },
+            name: { kind: 'Name', value: 'organizationsCount' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'filter' }, value: { kind: 'EnumValue', value: 'ALL' } },
+            ],
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'activeCounts' },
+            name: { kind: 'Name', value: 'organizationsCount' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'EnumValue', value: 'ACTIVE' },
+              },
+            ],
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'archivedCounts' },
+            name: { kind: 'Name', value: 'organizationsCount' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: { kind: 'EnumValue', value: 'ARCHIVED' },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationCountsQuery, OrganizationCountsQueryVariables>
 export const OrganizationCreateDocument = {
   kind: 'Document',
   definitions: [
