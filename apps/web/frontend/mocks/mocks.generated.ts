@@ -222,6 +222,7 @@ export type Organization = ModifyInterface & {
   /** identifies the organization */
   id: Scalars['ID']
   isArchived: Scalars['Boolean']
+  projects: Array<Project>
   title: Scalars['String']
 }
 
@@ -276,6 +277,7 @@ export enum ProjectFilter {
 
 export type ProjectInput = {
   end?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['String']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
 }
@@ -630,6 +632,12 @@ export type ProjectMembershipInvitationCreateMutation = {
     invitationKey: string
     expireDate: string
   }
+}
+
+export type ProjectListOrganizationFragment = {
+  __typename?: 'Organization'
+  id: string
+  projects: Array<{ __typename?: 'Project'; id: string; title: string }>
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -1039,6 +1047,7 @@ export type OrganizationQuery = {
     address?: string | null
     canModify: boolean
     isArchived: boolean
+    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
   }
 }
 

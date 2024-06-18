@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../frontend/components/organizationForm/organizationForm'
+import { ProjectList } from '../../frontend/components/projectList/projectList'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
 import { OrganizationInput } from '../../frontend/generated/gql/graphql'
@@ -12,6 +13,7 @@ const OrganizationQueryDocument = graphql(`
     organization(organizationId: $organizationId) {
       id
       ...OrganizationForm
+      ...ProjectListOrganization
     }
   }
 `)
@@ -71,6 +73,9 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
+      <div className="rounded-box border-base-300 bg-base-100 p-6">
+        <ProjectList organization={selectedOrganization} />
+      </div>
     </ProtectedPage>
   )
 }

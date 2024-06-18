@@ -11,7 +11,7 @@ builder.mutationField('projectUpdate', (t) =>
       data: t.arg({ type: ProjectInput }),
     },
     authScopes: async (_source, { id }) => ({ isAdminByProject: id.toString() }),
-    resolve: async (query, _source, { id, data: { title, start, end } }) =>
+    resolve: async (query, _source, { id, data: { title, start, end, organizationId } }) =>
       prisma.project.update({
         ...query,
         where: { id: id.toString() },
@@ -19,6 +19,7 @@ builder.mutationField('projectUpdate', (t) =>
           title,
           startDate: start,
           endDate: end,
+          organizationId,
         },
       }),
   }),

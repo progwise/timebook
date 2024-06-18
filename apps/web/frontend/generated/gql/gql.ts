@@ -54,6 +54,8 @@ const documents = {
     types.ProjectFormFragmentDoc,
   '\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n':
     types.ProjectMembershipInvitationCreateDocument,
+  '\n  fragment ProjectListOrganization on Organization {\n    id\n    projects {\n      id\n      title\n    }\n  }\n':
+    types.ProjectListOrganizationFragmentDoc,
   '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
     types.ProjectMemberListProjectFragmentDoc,
   '\n  mutation projectMembershipUpdate($projectId: ID!, $userId: ID!, $role: Role!) {\n    projectMembershipCreate(projectId: $projectId, userId: $userId, role: $role) {\n      id\n    }\n  }\n':
@@ -119,7 +121,7 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
-  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n':
+  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...ProjectListOrganization\n    }\n  }\n':
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
@@ -289,6 +291,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n',
 ): (typeof documents)['\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment ProjectListOrganization on Organization {\n    id\n    projects {\n      id\n      title\n    }\n  }\n',
+): (typeof documents)['\n  fragment ProjectListOrganization on Organization {\n    id\n    projects {\n      id\n      title\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -491,8 +499,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n',
-): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n']
+  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...ProjectListOrganization\n    }\n  }\n',
+): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...ProjectListOrganization\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

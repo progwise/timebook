@@ -220,6 +220,7 @@ export type Organization = ModifyInterface & {
   /** identifies the organization */
   id: Scalars['ID']
   isArchived: Scalars['Boolean']
+  projects: Array<Project>
   title: Scalars['String']
 }
 
@@ -274,6 +275,7 @@ export enum ProjectFilter {
 
 export type ProjectInput = {
   end?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['String']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
 }
@@ -658,6 +660,12 @@ export type ProjectMembershipInvitationCreateMutation = {
   }
 }
 
+export type ProjectListOrganizationFragment = {
+  __typename?: 'Organization'
+  id: string
+  projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+} & { ' $fragmentName'?: 'ProjectListOrganizationFragment' }
+
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
   id: string
@@ -1030,7 +1038,10 @@ export type OrganizationQueryVariables = Exact<{
 export type OrganizationQuery = {
   __typename?: 'Query'
   organization: { __typename?: 'Organization'; id: string } & {
-    ' $fragmentRefs'?: { OrganizationFormFragment: OrganizationFormFragment }
+    ' $fragmentRefs'?: {
+      OrganizationFormFragment: OrganizationFormFragment
+      ProjectListOrganizationFragment: ProjectListOrganizationFragment
+    }
   }
 }
 
@@ -1490,6 +1501,33 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
+export const ProjectListOrganizationFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectListOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projects' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectListOrganizationFragment, unknown>
 export const RemoveUserFromProjectButtonProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4210,6 +4248,7 @@ export const OrganizationDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectListOrganization' } },
               ],
             },
           },
@@ -4265,6 +4304,28 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectListOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projects' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
         ],
       },
     },

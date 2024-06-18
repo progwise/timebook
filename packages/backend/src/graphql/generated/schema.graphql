@@ -218,6 +218,7 @@ type Organization implements ModifyInterface {
   """
   id: ID!
   isArchived: Boolean!
+  projects: [Project!]!
   title: String!
 }
 
@@ -289,6 +290,7 @@ enum ProjectFilter {
 
 input ProjectInput {
   end: Date
+  organizationId: String
   start: Date
   title: String!
 }

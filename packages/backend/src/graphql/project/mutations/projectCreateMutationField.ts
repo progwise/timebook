@@ -9,13 +9,14 @@ builder.mutationField('projectCreate', (t) =>
     args: {
       data: t.arg({ type: ProjectInput }),
     },
-    resolve: async (query, _source, { data: { title, start, end } }, context) => {
+    resolve: async (query, _source, { data: { title, start, end, organizationId } }, context) => {
       return prisma.project.create({
         ...query,
         data: {
           title,
           startDate: start,
           endDate: end,
+          organizationId,
           projectMemberships: {
             create: {
               userId: context.session.user.id,

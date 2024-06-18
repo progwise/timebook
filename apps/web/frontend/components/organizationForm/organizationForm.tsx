@@ -72,6 +72,15 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           errorMessage={errors.address?.message}
           isDirty={isDirty}
         />
+        <div>
+          <select className="select select-bordered w-full max-w-xs">
+            <option disabled selected>
+              Who shot first?
+            </option>
+            <option>Han Solo</option>
+            <option>Greedo</option>
+          </select>
+        </div>
       </form>
       <div className="mb-8 flex w-full gap-2">
         <button className="btn btn-secondary btn-sm" disabled={isSubmitting} onClick={onCancel} type="button">

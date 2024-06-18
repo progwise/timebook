@@ -11,6 +11,7 @@ export const Organization = builder.prismaObject('Organization', {
     address: t.exposeString('address', {
       nullable: true,
     }),
+    projects: t.relation('projects'),
     isArchived: t.boolean({
       select: { archivedAt: true },
       resolve: (organization) => !!organization.archivedAt,
