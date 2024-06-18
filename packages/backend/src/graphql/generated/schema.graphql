@@ -223,7 +223,6 @@ type Organization implements ModifyInterface {
 
 enum OrganizationFilter {
   ACTIVE
-  ACTIVE_OR_ARCHIVED
   ALL
   ARCHIVED
 }

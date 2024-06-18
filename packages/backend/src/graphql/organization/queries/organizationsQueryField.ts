@@ -29,8 +29,6 @@ builder.queryField('organizations', (t) =>
               userId: context.session.user.id,
             },
           },
-          // eslint-disable-next-line unicorn/no-null
-          // archivedAt: includeArchived ? undefined : null,
         },
         orderBy: { title: 'asc' },
       }),

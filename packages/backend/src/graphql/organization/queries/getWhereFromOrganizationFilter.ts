@@ -10,9 +10,8 @@ export const getWhereFromOrganizationFilter = (
     case OrganizationFilter.ALL:
       return {}
     case OrganizationFilter.ACTIVE:
-    case OrganizationFilter.ACTIVE_OR_ARCHIVED:
       return {
-        archivedAt: organizationFilter === OrganizationFilter.ACTIVE ? null : undefined,
+        archivedAt: null,
       }
     case OrganizationFilter.ARCHIVED:
       return { archivedAt: { not: null } }
