@@ -27,11 +27,9 @@ const organizationCountsQueryDocument = graphql(`
   }
 `)
 
-type DisplayedOrganizationFilter = Exclude<OrganizationFilter, OrganizationFilter.ActiveOrArchived>
-
 const Organizations = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['Organization'] }), [])
-  const [selectedOrganizationFilter, setSelectedOrganizationFilter] = useState<DisplayedOrganizationFilter>(
+  const [selectedOrganizationFilter, setSelectedOrganizationFilter] = useState<OrganizationFilter>(
     OrganizationFilter.Active,
   )
 
@@ -45,7 +43,7 @@ const Organizations = (): JSX.Element => {
     context,
   })
 
-  const organizationFilterKeyToLabel: Record<DisplayedOrganizationFilter, string | JSX.Element> = {
+  const organizationFilterKeyToLabel: Record<OrganizationFilter, string | JSX.Element> = {
     ALL: (
       <>
         <FaFolderTree className="inline" /> all organizations{' '}
@@ -79,9 +77,7 @@ const Organizations = (): JSX.Element => {
             getLabel={(organizationFilter) => organizationFilterKeyToLabel[organizationFilter]}
             getKey={(organizationFilter) => organizationFilter}
             onChange={(organizationFilter) => setSelectedOrganizationFilter(organizationFilter)}
-            options={Object.values(OrganizationFilter).filter(
-              (filter): filter is DisplayedOrganizationFilter => filter !== OrganizationFilter.ActiveOrArchived,
-            )}
+            options={Object.values(OrganizationFilter)}
           />
         </div>
 

@@ -225,7 +225,6 @@ export type Organization = ModifyInterface & {
 
 export enum OrganizationFilter {
   Active = 'ACTIVE',
-  ActiveOrArchived = 'ACTIVE_OR_ARCHIVED',
   All = 'ALL',
   Archived = 'ARCHIVED',
 }
