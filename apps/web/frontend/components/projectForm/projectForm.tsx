@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { format, isValid, parse, parseISO } from 'date-fns'
 import { Controller, useForm } from 'react-hook-form'
 import InputMask from 'react-input-mask'
+import { useQuery } from 'urql'
 import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -67,7 +68,20 @@ export const ProjectFormFragment = graphql(`
     endDate
     canModify
     hasWorkHours
+    organization {
+      id
+      title
+    }
     ...DeleteOrArchiveProjectButton
+  }
+`)
+
+export const OrganizationsQueryDocument = graphql(`
+  query organizations {
+    organizations {
+      id
+      title
+    }
   }
 `)
 
@@ -86,11 +100,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
+      organizationId: project?.organization?.id,
     },
     resolver: zodResolver(projectInputSchema),
   })
 
-  const { isSubmitting, errors, isDirty } = formState
+  const { isSubmitting, errors, dirtyFields } = formState
 
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
@@ -102,6 +117,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
 
   const isNewProject = !project
   const isProjectFormReadOnly = !project?.canModify && !isNewProject
+
+  const [{ data: organizationsData }] = useQuery({
+    query: OrganizationsQueryDocument,
+  })
+
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
@@ -113,13 +133,12 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         <InputField
           label="Name"
           type="text"
-          disabled={isSubmitting}
           readOnly={isProjectFormReadOnly}
-          {...register('title')}
+          {...register('title', { disabled: isSubmitting })}
           placeholder="Enter project name"
           size={30}
           errorMessage={errors.title?.message}
-          isDirty={isDirty}
+          isDirty={dirtyFields.title}
         />
         <div>
           <div className="form-control">
@@ -208,6 +227,24 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               />
             </div>
           </div>
+        </div>
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">Organization</span>
+            </div>
+            <select
+              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
+              {...register('organizationId', { disabled: isSubmitting })}
+            >
+              <option>Select an organization</option>
+              {organizationsData?.organizations.map((organization) => (
+                <option key={organization.id} value={organization.id}>
+                  {organization.title}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </form>
       <div className="mb-8 flex w-full gap-2">

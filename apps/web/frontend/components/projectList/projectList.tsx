@@ -32,7 +32,12 @@ export const ProjectList = (props: ProjectListProps): JSX.Element => {
 
   return (
     <div className={className}>
-      <table className="table min-w-full [&_tr]:border-none">
+      <table className="table">
+        <thead className="text-lg text-base-content">
+          <tr>
+            <th>Projects</th>
+          </tr>
+        </thead>
         <tbody>
           {organization.projects.map((project) => (
             <tr key={project.id}>

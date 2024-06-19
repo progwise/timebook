@@ -244,6 +244,7 @@ export type Project = ModifyInterface & {
   isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
+  organization?: Maybe<Organization>
   /** Can the user modify the entity */
   role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
@@ -642,8 +643,16 @@ export type ProjectFormFragment = ({
   endDate?: string | null
   canModify: boolean
   hasWorkHours: boolean
+  organization?: { __typename?: 'Organization'; id: string; title: string } | null
 } & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
   ' $fragmentName'?: 'ProjectFormFragment'
+}
+
+export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string }>
 }
 
 export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
@@ -1443,6 +1452,17 @@ export const ProjectFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
         ],
       },
@@ -3083,6 +3103,32 @@ export const ProjectUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>
+export const OrganizationsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organizations' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizations' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
 export const ProjectMembershipInvitationCreateDocument = {
   kind: 'Document',
   definitions: [
@@ -4649,6 +4695,17 @@ export const ProjectDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'hasWorkHours' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
         ],
       },

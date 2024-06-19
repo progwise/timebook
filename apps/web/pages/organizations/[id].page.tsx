@@ -73,7 +73,7 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
-      <div className="rounded-box border-base-300 bg-base-100 p-6">
+      <div className="overflow-x-auto">
         <ProjectList organization={selectedOrganization} />
       </div>
     </ProtectedPage>
