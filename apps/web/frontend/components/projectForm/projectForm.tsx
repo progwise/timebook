@@ -44,6 +44,7 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
       .nullish()
       .transform((value) => (value === '____-__-__' ? null : value))
       .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
+    organizationId: z.string().optional(),
   })
   .superRefine((arguments_, context) => {
     if (!arguments_.end) {
@@ -115,8 +116,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     })
   }
 
-  const isNewProject = !project
-  const isProjectFormReadOnly = !project?.canModify && !isNewProject
+  const isProjectFormReadOnly = !project?.canModify && !!project
 
   const [{ data: organizationsData }] = useQuery({
     query: OrganizationsQueryDocument,
@@ -125,10 +125,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
-        {isNewProject ? (
-          <PageHeading>Create new project</PageHeading>
-        ) : (
+        {project ? (
           <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
+        ) : (
+          <PageHeading>Create new project</PageHeading>
         )}
         <InputField
           label="Name"
@@ -263,10 +263,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             className="btn btn-primary btn-sm"
             type="submit"
             disabled={isSubmitting}
-            title={isNewProject ? 'Create' : 'Save'}
+            title={project ? 'Save' : 'Create'}
             form="project-form"
           >
-            {isNewProject ? 'Create' : 'Save'}
+            {project ? 'Save' : 'Create'}
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
