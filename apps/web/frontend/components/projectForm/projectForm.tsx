@@ -44,7 +44,6 @@ const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
       .nullish()
       .transform((value) => (value === '____-__-__' ? null : value))
       .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
-    organizationId: z.string().optional(),
   })
   .superRefine((arguments_, context) => {
     if (!arguments_.end) {
@@ -113,6 +112,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       ...data,
       end: data.end?.length ? data.end : null,
       start: data.start?.length ? data.start : null,
+      organizationId: data.organizationId?.length ? data.organizationId : null,
     })
   }
 
@@ -237,7 +237,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
               {...register('organizationId', { disabled: isSubmitting })}
             >
-              <option>Select an organization</option>
+              <option value="">Select an organization</option>
               {organizationsData?.organizations.map((organization) => (
                 <option key={organization.id} value={organization.id}>
                   {organization.title}
