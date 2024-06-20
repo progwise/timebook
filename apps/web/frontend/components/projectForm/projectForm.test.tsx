@@ -43,7 +43,7 @@ describe('projectForm', () => {
       title: 'new project',
       start: '2022-04-12',
       end: '2022-04-13',
-      organizationId: 'Select an organization',
+      organizationId: null,
     })
   })
 
@@ -85,7 +85,7 @@ describe('projectForm', () => {
       title: 'old project',
       start: null,
       end: null,
-      organizationId: 'Select an organization',
+      organizationId: null,
     })
   })
   it('should not be possible to enter an end date earlier as the start', async () => {
@@ -155,7 +155,7 @@ describe('projectForm', () => {
       end: null,
       start: '2022-04-12',
       title: 'test project',
-      organizationId: 'Select an organization',
+      organizationId: null,
     })
   })
 })
