@@ -46,6 +46,14 @@ builder.queryField('projects', (t) =>
                     },
                   },
                 },
+                // or get projects where user is an organization member
+                {
+                  // organization: {
+                  //   some: {
+                  //     userId: context.session.user.id,
+                  //   },
+                  // },
+                },
               ],
             }
           : {

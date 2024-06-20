@@ -1056,7 +1056,14 @@ export type OrganizationQuery = {
     address?: string | null
     canModify: boolean
     isArchived: boolean
-    projects: Array<{ __typename?: 'Project'; id: string; title: string }>
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
+    }>
   }
 }
 

@@ -100,7 +100,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
-      organizationId: project?.organization?.id,
+      organizationId: project?.organization?.id ?? '',
     },
     resolver: zodResolver(projectInputSchema),
   })
@@ -112,7 +112,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
       ...data,
       end: data.end?.length ? data.end : null,
       start: data.start?.length ? data.start : null,
-      organizationId: data.organizationId?.length ? data.organizationId : null,
+      organizationId: data.organizationId || null,
     })
   }
 

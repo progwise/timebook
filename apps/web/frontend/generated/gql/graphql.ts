@@ -1046,7 +1046,13 @@ export type OrganizationQueryVariables = Exact<{
 
 export type OrganizationQuery = {
   __typename?: 'Query'
-  organization: { __typename?: 'Organization'; id: string } & {
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    projects: Array<
+      { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
+    >
+  } & {
     ' $fragmentRefs'?: {
       OrganizationFormFragment: OrganizationFormFragment
       ProjectListOrganizationFragment: ProjectListOrganizationFragment
@@ -4295,6 +4301,14 @@ export const OrganizationDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectListOrganization' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projects' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
+                  },
+                },
               ],
             },
           },
@@ -4369,6 +4383,32 @@ export const OrganizationDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectTableItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
               ],
             },
           },

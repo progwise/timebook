@@ -86,8 +86,28 @@ export const builder = new SchemaBuilder<{
         },
       })
 
-      return !!projectMembership
+      if (projectMembership) {
+        return true
+      }
+
+      const project = await prisma.project.findUnique({ where: { id: projectId }, select: { organizationId: true } })
+
+      if (!project?.organizationId) {
+        return false
+      }
+
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId: project.organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
     },
+
     isMemberByProjects: async (projectIds) => {
       if (!context.session) {
         return false
@@ -113,7 +133,26 @@ export const builder = new SchemaBuilder<{
         },
       })
 
-      return !!projectMembership
+      if (projectMembership) {
+        return true
+      }
+
+      const task = await prisma.project.findUnique({ where: { id: taskId }, select: { organizationId: true } })
+
+      if (!task?.organizationId) {
+        return false
+      }
+
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId: task.organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
     },
     isAdminByOrganization: async (organizationId) => {
       if (!context.session) {
@@ -145,7 +184,26 @@ export const builder = new SchemaBuilder<{
         },
       })
 
-      return projectMembership?.role === 'ADMIN'
+      if (projectMembership?.role === 'ADMIN') {
+        return true
+      }
+
+      const project = await prisma.project.findUnique({ where: { id: projectId }, select: { organizationId: true } })
+
+      if (!project?.organizationId) {
+        return false
+      }
+
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId: project.organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
     },
     isAdminByProjects: async (projectIds) => {
       if (!context.session) {
@@ -177,7 +235,26 @@ export const builder = new SchemaBuilder<{
         },
       })
 
-      return projectMembership?.role === 'ADMIN'
+      if (projectMembership?.role === 'ADMIN') {
+        return true
+      }
+
+      const task = await prisma.project.findUnique({ where: { id: taskId }, select: { organizationId: true } })
+
+      if (!task?.organizationId) {
+        return false
+      }
+
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId: task.organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
     },
   }),
   scopeAuthOptions: {
