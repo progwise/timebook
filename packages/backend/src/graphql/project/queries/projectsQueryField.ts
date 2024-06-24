@@ -3,6 +3,7 @@ import { prisma } from '../../prisma'
 import { DateScalar } from '../../scalars'
 import { ProjectFilter, ProjectFilterEnum } from '../projectsFilterEnum'
 import { getWhereFromProjectFilter } from './getWhereFormProjectFilter'
+import { getWhereUserIsMember } from './getWhereUserIsMember'
 
 builder.queryField('projects', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -27,11 +28,7 @@ builder.queryField('projects', (t) =>
                 // get projects where user is member
                 {
                   ...getWhereFromProjectFilter(filter, from, to ?? from),
-                  projectMemberships: {
-                    some: {
-                      userId: context.session.user.id,
-                    },
-                  },
+                  ...getWhereUserIsMember(context.session.user.id),
                 },
                 // or get projects where user booked work hours
                 {
@@ -46,23 +43,11 @@ builder.queryField('projects', (t) =>
                     },
                   },
                 },
-                // or get projects where user is an organization member
-                {
-                  // organization: {
-                  //   some: {
-                  //     userId: context.session.user.id,
-                  //   },
-                  // },
-                },
               ],
             }
           : {
               ...getWhereFromProjectFilter(filter, from, to ?? from),
-              projectMemberships: {
-                some: {
-                  userId: context.session.user.id,
-                },
-              },
+              ...getWhereUserIsMember(context.session.user.id),
             },
         orderBy: { title: 'asc' },
       }),

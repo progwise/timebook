@@ -8,6 +8,7 @@ import { ForbiddenError, UserInputError } from 'apollo-server-core'
 
 import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
+import { getWhereUserIsMember } from './project/queries/getWhereUserIsMember'
 import PrismaTypes from '.pothos/plugin-prisma/generated'
 
 export const builder = new SchemaBuilder<{
@@ -137,9 +138,12 @@ export const builder = new SchemaBuilder<{
         return true
       }
 
-      const task = await prisma.project.findUnique({ where: { id: taskId }, select: { organizationId: true } })
+      const task = await prisma.task.findUnique({
+        where: { id: taskId },
+        select: { project: { select: { organizationId: true } } },
+      })
 
-      if (!task?.organizationId) {
+      if (!task?.project.organizationId) {
         return false
       }
 
@@ -147,7 +151,7 @@ export const builder = new SchemaBuilder<{
         where: {
           userId_organizationId: {
             userId: context.session.user.id,
-            organizationId: task.organizationId,
+            organizationId: task.project.organizationId,
           },
         },
       })
@@ -210,12 +214,8 @@ export const builder = new SchemaBuilder<{
         return false
       }
       const uniqueProjectIds = [...new Set(projectIds)]
-      const projectMembershipsCount = await prisma.projectMembership.count({
-        where: {
-          userId: context.session.user.id,
-          projectId: { in: uniqueProjectIds },
-          role: 'ADMIN',
-        },
+      const projectMembershipsCount = await prisma.project.count({
+        where: getWhereUserIsMember(context.session.user.id, true),
       })
 
       return projectMembershipsCount === uniqueProjectIds.length
