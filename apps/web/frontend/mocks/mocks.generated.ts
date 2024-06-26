@@ -643,12 +643,6 @@ export type ProjectMembershipInvitationCreateMutation = {
   }
 }
 
-export type ProjectListOrganizationFragment = {
-  __typename?: 'Organization'
-  id: string
-  projects: Array<{ __typename?: 'Project'; id: string; title: string }>
-}
-
 export type ProjectMemberListProjectFragment = {
   __typename?: 'Project'
   id: string

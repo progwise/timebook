@@ -14,7 +14,6 @@ const OrganizationQueryDocument = graphql(`
     organization(organizationId: $organizationId) {
       id
       ...OrganizationForm
-      ...ProjectListOrganization
       projects {
         ...ProjectTableItem
       }
