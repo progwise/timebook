@@ -326,7 +326,7 @@ type Query {
   """
   Returns all organizations of the signed in user that are active
   """
-  organizations(filter: OrganizationFilter! = ACTIVE, includeArchived: Boolean! = false): [Organization!]!
+  organizations(filter: OrganizationFilter! = ACTIVE): [Organization!]!
   organizationsCount(filter: OrganizationFilter!): Int!
 
   """

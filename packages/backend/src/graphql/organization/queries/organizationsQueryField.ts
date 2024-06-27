@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { OrganizationFilter, OrganizationFilterEnum } from '../organizationsFilterEnum'
+import { OrganizationFilter, OrganizationFilterEnum } from '../organizationFilterEnum'
 import { getWhereFromOrganizationFilter } from './getWhereFromOrganizationFilter'
 
 builder.queryField('organizations', (t) =>
@@ -8,18 +8,9 @@ builder.queryField('organizations', (t) =>
     type: ['Organization'],
     description: 'Returns all organizations of the signed in user that are active',
     args: {
-      includeArchived: t.arg.boolean({ defaultValue: false }),
       filter: t.arg({ type: OrganizationFilterEnum, defaultValue: OrganizationFilter.ACTIVE }),
     },
-    resolve: (
-      query,
-      _source,
-      {
-        // includeArchived,
-        filter,
-      },
-      context,
-    ) =>
+    resolve: (query, _source, { filter }, context) =>
       prisma.organization.findMany({
         ...query,
         where: {

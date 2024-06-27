@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { OrganizationFilterEnum } from '../organizationsFilterEnum'
+import { OrganizationFilterEnum } from '../organizationFilterEnum'
 import { getWhereFromOrganizationFilter } from './getWhereFromOrganizationFilter'
 
 export const organizationsCountQueryField = builder.queryField('organizationsCount', (t) =>

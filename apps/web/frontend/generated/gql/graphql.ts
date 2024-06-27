@@ -323,7 +323,6 @@ export type QueryOrganizationArgs = {
 
 export type QueryOrganizationsArgs = {
   filter?: OrganizationFilter
-  includeArchived?: Scalars['Boolean']
 }
 
 export type QueryOrganizationsCountArgs = {

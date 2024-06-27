@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-null */
 import { Prisma } from '@progwise/timebook-prisma'
 
-import { OrganizationFilter } from '../organizationsFilterEnum'
+import { OrganizationFilter } from '../organizationFilterEnum'
 
 export const getWhereFromOrganizationFilter = (
   organizationFilter: OrganizationFilter,
