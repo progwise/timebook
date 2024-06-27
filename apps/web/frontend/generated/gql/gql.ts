@@ -123,8 +123,10 @@ const documents = {
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
-  '\n  query myOrganizations {\n    organizations {\n      ...OrganizationTableItem\n    }\n  }\n':
+  '\n  query myOrganizations($filter: OrganizationFilter) {\n    organizations(filter: $filter) {\n      ...OrganizationTableItem\n    }\n  }\n':
     types.MyOrganizationsDocument,
+  '\n  query organizationCounts {\n    allCounts: organizationsCount(filter: ALL)\n    activeCounts: organizationsCount(filter: ACTIVE)\n    archivedCounts: organizationsCount(filter: ARCHIVED)\n  }\n':
+    types.OrganizationCountsDocument,
   '\n  mutation organizationCreate($data: OrganizationInput!) {\n    organizationCreate(data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationCreateDocument,
   '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
@@ -503,8 +505,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query myOrganizations {\n    organizations {\n      ...OrganizationTableItem\n    }\n  }\n',
-): (typeof documents)['\n  query myOrganizations {\n    organizations {\n      ...OrganizationTableItem\n    }\n  }\n']
+  source: '\n  query myOrganizations($filter: OrganizationFilter) {\n    organizations(filter: $filter) {\n      ...OrganizationTableItem\n    }\n  }\n',
+): (typeof documents)['\n  query myOrganizations($filter: OrganizationFilter) {\n    organizations(filter: $filter) {\n      ...OrganizationTableItem\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query organizationCounts {\n    allCounts: organizationsCount(filter: ALL)\n    activeCounts: organizationsCount(filter: ACTIVE)\n    archivedCounts: organizationsCount(filter: ARCHIVED)\n  }\n',
+): (typeof documents)['\n  query organizationCounts {\n    allCounts: organizationsCount(filter: ALL)\n    activeCounts: organizationsCount(filter: ACTIVE)\n    archivedCounts: organizationsCount(filter: ARCHIVED)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -221,6 +221,12 @@ type Organization implements ModifyInterface {
   title: String!
 }
 
+enum OrganizationFilter {
+  ACTIVE
+  ALL
+  ARCHIVED
+}
+
 input OrganizationInput {
   address: String
   title: String!
@@ -320,7 +326,8 @@ type Query {
   """
   Returns all organizations of the signed in user that are active
   """
-  organizations(includeArchived: Boolean! = false): [Organization!]!
+  organizations(filter: OrganizationFilter! = ACTIVE): [Organization!]!
+  organizationsCount(filter: OrganizationFilter!): Int!
 
   """
   Returns a single project
