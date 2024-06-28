@@ -71,6 +71,7 @@ export const ProjectFormFragment = graphql(`
     organization {
       id
       title
+      isArchived
     }
     ...DeleteOrArchiveProjectButton
   }
@@ -237,12 +238,19 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
               {...register('organizationId', { disabled: isSubmitting })}
             >
-              <option value="">Select an organization</option>
+              <option value="" disabled>
+                Select an organization
+              </option>
               {organizationsData?.organizations.map((organization) => (
                 <option key={organization.id} value={organization.id}>
                   {organization.title}
                 </option>
               ))}
+              {project?.organization?.isArchived && (
+                <option value={project.organization.id} disabled>
+                  {project.organization.title} (archived)
+                </option>
+              )}
             </select>
           </label>
         </div>

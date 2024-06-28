@@ -3,12 +3,13 @@ import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
 
 export const Organization = builder.prismaObject('Organization', {
-  select: {},
+  select: { id: true },
   interfaces: [ModifyInterface],
   fields: (t) => ({
     id: t.exposeID('id', { description: 'identifies the organization' }),
     title: t.exposeString('title'),
     address: t.exposeString('address', {
+      authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
       nullable: true,
     }),
     projects: t.relation('projects'),

@@ -643,7 +643,7 @@ export type ProjectFormFragment = ({
   endDate?: string | null
   canModify: boolean
   hasWorkHours: boolean
-  organization?: { __typename?: 'Organization'; id: string; title: string } | null
+  organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
 } & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
   ' $fragmentName'?: 'ProjectFormFragment'
 }
@@ -1455,6 +1455,7 @@ export const ProjectFormFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -4682,6 +4683,7 @@ export const ProjectDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },

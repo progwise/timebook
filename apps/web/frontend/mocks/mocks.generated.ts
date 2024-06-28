@@ -619,7 +619,7 @@ export type ProjectFormFragment = {
   canModify: boolean
   hasWorkHours: boolean
   isArchived: boolean
-  organization?: { __typename?: 'Organization'; id: string; title: string } | null
+  organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
 }
 
 export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
@@ -1110,7 +1110,7 @@ export type ProjectQuery = {
       isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
-    organization?: { __typename?: 'Organization'; id: string; title: string } | null
+    organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
 }

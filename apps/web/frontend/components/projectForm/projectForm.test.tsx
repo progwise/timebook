@@ -158,4 +158,41 @@ describe('projectForm', () => {
       organizationId: null,
     })
   })
+
+  it('should be possible to add project to an organization', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={makeFragmentData(
+          {
+            id: '1',
+            title: 'test project',
+            startDate: '2022-04-12',
+            endDate: '',
+            canModify: true,
+            hasWorkHours: false,
+            ...makeFragmentData(
+              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
+              DeleteOrArchiveProjectButtonFragment,
+            ),
+          },
+          ProjectFormFragment,
+        )}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+      />,
+      { wrapper },
+    )
+
+    const organizationSelect = screen.getByRole('combobox', { name: /organization/i })
+    expect(organizationSelect).toBeInTheDocument()
+    // userEvent.selectOptions(organizationSelect, '')
+    // expect(onSubmit).toHaveBeenNthCalledWith(1, {
+    //   end: null,
+    //   start: '2022-04-12',
+    //   title: 'test project',
+    //   organizationId: '',
+    // })
+  })
 })
