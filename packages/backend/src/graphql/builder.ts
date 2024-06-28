@@ -139,13 +139,9 @@ export const builder = new SchemaBuilder<{
       }
 
       const project = await prisma.project.findFirst({
-        select: { id: true },
         where: {
           id: projectId,
-          ...getWhereUserIsMember(context.session.user.id),
-          projectMemberships: {
-            some: { role: 'ADMIN' },
-          },
+          ...getWhereUserIsMember(context.session.user.id, true),
         },
       })
 
@@ -170,8 +166,7 @@ export const builder = new SchemaBuilder<{
       const project = await prisma.project.findFirst({
         where: {
           tasks: { some: { id: taskId } },
-          ...getWhereUserIsMember(context.session.user.id),
-          projectMemberships: { some: { role: 'ADMIN' } },
+          ...getWhereUserIsMember(context.session.user.id, true),
         },
       })
 
