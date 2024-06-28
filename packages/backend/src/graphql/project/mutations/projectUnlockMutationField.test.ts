@@ -52,7 +52,7 @@ it('should throw an error when user is unauthenticated', async () => {
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-it('should throw an when user is project member with role=Member', async () => {
+it('should throw an error when user is project member with role=Member', async () => {
   const testServer = getTestServer({ userId: '2' })
 
   const response = await testServer.executeOperation({ query: projectUnlockMutation })
