@@ -8,5 +8,6 @@ export const ProjectInput = builder.inputType('ProjectInput', {
     title: t.string(),
     start: t.field({ type: 'Date', required: false }),
     end: t.field({ type: 'Date', required: false }),
+    organizationId: t.string({ required: false }),
   }),
 })

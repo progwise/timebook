@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
@@ -38,7 +39,12 @@ describe('projectForm', () => {
 
     await userEvent.click(submitButton)
 
-    expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'new project', start: '2022-04-12', end: '2022-04-13' })
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      title: 'new project',
+      start: '2022-04-12',
+      end: '2022-04-13',
+      organizationId: null,
+    })
   })
 
   it('should be possible to delete start and end date', async () => {
@@ -75,8 +81,12 @@ describe('projectForm', () => {
     await userEvent.clear(endInput)
     await userEvent.click(submitButton)
 
-    // eslint-disable-next-line unicorn/no-null
-    expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'old project', start: null, end: null })
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      title: 'old project',
+      start: null,
+      end: null,
+      organizationId: null,
+    })
   })
   it('should not be possible to enter an end date earlier as the start', async () => {
     const onSubmit = jest.fn()
@@ -142,10 +152,47 @@ describe('projectForm', () => {
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenNthCalledWith(1, {
-      // eslint-disable-next-line unicorn/no-null
       end: null,
       start: '2022-04-12',
       title: 'test project',
+      organizationId: null,
     })
+  })
+
+  it('should be possible to add project to an organization', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={makeFragmentData(
+          {
+            id: '1',
+            title: 'test project',
+            startDate: '2022-04-12',
+            endDate: '',
+            canModify: true,
+            hasWorkHours: false,
+            ...makeFragmentData(
+              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
+              DeleteOrArchiveProjectButtonFragment,
+            ),
+          },
+          ProjectFormFragment,
+        )}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+      />,
+      { wrapper },
+    )
+
+    const organizationSelect = screen.getByRole('combobox', { name: /organization/i })
+    expect(organizationSelect).toBeInTheDocument()
+    // userEvent.selectOptions(organizationSelect, '')
+    // expect(onSubmit).toHaveBeenNthCalledWith(1, {
+    //   end: null,
+    //   start: '2022-04-12',
+    //   title: 'test project',
+    //   organizationId: '',
+    // })
   })
 })

@@ -222,6 +222,7 @@ export type Organization = ModifyInterface & {
   /** identifies the organization */
   id: Scalars['ID']
   isArchived: Scalars['Boolean']
+  projects: Array<Project>
   title: Scalars['String']
 }
 
@@ -251,6 +252,7 @@ export type Project = ModifyInterface & {
   isProjectMember: Scalars['Boolean']
   /** List of users that are member of the project */
   members: Array<User>
+  organization?: Maybe<Organization>
   /** Can the user modify the entity */
   role: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
@@ -282,6 +284,7 @@ export enum ProjectFilter {
 
 export type ProjectInput = {
   end?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['String']>
   start?: InputMaybe<Scalars['Date']>
   title: Scalars['String']
 }
@@ -627,6 +630,14 @@ export type ProjectFormFragment = {
   canModify: boolean
   hasWorkHours: boolean
   isArchived: boolean
+  organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
+}
+
+export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string }>
 }
 
 export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
@@ -1050,6 +1061,14 @@ export type OrganizationQuery = {
     address?: string | null
     canModify: boolean
     isArchived: boolean
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      startDate?: string | null
+      endDate?: string | null
+      members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
+    }>
   }
 }
 
@@ -1113,6 +1132,7 @@ export type ProjectQuery = {
       isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
+    organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
 }
@@ -1359,6 +1379,20 @@ export const mockProjectUnarchiveMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ organizations })
+ *   )
+ * })
+ */
+export const mockOrganizationsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<OrganizationsQueryVariables>, GraphQLContext<OrganizationsQuery>, any>,
+) => graphql.query<OrganizationsQuery, OrganizationsQueryVariables>('organizations', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

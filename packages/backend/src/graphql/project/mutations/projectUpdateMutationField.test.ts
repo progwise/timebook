@@ -86,7 +86,7 @@ describe('Error', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
-  it('should throw error when user is a project member, but has role MEMBER', async () => {
+  it('should throw error when user is a project member, but has role=Member', async () => {
     const testServer = getTestServer({ userId: '3' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,
@@ -98,8 +98,8 @@ describe('Error', () => {
       },
     })
 
-    expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+    expect(response.data).toBeNull()
   })
 })
 

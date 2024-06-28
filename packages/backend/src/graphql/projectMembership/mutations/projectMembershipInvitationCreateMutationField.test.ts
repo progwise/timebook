@@ -82,7 +82,7 @@ it('should create a project invitation', async () => {
   expect(differenceInDays).toBeCloseTo(3, 0)
 })
 
-it('should throw error when the user is not an admin', async () => {
+it('should throw an error when the user is not an admin', async () => {
   const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
     query: projectMembershipInvitationCreateMutationField,

@@ -28,6 +28,7 @@ model Organization {
   archivedAt DateTime?
 
   organizationMemberships OrganizationMembership[]
+  projects                Project[]
 }
 
 model OrganizationMembership {
@@ -42,10 +43,11 @@ model OrganizationMembership {
 }
 
 model Project {
-  id        String    @id @default(cuid())
-  title     String    @db.VarChar(255)
-  startDate DateTime? @db.Date
-  endDate   DateTime? @db.Date
+  id             String    @id @default(cuid())
+  title          String    @db.VarChar(255)
+  startDate      DateTime? @db.Date
+  endDate        DateTime? @db.Date
+  organizationId String?
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -55,6 +57,7 @@ model Project {
   tasks              Task[]
   reports            LockedMonth[]
   invitations        ProjectInvitation[]
+  organization       Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
