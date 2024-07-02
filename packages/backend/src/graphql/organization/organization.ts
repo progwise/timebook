@@ -12,7 +12,7 @@ export const Organization = builder.prismaObject('Organization', {
       authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
       nullable: true,
     }),
-    projects: t.relation('projects'),
+    projects: t.relation('projects', { authScopes: (organization) => ({ isAdminByOrganization: organization.id }) }),
     isArchived: t.boolean({
       select: { archivedAt: true },
       resolve: (organization) => !!organization.archivedAt,

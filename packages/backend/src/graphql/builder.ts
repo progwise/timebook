@@ -109,14 +109,14 @@ export const builder = new SchemaBuilder<{
         return false
       }
 
-      const project = await prisma.project.findFirst({
+      const task = await prisma.task.findFirst({
         where: {
-          tasks: { some: { id: taskId } },
-          ...getWhereUserIsMember(context.session.user.id),
+          id: taskId,
+          project: { ...getWhereUserIsMember(context.session.user.id) },
         },
       })
 
-      return !!project
+      return !!task
     },
     isAdminByOrganization: async (organizationId) => {
       if (!context.session) {
@@ -163,14 +163,14 @@ export const builder = new SchemaBuilder<{
         return false
       }
 
-      const project = await prisma.project.findFirst({
+      const task = await prisma.task.findFirst({
         where: {
-          tasks: { some: { id: taskId } },
-          ...getWhereUserIsMember(context.session.user.id, true),
+          id: taskId,
+          project: { ...getWhereUserIsMember(context.session.user.id, true) },
         },
       })
 
-      return !!project
+      return !!task
     },
   }),
   scopeAuthOptions: {
