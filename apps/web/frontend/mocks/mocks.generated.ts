@@ -626,7 +626,7 @@ export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
 
 export type OrganizationsQuery = {
   __typename?: 'Query'
-  organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string }>
 }
 
 export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
