@@ -246,7 +246,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   {organization.title}
                 </option>
               ))}
-              {project?.organization && <option value={project.organization.id}>{project.organization.title}</option>}
+              {project?.organization &&
+                !organizationsData?.organizations.some(
+                  (organization) => organization.id === project?.organization?.id,
+                ) && <option value={project.organization.id}>{project.organization.title}</option>}
             </select>
           </label>
         </div>
