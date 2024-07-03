@@ -82,6 +82,7 @@ export const OrganizationsQueryDocument = graphql(`
     organizations {
       id
       title
+      isArchived
     }
   }
 `)
@@ -243,13 +244,17 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               </option>
               {organizationsData?.organizations.map((organization) => (
                 <option key={organization.id} value={organization.id}>
-                  {organization.title}
+                  {organization.title} {organization.isArchived && '(archived)'}
                 </option>
               ))}
               {project?.organization &&
                 !organizationsData?.organizations.some(
                   (organization) => organization.id === project?.organization?.id,
-                ) && <option value={project.organization.id}>{project.organization.title}</option>}
+                ) && (
+                  <option value={project.organization.id}>
+                    {project.organization.title} {project.organization.isArchived && '(archived)'}
+                  </option>
+                )}
             </select>
           </label>
         </div>
