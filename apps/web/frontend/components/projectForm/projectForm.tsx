@@ -246,11 +246,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                   {organization.title}
                 </option>
               ))}
-              {project?.organization?.isArchived && (
-                <option value={project.organization.id} disabled>
-                  {project.organization.title} (archived)
-                </option>
-              )}
+              {project?.organization && <option value={project.organization.id}>{project.organization.title}</option>}
             </select>
           </label>
         </div>

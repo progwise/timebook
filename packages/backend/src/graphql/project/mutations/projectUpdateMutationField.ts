@@ -10,28 +10,13 @@ builder.mutationField('projectUpdate', (t) =>
       id: t.arg.id({ description: 'id of the project' }),
       data: t.arg({ type: ProjectInput }),
     },
-    authScopes: async (_source, { id }) => ({ isAdminByProject: id.toString() }),
-    resolve: async (query, _source, { id, data: { title, start, end, organizationId } }, context) => {
-      if (!organizationId) {
-        throw new Error('Organization ID was not provided')
+    authScopes: async (_source, { id, data: { organizationId } }) => {
+      if (id) {
+        return { isAdminByProject: id.toString() }
       }
-
-      if (!context.session) {
-        throw new Error('Not authenticated')
-      }
-
-      const organizationMembership = await prisma.organizationMembership.findUnique({
-        where: {
-          userId_organizationId: {
-            userId: context.session.user.id,
-            organizationId,
-          },
-        },
-      })
-
-      if (!organizationMembership) {
-        throw new Error('User is not a member of the organization')
-      }
+      return !organizationId || { isAdminByOrganization: organizationId?.toString() }
+    },
+    resolve: async (query, _source, { id, data: { title, start, end, organizationId } }) => {
       return prisma.project.update({
         ...query,
         where: { id: id.toString() },
