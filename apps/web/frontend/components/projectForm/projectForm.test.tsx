@@ -6,7 +6,7 @@ import { Client, Provider } from 'urql'
 import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
 import { DeleteOrArchiveProjectButtonFragment } from './deleteOrArchiveProjectButton/deleteOrArchiveProjectButton'
-import { ProjectForm, ProjectFormFragment } from './projectForm'
+import { OrganizationFragment, ProjectForm, ProjectFormFragment } from './projectForm'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -21,10 +21,15 @@ const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )
 
+const organizations = [
+  makeFragmentData({ id: 'O1', title: 'Organization 1', isArchived: false }, OrganizationFragment),
+  makeFragmentData({ id: 'O2', title: 'Organization 2', isArchived: true }, OrganizationFragment),
+]
+
 describe('projectForm', () => {
   it('should submit a new project', async () => {
     const onSubmit = jest.fn()
-    render(<ProjectForm onSubmit={onSubmit} onCancel={jest.fn()} hasError={false} />, {
+    render(<ProjectForm onSubmit={onSubmit} onCancel={jest.fn()} hasError={false} organizations={organizations} />, {
       wrapper,
     })
     const nameInput = screen.getByRole('textbox', { name: /name/i })
@@ -69,6 +74,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -110,6 +116,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -141,6 +148,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -172,7 +180,7 @@ describe('projectForm', () => {
             canModify: true,
             hasWorkHours: false,
             ...makeFragmentData(
-              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
+              { id: '1', title: 'test project', hasWorkHours: false, isArchived: false },
               DeleteOrArchiveProjectButtonFragment,
             ),
           },
@@ -181,18 +189,22 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
 
+    const submitButton = screen.getByRole('button', { name: /save/i })
     const organizationSelect = screen.getByRole('combobox', { name: /organization/i })
-    expect(organizationSelect).toBeInTheDocument()
-    // userEvent.selectOptions(organizationSelect, '')
-    // expect(onSubmit).toHaveBeenNthCalledWith(1, {
-    //   end: null,
-    //   start: '2022-04-12',
-    //   title: 'test project',
-    //   organizationId: '',
-    // })
+
+    await userEvent.selectOptions(organizationSelect, 'O1')
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      end: null,
+      start: '2022-04-12',
+      title: 'test project',
+      organizationId: 'O1',
+    })
   })
 })

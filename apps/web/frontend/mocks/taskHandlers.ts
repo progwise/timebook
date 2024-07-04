@@ -1,7 +1,7 @@
 import { mockTaskCreateMutation, mockTaskDeleteMutation, mockTaskUpdateMutation } from './mocks.generated'
 
 export const taskHandlers = [
-  mockTaskDeleteMutation((request, response, context) =>
+  mockTaskDeleteMutation((_request, response, context) =>
     response(
       context.data({
         __typename: 'Mutation',
@@ -12,7 +12,7 @@ export const taskHandlers = [
       }),
     ),
   ),
-  mockTaskCreateMutation((request, response, context) =>
+  mockTaskCreateMutation((_request, response, context) =>
     response(
       context.data({
         __typename: 'Mutation',
