@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { format, startOfDay } from 'date-fns'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { CalendarSelector } from './calendarSelector'
 
@@ -9,7 +9,7 @@ it('should display the given date', () => {
   render(<CalendarSelector date={new Date('2021-01-01')} onDateChange={jest.fn()} />)
 
   const selectButton = screen.getByRole('button', { name: /select date/i })
-  expect(selectButton).toHaveTextContent('1/1/2021')
+  expect(selectButton).toHaveTextContent('01/01/2021')
 })
 
 it('should update the date when the props updates', async () => {
@@ -27,11 +27,11 @@ it('should update the date when the props updates', async () => {
 
   const selectButton = screen.getByRole('button', { name: /select date/i })
   const updateButton = screen.getByRole('button', { name: /update date/i })
-  expect(selectButton).toHaveTextContent('1/1/2021')
+  expect(selectButton).toHaveTextContent('01/01/2021')
 
   await userEvent.click(updateButton)
   await userEvent.click(selectButton)
-  expect(selectButton).toHaveTextContent('12/24/2021')
+  expect(selectButton).toHaveTextContent('24/12/2021')
 
   const heading = screen.getByRole('heading')
   expect(heading).toHaveTextContent('December 2021')
