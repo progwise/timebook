@@ -10,7 +10,7 @@ builder.mutationField('projectCreate', (t) =>
       data: t.arg({ type: ProjectInput }),
     },
     authScopes: (_source, { data: { organizationId } }) => {
-      return !organizationId || { isAdminByOrganization: organizationId?.toString() }
+      return !organizationId || { isAdminByOrganization: organizationId }
     },
     resolve: async (query, _source, { data: { title, start, end, organizationId } }, context) => {
       return prisma.project.create({

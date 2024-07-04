@@ -648,11 +648,8 @@ export type ProjectFormFragment = ({
   ' $fragmentName'?: 'ProjectFormFragment'
 }
 
-export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
-
-export type OrganizationsQuery = {
-  __typename?: 'Query'
-  organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
+export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } & {
+  ' $fragmentName'?: 'OrganizationFragment'
 }
 
 export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
@@ -1092,6 +1089,9 @@ export type ProjectQuery = {
       ProjectMemberListProjectFragment: ProjectMemberListProjectFragment
     }
   }
+  organizations: Array<
+    { __typename?: 'Organization' } & { ' $fragmentRefs'?: { OrganizationFragment: OrganizationFragment } }
+  >
 }
 
 export type ProjectUpdateMutationVariables = Exact<{
@@ -1141,6 +1141,15 @@ export type ProjectCreateMutationVariables = Exact<{
 }>
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
+
+export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<
+    { __typename?: 'Organization' } & { ' $fragmentRefs'?: { OrganizationFragment: OrganizationFragment } }
+  >
+}
 
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
@@ -1517,6 +1526,24 @@ export const ProjectFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProjectFormFragment, unknown>
+export const OrganizationFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Organization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationFragment, unknown>
 export const RemoveUserFromProjectButtonProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -3072,33 +3099,6 @@ export const ProjectUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>
-export const OrganizationsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'organizations' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organizations' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
 export const ProjectMembershipInvitationCreateDocument = {
   kind: 'Document',
   definitions: [
@@ -4520,6 +4520,14 @@ export const ProjectDocument = {
               ],
             },
           },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizations' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'Organization' } }],
+            },
+          },
         ],
       },
     },
@@ -4726,6 +4734,19 @@ export const ProjectDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Organization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
         ],
       },
     },
@@ -5058,6 +5079,42 @@ export const ProjectCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<ProjectCreateMutation, ProjectCreateMutationVariables>
+export const OrganizationsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organizations' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizations' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'Organization' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Organization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
 export const WeekGridDocument = {
   kind: 'Document',
   definitions: [

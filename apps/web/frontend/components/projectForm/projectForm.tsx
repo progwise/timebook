@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { format, isValid, parse, parseISO } from 'date-fns'
 import { Controller, useForm } from 'react-hook-form'
 import InputMask from 'react-input-mask'
-import { useQuery } from 'urql'
 import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -77,13 +76,11 @@ export const ProjectFormFragment = graphql(`
   }
 `)
 
-export const OrganizationsQueryDocument = graphql(`
-  query organizations {
-    organizations {
-      id
-      title
-      isArchived
-    }
+export const OrganizationFragment = graphql(`
+  fragment Organization on Organization {
+    id
+    title
+    isArchived
   }
 `)
 
@@ -92,11 +89,13 @@ interface ProjectFormProps {
   onCancel: () => void
   project?: FragmentType<typeof ProjectFormFragment>
   hasError: boolean
+  organizations: FragmentType<typeof OrganizationFragment>[]
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const project = useFragment(ProjectFormFragment, props.project)
+  const organizations = useFragment(OrganizationFragment, props.organizations)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
@@ -119,10 +118,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   }
 
   const isProjectFormReadOnly = !project?.canModify && !!project
-
-  const [{ data: organizationsData }] = useQuery({
-    query: OrganizationsQueryDocument,
-  })
 
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
@@ -242,15 +237,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               <option value="" disabled>
                 Select an organization
               </option>
-              {organizationsData?.organizations.map((organization) => (
+              {organizations.map((organization) => (
                 <option key={organization.id} value={organization.id}>
                   {organization.title} {organization.isArchived && '(archived)'}
                 </option>
               ))}
               {project?.organization &&
-                !organizationsData?.organizations.some(
-                  (organization) => organization.id === project?.organization?.id,
-                ) && (
+                !organizations.some((organization) => organization.id === project?.organization?.id) && (
                   <option value={project.organization.id}>
                     {project.organization.title} {project.organization.isArchived && '(archived)'}
                   </option>

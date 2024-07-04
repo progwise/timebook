@@ -11,10 +11,20 @@ builder.mutationField('projectUpdate', (t) =>
       data: t.arg({ type: ProjectInput }),
     },
     authScopes: async (_source, { id, data: { organizationId } }) => {
-      if (id) {
-        return { isAdminByProject: id.toString() }
+      const project = await prisma.project.findUniqueOrThrow({ where: { id: id.toString() } })
+
+      if (!organizationId || organizationId === project.organizationId) {
+        return {
+          isAdminByProject: id.toString(),
+        }
       }
-      return !organizationId || { isAdminByOrganization: organizationId?.toString() }
+
+      return {
+        $all: {
+          isAdminByProject: id.toString(),
+          isAdminByOrganization: organizationId,
+        },
+      }
     },
     resolve: async (query, _source, { id, data: { title, start, end, organizationId } }) => {
       return prisma.project.update({

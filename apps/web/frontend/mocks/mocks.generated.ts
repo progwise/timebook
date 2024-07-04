@@ -622,12 +622,7 @@ export type ProjectFormFragment = {
   organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
 }
 
-export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
-
-export type OrganizationsQuery = {
-  __typename?: 'Query'
-  organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
-}
+export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean }
 
 export type ProjectMembershipInvitationCreateMutationVariables = Exact<{
   projectId: Scalars['ID']
@@ -1113,6 +1108,7 @@ export type ProjectQuery = {
     organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
 }
 
 export type ProjectUpdateMutationVariables = Exact<{
@@ -1167,6 +1163,13 @@ export type ProjectCreateMutationVariables = Exact<{
 }>
 
 export type ProjectCreateMutation = { __typename?: 'Mutation'; projectCreate: { __typename?: 'Project'; id: string } }
+
+export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
+
+export type OrganizationsQuery = {
+  __typename?: 'Query'
+  organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
+}
 
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
@@ -1357,20 +1360,6 @@ export const mockProjectUnarchiveMutation = (
     any
   >,
 ) => graphql.mutation<ProjectUnarchiveMutation, ProjectUnarchiveMutationVariables>('projectUnarchive', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockOrganizationsQuery((req, res, ctx) => {
- *   return res(
- *     ctx.data({ organizations })
- *   )
- * })
- */
-export const mockOrganizationsQuery = (
-  resolver: ResponseResolver<GraphQLRequest<OrganizationsQueryVariables>, GraphQLContext<OrganizationsQuery>, any>,
-) => graphql.query<OrganizationsQuery, OrganizationsQueryVariables>('organizations', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
@@ -1760,7 +1749,7 @@ export const mockOrganizationCreateMutation = (
  * mockProjectQuery((req, res, ctx) => {
  *   const { projectId } = req.variables;
  *   return res(
- *     ctx.data({ project })
+ *     ctx.data({ project, organizations })
  *   )
  * })
  */
@@ -1858,6 +1847,20 @@ export const mockProjectCreateMutation = (
     any
   >,
 ) => graphql.mutation<ProjectCreateMutation, ProjectCreateMutationVariables>('projectCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationsQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ organizations })
+ *   )
+ * })
+ */
+export const mockOrganizationsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<OrganizationsQueryVariables>, GraphQLContext<OrganizationsQuery>, any>,
+) => graphql.query<OrganizationsQuery, OrganizationsQueryVariables>('organizations', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
