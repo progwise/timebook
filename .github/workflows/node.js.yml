@@ -15,13 +15,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      # - uses: pnpm/action-setup@v4.0.0
-      #   name: Install pnpm
-      #   with:
-      #     version: 8.1.0
-      #     run_install: true
-      - run: corepack enable
-      - run: pnpm install
+      - uses: pnpm/action-setup@v4.0.0
+        name: Install pnpm
+        with:
+          version: 8.15.8
+          run_install: true
       - run: pnpm run build
 
   test:
@@ -35,7 +33,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - run: docker-compose -f ./docker-compose.yml up -d
       - run: pnpm run test
@@ -51,7 +49,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - run: pnpm run lint
 
@@ -66,7 +64,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - run: pnpm run format:check
 
@@ -81,7 +79,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - run: pnpm run graphql:generate
       - run: node apps/web/.ci/check-graphql-generator
@@ -101,7 +99,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - name: Install Playwright Browsers
         working-directory: ./apps/web-e2e
@@ -134,7 +132,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - uses: pulumi/actions@v4
         with:
@@ -172,7 +170,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.1.0
+          version: 8.15.8
           run_install: true
       - name: Database migration
         run: pnpm run migrate-db
