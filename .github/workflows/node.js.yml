@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -46,7 +46,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -61,7 +61,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -76,7 +76,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -96,7 +96,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -129,7 +129,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
@@ -167,7 +167,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
           version: 7
