@@ -18,7 +18,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - run: pnpm run build
 
@@ -33,7 +33,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - run: docker-compose -f ./docker-compose.yml up -d
       - run: pnpm run test
@@ -49,7 +49,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - run: pnpm run lint
 
@@ -64,7 +64,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - run: pnpm run format:check
 
@@ -79,7 +79,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - run: pnpm run graphql:generate
       - run: node apps/web/.ci/check-graphql-generator
@@ -99,7 +99,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - name: Install Playwright Browsers
         working-directory: ./apps/web-e2e
@@ -132,7 +132,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - uses: pulumi/actions@v4
         with:
@@ -170,7 +170,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 7
+          version: 8.1.0
           run_install: true
       - name: Database migration
         run: pnpm run migrate-db
