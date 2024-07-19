@@ -8,6 +8,7 @@ import { ForbiddenError, UserInputError } from 'apollo-server-core'
 
 import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
+import { getWhereUserIsMember } from './project/queries/getWhereUserIsMember'
 import PrismaTypes from '.pothos/plugin-prisma/generated'
 
 export const builder = new SchemaBuilder<{
@@ -77,43 +78,45 @@ export const builder = new SchemaBuilder<{
         return false
       }
 
-      const projectMembership = await prisma.projectMembership.findUnique({
+      const project = await prisma.project.findFirst({
+        select: { id: true },
         where: {
-          userId_projectId: {
-            userId: context.session.user.id,
-            projectId,
-          },
+          id: projectId,
+          ...getWhereUserIsMember(context.session.user.id),
         },
       })
 
-      return !!projectMembership
+      return !!project
     },
+
     isMemberByProjects: async (projectIds) => {
       if (!context.session) {
         return false
       }
 
       const uniqueProjectIds = [...new Set(projectIds)]
-      const projectMembershipsCount = await prisma.projectMembership.count({
-        where: { userId: context.session.user.id, projectId: { in: uniqueProjectIds } },
+      const projectsCount = await prisma.project.count({
+        where: {
+          id: { in: uniqueProjectIds },
+          ...getWhereUserIsMember(context.session.user.id),
+        },
       })
 
-      return projectMembershipsCount === uniqueProjectIds.length
+      return projectsCount === uniqueProjectIds.length
     },
     isMemberByTask: async (taskId) => {
       if (!context.session) {
         return false
       }
 
-      const projectMembership = await prisma.projectMembership.findFirst({
-        select: { role: true },
+      const task = await prisma.task.findFirst({
         where: {
-          userId: context.session.user.id,
-          project: { tasks: { some: { id: taskId } } },
+          id: taskId,
+          project: { ...getWhereUserIsMember(context.session.user.id) },
         },
       })
 
-      return !!projectMembership
+      return !!task
     },
     isAdminByOrganization: async (organizationId) => {
       if (!context.session) {
@@ -135,29 +138,22 @@ export const builder = new SchemaBuilder<{
         return false
       }
 
-      const projectMembership = await prisma.projectMembership.findUnique({
-        select: { role: true },
+      const project = await prisma.project.findFirst({
         where: {
-          userId_projectId: {
-            userId: context.session.user.id,
-            projectId,
-          },
+          id: projectId,
+          ...getWhereUserIsMember(context.session.user.id, true),
         },
       })
 
-      return projectMembership?.role === 'ADMIN'
+      return !!project
     },
     isAdminByProjects: async (projectIds) => {
       if (!context.session) {
         return false
       }
       const uniqueProjectIds = [...new Set(projectIds)]
-      const projectMembershipsCount = await prisma.projectMembership.count({
-        where: {
-          userId: context.session.user.id,
-          projectId: { in: uniqueProjectIds },
-          role: 'ADMIN',
-        },
+      const projectMembershipsCount = await prisma.project.count({
+        where: getWhereUserIsMember(context.session.user.id, true),
       })
 
       return projectMembershipsCount === uniqueProjectIds.length
@@ -167,17 +163,14 @@ export const builder = new SchemaBuilder<{
         return false
       }
 
-      const projectMembership = await prisma.projectMembership.findFirst({
-        select: { role: true },
+      const task = await prisma.task.findFirst({
         where: {
-          userId: context.session.user.id,
-          project: {
-            tasks: { some: { id: taskId } },
-          },
+          id: taskId,
+          project: { ...getWhereUserIsMember(context.session.user.id, true) },
         },
       })
 
-      return projectMembership?.role === 'ADMIN'
+      return !!task
     },
   }),
   scopeAuthOptions: {

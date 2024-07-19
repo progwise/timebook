@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { useMutation } from 'urql'
+import { useMemo } from 'react'
+import { useMutation, useQuery } from 'urql'
 
 import { ProjectForm } from '../../frontend/components/projectForm/projectForm'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
@@ -14,9 +15,25 @@ const ProjectCreateMutationDocument = graphql(`
   }
 `)
 
+export const OrganizationsQueryDocument = graphql(`
+  query organizations {
+    organizations {
+      ...Organization
+    }
+  }
+`)
+
 const NewProjectPage = (): JSX.Element => {
   const [projectCreateResult, projectCreate] = useMutation(ProjectCreateMutationDocument)
   const router = useRouter()
+  const context = useMemo(() => ({ additionalTypenames: ['Task', 'User'] }), [])
+  const [{ data }] = useQuery({
+    query: OrganizationsQueryDocument,
+    context,
+    pause: !router.isReady,
+  })
+
+  const organizations = data?.organizations || []
 
   const handleSubmit = async (data: ProjectInput) => {
     try {
@@ -35,7 +52,12 @@ const NewProjectPage = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <ProjectForm onSubmit={handleSubmit} onCancel={handleCancel} hasError={!!projectCreateResult.error} />
+      <ProjectForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        hasError={!!projectCreateResult.error}
+        organizations={organizations}
+      />
     </ProtectedPage>
   )
 }

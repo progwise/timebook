@@ -67,7 +67,20 @@ export const ProjectFormFragment = graphql(`
     endDate
     canModify
     hasWorkHours
+    organization {
+      id
+      title
+      isArchived
+    }
     ...DeleteOrArchiveProjectButton
+  }
+`)
+
+export const OrganizationFragment = graphql(`
+  fragment Organization on Organization {
+    id
+    title
+    isArchived
   }
 `)
 
@@ -76,50 +89,53 @@ interface ProjectFormProps {
   onCancel: () => void
   project?: FragmentType<typeof ProjectFormFragment>
   hasError: boolean
+  organizations: FragmentType<typeof OrganizationFragment>[]
 }
 
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const project = useFragment(ProjectFormFragment, props.project)
+  const organizations = useFragment(OrganizationFragment, props.organizations)
   const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
       end: project?.endDate ? format(new Date(project.endDate), 'yyyy-MM-dd') : null,
+      organizationId: project?.organization?.id ?? '',
     },
     resolver: zodResolver(projectInputSchema),
   })
 
-  const { isSubmitting, errors, isDirty } = formState
+  const { isSubmitting, errors, dirtyFields } = formState
 
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
       ...data,
       end: data.end?.length ? data.end : null,
       start: data.start?.length ? data.start : null,
+      organizationId: data.organizationId || null,
     })
   }
 
-  const isNewProject = !project
-  const isProjectFormReadOnly = !project?.canModify && !isNewProject
+  const isProjectFormReadOnly = !project?.canModify && !!project
+
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
-        {isNewProject ? (
-          <PageHeading>Create new project</PageHeading>
-        ) : (
+        {project ? (
           <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
+        ) : (
+          <PageHeading>Create new project</PageHeading>
         )}
         <InputField
           label="Name"
           type="text"
-          disabled={isSubmitting}
           readOnly={isProjectFormReadOnly}
-          {...register('title')}
+          {...register('title', { disabled: isSubmitting })}
           placeholder="Enter project name"
           size={30}
           errorMessage={errors.title?.message}
-          isDirty={isDirty}
+          isDirty={dirtyFields.title}
         />
         <div>
           <div className="form-control">
@@ -209,6 +225,32 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
           </div>
         </div>
+        <div>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text">Organization</span>
+            </div>
+            <select
+              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
+              {...register('organizationId', { disabled: isSubmitting })}
+            >
+              <option value="" disabled>
+                Select an organization
+              </option>
+              {organizations.map((organization) => (
+                <option key={organization.id} value={organization.id}>
+                  {organization.title} {organization.isArchived && '(archived)'}
+                </option>
+              ))}
+              {project?.organization &&
+                !organizations.some((organization) => organization.id === project?.organization?.id) && (
+                  <option value={project.organization.id}>
+                    {project.organization.title} {project.organization.isArchived && '(archived)'}
+                  </option>
+                )}
+            </select>
+          </label>
+        </div>
       </form>
       <div className="mb-8 flex w-full gap-2">
         <button
@@ -226,10 +268,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             className="btn btn-primary btn-sm"
             type="submit"
             disabled={isSubmitting}
-            title={isNewProject ? 'Create' : 'Save'}
+            title={project ? 'Save' : 'Create'}
             form="project-form"
           >
-            {isNewProject ? 'Create' : 'Save'}
+            {project ? 'Save' : 'Create'}
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}

@@ -47,6 +47,7 @@ export const projectHandlers = [
           members,
           __typename: 'Project',
         },
+        organizations: [],
       }),
     )
     return result

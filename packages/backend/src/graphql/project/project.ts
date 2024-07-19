@@ -129,5 +129,6 @@ export const Project = builder.prismaObject('Project', {
         return workHoursCount > 0
       },
     }),
+    organization: t.relation('organization', { nullable: true }),
   }),
 })
