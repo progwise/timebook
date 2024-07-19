@@ -17,6 +17,9 @@ const ProjectQueryDocument = graphql(`
       ...ProjectForm
       ...ProjectMemberListProject
     }
+    organizations {
+      ...Organization
+    }
   }
 `)
 
@@ -74,6 +77,7 @@ const ProjectDetails = (): JSX.Element => {
         onCancel={handleCancel}
         onSubmit={handleSubmit}
         hasError={!!projectUpdateResult.error}
+        organizations={data.organizations}
       />
       <div role="tablist" className="tabs tabs-lifted tabs-lg">
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Tasks" defaultChecked />

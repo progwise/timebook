@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
@@ -5,7 +6,7 @@ import { Client, Provider } from 'urql'
 import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
 import { DeleteOrArchiveProjectButtonFragment } from './deleteOrArchiveProjectButton/deleteOrArchiveProjectButton'
-import { ProjectForm, ProjectFormFragment } from './projectForm'
+import { OrganizationFragment, ProjectForm, ProjectFormFragment } from './projectForm'
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -20,10 +21,15 @@ const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )
 
+const organizations = [
+  makeFragmentData({ id: 'O1', title: 'Organization 1', isArchived: false }, OrganizationFragment),
+  makeFragmentData({ id: 'O2', title: 'Organization 2', isArchived: true }, OrganizationFragment),
+]
+
 describe('projectForm', () => {
   it('should submit a new project', async () => {
     const onSubmit = jest.fn()
-    render(<ProjectForm onSubmit={onSubmit} onCancel={jest.fn()} hasError={false} />, {
+    render(<ProjectForm onSubmit={onSubmit} onCancel={jest.fn()} hasError={false} organizations={organizations} />, {
       wrapper,
     })
     const nameInput = screen.getByRole('textbox', { name: /name/i })
@@ -38,7 +44,12 @@ describe('projectForm', () => {
 
     await userEvent.click(submitButton)
 
-    expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'new project', start: '2022-04-12', end: '2022-04-13' })
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      title: 'new project',
+      start: '2022-04-12',
+      end: '2022-04-13',
+      organizationId: null,
+    })
   })
 
   it('should be possible to delete start and end date', async () => {
@@ -63,6 +74,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -75,8 +87,12 @@ describe('projectForm', () => {
     await userEvent.clear(endInput)
     await userEvent.click(submitButton)
 
-    // eslint-disable-next-line unicorn/no-null
-    expect(onSubmit).toHaveBeenNthCalledWith(1, { title: 'old project', start: null, end: null })
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      title: 'old project',
+      start: null,
+      end: null,
+      organizationId: null,
+    })
   })
   it('should not be possible to enter an end date earlier as the start', async () => {
     const onSubmit = jest.fn()
@@ -100,6 +116,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -131,6 +148,7 @@ describe('projectForm', () => {
         onSubmit={onSubmit}
         onCancel={jest.fn()}
         hasError={false}
+        organizations={organizations}
       />,
       { wrapper },
     )
@@ -142,10 +160,51 @@ describe('projectForm', () => {
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenNthCalledWith(1, {
-      // eslint-disable-next-line unicorn/no-null
       end: null,
       start: '2022-04-12',
       title: 'test project',
+      organizationId: null,
+    })
+  })
+
+  it('should be possible to add project to an organization', async () => {
+    const onSubmit = jest.fn()
+    render(
+      <ProjectForm
+        project={makeFragmentData(
+          {
+            id: '1',
+            title: 'test project',
+            startDate: '2022-04-12',
+            endDate: '',
+            canModify: true,
+            hasWorkHours: false,
+            ...makeFragmentData(
+              { id: '1', title: 'test project', hasWorkHours: false, isArchived: false },
+              DeleteOrArchiveProjectButtonFragment,
+            ),
+          },
+          ProjectFormFragment,
+        )}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+        hasError={false}
+        organizations={organizations}
+      />,
+      { wrapper },
+    )
+
+    const submitButton = screen.getByRole('button', { name: /save/i })
+    const organizationSelect = screen.getByRole('combobox', { name: /organization/i })
+
+    await userEvent.selectOptions(organizationSelect, 'O1')
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenNthCalledWith(1, {
+      end: null,
+      start: '2022-04-12',
+      title: 'test project',
+      organizationId: 'O1',
     })
   })
 })

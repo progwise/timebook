@@ -50,8 +50,10 @@ const documents = {
   '\n  fragment UnarchiveProjectButton on Project {\n    id\n    title\n  }\n': types.UnarchiveProjectButtonFragmentDoc,
   '\n  mutation projectUnarchive($projectId: ID!) {\n    projectUnarchive(projectId: $projectId) {\n      id\n      isArchived\n    }\n  }\n':
     types.ProjectUnarchiveDocument,
-  '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n':
+  '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    organization {\n      id\n      title\n      isArchived\n    }\n    ...DeleteOrArchiveProjectButton\n  }\n':
     types.ProjectFormFragmentDoc,
+  '\n  fragment Organization on Organization {\n    id\n    title\n    isArchived\n  }\n':
+    types.OrganizationFragmentDoc,
   '\n  mutation projectMembershipInvitationCreate($projectId: ID!) {\n    projectMembershipInvitationCreate(projectId: $projectId) {\n      id\n      invitationKey\n      expireDate\n    }\n  }\n':
     types.ProjectMembershipInvitationCreateDocument,
   '\n  fragment ProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role(projectId: $projectId)\n      ...RemoveUserFromProjectButtonUser\n    }\n  }\n':
@@ -119,7 +121,7 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
-  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n':
+  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n':
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
@@ -129,7 +131,7 @@ const documents = {
     types.OrganizationCountsDocument,
   '\n  mutation organizationCreate($data: OrganizationInput!) {\n    organizationCreate(data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationCreateDocument,
-  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n':
+  '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n    organizations {\n      ...Organization\n    }\n  }\n':
     types.ProjectDocument,
   '\n  mutation projectUpdate($id: ID!, $data: ProjectInput!) {\n    projectUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.ProjectUpdateDocument,
@@ -141,6 +143,7 @@ const documents = {
     types.ProjectMembershipJoinDocument,
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
+  '\n  query organizations {\n    organizations {\n      ...Organization\n    }\n  }\n': types.OrganizationsDocument,
   '\n  query weekGrid($from: Date!, $to: Date) {\n    projects(from: $from, to: $to, includeProjectsWhereUserBookedWorkHours: true) {\n      ...WeekGridProject\n    }\n  }\n':
     types.WeekGridDocument,
 }
@@ -283,8 +286,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n',
-): (typeof documents)['\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    ...DeleteOrArchiveProjectButton\n  }\n']
+  source: '\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    organization {\n      id\n      title\n      isArchived\n    }\n    ...DeleteOrArchiveProjectButton\n  }\n',
+): (typeof documents)['\n  fragment ProjectForm on Project {\n    title\n    id\n    startDate\n    endDate\n    canModify\n    hasWorkHours\n    organization {\n      id\n      title\n      isArchived\n    }\n    ...DeleteOrArchiveProjectButton\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment Organization on Organization {\n    id\n    title\n    isArchived\n  }\n',
+): (typeof documents)['\n  fragment Organization on Organization {\n    id\n    title\n    isArchived\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -493,8 +502,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n',
-): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n    }\n  }\n']
+  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -523,8 +532,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n',
-): (typeof documents)['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n  }\n']
+  source: '\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n    organizations {\n      ...Organization\n    }\n  }\n',
+): (typeof documents)['\n  query project($projectId: ID!) {\n    project(projectId: $projectId) {\n      id\n      ...TaskListProject\n      ...ProjectForm\n      ...ProjectMemberListProject\n    }\n    organizations {\n      ...Organization\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -555,6 +564,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query organizations {\n    organizations {\n      ...Organization\n    }\n  }\n',
+): (typeof documents)['\n  query organizations {\n    organizations {\n      ...Organization\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
