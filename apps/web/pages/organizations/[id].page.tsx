@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../frontend/components/organizationForm/organizationForm'
+import { OrganizationMemberList } from '../../frontend/components/organizationMemberList'
 import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
@@ -14,6 +15,7 @@ const OrganizationQueryDocument = graphql(`
     organization(organizationId: $organizationId) {
       id
       ...OrganizationForm
+      ...OrganizationMemberListOrganization
       projects {
         ...ProjectTableItem
       }
@@ -78,6 +80,7 @@ const OrganizationDetails = (): JSX.Element => {
       />
       <PageHeading>Projects</PageHeading>
       <ProjectTable projects={selectedOrganization.projects} />
+      <OrganizationMemberList organization={selectedOrganization} />
     </ProtectedPage>
   )
 }

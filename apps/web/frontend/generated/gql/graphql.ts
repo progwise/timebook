@@ -48,6 +48,10 @@ export type Mutation = {
   organizationArchive: Organization
   /** Create a new organization */
   organizationCreate: Organization
+  /** Assign user to an organization or update the role of an existing organization member */
+  organizationMembershipCreate: Organization
+  /** Unassign user from an organization */
+  organizationMembershipDelete: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -110,6 +114,17 @@ export type MutationOrganizationArchiveArgs = {
 
 export type MutationOrganizationCreateArgs = {
   data: OrganizationInput
+}
+
+export type MutationOrganizationMembershipCreateArgs = {
+  organizationId: Scalars['ID']
+  role?: Role
+  userId: Scalars['ID']
+}
+
+export type MutationOrganizationMembershipDeleteArgs = {
+  organizationId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -220,6 +235,8 @@ export type Organization = ModifyInterface & {
   /** identifies the organization */
   id: Scalars['ID']
   isArchived: Scalars['Boolean']
+  /** List of users that are member of the organization */
+  members: Array<User>
   projects: Array<Project>
   title: Scalars['String']
 }
@@ -322,6 +339,7 @@ export type Query = {
 
 export type QueryOrganizationArgs = {
   organizationId: Scalars['ID']
+  projectId?: InputMaybe<Scalars['ID']>
 }
 
 export type QueryOrganizationsArgs = {
@@ -464,7 +482,7 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
-  /** Role of the user in a project */
+  /** Role of the user in a project or organization */
   role: Role
 }
 
@@ -475,7 +493,8 @@ export type UserDurationWorkedOnProjectArgs = {
 }
 
 export type UserRoleArgs = {
-  projectId: Scalars['ID']
+  organizationId?: InputMaybe<Scalars['ID']>
+  projectId?: InputMaybe<Scalars['ID']>
 }
 
 export type WorkHour = {
@@ -592,6 +611,52 @@ export type OrganizationFormFragment = ({
 } & {
   ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
+
+export type OrganizationMemberListOrganizationFragment = ({
+  __typename?: 'Organization'
+  id: string
+  canModify: boolean
+  members: Array<
+    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
+      ' $fragmentRefs'?: { RemoveUserFromOrganizationButtonUserFragment: RemoveUserFromOrganizationButtonUserFragment }
+    }
+  >
+} & {
+  ' $fragmentRefs'?: {
+    RemoveUserFromOrganizationButtonOrganizationFragment: RemoveUserFromOrganizationButtonOrganizationFragment
+  }
+}) & { ' $fragmentName'?: 'OrganizationMemberListOrganizationFragment' }
+
+export type OrganizationMembershipUpdateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type OrganizationMembershipUpdateMutation = {
+  __typename?: 'Mutation'
+  organizationMembershipCreate: { __typename?: 'Organization'; id: string }
+}
+
+export type RemoveUserFromOrganizationButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null } & {
+  ' $fragmentName'?: 'RemoveUserFromOrganizationButtonUserFragment'
+}
+
+export type RemoveUserFromOrganizationButtonOrganizationFragment = {
+  __typename?: 'Organization'
+  id: string
+  title: string
+} & { ' $fragmentName'?: 'RemoveUserFromOrganizationButtonOrganizationFragment' }
+
+export type OrganizationMembershipDeleteMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type OrganizationMembershipDeleteMutation = {
+  __typename?: 'Mutation'
+  organizationMembershipDelete: { __typename?: 'Organization'; id: string }
+}
 
 export type OrganizationTableItemFragment = { __typename?: 'Organization'; id: string; title: string } & {
   ' $fragmentName'?: 'OrganizationTableItemFragment'
@@ -1054,7 +1119,12 @@ export type OrganizationQuery = {
     projects: Array<
       { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
     >
-  } & { ' $fragmentRefs'?: { OrganizationFormFragment: OrganizationFormFragment } }
+  } & {
+    ' $fragmentRefs'?: {
+      OrganizationFormFragment: OrganizationFormFragment
+      OrganizationMemberListOrganizationFragment: OrganizationMemberListOrganizationFragment
+    }
+  }
 }
 
 export type OrganizationUpdateMutationVariables = Exact<{
@@ -1337,6 +1407,106 @@ export const OrganizationFormFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<OrganizationFormFragment, unknown>
+export const RemoveUserFromOrganizationButtonOrganizationFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveUserFromOrganizationButtonOrganizationFragment, unknown>
+export const RemoveUserFromOrganizationButtonUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveUserFromOrganizationButtonUserFragment, unknown>
+export const OrganizationMemberListOrganizationFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationMemberListOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'role' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'organizationId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+                    },
+                  ],
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationMemberListOrganizationFragment, unknown>
 export const OrganizationTableItemFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -3004,6 +3174,110 @@ export const OrganizationUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>
+export const OrganizationMembershipUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationMembershipUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Role' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationMembershipCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'role' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationMembershipUpdateMutation, OrganizationMembershipUpdateMutationVariables>
+export const OrganizationMembershipDeleteDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'OrganizationMembershipDelete' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationMembershipDelete' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationMembershipDeleteMutation, OrganizationMembershipDeleteMutationVariables>
 export const ProjectArchiveDocument = {
   kind: 'Document',
   definitions: [
@@ -4286,6 +4560,7 @@ export const OrganizationDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationMemberListOrganization' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'projects' },
@@ -4340,6 +4615,30 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'OrganizationForm' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -4349,6 +4648,43 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationMemberListOrganization' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'role' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'organizationId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+                    },
+                  ],
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
+              ],
+            },
+          },
         ],
       },
     },

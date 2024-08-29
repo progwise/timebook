@@ -59,6 +59,16 @@ type Mutation {
   organizationCreate(data: OrganizationInput!): Organization!
 
   """
+  Assign user to an organization or update the role of an existing organization member
+  """
+  organizationMembershipCreate(organizationId: ID!, role: Role! = MEMBER, userId: ID!): Organization!
+
+  """
+  Unassign user from an organization
+  """
+  organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
+
+  """
   Unarchive an organization
   """
   organizationUnarchive(organizationId: ID!): Organization!
@@ -218,6 +228,11 @@ type Organization implements ModifyInterface {
   """
   id: ID!
   isArchived: Boolean!
+
+  """
+  List of users that are member of the organization
+  """
+  members: [User!]!
   projects: [Project!]!
   title: String!
 }
@@ -324,6 +339,11 @@ type Query {
     Identifier for the Organization
     """
     organizationId: ID!
+
+    """
+    Identifier for the Project
+    """
+    projectId: ID
   ): Organization!
 
   """
@@ -524,9 +544,9 @@ type User {
   name: String
 
   """
-  Role of the user in a project
+  Role of the user in a project or organization
   """
-  role(projectId: ID!): Role!
+  role(organizationId: ID, projectId: ID): Role!
 }
 
 type WorkHour {

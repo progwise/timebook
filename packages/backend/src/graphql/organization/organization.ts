@@ -28,5 +28,16 @@ export const Organization = builder.prismaObject('Organization', {
         return !!organizationMembership
       },
     }),
+    members: t.prismaField({
+      description: 'List of users that are member of the organization',
+      select: { id: true },
+      type: ['User'],
+      resolve: (query, organization) =>
+        prisma.user.findMany({
+          ...query,
+          where: { organizationMemberships: { some: { organizationId: organization.id } } },
+          orderBy: { name: 'asc' },
+        }),
+    }),
   }),
 })
