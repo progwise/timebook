@@ -7,42 +7,18 @@ builder.queryField('organization', (t) =>
     description: 'Returns a single Organization',
     args: {
       organizationId: t.arg.id({ description: 'Identifier for the Organization' }),
-      projectId: t.arg.id({ description: 'Identifier for the Project', required: false }),
     },
-    resolve: async (query, _source, { organizationId, projectId }, context) => {
-      const isOrganizationMember = await prisma.organizationMembership.findUnique({
+    resolve: (query, _source, { organizationId }, context) =>
+      prisma.organization.findUniqueOrThrow({
+        ...query,
         where: {
-          userId_organizationId: {
-            userId: context.session.user.id,
-            organizationId: organizationId.toString(),
-          },
+          id: organizationId.toString(),
+          // organizationMemberships: {
+          //   some: {
+          //     userId: context.session.user.id,
+          //   },
+          // },
         },
-      })
-      if (isOrganizationMember) {
-        return prisma.organization.findUniqueOrThrow({
-          ...query,
-          where: { id: organizationId.toString() },
-        })
-      }
-
-      const isProjectMember = await prisma.projectMembership.findFirst({
-        where: {
-          userId: context.session.user.id,
-          project: {
-            id: projectId?.toString(),
-            organizationId: organizationId.toString(),
-          },
-        },
-      })
-
-      if (isProjectMember) {
-        return prisma.organization.findUniqueOrThrow({
-          ...query,
-          where: { id: organizationId.toString() },
-        })
-      }
-
-      throw new Error('Not authorized to view the organization')
-    },
+      }),
   }),
 )

@@ -17,15 +17,28 @@ export const Organization = builder.prismaObject('Organization', {
       select: { archivedAt: true },
       resolve: (organization) => !!organization.archivedAt,
     }),
+    role: t.withAuth({ isLoggedIn: true }).string({
+      description: 'Can the user modify the entity',
+      select: { id: true },
+      resolve: async (organization, _arguments, context) => {
+        const organizationMembership = await prisma.organizationMembership.findUnique({
+          select: { role: true },
+          where: { userId_organizationId: { organizationId: organization.id, userId: context.session.user.id } },
+        })
+
+        return organizationMembership?.role ?? 'NONE'
+      },
+    }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
       select: { id: true },
       resolve: async (organization, _arguments, context) => {
         const organizationMembership = await prisma.organizationMembership.findUnique({
+          select: { role: true },
           where: { userId_organizationId: { organizationId: organization.id, userId: context.session.user.id } },
         })
 
-        return !!organizationMembership
+        return organizationMembership?.role === 'ADMIN'
       },
     }),
     members: t.prismaField({

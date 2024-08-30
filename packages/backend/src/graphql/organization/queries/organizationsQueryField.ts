@@ -14,12 +14,27 @@ builder.queryField('organizations', (t) =>
       prisma.organization.findMany({
         ...query,
         where: {
-          ...getWhereFromOrganizationFilter(filter),
-          organizationMemberships: {
-            some: {
-              userId: context.session.user.id,
+          OR: [
+            {
+              ...getWhereFromOrganizationFilter(filter),
+              organizationMemberships: {
+                some: {
+                  userId: context.session.user.id,
+                },
+              },
             },
-          },
+            {
+              projects: {
+                some: {
+                  projectMemberships: {
+                    some: {
+                      userId: context.session.user.id,
+                    },
+                  },
+                },
+              },
+            },
+          ],
         },
         orderBy: { title: 'asc' },
       }),

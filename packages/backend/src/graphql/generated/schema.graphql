@@ -234,6 +234,11 @@ type Organization implements ModifyInterface {
   """
   members: [User!]!
   projects: [Project!]!
+
+  """
+  Can the user modify the entity
+  """
+  role: String!
   title: String!
 }
 
@@ -339,11 +344,6 @@ type Query {
     Identifier for the Organization
     """
     organizationId: ID!
-
-    """
-    Identifier for the Project
-    """
-    projectId: ID
   ): Organization!
 
   """
