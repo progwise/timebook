@@ -22,7 +22,7 @@ export const User = builder.prismaObject('User', {
           return { isMemberByProject: projectId.toString() }
         }
         if (organizationId) {
-          return { isMemberByOrganization: organizationId.toString() }
+          return { isAdminByOrganization: organizationId.toString() }
         }
         return { isLoggedIn: true }
       },
