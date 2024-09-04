@@ -10,12 +10,12 @@ builder.mutationField('organizationMembershipCreate', (t) =>
     args: {
       userId: t.arg.id(),
       organizationId: t.arg.id(),
-      role: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
+      role: t.arg({ type: RoleEnum, defaultValue: 'ADMIN' }),
     },
     authScopes: (_, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (query, _source, { userId, organizationId, role }) => {
-      if (role === 'MEMBER' && (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString()))) {
-        throw new Error('Membership can not be changed because user is the last admin')
+      if (role === 'ADMIN' && (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString()))) {
+        throw new Error('Membership cannot be changed because user is the last admin')
       }
 
       const organizationMembership = await prisma.organizationMembership.upsert({

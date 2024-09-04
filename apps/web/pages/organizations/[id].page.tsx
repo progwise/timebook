@@ -4,7 +4,6 @@ import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../frontend/components/organizationForm/organizationForm'
 import { OrganizationMemberList } from '../../frontend/components/organizationMemberList'
-import { PageHeading } from '../../frontend/components/pageHeading'
 import { ProjectTable } from '../../frontend/components/projectTable'
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { graphql } from '../../frontend/generated/gql'
@@ -18,6 +17,7 @@ const OrganizationQueryDocument = graphql(`
       ...OrganizationMemberListOrganization
       projects {
         ...ProjectTableItem
+        ...OrganizationProjectMemberListProject
       }
     }
   }
@@ -78,9 +78,16 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
-      <PageHeading>Projects</PageHeading>
-      <ProjectTable projects={selectedOrganization.projects} />
-      <OrganizationMemberList organization={selectedOrganization} />
+      <div role="tablist" className="tabs tabs-lifted tabs-lg">
+        <input type="radio" name="tab" role="tab" className="tab" aria-label="Projects" defaultChecked />
+        <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+          <ProjectTable projects={selectedOrganization.projects} />
+        </div>
+        <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
+        <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+          <OrganizationMemberList organization={selectedOrganization} projects={selectedOrganization.projects} />
+        </div>
+      </div>
     </ProtectedPage>
   )
 }

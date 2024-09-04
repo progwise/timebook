@@ -16,7 +16,7 @@ builder.mutationField('organizationMembershipDelete', (t) =>
         where: { userId_organizationId: { organizationId: organizationId.toString(), userId: userId.toString() } },
       })
       if (!organizationMembership) {
-        throw new Error('organization membership not found')
+        throw new Error('Organization membership not found')
       }
 
       if (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString())) {

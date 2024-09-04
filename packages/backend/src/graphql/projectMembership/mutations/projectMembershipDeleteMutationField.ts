@@ -16,7 +16,7 @@ builder.mutationField('projectMembershipDelete', (t) =>
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
       })
       if (!projectMembership) {
-        throw new Error('project membership not found')
+        throw new Error('Project membership not found')
       }
 
       if (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString())) {

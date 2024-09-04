@@ -14,11 +14,6 @@ builder.queryField('organization', (t) =>
         ...query,
         where: {
           id: organizationId.toString(),
-          // organizationMemberships: {
-          //   some: {
-          //     userId: context.session.user.id,
-          //   },
-          // },
         },
       }),
   }),

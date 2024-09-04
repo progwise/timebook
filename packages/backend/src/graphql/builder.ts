@@ -118,7 +118,6 @@ export const builder = new SchemaBuilder<{
 
       return !!task
     },
-    // add isAdminByOrganizations, isMemberByOrg/Orgs?
     isAdminByOrganization: async (organizationId) => {
       if (!context.session) {
         return false
