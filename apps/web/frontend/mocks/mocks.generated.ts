@@ -244,6 +244,10 @@ export type Organization = ModifyInterface & {
   title: Scalars['String']
 }
 
+export type OrganizationMembersArgs = {
+  includeProjectMembers?: Scalars['Boolean']
+}
+
 export enum OrganizationFilter {
   Active = 'ACTIVE',
   All = 'ALL',
