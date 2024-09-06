@@ -48,7 +48,7 @@ export type Mutation = {
   organizationArchive: Organization
   /** Create a new organization */
   organizationCreate: Organization
-  /** Assign user to an organization or update the role of an existing organization member */
+  /** Assign user to an organization */
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
@@ -118,7 +118,6 @@ export type MutationOrganizationCreateArgs = {
 
 export type MutationOrganizationMembershipCreateArgs = {
   organizationId: Scalars['ID']
-  role?: Role
   userId: Scalars['ID']
 }
 
@@ -238,7 +237,7 @@ export type Organization = ModifyInterface & {
   /** List of users that are member of the organization */
   members: Array<User>
   projects: Array<Project>
-  /** Can the user modify the entity */
+  /** Role of the user in the organization or its projects */
   role: Scalars['String']
   title: Scalars['String']
 }

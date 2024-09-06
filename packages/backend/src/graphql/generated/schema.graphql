@@ -59,9 +59,9 @@ type Mutation {
   organizationCreate(data: OrganizationInput!): Organization!
 
   """
-  Assign user to an organization or update the role of an existing organization member
+  Assign user to an organization
   """
-  organizationMembershipCreate(organizationId: ID!, role: Role! = ADMIN, userId: ID!): Organization!
+  organizationMembershipCreate(organizationId: ID!, userId: ID!): Organization!
 
   """
   Unassign user from an organization
@@ -232,11 +232,16 @@ type Organization implements ModifyInterface {
   """
   List of users that are member of the organization
   """
-  members: [User!]!
+  members(
+    """
+    Set this to true if you want to also see the users who are members of projects in the organization
+    """
+    includeProjectMembers: Boolean! = false
+  ): [User!]!
   projects: [Project!]!
 
   """
-  Can the user modify the entity
+  Role of the user in the organization or its projects
   """
   role: String!
   title: String!

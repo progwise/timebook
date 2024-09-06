@@ -18,7 +18,7 @@ export const Organization = builder.prismaObject('Organization', {
       resolve: (organization) => !!organization.archivedAt,
     }),
     role: t.withAuth({ isLoggedIn: true }).string({
-      description: 'Can the user modify the entity',
+      description: 'Role of the user in the organization or its projects',
       select: { id: true },
       resolve: async (organization, _arguments, context) => {
         const organizationMembership = await prisma.organizationMembership.findUnique({
@@ -26,7 +26,18 @@ export const Organization = builder.prismaObject('Organization', {
           where: { userId_organizationId: { organizationId: organization.id, userId: context.session.user.id } },
         })
 
-        return organizationMembership?.role ?? 'NONE'
+        if (organizationMembership?.role === 'ADMIN') {
+          return 'ADMIN'
+        }
+
+        const projectMembership = await prisma.projectMembership.findFirst({
+          where: {
+            userId: context.session.user.id,
+            project: { organizationId: organization.id },
+          },
+        })
+
+        return projectMembership ? 'MEMBER' : 'NONE'
       },
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
@@ -44,11 +55,28 @@ export const Organization = builder.prismaObject('Organization', {
     members: t.prismaField({
       description: 'List of users that are member of the organization',
       select: { id: true },
+      authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
       type: ['User'],
-      resolve: (query, organization) =>
+      args: {
+        includeProjectMembers: t.arg.boolean({
+          defaultValue: false,
+          description:
+            'Set this to true if you want to also see the users who are members of projects in the organization',
+        }),
+      },
+      resolve: (query, organization, { includeProjectMembers }) =>
         prisma.user.findMany({
           ...query,
-          where: { organizationMemberships: { some: { organizationId: organization.id } } },
+          where: includeProjectMembers
+            ? {
+                OR: [
+                  { organizationMemberships: { some: { organizationId: organization.id } } },
+                  { projectMemberships: { some: { project: { organizationId: organization.id } } } },
+                ],
+              }
+            : {
+                organizationMemberships: { some: { organizationId: organization.id } },
+              },
           orderBy: { name: 'asc' },
         }),
     }),
