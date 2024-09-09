@@ -15,6 +15,13 @@ builder.mutationField('projectMembershipJoin', (t) =>
         where: {
           invitationKey,
         },
+        include: {
+          project: {
+            select: {
+              organizationId: true,
+            },
+          },
+        },
       })
 
       if (!projectInvitation) {
@@ -36,6 +43,24 @@ builder.mutationField('projectMembershipJoin', (t) =>
         },
         update: {},
       })
+
+      // If the project belongs to an organization, add the user to the organization
+      if (projectInvitation.project.organizationId) {
+        await prisma.organizationMembership.upsert({
+          where: {
+            userId_organizationId: {
+              userId: context.session.user.id,
+              organizationId: projectInvitation.project.organizationId,
+            },
+          },
+          create: {
+            userId: context.session.user.id,
+            organizationId: projectInvitation.project.organizationId,
+            role: 'MEMBER',
+          },
+          update: {},
+        })
+      }
 
       return projectMembership.project
     },
