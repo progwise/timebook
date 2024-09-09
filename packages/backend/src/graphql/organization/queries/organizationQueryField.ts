@@ -8,28 +8,9 @@ builder.queryField('organization', (t) =>
     args: {
       organizationId: t.arg.id({ description: 'Identifier for the Organization' }),
     },
-
-    // authScopes: async (_source, { organizationId }, context) => {
-    //   const organization = await prisma.organization.findUnique({
-    //     where: { id: organizationId.toString() },
-    //     include: {
-    //       projects: {
-    //         select: { id: true },
-    //         where: {
-    //           projectMemberships: {
-    //             some: { userId: context.session.user.id },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   })
-
-    //   if (organization?.projects.length) {
-    //     return true
-    //   }
-
-    //   return { isAdminByOrganization: organizationId.toString() }
-    // },
+    authScopes: (_source, { organizationId }) => ({
+      isMemberByOrganization: organizationId.toString(),
+    }),
     resolve: (query, _source, { organizationId }) =>
       prisma.organization.findUniqueOrThrow({
         ...query,

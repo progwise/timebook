@@ -55,7 +55,7 @@ export const Organization = builder.prismaObject('Organization', {
     members: t.prismaField({
       description: 'List of users that are member of the organization',
       select: { id: true },
-      authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
+      authScopes: (organization) => ({ isMemberByOrganization: organization.id }),
       type: ['User'],
       args: {
         includeProjectMembers: t.arg.boolean({

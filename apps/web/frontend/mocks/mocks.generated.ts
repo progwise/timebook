@@ -120,7 +120,6 @@ export type MutationOrganizationCreateArgs = {
 
 export type MutationOrganizationMembershipCreateArgs = {
   organizationId: Scalars['ID']
-  role?: Role
   userId: Scalars['ID']
 }
 
