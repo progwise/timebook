@@ -2,11 +2,15 @@ import { Role } from '../../generated/gql/graphql'
 
 interface RoleLabelProps {
   role: Role
+  isOrganizationMember: boolean
 }
 
-export const RoleLabel = (props: RoleLabelProps) => {
-  if (props.role === Role.Admin) {
-    return <span className="badge badge-primary">Admin</span>
+export const RoleLabel = ({ role, isOrganizationMember }: RoleLabelProps) => {
+  if (role === Role.Admin && isOrganizationMember) {
+    return <span className="badge badge-primary">Organization admin</span>
   }
-  return <span className="badge badge-ghost">Member</span>
+  if (isOrganizationMember) {
+    return <span className="badge badge-ghost">Organization member</span>
+  }
+  return <span className="badge badge-ghost">Project member</span>
 }

@@ -61,7 +61,7 @@ type Mutation {
   """
   Assign user to an organization
   """
-  organizationMembershipCreate(organizationId: ID!, userId: ID!): Organization!
+  organizationMembershipCreate(organizationId: ID!, role: Role! = MEMBER, userId: ID!): Organization!
 
   """
   Unassign user from an organization

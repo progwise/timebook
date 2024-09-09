@@ -120,6 +120,7 @@ export type MutationOrganizationCreateArgs = {
 
 export type MutationOrganizationMembershipCreateArgs = {
   organizationId: Scalars['ID']
+  role?: Role
   userId: Scalars['ID']
 }
 
@@ -632,6 +633,17 @@ export type OrganizationProjectMemberListProjectFragment = {
   canModify: boolean
   title: string
   members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+}
+
+export type OrganizationMembershipUpdateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+  userId: Scalars['ID']
+  role: Role
+}>
+
+export type OrganizationMembershipUpdateMutation = {
+  __typename?: 'Mutation'
+  organizationMembershipCreate: { __typename?: 'Organization'; id: string }
 }
 
 export type RemoveUserFromOrganizationButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null }
@@ -1419,6 +1431,29 @@ export const mockOrganizationMembershipCreateMutation = (
 ) =>
   graphql.mutation<OrganizationMembershipCreateMutation, OrganizationMembershipCreateMutationVariables>(
     'OrganizationMembershipCreate',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationMembershipUpdateMutation((req, res, ctx) => {
+ *   const { organizationId, userId, role } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationMembershipCreate })
+ *   )
+ * })
+ */
+export const mockOrganizationMembershipUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationMembershipUpdateMutationVariables>,
+    GraphQLContext<OrganizationMembershipUpdateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationMembershipUpdateMutation, OrganizationMembershipUpdateMutationVariables>(
+    'organizationMembershipUpdate',
     resolver,
   )
 

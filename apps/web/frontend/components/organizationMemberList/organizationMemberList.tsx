@@ -1,9 +1,12 @@
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { Role } from '../../generated/gql/graphql'
 import { AddUserToOrganizationButton } from './addUserToOrganizationButton'
 import { RemoveUserFromOrganizationButton } from './removeUserFromOrganizationButton'
+import { RoleButton } from './roleButton'
 import { RoleLabel } from './roleLabel'
 
 export const OrganizationMemberListOrganizationFragment = graphql(`
@@ -40,6 +43,14 @@ export const OrganizationProjectMemberListProjectFragment = graphql(`
   }
 `)
 
+const OrganizationMembershipUpdateMutationDocument = graphql(`
+  mutation organizationMembershipUpdate($organizationId: ID!, $userId: ID!, $role: Role!) {
+    organizationMembershipCreate(organizationId: $organizationId, userId: $userId, role: $role) {
+      id
+    }
+  }
+`)
+
 interface OrganizationMemberListProps {
   organization: FragmentType<typeof OrganizationMemberListOrganizationFragment>
   projects: FragmentType<typeof OrganizationProjectMemberListProjectFragment>[]
@@ -49,6 +60,15 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
   const projects = useFragment(OrganizationProjectMemberListProjectFragment, props.projects)
   const organization = useFragment(OrganizationMemberListOrganizationFragment, props.organization)
   const session = useSession()
+  const [{ fetching }, updateOrganizationMembership] = useMutation(OrganizationMembershipUpdateMutationDocument)
+
+  const handleUpdateOrganizationMembership = async (userId: string, role: Role) => {
+    await updateOrganizationMembership({
+      organizationId: organization.id,
+      userId,
+      role,
+    })
+  }
 
   const organizationMemberIds = new Set(organization.members.map((user) => user.id))
 
@@ -74,7 +94,17 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
                 </div>
               )}
               {user.name}
-              <RoleLabel role={user.role} />
+              <RoleLabel role={user.role} isOrganizationMember={true} />
+            </td>
+            <td className="w-px">
+              {user.id !== session.data?.user.id && organization.canModify && (
+                <RoleButton
+                  role={user.role}
+                  loading={fetching}
+                  onUpgrade={() => handleUpdateOrganizationMembership(user.id, Role.Admin)}
+                  onDowngrade={() => handleUpdateOrganizationMembership(user.id, Role.Member)}
+                />
+              )}
             </td>
             <td className="w-px">
               {session.data?.user.id !== user.id &&
@@ -108,7 +138,17 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
                     </div>
                   )}
                   {user.name}
-                  <RoleLabel role={user.role} />
+                  <RoleLabel role={user.role} isOrganizationMember={false} />
+                </td>
+                <td className="w-px">
+                  {user.id !== session.data?.user.id && organization.canModify && (
+                    <RoleButton
+                      role={user.role}
+                      loading={fetching}
+                      onUpgrade={() => handleUpdateOrganizationMembership(user.id, Role.Admin)}
+                      onDowngrade={() => handleUpdateOrganizationMembership(user.id, Role.Member)}
+                    />
+                  )}
                 </td>
                 <td className="w-px">
                   {session.data?.user.id !== user.id &&

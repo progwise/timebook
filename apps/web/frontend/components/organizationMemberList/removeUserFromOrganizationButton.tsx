@@ -49,14 +49,14 @@ export const RemoveUserFromOrganizationButton = (props: RemoveUserFromOrganizati
       <button
         className="btn btn-error btn-sm"
         onClick={() => dialogReference.current?.showModal()}
-        title="Remove user from organization"
+        title="Remove user from the organization"
         type="button"
       >
         <FaArrowRightFromBracket />
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
-          <h3 className="text-lg font-bold">Remove an admin from organization</h3>
+          <h3 className="text-lg font-bold">Remove organization member</h3>
           <p className="py-4">
             Do you really want to remove <b>{user.name}</b> from <b>{organization.title}</b>?
           </p>
