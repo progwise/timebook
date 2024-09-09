@@ -141,14 +141,16 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
                   <RoleLabel role={user.role} isOrganizationMember={false} />
                 </td>
                 <td className="w-px">
-                  {user.id !== session.data?.user.id && organization.canModify && (
-                    <RoleButton
-                      role={user.role}
-                      loading={fetching}
-                      onUpgrade={() => handleUpdateOrganizationMembership(user.id, Role.Admin)}
-                      onDowngrade={() => handleUpdateOrganizationMembership(user.id, Role.Member)}
-                    />
-                  )}
+                  {user.id !== session.data?.user.id &&
+                    organization.canModify &&
+                    organizationMemberIds.has(user.id) && (
+                      <RoleButton
+                        role={user.role}
+                        loading={fetching}
+                        onUpgrade={() => handleUpdateOrganizationMembership(user.id, Role.Admin)}
+                        onDowngrade={() => handleUpdateOrganizationMembership(user.id, Role.Member)}
+                      />
+                    )}
                 </td>
                 <td className="w-px">
                   {session.data?.user.id !== user.id &&
