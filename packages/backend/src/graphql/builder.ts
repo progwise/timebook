@@ -144,6 +144,7 @@ export const builder = new SchemaBuilder<{
             userId: context.session.user.id,
             organizationId,
           },
+          role: 'ADMIN',
         },
         select: {
           role: true,

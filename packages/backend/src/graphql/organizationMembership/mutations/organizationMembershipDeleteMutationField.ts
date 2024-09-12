@@ -25,7 +25,7 @@ builder.mutationField('organizationMembershipDelete', (t) =>
       }
 
       if (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString())) {
-        throw new Error('Membership can not be deleted because user is the last admin')
+        throw new Error('Membership cannot be deleted because the user is the last admin')
       }
 
       await prisma.organizationMembership.delete({

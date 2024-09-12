@@ -7,13 +7,13 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const projectMembershipDeleteMutation = gql`
-  mutation projectMembershipDelete($userId: ID!, $projectId: ID!) {
-    projectMembershipDelete(userId: $userId, projectId: $projectId) {
+const organizationMembershipDeleteMutation = gql`
+  mutation projectMembershipDelete($userId: ID!, $organizationId: ID!) {
+    organizationMembershipDelete(userId: $userId, organizationId: $organizationId) {
       title
       members {
         id
-        role(projectId: $projectId)
+        role(organizationId: $organizationId)
       }
     }
   }
@@ -23,23 +23,23 @@ beforeEach(async () => {
     data: [
       {
         id: '1',
-        name: 'User with project membership (role=admin)',
+        name: 'User with organization membership (role=admin)',
       },
       {
         id: '2',
-        name: 'User without project membership',
+        name: 'User without organization membership',
       },
       {
         id: '3',
-        name: 'User with project membership (role=member)',
+        name: 'User with organization membership (role=member)',
       },
     ],
   })
-  await prisma.project.create({
+  await prisma.organization.create({
     data: {
-      title: 'P1',
-      id: 'project1',
-      projectMemberships: {
+      title: 'O1',
+      id: 'organization1',
+      organizationMemberships: {
         createMany: {
           data: [
             { userId: '1', role: 'ADMIN' },
@@ -51,45 +51,47 @@ beforeEach(async () => {
   })
 })
 afterEach(async () => {
-  await prisma.project.deleteMany()
+  await prisma.organization.deleteMany()
   await prisma.user.deleteMany()
 })
 
 it('should throw an error when the user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '2',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   expect(response.data).toBeNull()
 })
 
-it('should throw an error when the user is not a project member', async () => {
+it('should throw an error when the user is not an organization member', async () => {
   const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '2',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
+
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   expect(response.data).toBeNull()
 })
 
-it('should throw an error when the user is a project member but has role=Member', async () => {
+it('should throw an error when the user is an organization member but has role=Member', async () => {
   const testServer = getTestServer({ userId: '3' })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '2',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
+
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   expect(response.data).toBeNull()
 })
@@ -97,47 +99,48 @@ it('should throw an error when the user is a project member but has role=Member'
 it('should throw an error when deleting a non existing membership', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '2',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
-  expect(response.errors).toEqual([new GraphQLError('Project membership not found')])
+
+  expect(response.errors).toEqual([new GraphQLError('Organization membership not found')])
   expect(response.data).toBeNull()
 })
 
-it('should throw an error when trying to delete last project admin', async () => {
+it('should throw an error when trying to delete last organization admin', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '1',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
   expect(response.errors).toEqual([new GraphQLError('Membership cannot be deleted because the user is the last admin')])
   expect(response.data).toBeNull()
 })
 
-it('should delete an existing projectMembership when role=admin', async () => {
-  await prisma.projectMembership.create({ data: { projectId: 'project1', userId: '2' } })
+it('should delete an existing organizationMembership when role=admin', async () => {
+  await prisma.organizationMembership.create({ data: { organizationId: 'organization1', userId: '2' } })
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
-    query: projectMembershipDeleteMutation,
+    query: organizationMembershipDeleteMutation,
     variables: {
       userId: '2',
-      projectId: 'project1',
+      organizationId: 'organization1',
     },
   })
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    projectMembershipDelete: {
+    organizationMembershipDelete: {
       members: [
         { id: '1', role: 'ADMIN' },
         { id: '3', role: 'MEMBER' },
       ],
-      title: 'P1',
+      title: 'O1',
     },
   })
 })
