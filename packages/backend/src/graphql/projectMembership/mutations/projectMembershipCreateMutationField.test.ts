@@ -55,7 +55,7 @@ afterEach(async () => {
   await prisma.user.deleteMany()
 })
 
-it('should throw error when user is unauthorized', async () => {
+it('should throw an error when the user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -68,7 +68,7 @@ it('should throw error when user is unauthorized', async () => {
   expect(response.data).toBeNull()
 })
 
-it('should throw error when user is not a project member', async () => {
+it('should throw an error when the user is not a project member', async () => {
   const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -81,7 +81,7 @@ it('should throw error when user is not a project member', async () => {
   expect(response.data).toBeNull()
 })
 
-it('should throw error when user is a project member but has role=Member', async () => {
+it('should throw an error when the user is a project member but has a role=Member', async () => {
   const testServer = getTestServer({ userId: '3' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -94,7 +94,7 @@ it('should throw error when user is a project member but has role=Member', async
   expect(response.data).toBeNull()
 })
 
-it('should throw error when downgrading the last admin', async () => {
+it('should throw an error when downgrading the last admin', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -104,7 +104,7 @@ it('should throw error when downgrading the last admin', async () => {
       role: 'MEMBER',
     },
   })
-  expect(response.errors).toEqual([new GraphQLError('Membership can not be changed because user is the last admin')])
+  expect(response.errors).toEqual([new GraphQLError('Membership cannot be changed because user is the last admin')])
   expect(response.data).toBeNull()
 })
 
@@ -130,7 +130,7 @@ it('should create projectMembership when session user is project membership and 
   })
 })
 
-it('user is already project member', async () => {
+it('user is already a project member', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,

@@ -103,7 +103,7 @@ it('should throw error if deleting a non existing membership', async () => {
       projectId: 'project1',
     },
   })
-  expect(response.errors).toEqual([new GraphQLError('project membership not found')])
+  expect(response.errors).toEqual([new GraphQLError('Project membership not found')])
   expect(response.data).toBeNull()
 })
 

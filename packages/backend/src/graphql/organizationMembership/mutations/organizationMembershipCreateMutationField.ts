@@ -15,7 +15,7 @@ builder.mutationField('organizationMembershipCreate', (t) =>
     authScopes: (_, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (query, _source, { userId, organizationId, role }) => {
       if (role === 'MEMBER' && (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString()))) {
-        throw new Error('Cannot remove last admin of organization')
+        throw new Error('Cannot remove the last admin of an organization')
       }
 
       const organizationMembership = await prisma.organizationMembership.upsert({
