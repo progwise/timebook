@@ -81,7 +81,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockMyProjectsQuery((request, response, context) => {
+  mockMyProjectsQuery((_request, response, context) => {
     const result = response(
       context.data({
         __typename: 'Query',
