@@ -49,7 +49,7 @@ export const RemoveUserFromOrganizationButton = (props: RemoveUserFromOrganizati
       <button
         className="btn btn-error btn-sm"
         onClick={() => dialogReference.current?.showModal()}
-        title="Remove user from the organization"
+        title="Remove user from the organization and all of the organization's projects"
         type="button"
       >
         <FaArrowRightFromBracket />

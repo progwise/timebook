@@ -17,7 +17,6 @@ const OrganizationQueryDocument = graphql(`
       ...OrganizationMemberListOrganization
       projects {
         ...ProjectTableItem
-        ...OrganizationProjectMemberListProject
       }
     }
   }
@@ -85,7 +84,7 @@ const OrganizationDetails = (): JSX.Element => {
         </div>
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
-          <OrganizationMemberList organization={selectedOrganization} projects={selectedOrganization.projects} />
+          <OrganizationMemberList organization={selectedOrganization} />
         </div>
       </div>
     </ProtectedPage>

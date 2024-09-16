@@ -238,13 +238,7 @@ export type Organization = ModifyInterface & {
   /** List of users that are member of the organization */
   members: Array<User>
   projects: Array<Project>
-  /** Role of the user in the organization or its projects */
-  role: Scalars['String']
   title: Scalars['String']
-}
-
-export type OrganizationMembersArgs = {
-  includeProjectMembers?: Scalars['Boolean']
 }
 
 export enum OrganizationFilter {
@@ -617,61 +611,20 @@ export type OrganizationFormFragment = ({
   ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
 
-export type AddUserToOrganizationButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null } & {
-  ' $fragmentName'?: 'AddUserToOrganizationButtonUserFragment'
-}
-
-export type AddUserToOrganizationButtonOrganizationFragment = {
-  __typename?: 'Organization'
-  id: string
-  title: string
-} & { ' $fragmentName'?: 'AddUserToOrganizationButtonOrganizationFragment' }
-
-export type OrganizationMembershipCreateMutationVariables = Exact<{
-  organizationId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type OrganizationMembershipCreateMutation = {
-  __typename?: 'Mutation'
-  organizationMembershipCreate: { __typename?: 'Organization'; id: string }
-}
-
 export type OrganizationMemberListOrganizationFragment = ({
   __typename?: 'Organization'
   id: string
   canModify: boolean
   members: Array<
     { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
-      ' $fragmentRefs'?: {
-        RemoveUserFromOrganizationButtonUserFragment: RemoveUserFromOrganizationButtonUserFragment
-        AddUserToOrganizationButtonUserFragment: AddUserToOrganizationButtonUserFragment
-      }
+      ' $fragmentRefs'?: { RemoveUserFromOrganizationButtonUserFragment: RemoveUserFromOrganizationButtonUserFragment }
     }
   >
 } & {
   ' $fragmentRefs'?: {
     RemoveUserFromOrganizationButtonOrganizationFragment: RemoveUserFromOrganizationButtonOrganizationFragment
-    AddUserToOrganizationButtonOrganizationFragment: AddUserToOrganizationButtonOrganizationFragment
   }
 }) & { ' $fragmentName'?: 'OrganizationMemberListOrganizationFragment' }
-
-export type OrganizationProjectMemberListProjectFragment = ({
-  __typename?: 'Project'
-  id: string
-  canModify: boolean
-  members: Array<
-    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
-      ' $fragmentRefs'?: {
-        AddUserToOrganizationButtonUserFragment: AddUserToOrganizationButtonUserFragment
-        RemoveUserFromProjectButtonUserFragment: RemoveUserFromProjectButtonUserFragment
-        RemoveUserFromOrganizationButtonUserFragment: RemoveUserFromOrganizationButtonUserFragment
-      }
-    }
-  >
-} & {
-  ' $fragmentRefs'?: { RemoveUserFromProjectButtonProjectFragment: RemoveUserFromProjectButtonProjectFragment }
-}) & { ' $fragmentName'?: 'OrganizationProjectMemberListProjectFragment' }
 
 export type OrganizationMembershipUpdateMutationVariables = Exact<{
   organizationId: Scalars['ID']
@@ -1163,12 +1116,7 @@ export type OrganizationQuery = {
     __typename?: 'Organization'
     id: string
     projects: Array<
-      { __typename?: 'Project' } & {
-        ' $fragmentRefs'?: {
-          ProjectTableItemFragment: ProjectTableItemFragment
-          OrganizationProjectMemberListProjectFragment: OrganizationProjectMemberListProjectFragment
-        }
-      }
+      { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
     >
   } & {
     ' $fragmentRefs'?: {
@@ -1475,23 +1423,6 @@ export const RemoveUserFromOrganizationButtonOrganizationFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<RemoveUserFromOrganizationButtonOrganizationFragment, unknown>
-export const AddUserToOrganizationButtonOrganizationFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonOrganization' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AddUserToOrganizationButtonOrganizationFragment, unknown>
 export const RemoveUserFromOrganizationButtonUserFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1509,23 +1440,6 @@ export const RemoveUserFromOrganizationButtonUserFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<RemoveUserFromOrganizationButtonUserFragment, unknown>
-export const AddUserToOrganizationButtonUserFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<AddUserToOrganizationButtonUserFragment, unknown>
 export const OrganizationMemberListOrganizationFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1539,7 +1453,6 @@ export const OrganizationMemberListOrganizationFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonOrganization' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'members' },
@@ -1561,7 +1474,6 @@ export const OrganizationMemberListOrganizationFragmentDoc = {
                   ],
                 },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' } },
               ],
             },
           },
@@ -1582,31 +1494,7 @@ export const OrganizationMemberListOrganizationFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonOrganization' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -1618,122 +1506,6 @@ export const OrganizationMemberListOrganizationFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<OrganizationMemberListOrganizationFragment, unknown>
-export const RemoveUserFromProjectButtonProjectFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RemoveUserFromProjectButtonProjectFragment, unknown>
-export const RemoveUserFromProjectButtonUserFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<RemoveUserFromProjectButtonUserFragment, unknown>
-export const OrganizationProjectMemberListProjectFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationProjectMemberListProject' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'members' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationProjectMemberListProjectFragment, unknown>
 export const OrganizationTableItemFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1963,6 +1735,40 @@ export const OrganizationFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<OrganizationFragment, unknown>
+export const RemoveUserFromProjectButtonProjectFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveUserFromProjectButtonProjectFragment, unknown>
+export const RemoveUserFromProjectButtonUserFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RemoveUserFromProjectButtonUserFragment, unknown>
 export const ProjectMemberListProjectFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -3367,53 +3173,6 @@ export const OrganizationUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>
-export const OrganizationMembershipCreateDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'OrganizationMembershipCreate' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organizationMembershipCreate' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'organizationId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'userId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationMembershipCreateMutation, OrganizationMembershipCreateMutationVariables>
 export const OrganizationMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -4806,10 +4565,7 @@ export const OrganizationDocument = {
                   name: { kind: 'Name', value: 'projects' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } },
-                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationProjectMemberListProject' } },
-                    ],
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
                   },
                 },
               ],
@@ -4870,55 +4626,7 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonOrganization' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -4952,7 +4660,6 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonOrganization' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'members' },
@@ -4974,7 +4681,6 @@ export const OrganizationDocument = {
                   ],
                 },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' } },
               ],
             },
           },
@@ -5001,35 +4707,6 @@ export const OrganizationDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'image' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationProjectMemberListProject' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'members' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'AddUserToOrganizationButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromProjectButtonUser' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonUser' } },
               ],
             },
           },

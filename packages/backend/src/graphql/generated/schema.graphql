@@ -232,18 +232,8 @@ type Organization implements ModifyInterface {
   """
   List of users that are member of the organization
   """
-  members(
-    """
-    Set this to true if you want to also see the users who are members of projects in the organization
-    """
-    includeProjectMembers: Boolean! = false
-  ): [User!]!
+  members: [User!]!
   projects: [Project!]!
-
-  """
-  Role of the user in the organization or its projects
-  """
-  role: String!
   title: String!
 }
 

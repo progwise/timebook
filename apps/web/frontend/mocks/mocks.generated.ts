@@ -240,13 +240,7 @@ export type Organization = ModifyInterface & {
   /** List of users that are member of the organization */
   members: Array<User>
   projects: Array<Project>
-  /** Role of the user in the organization or its projects */
-  role: Scalars['String']
   title: Scalars['String']
-}
-
-export type OrganizationMembersArgs = {
-  includeProjectMembers?: Scalars['Boolean']
 }
 
 export enum OrganizationFilter {
@@ -605,30 +599,8 @@ export type OrganizationFormFragment = {
   isArchived: boolean
 }
 
-export type AddUserToOrganizationButtonUserFragment = { __typename?: 'User'; id: string; name?: string | null }
-
-export type AddUserToOrganizationButtonOrganizationFragment = { __typename?: 'Organization'; id: string; title: string }
-
-export type OrganizationMembershipCreateMutationVariables = Exact<{
-  organizationId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type OrganizationMembershipCreateMutation = {
-  __typename?: 'Mutation'
-  organizationMembershipCreate: { __typename?: 'Organization'; id: string }
-}
-
 export type OrganizationMemberListOrganizationFragment = {
   __typename?: 'Organization'
-  id: string
-  canModify: boolean
-  title: string
-  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
-}
-
-export type OrganizationProjectMemberListProjectFragment = {
-  __typename?: 'Project'
   id: string
   canModify: boolean
   title: string
@@ -1145,8 +1117,7 @@ export type OrganizationQuery = {
       title: string
       startDate?: string | null
       endDate?: string | null
-      canModify: boolean
-      members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+      members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
     }>
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
   }
@@ -1408,29 +1379,6 @@ export const mockOrganizationUnarchiveMutation = (
 ) =>
   graphql.mutation<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>(
     'organizationUnarchive',
-    resolver,
-  )
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockOrganizationMembershipCreateMutation((req, res, ctx) => {
- *   const { organizationId, userId } = req.variables;
- *   return res(
- *     ctx.data({ organizationMembershipCreate })
- *   )
- * })
- */
-export const mockOrganizationMembershipCreateMutation = (
-  resolver: ResponseResolver<
-    GraphQLRequest<OrganizationMembershipCreateMutationVariables>,
-    GraphQLContext<OrganizationMembershipCreateMutation>,
-    any
-  >,
-) =>
-  graphql.mutation<OrganizationMembershipCreateMutation, OrganizationMembershipCreateMutationVariables>(
-    'OrganizationMembershipCreate',
     resolver,
   )
 

@@ -37,16 +37,8 @@ const documents = {
     types.OrganizationUnarchiveDocument,
   '\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n':
     types.OrganizationFormFragmentDoc,
-  '\n  fragment AddUserToOrganizationButtonUser on User {\n    id\n    name\n  }\n':
-    types.AddUserToOrganizationButtonUserFragmentDoc,
-  '\n  fragment AddUserToOrganizationButtonOrganization on Organization {\n    id\n    title\n  }\n':
-    types.AddUserToOrganizationButtonOrganizationFragmentDoc,
-  '\n  mutation OrganizationMembershipCreate($organizationId: ID!, $userId: ID!) {\n    organizationMembershipCreate(organizationId: $organizationId, userId: $userId) {\n      id\n    }\n  }\n':
-    types.OrganizationMembershipCreateDocument,
-  '\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    ...AddUserToOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n      ...AddUserToOrganizationButtonUser\n    }\n  }\n':
+  '\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n':
     types.OrganizationMemberListOrganizationFragmentDoc,
-  '\n  fragment OrganizationProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role\n      ...AddUserToOrganizationButtonUser\n      ...RemoveUserFromProjectButtonUser\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n':
-    types.OrganizationProjectMemberListProjectFragmentDoc,
   '\n  mutation organizationMembershipUpdate($organizationId: ID!, $userId: ID!, $role: Role!) {\n    organizationMembershipCreate(organizationId: $organizationId, userId: $userId, role: $role) {\n      id\n    }\n  }\n':
     types.OrganizationMembershipUpdateDocument,
   '\n  fragment RemoveUserFromOrganizationButtonUser on User {\n    id\n    name\n  }\n':
@@ -139,7 +131,7 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
-  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n        ...OrganizationProjectMemberListProject\n      }\n    }\n  }\n':
+  '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n':
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
@@ -256,32 +248,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment AddUserToOrganizationButtonUser on User {\n    id\n    name\n  }\n',
-): (typeof documents)['\n  fragment AddUserToOrganizationButtonUser on User {\n    id\n    name\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment AddUserToOrganizationButtonOrganization on Organization {\n    id\n    title\n  }\n',
-): (typeof documents)['\n  fragment AddUserToOrganizationButtonOrganization on Organization {\n    id\n    title\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation OrganizationMembershipCreate($organizationId: ID!, $userId: ID!) {\n    organizationMembershipCreate(organizationId: $organizationId, userId: $userId) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation OrganizationMembershipCreate($organizationId: ID!, $userId: ID!) {\n    organizationMembershipCreate(organizationId: $organizationId, userId: $userId) {\n      id\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    ...AddUserToOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n      ...AddUserToOrganizationButtonUser\n    }\n  }\n',
-): (typeof documents)['\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    ...AddUserToOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n      ...AddUserToOrganizationButtonUser\n    }\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  fragment OrganizationProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role\n      ...AddUserToOrganizationButtonUser\n      ...RemoveUserFromProjectButtonUser\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n',
-): (typeof documents)['\n  fragment OrganizationProjectMemberListProject on Project {\n    id\n    canModify\n    ...RemoveUserFromProjectButtonProject\n    members {\n      id\n      image\n      name\n      role\n      ...AddUserToOrganizationButtonUser\n      ...RemoveUserFromProjectButtonUser\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n']
+  source: '\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n',
+): (typeof documents)['\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      role(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -574,8 +542,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n        ...OrganizationProjectMemberListProject\n      }\n    }\n  }\n',
-): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n        ...OrganizationProjectMemberListProject\n      }\n    }\n  }\n']
+  source: '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

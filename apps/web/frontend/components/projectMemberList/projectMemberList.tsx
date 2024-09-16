@@ -4,9 +4,9 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
+import { RoleButton } from '../roleButton'
+import { ProjectRoleLabel } from './projectRoleLabel'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
-import { RoleButton } from './roleButton'
-import { RoleLabel } from './roleLabel'
 
 export const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
@@ -70,7 +70,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 </div>
               )}
               {user.name}
-              <RoleLabel role={user.role} />
+              <ProjectRoleLabel role={user.role} />
             </td>
             <td className="w-px">
               {user.id !== session.data?.user.id && project.canModify && (

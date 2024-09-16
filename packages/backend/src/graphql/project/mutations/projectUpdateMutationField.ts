@@ -38,30 +38,22 @@ builder.mutationField('projectUpdate', (t) =>
         },
       })
 
-      if (organizationId) {
-        const projectMemberships = await prisma.projectMembership.findMany({
-          where: { projectId: id.toString() },
-        })
-
-        await Promise.all(
-          projectMemberships.map(async (membership) => {
-            await prisma.organizationMembership.upsert({
-              where: {
-                userId_organizationId: {
-                  userId: membership.userId,
-                  organizationId,
-                },
-              },
-              create: {
-                userId: membership.userId,
-                organizationId,
-                role: 'MEMBER',
-              },
-              update: {},
-            })
-          }),
-        )
+      if (!organizationId) {
+        return project
       }
+
+      const projectMemberships = await prisma.projectMembership.findMany({
+        where: { projectId: id.toString() },
+      })
+
+      await prisma.organizationMembership.createMany({
+        data: projectMemberships.map((membership) => ({
+          userId: membership.userId,
+          organizationId,
+          role: 'MEMBER',
+        })),
+        skipDuplicates: true,
+      })
 
       return project
     },

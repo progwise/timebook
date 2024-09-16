@@ -44,7 +44,6 @@ builder.mutationField('projectMembershipJoin', (t) =>
         update: {},
       })
 
-      // If the project belongs to an organization, add the user to the organization
       if (projectInvitation.project.organizationId) {
         await prisma.organizationMembership.upsert({
           where: {

@@ -146,9 +146,6 @@ export const builder = new SchemaBuilder<{
           },
           role: 'ADMIN',
         },
-        select: {
-          role: true,
-        },
       })
 
       return !!organizationMembership

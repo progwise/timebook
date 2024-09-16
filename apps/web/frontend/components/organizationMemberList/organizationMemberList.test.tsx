@@ -3,11 +3,7 @@ import { Client, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
-import {
-  OrganizationMemberList,
-  OrganizationMemberListOrganizationFragment,
-  OrganizationProjectMemberListProjectFragment,
-} from './organizationMemberList'
+import { OrganizationMemberList, OrganizationMemberListOrganizationFragment } from './organizationMemberList'
 
 const client = new Client({ url: '/api/graphql' })
 
@@ -24,8 +20,6 @@ const organizationMembers = [
   { id: '2', name: 'Member of the organization', role: Role.Member },
 ]
 
-const projectMembers = [{ id: '3', name: 'Project member', role: Role.Member }]
-
 const organization = makeFragmentData(
   {
     id: '1',
@@ -38,38 +32,22 @@ const organization = makeFragmentData(
   OrganizationMemberListOrganizationFragment,
 )
 
-const projects = [
-  makeFragmentData(
-    {
-      id: '1',
-      title: 'Project 1',
-      canModify: true,
-      isProjectMember: true,
-      role: 'ADMIN',
-      members: projectMembers,
-    },
-    OrganizationProjectMemberListProjectFragment,
-  ),
-]
-
 describe('OrganizationMemberList', () => {
   it('should display a list of all organization members', async () => {
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
 
     const rows = screen.getAllByRole('row')
-    expect(rows).toHaveLength(3)
+    expect(rows).toHaveLength(2)
     expect(rows[0]).toHaveTextContent('Admin of the organization')
     expect(rows[1]).toHaveTextContent('Member of the organization')
-    expect(rows[2]).toHaveTextContent('Project member')
   })
 
   it('should display the correct role labels', async () => {
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
 
     const rows = screen.getAllByRole('row')
     expect(rows[0]).toHaveTextContent('Organization admin')
     expect(rows[1]).toHaveTextContent('Organization member')
-    expect(rows[2]).toHaveTextContent('Project member')
   })
 
   it('should not display role change buttons if the current user is only an organization member', async () => {
@@ -85,7 +63,7 @@ describe('OrganizationMemberList', () => {
       OrganizationMemberListOrganizationFragment,
     )
 
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
     const roleButtons = screen.queryByRole('button', { name: /Promote|Demote/ })
 
     expect(roleButtons).not.toBeInTheDocument()
@@ -104,14 +82,14 @@ describe('OrganizationMemberList', () => {
       OrganizationMemberListOrganizationFragment,
     )
 
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
     const roleButtons = screen.queryByRole('button', { name: /Promote|Demote/ })
 
     expect(roleButtons).not.toBeInTheDocument()
   })
 
   it('should display role change buttons if the current user is an organization admin', async () => {
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
     const promoteButton = screen.queryByRole('button', { name: 'Promote' })
     const demoteButton = screen.queryByRole('button', { name: 'Demote' })
 
@@ -131,8 +109,10 @@ describe('OrganizationMemberList', () => {
       },
       OrganizationMemberListOrganizationFragment,
     )
-    render(<OrganizationMemberList organization={organization} projects={projects} />, { wrapper })
-    const removeButton = screen.queryByRole('button', { name: 'Remove user from the organization' })
+    render(<OrganizationMemberList organization={organization} />, { wrapper })
+    const removeButton = screen.queryByRole('button', {
+      name: "Remove user from the organization and all of the organization's projects",
+    })
 
     expect(removeButton).not.toBeInTheDocument()
   })

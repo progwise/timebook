@@ -1,4 +1,4 @@
-import { Role } from '../../mocks/mocks.generated'
+import { Role } from '../generated/gql/graphql'
 
 interface RoleButtonProps {
   role: Role
