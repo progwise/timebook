@@ -55,7 +55,7 @@ builder.mutationField('projectMembershipJoin', (t) =>
           create: {
             userId: context.session.user.id,
             organizationId: projectInvitation.project.organizationId,
-            role: 'MEMBER',
+            organizationRole: 'MEMBER',
           },
           update: {},
         })

@@ -1,5 +1,3 @@
-import { Role } from '@progwise/timebook-prisma'
-
 import { builder } from '../builder'
 import { prisma } from '../prisma'
 import { DateScalar } from '../scalars/date'
@@ -11,50 +9,40 @@ export const User = builder.prismaObject('User', {
     id: t.exposeID('id'),
     name: t.exposeString('name', { nullable: true }),
     image: t.exposeString('image', { nullable: true }),
-    role: t.field({
+    projectRole: t.field({
       type: RoleEnum,
-      args: {
-        projectId: t.arg.id({ required: false }),
-        organizationId: t.arg.id({ required: false }),
-      },
-      authScopes: (_user, { projectId, organizationId }) => {
-        if (projectId) {
-          return { isMemberByProject: projectId.toString() }
-        }
-        if (organizationId) {
-          return { isMemberByOrganization: organizationId.toString() }
-        }
-        return { isLoggedIn: true }
-      },
-      description: 'Role of the user in a project or organization',
-      resolve: async (user, { projectId, organizationId }) => {
-        if (projectId) {
-          const projectMembership = await prisma.projectMembership.findUnique({
-            select: { role: true },
-            where: {
-              userId_projectId: {
-                userId: user.id,
-                projectId: projectId.toString(),
-              },
+      args: { projectId: t.arg.id() },
+      authScopes: (_user, { projectId }) => ({ isMemberByProject: projectId.toString() }),
+      description: 'Role of the user in a project',
+      resolve: async (user, { projectId }) => {
+        const projectMembership = await prisma.projectMembership.findUniqueOrThrow({
+          select: { projectRole: true },
+          where: {
+            userId_projectId: {
+              userId: user.id,
+              projectId: projectId.toString(),
             },
-          })
-          return projectMembership?.role ?? Role.MEMBER
-        }
-
-        if (organizationId) {
-          const organizationMembership = await prisma.organizationMembership.findUnique({
-            select: { role: true },
-            where: {
-              userId_organizationId: {
-                userId: user.id,
-                organizationId: organizationId.toString(),
-              },
+          },
+        })
+        return projectMembership.projectRole
+      },
+    }),
+    organizationRole: t.field({
+      type: RoleEnum,
+      args: { organizationId: t.arg.id() },
+      authScopes: (_user, { organizationId }) => ({ isMemberByOrganization: organizationId.toString() }),
+      description: 'Role of the user in an organization',
+      resolve: async (user, { organizationId }) => {
+        const organizationMembership = await prisma.organizationMembership.findUniqueOrThrow({
+          select: { organizationRole: true },
+          where: {
+            userId_organizationId: {
+              userId: user.id,
+              organizationId: organizationId.toString(),
             },
-          })
-          return organizationMembership?.role ?? Role.MEMBER
-        }
-
-        return Role.MEMBER
+          },
+        })
+        return organizationMembership.organizationRole
       },
     }),
     durationWorkedOnProject: t.int({

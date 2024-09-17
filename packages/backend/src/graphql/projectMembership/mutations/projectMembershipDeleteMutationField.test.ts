@@ -13,7 +13,7 @@ const projectMembershipDeleteMutation = gql`
       title
       members {
         id
-        role(projectId: $projectId)
+        projectRole(projectId: $projectId)
       }
     }
   }
@@ -23,7 +23,7 @@ beforeEach(async () => {
     data: [
       {
         id: '1',
-        name: 'User with project membership (role=admin)',
+        name: 'User with project membership (role=Admin)',
       },
       {
         id: '2',
@@ -31,7 +31,7 @@ beforeEach(async () => {
       },
       {
         id: '3',
-        name: 'User with project membership (role=member)',
+        name: 'User with project membership (role=Member)',
       },
     ],
   })
@@ -42,8 +42,8 @@ beforeEach(async () => {
       projectMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '3', role: 'MEMBER' },
+            { userId: '1', projectRole: 'ADMIN' },
+            { userId: '3', projectRole: 'MEMBER' },
           ],
         },
       },
@@ -120,7 +120,7 @@ it('should throw an error when trying to delete last project admin', async () =>
   expect(response.data).toBeNull()
 })
 
-it('should delete an existing projectMembership when role=admin', async () => {
+it('should delete an existing projectMembership when role=Admin', async () => {
   await prisma.projectMembership.create({ data: { projectId: 'project1', userId: '2' } })
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
@@ -134,8 +134,8 @@ it('should delete an existing projectMembership when role=admin', async () => {
   expect(response.data).toEqual({
     projectMembershipDelete: {
       members: [
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'MEMBER' },
+        { id: '1', projectRole: 'ADMIN' },
+        { id: '3', projectRole: 'MEMBER' },
       ],
       title: 'P1',
     },

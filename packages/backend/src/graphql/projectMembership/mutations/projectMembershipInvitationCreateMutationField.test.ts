@@ -37,8 +37,8 @@ beforeEach(async () => {
       projectMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '2', role: 'MEMBER' },
+            { userId: '1', projectRole: 'ADMIN' },
+            { userId: '2', projectRole: 'MEMBER' },
           ],
         },
       },

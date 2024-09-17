@@ -13,7 +13,7 @@ const organizationMembershipDeleteMutation = gql`
       title
       members {
         id
-        role(organizationId: $organizationId)
+        organizationRole(organizationId: $organizationId)
       }
     }
   }
@@ -42,8 +42,8 @@ beforeEach(async () => {
       organizationMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '3', role: 'MEMBER' },
+            { userId: '1', organizationRole: 'ADMIN' },
+            { userId: '3', organizationRole: 'MEMBER' },
           ],
         },
       },
@@ -137,8 +137,8 @@ it('should delete an existing organizationMembership when role=admin', async () 
   expect(response.data).toEqual({
     organizationMembershipDelete: {
       members: [
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'MEMBER' },
+        { id: '1', organizationRole: 'ADMIN' },
+        { id: '3', organizationRole: 'MEMBER' },
       ],
       title: 'O1',
     },

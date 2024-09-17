@@ -8,12 +8,12 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const projectMembershipCreateMutation = gql`
-  mutation projectMembershipCreate($userID: ID!, $projectID: ID!, $role: Role) {
-    projectMembershipCreate(userId: $userID, projectId: $projectID, role: $role) {
+  mutation projectMembershipCreate($userID: ID!, $projectID: ID!, $projectRole: Role) {
+    projectMembershipCreate(userId: $userID, projectId: $projectID, projectRole: $projectRole) {
       title
       members {
         id
-        role(projectId: $projectID)
+        projectRole(projectId: $projectID)
       }
     }
   }
@@ -23,7 +23,7 @@ beforeEach(async () => {
     data: [
       {
         id: '1',
-        name: 'User with project membership (role=admin)',
+        name: 'User with project membership (role=Admin)',
       },
       {
         id: '2',
@@ -31,7 +31,7 @@ beforeEach(async () => {
       },
       {
         id: '3',
-        name: 'User with project membership (role=member)',
+        name: 'User with project membership (role=Member)',
       },
     ],
   })
@@ -42,8 +42,8 @@ beforeEach(async () => {
       projectMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '3', role: 'MEMBER' },
+            { userId: '1', projectRole: 'ADMIN' },
+            { userId: '3', projectRole: 'MEMBER' },
           ],
         },
       },
@@ -101,14 +101,14 @@ it('should throw an error when downgrading the last admin', async () => {
     variables: {
       userID: '1',
       projectID: 'project1',
-      role: 'MEMBER',
+      projectRole: 'MEMBER',
     },
   })
   expect(response.errors).toEqual([new GraphQLError('Membership cannot be changed because user is the last admin')])
   expect(response.data).toBeNull()
 })
 
-it('should create projectMembership when session user is project membership and has role=admin', async () => {
+it('should create projectMembership when session user is project membership and has role=Admin', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
     query: projectMembershipCreateMutation,
@@ -122,9 +122,9 @@ it('should create projectMembership when session user is project membership and 
     projectMembershipCreate: {
       title: 'P1',
       members: [
-        { id: '2', role: 'MEMBER' },
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'MEMBER' },
+        { id: '2', projectRole: 'MEMBER' },
+        { id: '1', projectRole: 'ADMIN' },
+        { id: '3', projectRole: 'MEMBER' },
       ],
     },
   })
@@ -137,7 +137,7 @@ it('user is already a project member', async () => {
     variables: {
       userID: '3',
       projectID: 'project1',
-      role: 'ADMIN',
+      projectRole: 'ADMIN',
     },
   })
   expect(response.errors).toBeUndefined()
@@ -145,8 +145,8 @@ it('user is already a project member', async () => {
     projectMembershipCreate: {
       title: 'P1',
       members: [
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'ADMIN' },
+        { id: '1', projectRole: 'ADMIN' },
+        { id: '3', projectRole: 'ADMIN' },
       ],
     },
   })

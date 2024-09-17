@@ -18,7 +18,7 @@ builder.mutationField('organizationCreate', (t) =>
           organizationMemberships: {
             create: {
               userId: context.session.user.id,
-              role: 'ADMIN',
+              organizationRole: 'ADMIN',
             },
           },
         },

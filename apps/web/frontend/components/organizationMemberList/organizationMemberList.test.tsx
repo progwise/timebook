@@ -16,8 +16,8 @@ jest.mock('next-auth/react', () => ({
 }))
 
 const organizationMembers = [
-  { id: '1', name: 'Admin of the organization', role: Role.Admin },
-  { id: '2', name: 'Member of the organization', role: Role.Member },
+  { id: '1', name: 'Admin of the organization', organizationRole: Role.Admin },
+  { id: '2', name: 'Member of the organization', organizationRole: Role.Member },
 ]
 
 const organization = makeFragmentData(
@@ -26,7 +26,7 @@ const organization = makeFragmentData(
     title: 'Org 1',
     canModify: true,
     isOrganizationMember: true,
-    role: 'ADMIN',
+    organizationRole: Role.Admin,
     members: organizationMembers,
   },
   OrganizationMemberListOrganizationFragment,
@@ -57,7 +57,7 @@ describe('OrganizationMemberList', () => {
         title: 'Org 1',
         canModify: false,
         isOrganizationMember: true,
-        role: 'MEMBER',
+        organizationRole: 'MEMBER',
         members: organizationMembers,
       },
       OrganizationMemberListOrganizationFragment,
@@ -76,7 +76,6 @@ describe('OrganizationMemberList', () => {
         title: 'Org 1',
         canModify: false,
         isOrganizationMember: false,
-        // role: 'MEMBER',
         members: [],
       },
       OrganizationMemberListOrganizationFragment,
@@ -104,7 +103,7 @@ describe('OrganizationMemberList', () => {
         title: 'Org 1',
         canModify: false,
         isOrganizationMember: true,
-        role: 'MEMBER',
+        organizationRole: 'MEMBER',
         members: organizationMembers,
       },
       OrganizationMemberListOrganizationFragment,

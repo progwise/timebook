@@ -8,12 +8,16 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const organizationMembershipCreateMutation = gql`
-  mutation organizationMembershipCreate($userId: ID!, $organizationId: ID!, $role: Role) {
-    organizationMembershipCreate(userId: $userId, organizationId: $organizationId, role: $role) {
+  mutation organizationMembershipCreate($userId: ID!, $organizationId: ID!, $organizationRole: Role) {
+    organizationMembershipCreate(
+      userId: $userId
+      organizationId: $organizationId
+      organizationRole: $organizationRole
+    ) {
       title
       members {
         id
-        role(organizationId: $organizationId)
+        organizationRole(organizationId: $organizationId)
       }
     }
   }
@@ -42,8 +46,8 @@ beforeEach(async () => {
       organizationMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '3', role: 'MEMBER' },
+            { userId: '1', organizationRole: 'ADMIN' },
+            { userId: '3', organizationRole: 'MEMBER' },
           ],
         },
       },
@@ -88,7 +92,7 @@ it('should throw an error when downgrading the last admin', async () => {
     variables: {
       userId: '1',
       organizationId: 'Organization 1',
-      role: 'MEMBER',
+      organizationRole: 'MEMBER',
     },
   })
   expect(response.errors).toEqual([new GraphQLError('Cannot remove the last admin of an organization')])
@@ -109,9 +113,9 @@ it('should create organizationMembership when session user is organization admin
     organizationMembershipCreate: {
       title: 'O1',
       members: [
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'MEMBER' },
-        { id: '2', role: 'MEMBER' },
+        { id: '1', organizationRole: 'ADMIN' },
+        { id: '3', organizationRole: 'MEMBER' },
+        { id: '2', organizationRole: 'MEMBER' },
       ],
     },
   })
@@ -124,7 +128,7 @@ it('user is already an organization member', async () => {
     variables: {
       userId: '3',
       organizationId: 'Organization 1',
-      role: 'ADMIN',
+      organizationRole: 'ADMIN',
     },
   })
   expect(response.errors).toBeUndefined()
@@ -132,8 +136,8 @@ it('user is already an organization member', async () => {
     organizationMembershipCreate: {
       title: 'O1',
       members: [
-        { id: '1', role: 'ADMIN' },
-        { id: '3', role: 'ADMIN' },
+        { id: '1', organizationRole: 'ADMIN' },
+        { id: '3', organizationRole: 'ADMIN' },
       ],
     },
   })

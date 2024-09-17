@@ -24,14 +24,14 @@ let members: OrganizationMemberListOrganizationFragment['members'] = [
   {
     id: '1',
     name: 'Admin of the organization',
-    role: Role.Admin,
+    organizationRole: Role.Admin,
     image: undefined,
     __typename: 'User',
   },
   {
     id: '2',
     name: ' Member of the organization',
-    role: Role.Member,
+    organizationRole: Role.Member,
     image: undefined,
     __typename: 'User',
   },
@@ -58,7 +58,7 @@ export const organizationHandlers = [
   mockOrganizationMembershipUpdateMutation((request, response, context) => {
     const member = members.find((member) => member.id === request.variables.userId)
     if (member) {
-      member.role = request.variables.role
+      member.organizationRole = request.variables.organizationRole
     }
     const result = response(
       context.data({

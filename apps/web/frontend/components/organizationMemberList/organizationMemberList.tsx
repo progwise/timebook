@@ -17,15 +17,19 @@ export const OrganizationMemberListOrganizationFragment = graphql(`
       id
       image
       name
-      role(organizationId: $organizationId)
+      organizationRole(organizationId: $organizationId)
       ...RemoveUserFromOrganizationButtonUser
     }
   }
 `)
 
 const OrganizationMembershipUpdateMutationDocument = graphql(`
-  mutation organizationMembershipUpdate($organizationId: ID!, $userId: ID!, $role: Role!) {
-    organizationMembershipCreate(organizationId: $organizationId, userId: $userId, role: $role) {
+  mutation organizationMembershipUpdate($organizationId: ID!, $userId: ID!, $organizationRole: Role!) {
+    organizationMembershipCreate(
+      organizationId: $organizationId
+      userId: $userId
+      organizationRole: $organizationRole
+    ) {
       id
     }
   }
@@ -40,11 +44,11 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
   const session = useSession()
   const [{ fetching }, updateOrganizationMembership] = useMutation(OrganizationMembershipUpdateMutationDocument)
 
-  const handleUpdateOrganizationMembership = async (userId: string, role: Role) => {
+  const handleUpdateOrganizationMembership = async (userId: string, organizationRole: Role) => {
     await updateOrganizationMembership({
       organizationId: organization.id,
       userId,
-      role,
+      organizationRole,
     })
   }
 
@@ -70,12 +74,12 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
                 </div>
               )}
               {user.name}
-              <OrganizationRoleLabel role={user.role} />
+              <OrganizationRoleLabel role={user.organizationRole} />
             </td>
             <td className="w-px">
               {user.id !== session.data?.user.id && organization.canModify && (
                 <RoleButton
-                  role={user.role}
+                  role={user.organizationRole}
                   loading={fetching}
                   onUpgrade={() => handleUpdateOrganizationMembership(user.id, Role.Admin)}
                   onDowngrade={() => handleUpdateOrganizationMembership(user.id, Role.Member)}

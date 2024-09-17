@@ -118,7 +118,7 @@ export type MutationOrganizationCreateArgs = {
 
 export type MutationOrganizationMembershipCreateArgs = {
   organizationId: Scalars['ID']
-  role?: Role
+  organizationRole?: Role
   userId: Scalars['ID']
 }
 
@@ -155,7 +155,7 @@ export type MutationProjectLockArgs = {
 
 export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
-  role?: Role
+  projectRole?: Role
   userId: Scalars['ID']
 }
 
@@ -237,6 +237,8 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
+  /** Can the user modify the entity */
+  organizationRole: Scalars['String']
   projects: Array<Project>
   title: Scalars['String']
 }
@@ -269,7 +271,7 @@ export type Project = ModifyInterface & {
   members: Array<User>
   organization?: Maybe<Organization>
   /** Can the user modify the entity */
-  role: Scalars['String']
+  projectRole: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
@@ -481,8 +483,10 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
-  /** Role of the user in a project or organization */
-  role: Role
+  /** Role of the user in an organization */
+  organizationRole: Role
+  /** Role of the user in a project */
+  projectRole: Role
 }
 
 export type UserDurationWorkedOnProjectArgs = {
@@ -491,9 +495,12 @@ export type UserDurationWorkedOnProjectArgs = {
   to?: InputMaybe<Scalars['Date']>
 }
 
-export type UserRoleArgs = {
-  organizationId?: InputMaybe<Scalars['ID']>
-  projectId?: InputMaybe<Scalars['ID']>
+export type UserOrganizationRoleArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type UserProjectRoleArgs = {
+  projectId: Scalars['ID']
 }
 
 export type WorkHour = {
@@ -616,7 +623,7 @@ export type OrganizationMemberListOrganizationFragment = ({
   id: string
   canModify: boolean
   members: Array<
-    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
+    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; organizationRole: Role } & {
       ' $fragmentRefs'?: { RemoveUserFromOrganizationButtonUserFragment: RemoveUserFromOrganizationButtonUserFragment }
     }
   >
@@ -629,7 +636,7 @@ export type OrganizationMemberListOrganizationFragment = ({
 export type OrganizationMembershipUpdateMutationVariables = Exact<{
   organizationId: Scalars['ID']
   userId: Scalars['ID']
-  role: Role
+  organizationRole: Role
 }>
 
 export type OrganizationMembershipUpdateMutation = {
@@ -746,7 +753,7 @@ export type ProjectMemberListProjectFragment = ({
   id: string
   canModify: boolean
   members: Array<
-    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role } & {
+    { __typename?: 'User'; id: string; image?: string | null; name?: string | null; projectRole: Role } & {
       ' $fragmentRefs'?: { RemoveUserFromProjectButtonUserFragment: RemoveUserFromProjectButtonUserFragment }
     }
   >
@@ -757,7 +764,7 @@ export type ProjectMemberListProjectFragment = ({
 export type ProjectMembershipUpdateMutationVariables = Exact<{
   projectId: Scalars['ID']
   userId: Scalars['ID']
-  role: Role
+  projectRole: Role
 }>
 
 export type ProjectMembershipUpdateMutation = {
@@ -1464,7 +1471,7 @@ export const OrganizationMemberListOrganizationFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'role' },
+                  name: { kind: 'Name', value: 'organizationRole' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -1793,7 +1800,7 @@ export const ProjectMemberListProjectFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'role' },
+                  name: { kind: 'Name', value: 'projectRole' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -3193,7 +3200,7 @@ export const OrganizationMembershipUpdateDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationRole' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Role' } } },
         },
       ],
@@ -3216,8 +3223,8 @@ export const OrganizationMembershipUpdateDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'role' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+                name: { kind: 'Name', value: 'organizationRole' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationRole' } },
               },
             ],
             selectionSet: {
@@ -3458,7 +3465,7 @@ export const ProjectMembershipUpdateDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectRole' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Role' } } },
         },
       ],
@@ -3481,8 +3488,8 @@ export const ProjectMembershipUpdateDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'role' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'role' } },
+                name: { kind: 'Name', value: 'projectRole' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectRole' } },
               },
             ],
             selectionSet: {
@@ -4671,7 +4678,7 @@ export const OrganizationDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'role' },
+                  name: { kind: 'Name', value: 'organizationRole' },
                   arguments: [
                     {
                       kind: 'Argument',
@@ -5139,7 +5146,7 @@ export const ProjectDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'role' },
+                  name: { kind: 'Name', value: 'projectRole' },
                   arguments: [
                     {
                       kind: 'Argument',

@@ -23,7 +23,7 @@ builder.mutationField('projectCreate', (t) =>
           projectMemberships: {
             create: {
               userId: context.session.user.id,
-              role: 'ADMIN',
+              projectRole: 'ADMIN',
             },
           },
         },

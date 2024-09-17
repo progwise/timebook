@@ -41,7 +41,7 @@ beforeEach(async () => {
     data: {
       organizationId: '100',
       userId: '1',
-      role: 'ADMIN',
+      organizationRole: 'ADMIN',
     },
   })
 })

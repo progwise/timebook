@@ -10,11 +10,14 @@ builder.mutationField('organizationMembershipCreate', (t) =>
     args: {
       userId: t.arg.id(),
       organizationId: t.arg.id(),
-      role: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
+      organizationRole: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
     },
     authScopes: (_, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
-    resolve: async (query, _source, { userId, organizationId, role }) => {
-      if (role === 'MEMBER' && (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString()))) {
+    resolve: async (query, _source, { userId, organizationId, organizationRole }) => {
+      if (
+        organizationRole === 'MEMBER' &&
+        (await isUserTheLastAdminOfOrganization(userId.toString(), organizationId.toString()))
+      ) {
         throw new Error('Cannot remove the last admin of an organization')
       }
 
@@ -24,9 +27,9 @@ builder.mutationField('organizationMembershipCreate', (t) =>
         create: {
           userId: userId.toString(),
           organizationId: organizationId.toString(),
-          role: role,
+          organizationRole: organizationRole,
         },
-        update: { role },
+        update: { organizationRole },
       })
 
       return organizationMembership.organization

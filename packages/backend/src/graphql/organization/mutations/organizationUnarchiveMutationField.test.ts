@@ -33,7 +33,7 @@ beforeEach(async () => {
       title: 'Organization 1',
       archivedAt: new Date(),
       organizationMemberships: {
-        create: { userId: '1', role: 'ADMIN' },
+        create: { userId: '1', organizationRole: 'ADMIN' },
       },
     },
   })

@@ -120,7 +120,7 @@ export type MutationOrganizationCreateArgs = {
 
 export type MutationOrganizationMembershipCreateArgs = {
   organizationId: Scalars['ID']
-  role?: Role
+  organizationRole?: Role
   userId: Scalars['ID']
 }
 
@@ -157,7 +157,7 @@ export type MutationProjectLockArgs = {
 
 export type MutationProjectMembershipCreateArgs = {
   projectId: Scalars['ID']
-  role?: Role
+  projectRole?: Role
   userId: Scalars['ID']
 }
 
@@ -239,6 +239,8 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
+  /** Can the user modify the entity */
+  organizationRole: Scalars['String']
   projects: Array<Project>
   title: Scalars['String']
 }
@@ -271,7 +273,7 @@ export type Project = ModifyInterface & {
   members: Array<User>
   organization?: Maybe<Organization>
   /** Can the user modify the entity */
-  role: Scalars['String']
+  projectRole: Scalars['String']
   startDate?: Maybe<Scalars['Date']>
   /** List of tasks that belong to the project. When the user is no longer a member of the project, only the tasks that the user booked work hours on are returned. */
   tasks: Array<Task>
@@ -483,8 +485,10 @@ export type User = {
   id: Scalars['ID']
   image?: Maybe<Scalars['String']>
   name?: Maybe<Scalars['String']>
-  /** Role of the user in a project or organization */
-  role: Role
+  /** Role of the user in an organization */
+  organizationRole: Role
+  /** Role of the user in a project */
+  projectRole: Role
 }
 
 export type UserDurationWorkedOnProjectArgs = {
@@ -493,9 +497,12 @@ export type UserDurationWorkedOnProjectArgs = {
   to?: InputMaybe<Scalars['Date']>
 }
 
-export type UserRoleArgs = {
-  organizationId?: InputMaybe<Scalars['ID']>
-  projectId?: InputMaybe<Scalars['ID']>
+export type UserOrganizationRoleArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type UserProjectRoleArgs = {
+  projectId: Scalars['ID']
 }
 
 export type WorkHour = {
@@ -604,13 +611,19 @@ export type OrganizationMemberListOrganizationFragment = {
   id: string
   canModify: boolean
   title: string
-  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+  members: Array<{
+    __typename?: 'User'
+    id: string
+    image?: string | null
+    name?: string | null
+    organizationRole: Role
+  }>
 }
 
 export type OrganizationMembershipUpdateMutationVariables = Exact<{
   organizationId: Scalars['ID']
   userId: Scalars['ID']
-  role: Role
+  organizationRole: Role
 }>
 
 export type OrganizationMembershipUpdateMutation = {
@@ -709,13 +722,13 @@ export type ProjectMemberListProjectFragment = {
   id: string
   canModify: boolean
   title: string
-  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+  members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; projectRole: Role }>
 }
 
 export type ProjectMembershipUpdateMutationVariables = Exact<{
   projectId: Scalars['ID']
   userId: Scalars['ID']
-  role: Role
+  projectRole: Role
 }>
 
 export type ProjectMembershipUpdateMutation = {
@@ -1119,7 +1132,13 @@ export type OrganizationQuery = {
       endDate?: string | null
       members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
     }>
-    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      image?: string | null
+      name?: string | null
+      organizationRole: Role
+    }>
   }
 }
 
@@ -1184,7 +1203,7 @@ export type ProjectQuery = {
       hasWorkHours: boolean
     }>
     organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
-    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; role: Role }>
+    members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; projectRole: Role }>
   }
   organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
 }
@@ -1387,7 +1406,7 @@ export const mockOrganizationUnarchiveMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockOrganizationMembershipUpdateMutation((req, res, ctx) => {
- *   const { organizationId, userId, role } = req.variables;
+ *   const { organizationId, userId, organizationRole } = req.variables;
  *   return res(
  *     ctx.data({ organizationMembershipCreate })
  *   )
@@ -1513,7 +1532,7 @@ export const mockProjectMembershipInvitationCreateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockProjectMembershipUpdateMutation((req, res, ctx) => {
- *   const { projectId, userId, role } = req.variables;
+ *   const { projectId, userId, projectRole } = req.variables;
  *   return res(
  *     ctx.data({ projectMembershipCreate })
  *   )

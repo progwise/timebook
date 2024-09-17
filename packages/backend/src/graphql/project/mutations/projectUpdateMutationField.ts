@@ -50,7 +50,7 @@ builder.mutationField('projectUpdate', (t) =>
         data: projectMemberships.map((membership) => ({
           userId: membership.userId,
           organizationId,
-          role: 'MEMBER',
+          projectRole: 'MEMBER',
         })),
         skipDuplicates: true,
       })
