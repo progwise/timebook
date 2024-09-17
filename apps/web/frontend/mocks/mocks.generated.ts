@@ -239,8 +239,6 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
-  /** Can the user modify the entity */
-  organizationRole: Scalars['String']
   projects: Array<Project>
   title: Scalars['String']
 }
