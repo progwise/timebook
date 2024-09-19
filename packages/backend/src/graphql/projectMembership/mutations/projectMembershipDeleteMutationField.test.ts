@@ -141,3 +141,32 @@ it('should delete an existing projectMembership when role=Admin', async () => {
     },
   })
 })
+
+it('should delete an admin when there are more than one admin', async () => {
+  await prisma.projectMembership.update({
+    where: { userId_projectId: { projectId: 'project1', userId: '3' } },
+    data: { projectRole: 'ADMIN' },
+  })
+  const testServer = getTestServer({ userId: '3' })
+  const response = await testServer.executeOperation({
+    query: projectMembershipDeleteMutation,
+    variables: {
+      userId: '1',
+      projectId: 'project1',
+    },
+  })
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toEqual({
+    projectMembershipDelete: {
+      members: [{ id: '3', projectRole: 'ADMIN' }],
+      title: 'P1',
+    },
+  })
+
+  const deletedMembership = await prisma.projectMembership.findUnique({
+    where: {
+      userId_projectId: { projectId: 'project1', userId: '1' },
+    },
+  })
+  expect(deletedMembership).toBeNull()
+})
