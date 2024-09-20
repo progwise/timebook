@@ -27,7 +27,7 @@ builder.mutationField('projectUpdate', (t) =>
       }
     },
     resolve: async (query, _source, { id, data: { title, start, end, organizationId } }) => {
-      return prisma.project.update({
+      const project = await prisma.project.update({
         ...query,
         where: { id: id.toString() },
         data: {
@@ -37,6 +37,25 @@ builder.mutationField('projectUpdate', (t) =>
           organizationId,
         },
       })
+
+      if (!organizationId) {
+        return project
+      }
+
+      const projectMemberships = await prisma.projectMembership.findMany({
+        where: { projectId: id.toString() },
+      })
+
+      await prisma.organizationMembership.createMany({
+        data: projectMemberships.map((membership) => ({
+          userId: membership.userId,
+          organizationId,
+          organizationRole: 'MEMBER',
+        })),
+        skipDuplicates: true,
+      })
+
+      return project
     },
   }),
 )

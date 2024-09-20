@@ -8,17 +8,13 @@ builder.queryField('organization', (t) =>
     args: {
       organizationId: t.arg.id({ description: 'Identifier for the Organization' }),
     },
-    resolve: (query, _source, { organizationId }, context) =>
+    authScopes: (_source, { organizationId }) => ({
+      isMemberByOrganization: organizationId.toString(),
+    }),
+    resolve: (query, _source, { organizationId }) =>
       prisma.organization.findUniqueOrThrow({
         ...query,
-        where: {
-          id: organizationId.toString(),
-          organizationMemberships: {
-            some: {
-              userId: context.session.user.id,
-            },
-          },
-        },
+        where: { id: organizationId.toString() },
       }),
   }),
 )

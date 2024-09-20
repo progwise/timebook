@@ -4,9 +4,9 @@ import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
+import { RoleButton } from '../roleButton'
+import { ProjectRoleLabel } from './projectRoleLabel'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
-import { RoleButton } from './roleButton'
-import { RoleLabel } from './roleLabel'
 
 export const ProjectMemberListProjectFragment = graphql(`
   fragment ProjectMemberListProject on Project {
@@ -17,15 +17,15 @@ export const ProjectMemberListProjectFragment = graphql(`
       id
       image
       name
-      role(projectId: $projectId)
+      projectRole(projectId: $projectId)
       ...RemoveUserFromProjectButtonUser
     }
   }
 `)
 
 const ProjectMembershipUpdateMutationDocument = graphql(`
-  mutation projectMembershipUpdate($projectId: ID!, $userId: ID!, $role: Role!) {
-    projectMembershipCreate(projectId: $projectId, userId: $userId, role: $role) {
+  mutation projectMembershipUpdate($projectId: ID!, $userId: ID!, $projectRole: Role!) {
+    projectMembershipCreate(projectId: $projectId, userId: $userId, projectRole: $projectRole) {
       id
     }
   }
@@ -40,11 +40,11 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
   const session = useSession()
   const [{ fetching }, updateProjectMembership] = useMutation(ProjectMembershipUpdateMutationDocument)
 
-  const handleUpdateProjectMembership = async (userId: string, role: Role) => {
+  const handleUpdateProjectMembership = async (userId: string, projectRole: Role) => {
     await updateProjectMembership({
       projectId: project.id,
       userId,
-      role,
+      projectRole,
     })
   }
 
@@ -70,12 +70,12 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
                 </div>
               )}
               {user.name}
-              <RoleLabel role={user.role} />
+              <ProjectRoleLabel role={user.projectRole} />
             </td>
             <td className="w-px">
               {user.id !== session.data?.user.id && project.canModify && (
                 <RoleButton
-                  role={user.role}
+                  role={user.projectRole}
                   loading={fetching}
                   onUpgrade={() => handleUpdateProjectMembership(user.id, Role.Admin)}
                   onDowngrade={() => handleUpdateProjectMembership(user.id, Role.Member)}

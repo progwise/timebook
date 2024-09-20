@@ -34,10 +34,13 @@ model Organization {
 model OrganizationMembership {
   userId         String
   organizationId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  organizationRole Role     @default(MEMBER)
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@id([userId, organizationId])
 }
@@ -71,7 +74,7 @@ model ProjectMembership {
 
   joinedAt     DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  role         Role     @default(MEMBER)
+  projectRole  Role     @default(MEMBER)
   invitationId String?
 
   user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)

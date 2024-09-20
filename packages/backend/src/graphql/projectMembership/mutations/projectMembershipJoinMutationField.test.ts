@@ -147,3 +147,40 @@ it('should not throw error when user is already a member of the project', async 
     },
   })
 })
+
+it('should add user to organization when joining project of organization', async () => {
+  await prisma.organization.create({
+    data: {
+      id: 'organization1',
+      title: 'Test organization',
+    },
+  })
+
+  await prisma.project.update({
+    where: {
+      id: 'project1',
+    },
+    data: {
+      organizationId: 'organization1',
+    },
+  })
+
+  const testServer = getTestServer({ userId: '2' })
+
+  const response = await testServer.executeOperation({
+    query: projectMembershipJoin,
+    variables: {
+      invitationKey: 'test-invite-key',
+    },
+  })
+
+  expect(response.errors).toBeUndefined()
+
+  const organizationMembership = await prisma.organizationMembership.findUnique({
+    where: {
+      userId_organizationId: { userId: '2', organizationId: 'organization1' },
+    },
+  })
+
+  expect(organizationMembership?.organizationRole).toBe('MEMBER')
+})

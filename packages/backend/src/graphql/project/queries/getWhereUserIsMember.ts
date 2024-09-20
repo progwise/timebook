@@ -6,7 +6,7 @@ export const getWhereUserIsMember = (userId: string, isAdmin = false): Prisma.Pr
       projectMemberships: {
         some: {
           userId,
-          role: isAdmin ? 'ADMIN' : undefined,
+          projectRole: isAdmin ? 'ADMIN' : undefined,
         },
       },
     },
@@ -15,6 +15,7 @@ export const getWhereUserIsMember = (userId: string, isAdmin = false): Prisma.Pr
         organizationMemberships: {
           some: {
             userId,
+            organizationRole: 'ADMIN',
           },
         },
       },

@@ -19,12 +19,12 @@ const members = [
   {
     id: '1',
     name: 'Admin of the project',
-    role: Role.Admin,
+    projectRole: Role.Admin,
   },
   {
     id: '2',
     name: 'Member of the project',
-    role: Role.Member,
+    projectRole: Role.Member,
   },
 ]
 const project = makeFragmentData(
@@ -33,7 +33,7 @@ const project = makeFragmentData(
     title: 'Project 1',
     canModify: true,
     isProjectMember: true,
-    role: 'ADMIN',
+    projectRole: 'ADMIN',
     members,
   },
   ProjectMemberListProjectFragment,
@@ -64,7 +64,7 @@ describe('ProjectMemberList', () => {
         title: 'Project 1',
         canModify: false,
         isProjectMember: true,
-        role: 'MEMBER',
+        projectRole: 'MEMBER',
         members,
       },
       ProjectMemberListProjectFragment,
@@ -91,7 +91,7 @@ describe('ProjectMemberList', () => {
         title: 'Project 1',
         canModify: false,
         isProjectMember: true,
-        role: 'MEMBER',
+        projectRole: 'MEMBER',
         members,
       },
       ProjectMemberListProjectFragment,

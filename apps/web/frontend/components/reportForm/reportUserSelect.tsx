@@ -35,7 +35,7 @@ interface ReportUserSelectProps {
 }
 
 export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from, to }: ReportUserSelectProps) => {
-  const context = useMemo(() => ({ __additionalTypnames: ['User'] }), [])
+  const context = useMemo(() => ({ additionalTypenames: ['User'] }), [])
   const [{ data, fetching }] = useQuery({
     query: ReportUsersQueryDocument,
     variables: { projectId, from: format(from, 'yyyy-MM-dd'), to: format(to, 'yyyy-MM-dd') },

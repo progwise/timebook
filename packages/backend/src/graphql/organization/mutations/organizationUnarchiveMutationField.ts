@@ -12,14 +12,7 @@ builder.mutationField('organizationUnarchive', (t) =>
     authScopes: (_source, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (query, _source, arguments_) => {
       const organizationId = arguments_.organizationId.toString()
-      const organization = await prisma.organization.findUnique({
-        select: { archivedAt: true },
-        where: { id: organizationId },
-      })
 
-      if (!organization) {
-        throw new Error('Organization not found')
-      }
       return prisma.organization.update({
         ...query,
         where: { id: organizationId },

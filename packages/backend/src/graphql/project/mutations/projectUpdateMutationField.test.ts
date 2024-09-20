@@ -44,8 +44,8 @@ beforeEach(async () => {
       projectMemberships: {
         createMany: {
           data: [
-            { userId: '1', role: 'ADMIN' },
-            { userId: '3', role: 'MEMBER' },
+            { userId: '1', projectRole: 'ADMIN' },
+            { userId: '3', projectRole: 'MEMBER' },
           ],
         },
       },
@@ -104,7 +104,7 @@ describe('Error', () => {
 })
 
 describe('Success', () => {
-  it('should update a project when user is project member and has role ADMIN', async () => {
+  it('should update a project when user is project member and has role=Admin', async () => {
     const testServer = getTestServer({ userId: '1' })
     const response = await testServer.executeOperation({
       query: projectUpdateMutation,

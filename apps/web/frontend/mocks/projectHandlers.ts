@@ -17,14 +17,14 @@ let members: ProjectMemberListProjectFragment['members'] = [
   {
     id: '1',
     name: 'Admin of the project',
-    role: Role.Admin,
+    projectRole: Role.Admin,
     image: undefined,
     __typename: 'User',
   },
   {
     id: '2',
     name: ' Member of the project',
-    role: Role.Member,
+    projectRole: Role.Member,
     image: undefined,
     __typename: 'User',
   },
@@ -55,7 +55,7 @@ export const projectHandlers = [
   mockProjectMembershipUpdateMutation((request, response, context) => {
     const member = members.find((member) => member.id === request.variables.userId)
     if (member) {
-      member.role = request.variables.role
+      member.projectRole = request.variables.projectRole
     }
     const result = response(
       context.data({
@@ -81,7 +81,7 @@ export const projectHandlers = [
     )
     return result
   }),
-  mockMyProjectsQuery((request, response, context) => {
+  mockMyProjectsQuery((_request, response, context) => {
     const result = response(
       context.data({
         __typename: 'Query',
