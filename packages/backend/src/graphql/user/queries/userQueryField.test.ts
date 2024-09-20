@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
 
-import { getTestServer } from '../../getTestServer'
+import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
