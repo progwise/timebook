@@ -8,30 +8,12 @@ import { getTestServer } from '../../getTestServer'
 const prisma = new PrismaClient()
 
 const durationWorkedOnProjectQuery = gql`
-  query durationWorkedOnProject($userID: ID!, $projectID: ID!, $from: Date!, $to: Date) {
+  query durationWorkedOnProject($userID: ID!, $projectID: ID!, $from: Date!) {
     user(userId: $userID) {
-      durationWorkedOnProject(projectId: $projectID, from: $from, to: $to)
-      # {
-      #   projectId
-      #   from
-      #   to
-      # }
+      durationWorkedOnProject(projectId: $projectID, from: $from)
     }
   }
 `
-
-// const durationWorkedOnProjectQuery = gql`
-//   query durationWorkedOnProject($userID: ID!, $projectID: ID!, $from: Date!, $to: Date) {
-//     durationWorkedOnProject(projectId: $projectID, from: $from, to: $to) {
-//       projectId
-//       from
-//       to
-//       user(userId: $userID) {
-//         id
-//       }
-//     }
-//   }
-// `
 
 beforeEach(async () => {
   await prisma.workHour.deleteMany()
