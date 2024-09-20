@@ -36,6 +36,16 @@ builder.mutationField('organizationMembershipDelete', (t) =>
           },
         },
       })
+
+      await prisma.projectMembership.deleteMany({
+        where: {
+          userId: userId.toString(),
+          project: {
+            organizationId: organizationId.toString(),
+          },
+        },
+      })
+
       return prisma.organization.findUniqueOrThrow({ ...query, where: { id: organizationId.toString() } })
     },
   }),
