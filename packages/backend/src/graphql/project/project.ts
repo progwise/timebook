@@ -4,6 +4,7 @@ import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
 import { MonthInputType } from './monthInputType'
+import { getWhereUserIsMember } from './queries/getWhereUserIsMember'
 
 export const Project = builder.prismaObject('Project', {
   select: {},
@@ -77,12 +78,11 @@ export const Project = builder.prismaObject('Project', {
       description: 'Can the user modify the entity',
       select: { id: true },
       resolve: async (project, _arguments, context) => {
-        const projectMembership = await prisma.projectMembership.findUnique({
-          select: { projectRole: true },
-          where: { userId_projectId: { projectId: project.id, userId: context.session.user.id } },
+        const projectOnlyDefinedWhenUserIsAdmin = await prisma.project.findUnique({
+          where: { ...getWhereUserIsMember(context.session.user.id, true), id: project.id },
         })
 
-        return projectMembership?.projectRole === 'ADMIN'
+        return !!projectOnlyDefinedWhenUserIsAdmin
       },
     }),
     isLocked: t.withAuth({ isLoggedIn: true }).boolean({
