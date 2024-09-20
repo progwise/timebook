@@ -21,6 +21,7 @@ export const builder = new SchemaBuilder<{
     isMemberByProject: string
     isMemberByProjects: string[]
     isMemberByTask: string
+    isMemberByOrganization: string
     isAdminByProject: string
     isAdminByProjects: string[]
     isAdminByTask: string
@@ -118,6 +119,21 @@ export const builder = new SchemaBuilder<{
 
       return !!task
     },
+    isMemberByOrganization: async (organizationId) => {
+      if (!context.session) {
+        return false
+      }
+      const organizationMembership = await prisma.organizationMembership.findUnique({
+        where: {
+          userId_organizationId: {
+            userId: context.session.user.id,
+            organizationId,
+          },
+        },
+      })
+
+      return !!organizationMembership
+    },
     isAdminByOrganization: async (organizationId) => {
       if (!context.session) {
         return false
@@ -128,6 +144,7 @@ export const builder = new SchemaBuilder<{
             userId: context.session.user.id,
             organizationId,
           },
+          organizationRole: 'ADMIN',
         },
       })
 

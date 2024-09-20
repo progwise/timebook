@@ -16,11 +16,11 @@ builder.mutationField('projectMembershipDelete', (t) =>
         where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
       })
       if (!projectMembership) {
-        throw new Error('project membership not found')
+        throw new Error('Project membership not found')
       }
 
       if (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString())) {
-        throw new Error('Membership can not be deleted because user is the last admin')
+        throw new Error('Membership cannot be deleted because the user is the last admin')
       }
 
       await prisma.projectMembership.delete({

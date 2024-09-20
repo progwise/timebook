@@ -46,7 +46,7 @@ export const RemoveUserFromProjectButton = (props: RemoveUserFromProjectButtonPr
       <button
         className="btn btn-error btn-sm"
         onClick={() => dialogReference.current?.showModal()}
-        title="Remove user from project"
+        title="Remove user from the project"
         type="button"
       >
         <FaArrowRightFromBracket />

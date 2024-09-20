@@ -59,6 +59,16 @@ type Mutation {
   organizationCreate(data: OrganizationInput!): Organization!
 
   """
+  Assign user to an organization
+  """
+  organizationMembershipCreate(organizationId: ID!, organizationRole: Role! = MEMBER, userId: ID!): Organization!
+
+  """
+  Unassign user from an organization
+  """
+  organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
+
+  """
   Unarchive an organization
   """
   organizationUnarchive(organizationId: ID!): Organization!
@@ -92,7 +102,7 @@ type Mutation {
   """
   Assign user to a project. This mutation can also be used for updating the role of a project member
   """
-  projectMembershipCreate(projectId: ID!, role: Role! = MEMBER, userId: ID!): Project!
+  projectMembershipCreate(projectId: ID!, projectRole: Role! = MEMBER, userId: ID!): Project!
 
   """
   Unassign user from a project
@@ -218,6 +228,11 @@ type Organization implements ModifyInterface {
   """
   id: ID!
   isArchived: Boolean!
+
+  """
+  List of users that are member of the organization
+  """
+  members: [User!]!
   projects: [Project!]!
   title: String!
 }
@@ -276,7 +291,7 @@ type Project implements ModifyInterface {
   """
   Can the user modify the entity
   """
-  role: String!
+  projectRole: String!
   startDate: Date
 
   """
@@ -524,9 +539,14 @@ type User {
   name: String
 
   """
+  Role of the user in an organization
+  """
+  organizationRole(organizationId: ID!): Role!
+
+  """
   Role of the user in a project
   """
-  role(projectId: ID!): Role!
+  projectRole(projectId: ID!): Role!
 }
 
 type WorkHour {

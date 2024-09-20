@@ -65,7 +65,7 @@ beforeEach(async () => {
   await prisma.workHour.create({ data: { date: new Date(), userId: '2', duration: 60, taskId: 'T1' } })
 })
 
-it('should throw error when not signed in', async () => {
+it('should throw an error when the user is not signed in', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({ query: projectsQuery, variables: { from: '2023-01-01' } })
 

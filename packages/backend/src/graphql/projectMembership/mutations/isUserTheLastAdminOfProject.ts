@@ -2,7 +2,7 @@ import { prisma } from '../../prisma'
 
 export const isUserTheLastAdminOfProject = async (userId: string, projectId: string) => {
   const numberOfAdminsOfProject = await prisma.projectMembership.count({
-    where: { projectId: projectId.toString(), role: 'ADMIN' },
+    where: { projectId: projectId.toString(), projectRole: 'ADMIN' },
   })
 
   if (numberOfAdminsOfProject > 1) {
@@ -10,9 +10,9 @@ export const isUserTheLastAdminOfProject = async (userId: string, projectId: str
   }
 
   const currentMembership = await prisma.projectMembership.findUnique({
-    select: { role: true },
+    select: { projectRole: true },
     where: { userId_projectId: { projectId: projectId.toString(), userId: userId.toString() } },
   })
 
-  return currentMembership?.role === 'ADMIN'
+  return currentMembership?.projectRole === 'ADMIN'
 }

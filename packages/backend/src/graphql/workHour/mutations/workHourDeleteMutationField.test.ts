@@ -26,7 +26,7 @@ describe('workHourDeleteMutationField', () => {
       data: [
         {
           id: '1',
-          name: 'Test User with project membership (role=member)',
+          name: 'Test User with project membership (role=Member)',
         },
         {
           id: '2',
@@ -58,7 +58,7 @@ describe('workHourDeleteMutationField', () => {
           },
         },
         projectMemberships: {
-          createMany: { data: [{ userId: '1' }, { userId: '3', role: 'ADMIN' }] },
+          createMany: { data: [{ userId: '1' }, { userId: '3', projectRole: 'ADMIN' }] },
         },
       },
     })

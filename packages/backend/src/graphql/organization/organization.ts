@@ -1,6 +1,7 @@
 import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
+import { getWhereUserIsMember } from '../project/queries/getWhereUserIsMember'
 
 export const Organization = builder.prismaObject('Organization', {
   select: { id: true },
@@ -9,10 +10,11 @@ export const Organization = builder.prismaObject('Organization', {
     id: t.exposeID('id', { description: 'identifies the organization' }),
     title: t.exposeString('title'),
     address: t.exposeString('address', {
-      authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
       nullable: true,
     }),
-    projects: t.relation('projects', { authScopes: (organization) => ({ isAdminByOrganization: organization.id }) }),
+    projects: t.withAuth({ isLoggedIn: true }).relation('projects', {
+      query: (_arguments, context) => ({ where: getWhereUserIsMember(context.session.user.id) }),
+    }),
     isArchived: t.boolean({
       select: { archivedAt: true },
       resolve: (organization) => !!organization.archivedAt,
@@ -22,11 +24,24 @@ export const Organization = builder.prismaObject('Organization', {
       select: { id: true },
       resolve: async (organization, _arguments, context) => {
         const organizationMembership = await prisma.organizationMembership.findUnique({
+          select: { organizationRole: true },
           where: { userId_organizationId: { organizationId: organization.id, userId: context.session.user.id } },
         })
 
-        return !!organizationMembership
+        return organizationMembership?.organizationRole === 'ADMIN'
       },
+    }),
+    members: t.prismaField({
+      description: 'List of users that are member of the organization',
+      select: { id: true },
+      authScopes: (organization) => ({ isMemberByOrganization: organization.id }),
+      type: ['User'],
+      resolve: (query, organization) =>
+        prisma.user.findMany({
+          ...query,
+          where: { organizationMemberships: { some: { organizationId: organization.id } } },
+          orderBy: { name: 'asc' },
+        }),
     }),
   }),
 })

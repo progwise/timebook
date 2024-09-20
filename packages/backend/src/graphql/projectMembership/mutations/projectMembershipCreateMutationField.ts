@@ -10,12 +10,12 @@ builder.mutationField('projectMembershipCreate', (t) =>
     args: {
       userId: t.arg.id(),
       projectId: t.arg.id(),
-      role: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
+      projectRole: t.arg({ type: RoleEnum, defaultValue: 'MEMBER' }),
     },
     authScopes: (_source, { projectId }) => ({ isAdminByProject: projectId.toString() }),
-    resolve: async (query, _source, { userId, projectId, role }) => {
-      if (role === 'MEMBER' && (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString()))) {
-        throw new Error('Membership can not be changed because user is the last admin')
+    resolve: async (query, _source, { userId, projectId, projectRole }) => {
+      if (projectRole === 'MEMBER' && (await isUserTheLastAdminOfProject(userId.toString(), projectId.toString()))) {
+        throw new Error('Membership cannot be changed because user is the last admin')
       }
 
       const projectMembership = await prisma.projectMembership.upsert({
@@ -24,9 +24,9 @@ builder.mutationField('projectMembershipCreate', (t) =>
         create: {
           userId: userId.toString(),
           projectId: projectId.toString(),
-          role: role,
+          projectRole: projectRole,
         },
-        update: { role },
+        update: { projectRole },
       })
 
       return projectMembership.project
