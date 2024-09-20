@@ -11,27 +11,9 @@ const durationWorkedOnProjectQuery = gql`
   query durationWorkedOnProject($userID: ID!, $projectID: ID!, $from: Date!, $to: Date) {
     user(userId: $userID) {
       durationWorkedOnProject(projectId: $projectID, from: $from, to: $to)
-      # {
-      #   projectId
-      #   from
-      #   to
-      # }
     }
   }
 `
-
-// const durationWorkedOnProjectQuery = gql`
-//   query durationWorkedOnProject($userID: ID!, $projectID: ID!, $from: Date!, $to: Date) {
-//     durationWorkedOnProject(projectId: $projectID, from: $from, to: $to) {
-//       projectId
-//       from
-//       to
-//       user(userId: $userID) {
-//         id
-//       }
-//     }
-//   }
-// `
 
 beforeEach(async () => {
   await prisma.workHour.deleteMany()
