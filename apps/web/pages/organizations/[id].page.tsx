@@ -77,16 +77,22 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
+      {/* <div className="h-full"> */}
       <div role="tablist" className="tabs tabs-lifted tabs-lg">
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Projects" defaultChecked />
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
-          <ProjectTable projects={selectedOrganization.projects} />
+          {selectedOrganization.projects.length > 0 ? (
+            <ProjectTable projects={selectedOrganization.projects} />
+          ) : (
+            <div>There is currently no projects in this organization</div>
+          )}
         </div>
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
           <OrganizationMemberList organization={selectedOrganization} />
         </div>
       </div>
+      {/* </div> */}
     </ProtectedPage>
   )
 }

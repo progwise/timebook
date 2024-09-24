@@ -234,9 +234,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
               {...register('organizationId', { disabled: isSubmitting })}
             >
-              <option value="" disabled>
-                Select an organization
-              </option>
+              <option value="">No organization</option>
               {organizations.map((organization) => (
                 <option key={organization.id} value={organization.id}>
                   {organization.title} {organization.isArchived && '(archived)'}
