@@ -34,7 +34,7 @@ const ProjectUpdateMutationDocument = graphql(`
 const ProjectDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const context = useMemo(() => ({ additionalTypenames: ['Task', 'User'] }), [])
+  const context = useMemo(() => ({ additionalTypenames: ['Task', 'User', 'Organization'] }), [])
   const [{ data, fetching }] = useQuery({
     query: ProjectQueryDocument,
     variables: { projectId: id?.toString() ?? '' },

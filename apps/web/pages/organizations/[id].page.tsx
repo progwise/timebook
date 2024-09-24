@@ -33,7 +33,7 @@ const OrganizationUpdateMutationDocument = graphql(`
 const OrganizationDetails = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
-  const context = useMemo(() => ({ additionalTypenames: ['User'] }), [])
+  const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
     variables: { organizationId: id?.toString() ?? '' },
