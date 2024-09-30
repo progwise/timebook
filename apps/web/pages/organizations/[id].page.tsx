@@ -77,7 +77,6 @@ const OrganizationDetails = (): JSX.Element => {
         onSubmit={handleSubmit}
         hasError={!!organizationUpdateResult.error}
       />
-      {/* <div className="h-full"> */}
       <div role="tablist" className="tabs tabs-lifted tabs-lg">
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Projects" defaultChecked />
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
@@ -92,7 +91,6 @@ const OrganizationDetails = (): JSX.Element => {
           <OrganizationMemberList organization={selectedOrganization} />
         </div>
       </div>
-      {/* </div> */}
     </ProtectedPage>
   )
 }
