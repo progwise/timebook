@@ -58,6 +58,7 @@ export default withUrqlClient(
         cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
       },
     }),
+    requestPolicy: 'cache-and-network',
   }),
   { ssr: true },
 )(TimebookApp)
