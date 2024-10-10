@@ -27,6 +27,9 @@ model Organization {
   updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
 
+  subscriptionStatus    Boolean   @default(false)
+  subscriptionExpiresAt DateTime?
+
   organizationMemberships OrganizationMembership[]
   projects                Project[]
 }
