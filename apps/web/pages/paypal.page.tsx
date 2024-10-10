@@ -18,8 +18,7 @@ const PayPalPage = (): JSX.Element => {
   useEffect(() => {
     const script = document.createElement('script')
     script.async = true
-    script.src =
-      'https://www.paypal.com/sdk/js?client-id=AYcvyAIL8uS28byzWlowgR6pQgOyffZuOR-9e4gy6gl9I6BMRPOxqQf20tvyprzuj67iZfih5CBxqBk1'
+    script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.PAYPAL_CLIENT_ID}`
     script.addEventListener('load', () => {
       window.paypal
         .Buttons({
@@ -39,8 +38,8 @@ const PayPalPage = (): JSX.Element => {
             const order = await response.json()
             return order.id
           },
-          onApprove: (_data, actions) => {
-            return actions.order.capture().then((details) => {
+          onApprove: (actions: any) => {
+            return actions.order.capture().then((details: any) => {
               alert('Transaction completed by ' + details.payer.name.given_name)
             })
           },
