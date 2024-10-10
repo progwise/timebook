@@ -20,6 +20,7 @@
     "@hookform/error-message": "^2.0.0",
     "@hookform/resolvers": "^3.0.0",
     "@next-auth/prisma-adapter": "^1.0.7",
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@prisma/client": "^4.2.1",
     "@progwise/timebook-backend": "workspace:*",
     "@progwise/timebook-ui": "workspace:*",
