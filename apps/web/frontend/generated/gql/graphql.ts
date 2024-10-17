@@ -238,6 +238,10 @@ export type Organization = ModifyInterface & {
   /** List of users that are member of the organization */
   members: Array<User>
   projects: Array<Project>
+  /** Date when the current subscription expires */
+  subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
+  /** Is subscription active or inactive */
+  subscriptionStatus: Scalars['Boolean']
   title: Scalars['String']
 }
 
