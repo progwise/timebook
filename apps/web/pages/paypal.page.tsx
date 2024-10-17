@@ -1,58 +1,110 @@
+import {
+  PayPalButtons,
+  PayPalButtonsComponentProps,
+  PayPalScriptProvider,
+  ReactPayPalScriptOptions,
+} from '@paypal/react-paypal-js'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 
+// function createSubscription() {
+//   return fetch('/api/paypal', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       // items: [
+//       //   { id: 1, quantity: 1 },
+//       //   { id: 2, quantity: 2 },
+//       // ],
+//     }),
+//   })
+//     .then((response) => response.json())
+//     .then((subscription) => {
+//       return subscription.id
+//     })
+// }
+
+// function onApprove(data: any) {
+//   return fetch('/api/paypal', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       orderID: data.orderID,
+//     }),
+//   })
+//     .then((response) => response.json())
+//     .then((orderData) => {
+//       alert('Transaction completed by ' + orderData.payer.name.given_name)
+//     })
+// }
+
+// const PayPalButtonWrapper = () => {
+//   const [{ options }, dispatch] = usePayPalScriptReducer()
+//   const [currency, setCurrency] = useState(options.currency)
+
+//   function onCurrencyChange({ target: { value } }: any) {
+//     setCurrency(value)
+//     dispatch({ type: 'resetOptions', value: { ...options, currency: value } })
+//   }
+
+//   return (
+//     <>
+//       <select value={currency} onChange={onCurrencyChange}>
+//         <option value="USD">US Dollar</option>
+//         <option value="EUR">Euro</option>
+//       </select>
+
+//       <PayPalButtons createOrder={createOrder} onApprove={onApprove} style={{ layout: 'vertical' }} />
+//     </>
+//   )
+// }
+
+const onApprove: PayPalButtonsComponentProps['onApprove'] = async (data) => {
+  alert(`You have successfully subscribed to ${data.subscriptionID}`)
+}
+
+function onError() {
+  // window.location.assign('/error-page')
+  alert('An error has occured')
+}
+
+function onCancel() {
+  // window.location.assign('/error-page')
+  alert('A cancel has occured')
+}
+
 const PayPalPage = (): JSX.Element => {
-  // const [paidFor, setPaidFor] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  // let paypalRef = useRef()
-
-  // const product = {
-  //   price: 777.77,
-  //   description: 'chair'
-  // }
+  // eslint-disable-next-line unicorn/no-null
+  const [planId, setPlanId] = useState<string | null>(null)
 
   useEffect(() => {
-    const script = document.createElement('script')
-    script.async = true
-    script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.PAYPAL_CLIENT_ID}`
-    script.addEventListener('load', () => {
-      window.paypal
-        .Buttons({
-          createOrder: async () => {
-            const response = await fetch('/api/paypal', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                items: [
-                  { id: 1, quantity: 1 },
-                  { id: 2, quantity: 1 },
-                ],
-              }),
-            })
-            const order = await response.json()
-            return order.id
-          },
-          onApprove: (actions: any) => {
-            return actions.order.capture().then((details: any) => {
-              alert('Transaction completed by ' + details.payer.name.given_name)
-            })
-          },
-        })
-        .render('#paypal-button-container')
-      setIsLoaded(false)
-    })
-    document.body.append(script)
-
-    return () => {
-      script.remove()
-    }
+    fetch('/api/paypal', { method: 'POST' })
+      .then((response) => response.json())
+      .then((data) => setPlanId(data.planId))
   }, [])
+
+  const initialOptions: ReactPayPalScriptOptions = {
+    clientId:
+      // process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
+      'AYcvyAIL8uS28byzWlowgR6pQgOyffZuOR-9e4gy6gl9I6BMRPOxqQf20tvyprzuj67iZfih5CBxqBk1',
+    vault: true,
+    intent: 'subscription',
+  }
+
+  const createSubscription: PayPalButtonsComponentProps['createSubscription'] = (data, actions) => {
+    return actions.subscription.create({
+      plan_id: planId!,
+    })
+  }
+
+  // console.log(planId)
 
   return (
     <ProtectedPage>
@@ -61,10 +113,19 @@ const PayPalPage = (): JSX.Element => {
         <meta name="description" content="PayPal integration page" />
       </Head>
       <PageHeading>PayPal Integration</PageHeading>
-      <div id="paypal-button-container" />
-      {/* {paidFor ? (
-        <h1>Thank you for your purchase!</h1>
-      ) : (<div><h1>{product.description} for ${product.price}</h1></div>)} */}
+      <div style={{ maxWidth: '750px', minHeight: '200px' }}>
+        {/* {planId && ( */}
+        <PayPalScriptProvider options={initialOptions}>
+          <PayPalButtons
+            createSubscription={createSubscription}
+            onApprove={onApprove}
+            onError={onError}
+            onCancel={onCancel}
+            style={{ layout: 'vertical' }}
+          />
+        </PayPalScriptProvider>
+        {/* )} */}
+      </div>
     </ProtectedPage>
   )
 }
