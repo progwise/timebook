@@ -1,22 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-// const Environment = process.env.NODE_ENV === 'production' ? paypal.core.LiveEnvironment : paypal.core.SandboxEnvironment
-
-// const paypalClient = new paypal.core.PayPalHttpClient(
-//   new Environment(
-//     process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
-//       'AYcvyAIL8uS28byzWlowgR6pQgOyffZuOR-9e4gy6gl9I6BMRPOxqQf20tvyprzuj67iZfih5CBxqBk1',
-//     process.env.NEXT_PUBLIC_PAYPAL_CLIENT_SECRET ||
-//       'EJ0xWsYcwdc7aYyAdBXJJcaN9HPpT6LKrhVY_055QaPYIKckqRn79UhV6TLKCos7oscd4T7fFuVLuFpF',
-//   ),
-// )
-
-const storeItems = new Map([
-  [1, { price: 100, name: 'Item one' }],
-  [2, { price: 200, name: 'Item two' }],
-  // ['org_subscription', { price: 9.99, name: 'Monthly Organization Subscription', plan_id: 'P-PLAN_ID' }],
-])
-
 async function getAccessToken() {
   const clientId =
     // process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
@@ -58,9 +41,10 @@ export default async function handler(request: NextApiRequest, response: NextApi
       }),
     })
 
-    console.log('Access token is', accessToken)
+    // console.log('Access token is', accessToken)
+
     if (!createProductResponse.ok) {
-      console.log(await createProductResponse.json())
+      // console.log(await createProductResponse.json())
       throw new Error('Could not create product')
     }
 
@@ -124,68 +108,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
     const plan = await createPlanResponse.json()
 
-    let total = 0
-    const items = request.body.items || []
-    for (const item of items) {
-      const storeItem = storeItems.get(Number(item.id))
-      if (storeItem) {
-        total += storeItem.price * item.quantity
-      }
-    }
-
-    // createProductResponse.prefer('return=representation')
-    // createProductResponse.requestBody({
-    //   intent: 'CAPTURE',
-    //   purchase_units: [
-    //     {
-    //       amount: {
-    //         currency_code: 'USD',
-    //         value: total.toString(),
-    //         breakdown: {
-    //           item_total: {
-    //             currency_code: 'USD',
-    //             value: total.toString(),
-    //           },
-    //           shipping: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //           handling: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //           tax_total: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //           insurance: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //           shipping_discount: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //           discount: {
-    //             currency_code: 'USD',
-    //             value: '0.00',
-    //           },
-    //         },
-    //       },
-    //       items: items.map((item: { id: number; quantity: number }) => {
-    //         const storeItem = storeItems.get(item.id)
-    //         return {
-    //           name: storeItem?.name,
-    //           unit_amount: {
-    //             currency_code: 'USD',
-    //             value: storeItem?.price.toString(),
-    //           },
-    //           quantity: item.quantity,
-    //         }
-    //       }),
-    //     },
-    //   ],
-    // })
+    // console.log('Plan id is', plan.id)
 
     try {
       // const order = await paypalClient.execute(createProductResponse)

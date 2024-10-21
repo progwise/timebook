@@ -5,45 +5,23 @@ import {
   ReactPayPalScriptOptions,
 } from '@paypal/react-paypal-js'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
 
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
 
-// function createSubscription() {
-//   return fetch('/api/paypal', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       // items: [
-//       //   { id: 1, quantity: 1 },
-//       //   { id: 2, quantity: 2 },
-//       // ],
-//     }),
-//   })
-//     .then((response) => response.json())
-//     .then((subscription) => {
-//       return subscription.id
-//     })
-// }
+const onApprove: PayPalButtonsComponentProps['onApprove'] = async (data) => {
+  alert(`You have successfully subscribed to ${data.subscriptionID}`)
+}
 
-// function onApprove(data: any) {
-//   return fetch('/api/paypal', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       orderID: data.orderID,
-//     }),
-//   })
-//     .then((response) => response.json())
-//     .then((orderData) => {
-//       alert('Transaction completed by ' + orderData.payer.name.given_name)
-//     })
-// }
+function onError() {
+  // window.location.assign('/error-page')
+  alert('An error has occured')
+}
+
+function onCancel() {
+  // window.location.assign('/error-page')
+  alert('A cancel has occured')
+}
 
 // const PayPalButtonWrapper = () => {
 //   const [{ options }, dispatch] = usePayPalScriptReducer()
@@ -66,30 +44,7 @@ import { ProtectedPage } from '../frontend/components/protectedPage'
 //   )
 // }
 
-const onApprove: PayPalButtonsComponentProps['onApprove'] = async (data) => {
-  alert(`You have successfully subscribed to ${data.subscriptionID}`)
-}
-
-function onError() {
-  // window.location.assign('/error-page')
-  alert('An error has occured')
-}
-
-function onCancel() {
-  // window.location.assign('/error-page')
-  alert('A cancel has occured')
-}
-
 const PayPalPage = (): JSX.Element => {
-  // eslint-disable-next-line unicorn/no-null
-  const [planId, setPlanId] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch('/api/paypal', { method: 'POST' })
-      .then((response) => response.json())
-      .then((data) => setPlanId(data.planId))
-  }, [])
-
   const initialOptions: ReactPayPalScriptOptions = {
     clientId:
       // process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
@@ -98,13 +53,30 @@ const PayPalPage = (): JSX.Element => {
     intent: 'subscription',
   }
 
+  // const [planId, setPlanId] = useState<string | null>(null)
+
+  // useEffect(() => {
+  //   const fetchPlanId = async () => {
+  //     try {
+  //       const response = await fetch('/api/paypal')
+  //       const data = await response.json()
+  //       setPlanId(data.planId)
+  //     } catch (error) {
+  //       console.error('Error fetching plan ID:', error)
+  //     }
+  //   }
+
+  //   fetchPlanId()
+  // }, [])
+
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = (data, actions) => {
+    // if (!planId) {
+    //   throw new Error('Plan ID not available')
+    // }
     return actions.subscription.create({
-      plan_id: planId!,
+      plan_id: 'P-7SY61338S60159730M4JC7WI',
     })
   }
-
-  // console.log(planId)
 
   return (
     <ProtectedPage>
