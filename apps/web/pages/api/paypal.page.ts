@@ -1,12 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 async function getAccessToken() {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'test (wont work)'
-  const clientSecret =
-    // process.env.NEXT_PUBLIC_PAYPAL_CLIENT_SECRET ||
-    'EJ0xWsYcwdc7aYyAdBXJJcaN9HPpT6LKrhVY_055QaPYIKckqRn79UhV6TLKCos7oscd4T7fFuVLuFpF'
-
-  // console.log(clientId)
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET
 
   const response = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
     method: 'POST',
@@ -26,9 +22,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
     response.setHeader('Allow', ['POST'])
     response.status(405).end(`Method ${request.method} Not Allowed`)
   }
-
-  // const paypalRequest = new paypal.orders.OrdersCreateRequest()
   const accessToken = await getAccessToken()
+
   const createProductResponse = await fetch('https://api-m.sandbox.paypal.com/v1/catalogs/products', {
     method: 'POST',
     headers: {
@@ -45,10 +40,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
     }),
   })
 
-  // console.log('Access token is', accessToken)
-
   if (!createProductResponse.ok) {
-    // console.log(await createProductResponse.json())
     throw new Error('Could not create product')
   }
 
@@ -112,11 +104,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
   const plan = await createPlanResponse.json()
 
-  // console.log('Plan id is', plan.id)
-
   try {
-    // const order = await paypalClient.execute(createProductResponse)
-    // response.status(200).json({ id: product.result.id })
     response.status(200).json({ id: plan.id })
   } catch (error) {
     response.status(500).json({ error: (error as Error).message })

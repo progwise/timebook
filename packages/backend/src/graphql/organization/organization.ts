@@ -43,11 +43,6 @@ export const Organization = builder.prismaObject('Organization', {
           orderBy: { name: 'asc' },
         }),
     }),
-    subscriptionStatus: t.withAuth({ isLoggedIn: true }).boolean({
-      description: 'Is subscription active or inactive',
-      select: { subscriptionStatus: true },
-      resolve: (organization) => organization.subscriptionStatus,
-    }),
     subscriptionExpiresAt: t.withAuth({ isLoggedIn: true }).field({
       type: 'DateTime',
       nullable: true,

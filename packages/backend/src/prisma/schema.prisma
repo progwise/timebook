@@ -27,7 +27,7 @@ model Organization {
   updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
 
-  subscriptionStatus    Boolean   @default(false)
+  paypalPlanId          String?
   subscriptionExpiresAt DateTime?
 
   organizationMemberships OrganizationMembership[]
