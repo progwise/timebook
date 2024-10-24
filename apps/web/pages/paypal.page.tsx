@@ -5,6 +5,7 @@ import {
   ReactPayPalScriptOptions,
 } from '@paypal/react-paypal-js'
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
 
 import { PageHeading } from '../frontend/components/pageHeading'
 import { ProtectedPage } from '../frontend/components/protectedPage'
@@ -46,35 +47,48 @@ function onCancel() {
 
 const PayPalPage = (): JSX.Element => {
   const initialOptions: ReactPayPalScriptOptions = {
-    clientId:
-      // process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
-      'AYcvyAIL8uS28byzWlowgR6pQgOyffZuOR-9e4gy6gl9I6BMRPOxqQf20tvyprzuj67iZfih5CBxqBk1',
+    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
     vault: true,
     intent: 'subscription',
   }
 
-  // const [planId, setPlanId] = useState<string | null>(null)
+  // eslint-disable-next-line unicorn/no-null
+  const [planId, setPlanId] = useState<string | null>(null)
 
-  // useEffect(() => {
-  //   const fetchPlanId = async () => {
-  //     try {
-  //       const response = await fetch('/api/paypal')
-  //       const data = await response.json()
-  //       setPlanId(data.planId)
-  //     } catch (error) {
-  //       console.error('Error fetching plan ID:', error)
-  //     }
-  //   }
+  useEffect(() => {
+    const fetchPlanId = async () => {
+      try {
+        const response = await fetch('/api/paypal', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
 
-  //   fetchPlanId()
-  // }, [])
+        // debugger
+
+        if (!response.ok) {
+          throw new Error('Plan id fetch response is not ok')
+        }
+        const data = await response.json()
+        setPlanId(data.id)
+      } catch (error) {
+        alert(error)
+      }
+    }
+
+    fetchPlanId()
+  }, [])
 
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = (data, actions) => {
-    // if (!planId) {
-    //   throw new Error('Plan ID not available')
-    // }
+    // debugger
+    // console.log('planId', planId)
+    if (!planId) {
+      throw new Error('Plan ID not available')
+    }
+
     return actions.subscription.create({
-      plan_id: 'P-7SY61338S60159730M4JC7WI',
+      plan_id: planId,
     })
   }
 
@@ -86,17 +100,17 @@ const PayPalPage = (): JSX.Element => {
       </Head>
       <PageHeading>PayPal Integration</PageHeading>
       <div style={{ maxWidth: '750px', minHeight: '200px' }}>
-        {/* {planId && ( */}
-        <PayPalScriptProvider options={initialOptions}>
-          <PayPalButtons
-            createSubscription={createSubscription}
-            onApprove={onApprove}
-            onError={onError}
-            onCancel={onCancel}
-            style={{ layout: 'vertical' }}
-          />
-        </PayPalScriptProvider>
-        {/* )} */}
+        {planId && (
+          <PayPalScriptProvider options={initialOptions}>
+            <PayPalButtons
+              createSubscription={createSubscription}
+              onApprove={onApprove}
+              onError={onError}
+              onCancel={onCancel}
+              style={{ layout: 'vertical' }}
+            />
+          </PayPalScriptProvider>
+        )}
       </div>
     </ProtectedPage>
   )
