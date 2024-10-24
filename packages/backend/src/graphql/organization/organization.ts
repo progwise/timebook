@@ -43,5 +43,12 @@ export const Organization = builder.prismaObject('Organization', {
           orderBy: { name: 'asc' },
         }),
     }),
+    subscriptionExpiresAt: t.withAuth({ isLoggedIn: true }).field({
+      type: 'DateTime',
+      nullable: true,
+      description: 'Date when the current subscription expires',
+      select: { subscriptionExpiresAt: true },
+      resolve: (organization) => organization.subscriptionExpiresAt,
+    }),
   }),
 })

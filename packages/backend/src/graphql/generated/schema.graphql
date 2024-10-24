@@ -234,6 +234,11 @@ type Organization implements ModifyInterface {
   """
   members: [User!]!
   projects: [Project!]!
+
+  """
+  Date when the current subscription expires
+  """
+  subscriptionExpiresAt: DateTime
   title: String!
 }
 
