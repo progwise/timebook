@@ -239,11 +239,6 @@ type Organization implements ModifyInterface {
   Date when the current subscription expires
   """
   subscriptionExpiresAt: DateTime
-
-  """
-  Is subscription active or inactive
-  """
-  subscriptionStatus: Boolean!
   title: String!
 }
 
