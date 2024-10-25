@@ -5,7 +5,6 @@ import {
   ReactPayPalScriptOptions,
 } from '@paypal/react-paypal-js'
 import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
 import { useMutation } from 'urql'
 
 import { PageHeading } from '../../../frontend/components/pageHeading'
@@ -61,12 +60,7 @@ const PayPalPage = (): JSX.Element => {
   const router = useRouter()
   const { id } = router.query
 
-  const [organizationId, setOrganizationId] = useState<string | null>(null)
-  const [{ data, error, fetching: organizationPaypalPlanLoading }, paypalPlanCreate] = useMutation(
-    organizationPaypalPlanIdCreateMutationDocument,
-  )
-
-  const dialogReference = useRef<HTMLDialogElement>(null)
+  const [{ error }, paypalPlanCreate] = useMutation(organizationPaypalPlanIdCreateMutationDocument)
 
   //todo: button to checkout page, unsubscribe button, add more webhook events
 
@@ -76,13 +70,6 @@ const PayPalPage = (): JSX.Element => {
       process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
     vault: true,
     intent: 'subscription',
-  }
-
-  const handleCreatePlan = async () => {
-    try {
-      await paypalPlanCreate({ organizationId: id!.toString() })
-    } catch {}
-    dialogReference.current?.close()
   }
 
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async (_data, actions) => {
