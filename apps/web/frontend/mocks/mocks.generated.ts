@@ -54,6 +54,8 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
+  /** Create a PayPal subscription plan for organization */
+  organizationPaypalPlanIdCreate: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -127,6 +129,10 @@ export type MutationOrganizationMembershipCreateArgs = {
 export type MutationOrganizationMembershipDeleteArgs = {
   organizationId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationOrganizationPaypalPlanIdCreateArgs = {
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -239,6 +245,7 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
+  paypalPlanId?: Maybe<Scalars['String']>
   projects: Array<Project>
   /** Date when the current subscription expires */
   subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
@@ -1111,6 +1118,20 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
+export type OrganizationPaypalPlanIdCreateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationPaypalPlanIdCreateMutation = {
+  __typename?: 'Mutation'
+  organizationPaypalPlanIdCreate: {
+    __typename?: 'Organization'
+    id: string
+    paypalPlanId?: string | null
+    subscriptionExpiresAt?: string | null
+  }
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1817,6 +1838,29 @@ export const mockAccessTokenCreateMutation = (
     any
   >,
 ) => graphql.mutation<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>('accessTokenCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationPaypalPlanIdCreateMutation((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationPaypalPlanIdCreate })
+ *   )
+ * })
+ */
+export const mockOrganizationPaypalPlanIdCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationPaypalPlanIdCreateMutationVariables>,
+    GraphQLContext<OrganizationPaypalPlanIdCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationPaypalPlanIdCreateMutation, OrganizationPaypalPlanIdCreateMutationVariables>(
+    'organizationPaypalPlanIdCreate',
+    resolver,
+  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

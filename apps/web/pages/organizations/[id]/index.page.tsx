@@ -2,12 +2,12 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
 
-import { OrganizationForm } from '../../frontend/components/organizationForm/organizationForm'
-import { OrganizationMemberList } from '../../frontend/components/organizationMemberList'
-import { ProjectTable } from '../../frontend/components/projectTable'
-import { ProtectedPage } from '../../frontend/components/protectedPage'
-import { graphql } from '../../frontend/generated/gql'
-import { OrganizationInput } from '../../frontend/generated/gql/graphql'
+import { OrganizationForm } from '../../../frontend/components/organizationForm/organizationForm'
+import { OrganizationMemberList } from '../../../frontend/components/organizationMemberList'
+import { ProjectTable } from '../../../frontend/components/projectTable'
+import { ProtectedPage } from '../../../frontend/components/protectedPage'
+import { graphql } from '../../../frontend/generated/gql'
+import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
 
 const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {

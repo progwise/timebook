@@ -1,4 +1,5 @@
 import './organizationArchiveMutationField'
 import './organizationCreateMutationField'
+import './organizationPaypalPlanIdCreateMutationField'
 import './organizationUnarchiveMutationField'
 import './organizationUpdateMutationField'

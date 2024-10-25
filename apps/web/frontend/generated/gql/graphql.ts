@@ -52,6 +52,8 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
+  /** Create a PayPal subscription plan for organization */
+  organizationPaypalPlanIdCreate: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -125,6 +127,10 @@ export type MutationOrganizationMembershipCreateArgs = {
 export type MutationOrganizationMembershipDeleteArgs = {
   organizationId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationOrganizationPaypalPlanIdCreateArgs = {
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -237,6 +243,7 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
+  paypalPlanId?: Maybe<Scalars['String']>
   projects: Array<Project>
   /** Date when the current subscription expires */
   subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
@@ -1112,6 +1119,20 @@ export type AccessTokenCreateMutationVariables = Exact<{
 }>
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
+
+export type OrganizationPaypalPlanIdCreateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationPaypalPlanIdCreateMutation = {
+  __typename?: 'Mutation'
+  organizationPaypalPlanIdCreate: {
+    __typename?: 'Organization'
+    id: string
+    paypalPlanId?: string | null
+    subscriptionExpiresAt?: string | null
+  }
+}
 
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
@@ -4534,6 +4555,47 @@ export const AccessTokenCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
+export const OrganizationPaypalPlanIdCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationPaypalPlanIdCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationPaypalPlanIdCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'paypalPlanId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationPaypalPlanIdCreateMutation, OrganizationPaypalPlanIdCreateMutationVariables>
 export const OrganizationDocument = {
   kind: 'Document',
   definitions: [
