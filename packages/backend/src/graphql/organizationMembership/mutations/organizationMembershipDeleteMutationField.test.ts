@@ -173,3 +173,45 @@ it('should delete an admin when there are more than one admin', async () => {
   })
   expect(deletedMembership).toBeNull()
 })
+
+it('should delete associated project memberships when deleting organization membership', async () => {
+  const project = await prisma.project.create({
+    data: {
+      title: 'Test Project',
+      organizationId: 'organization1',
+    },
+  })
+  await prisma.projectMembership.create({
+    data: {
+      userId: '3',
+      projectId: project.id,
+    },
+  })
+
+  const testServer = getTestServer({ userId: '1' })
+  const response = await testServer.executeOperation({
+    query: organizationMembershipDeleteMutation,
+    variables: {
+      userId: '3',
+      organizationId: 'organization1',
+    },
+  })
+
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toBeDefined()
+
+  const deletedOrganizationMembership = await prisma.organizationMembership.findUnique({
+    where: {
+      userId_organizationId: { organizationId: 'organization1', userId: '3' },
+    },
+  })
+  expect(deletedOrganizationMembership).toBeNull()
+
+  const deletedProjectMembership = await prisma.projectMembership.findFirst({
+    where: {
+      userId: '3',
+      projectId: project.id,
+    },
+  })
+  expect(deletedProjectMembership).toBeNull()
+})
