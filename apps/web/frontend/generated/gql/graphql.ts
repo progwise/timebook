@@ -844,6 +844,8 @@ export type ReportQueryVariables = Exact<{
   year: Scalars['Int']
   userId?: InputMaybe<Scalars['ID']>
   groupByUser: Scalars['Boolean']
+  from: Scalars['Date']
+  to: Scalars['Date']
 }>
 
 export type ReportQuery = {
@@ -860,7 +862,17 @@ export type ReportQuery = {
         id: string
         duration: number
         user: { __typename?: 'User'; id: string; name?: string | null }
-        task: { __typename?: 'Task'; id: string; title: string }
+        task: {
+          __typename?: 'Task'
+          id: string
+          title: string
+          workHourOfDays: Array<{
+            __typename?: 'WorkHourOfDay'
+            date: string
+            isLocked: boolean
+            workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+          }>
+        }
       }>
     }>
     groupedByTask: Array<{
@@ -3785,6 +3797,16 @@ export const ReportDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'groupByUser' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -3867,6 +3889,37 @@ export const ReportDocument = {
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'workHourOfDays' },
+                                    arguments: [
+                                      {
+                                        kind: 'Argument',
+                                        name: { kind: 'Name', value: 'from' },
+                                        value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                                      },
+                                      {
+                                        kind: 'Argument',
+                                        name: { kind: 'Name', value: 'to' },
+                                        value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                                      },
+                                    ],
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'workHour' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [{ kind: 'Field', name: { kind: 'Name', value: 'comment' } }],
+                                          },
+                                        },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
