@@ -861,6 +861,7 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
+        comment?: string | null
         user: { __typename?: 'User'; id: string; name?: string | null }
         task: {
           __typename?: 'Task'
@@ -870,7 +871,7 @@ export type ReportQuery = {
             __typename?: 'WorkHourOfDay'
             date: string
             isLocked: boolean
-            workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+            workHour?: { __typename?: 'WorkHour'; user: { __typename?: 'User'; id: string } } | null
           }>
         }
       }>
@@ -3870,6 +3871,7 @@ export const ReportDocument = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'user' },
@@ -3913,7 +3915,16 @@ export const ReportDocument = {
                                           name: { kind: 'Name', value: 'workHour' },
                                           selectionSet: {
                                             kind: 'SelectionSet',
-                                            selections: [{ kind: 'Field', name: { kind: 'Name', value: 'comment' } }],
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'user' },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                                                },
+                                              },
+                                            ],
                                           },
                                         },
                                         { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },

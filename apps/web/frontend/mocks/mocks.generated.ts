@@ -828,6 +828,7 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
+        comment?: string | null
         user: { __typename?: 'User'; id: string; name?: string | null }
         task: {
           __typename?: 'Task'
@@ -837,7 +838,7 @@ export type ReportQuery = {
             __typename?: 'WorkHourOfDay'
             date: string
             isLocked: boolean
-            workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+            workHour?: { __typename?: 'WorkHour'; user: { __typename?: 'User'; id: string } } | null
           }>
         }
       }>
