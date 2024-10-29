@@ -617,6 +617,7 @@ export type OrganizationFormFragment = {
   canModify: boolean
   id: string
   isArchived: boolean
+  subscriptionExpiresAt?: string | null
 }
 
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
@@ -1169,6 +1170,7 @@ export type OrganizationQuery = {
     address?: string | null
     canModify: boolean
     isArchived: boolean
+    subscriptionExpiresAt?: string | null
     projects: Array<{
       __typename?: 'Project'
       id: string

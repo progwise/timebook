@@ -14,6 +14,7 @@ export const OrganizationFormFragment = graphql(`
     address
     canModify
     ...ArchiveOrUnarchiveOrganizationButton
+    ...SubscribeOrUnsubscribeOrganizationButton
   }
 `)
 

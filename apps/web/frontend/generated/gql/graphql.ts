@@ -628,7 +628,10 @@ export type OrganizationFormFragment = ({
   address?: string | null
   canModify: boolean
 } & {
-  ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
+  ' $fragmentRefs'?: {
+    ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment
+    SubscribeOrUnsubscribeOrganizationButtonFragment: SubscribeOrUnsubscribeOrganizationButtonFragment
+  }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
 
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = ({
@@ -1404,63 +1407,6 @@ export const ArchiveOrUnarchiveOrganizationButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ArchiveOrUnarchiveOrganizationButtonFragment, unknown>
-export const OrganizationFormFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationForm' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationFormFragment, unknown>
 export const UnsubscribeOrganizationButtonFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1508,6 +1454,89 @@ export const SubscribeOrUnsubscribeOrganizationButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SubscribeOrUnsubscribeOrganizationButtonFragment, unknown>
+export const OrganizationFormFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationForm' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationFormFragment, unknown>
 export const RemoveUserFromOrganizationButtonOrganizationFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4797,6 +4826,31 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -4830,6 +4884,7 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
         ],
       },
     },
