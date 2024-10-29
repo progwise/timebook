@@ -270,7 +270,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                           <tr key={taskId}>
                             <td className="pl-8">{workHours[0].task.title}</td>
                             <td>{workHours.map((user) => user.user.name).join(', ')}</td>
-                            <td>{workHours.map((workHour) => workHour.comment).join(', ')}</td>
+                            <td>{workHours.map((workHour) => workHour.comment || '-').join(', ')}</td>
                             <td className="text-right">
                               <FormattedDuration
                                 title="Combined hours of all users"
@@ -288,7 +288,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                           <tr key={userId}>
                             <td className="pl-8">{workHours.map((task) => task.task.title).join(', ')}</td>
                             <td>{workHours[0].user.name}</td>
-                            <td>{workHours.map((workHour) => workHour.comment).join(', ')}</td>
+                            <td>{workHours.map((workHour) => workHour.comment || '-').join(', ')}</td>
                             <td className="text-right">
                               <FormattedDuration
                                 title="Combined hours for all tasks"
