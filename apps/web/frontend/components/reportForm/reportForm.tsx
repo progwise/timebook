@@ -33,15 +33,7 @@ const ReportProjectsQueryDocument = graphql(`
 `)
 
 const ReportQueryDocument = graphql(`
-  query report(
-    $projectId: ID!
-    $month: Int!
-    $year: Int!
-    $userId: ID
-    $groupByUser: Boolean!
-    $from: Date!
-    $to: Date!
-  ) {
+  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {
     project(projectId: $projectId) {
       canModify
     }
@@ -60,15 +52,6 @@ const ReportQueryDocument = graphql(`
           task {
             id
             title
-            workHourOfDays(from: $from, to: $to) {
-              date
-              workHour {
-                user {
-                  id
-                }
-              }
-              isLocked
-            }
           }
         }
       }
@@ -119,8 +102,6 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
       month,
       userId: userId,
       groupByUser: !userId,
-      from: fromString,
-      to: toString,
     },
     context,
     pause: !router.isReady || !projectId,
@@ -252,7 +233,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                 <tr>
                   <th>Tasks</th>
                   <th>Person</th>
-                  {(groupedBy !== 'Grouped by Task' || userId) && <th>Comments</th>}
+                  <th>Comments</th>
                   <th className="w-px text-right">Hours</th>
                 </tr>
               </thead>
@@ -262,7 +243,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                     <tr className="font-bold">
                       <td>{group.date}</td>
                       <td />
-                      {(groupedBy !== 'Grouped by Task' || userId) && <td />}
+                      <td />
                       <td className="text-right">
                         <FormattedDuration
                           title="Total work hours of the day"
@@ -277,14 +258,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                         <tr key={workHour.id}>
                           <td className="pl-8">{workHour.task.title}</td>
                           <td>{workHour.user?.name}</td>
-                          <td>
-                            {workHour.task.workHourOfDays
-                              .filter((workHourOfDay) => workHourOfDay.date === group.date)
-                              .map(
-                                (workHourOfDay) =>
-                                  workHour.comment && <div key={workHourOfDay.date}>{workHour.comment}</div>,
-                              )}
-                          </td>
+                          <td>{workHour.comment && <div>{workHour.comment}</div>}</td>
                           <td className="text-right">
                             <FormattedDuration title="Work duration" minutes={workHour.duration} />
                           </td>
@@ -296,18 +270,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                           <tr key={taskId}>
                             <td className="pl-8">{workHours[0].task.title}</td>
                             <td>{workHours.map((user) => user.user.name).join(', ')}</td>
-                            {userId && (
-                              <td>
-                                {workHours.map((workHour) =>
-                                  workHour.task.workHourOfDays
-                                    .filter((workHourOfDay) => workHourOfDay.date === group.date)
-                                    .map(
-                                      (workHourOfDay) =>
-                                        workHour.comment && <div key={workHourOfDay.date}>{workHour.comment}</div>,
-                                    ),
-                                )}
-                              </td>
-                            )}
+                            <td>{workHours.map((workHour) => workHour.comment).join(', ')}</td>
                             <td className="text-right">
                               <FormattedDuration
                                 title="Combined hours of all users"
@@ -325,19 +288,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
                           <tr key={userId}>
                             <td className="pl-8">{workHours.map((task) => task.task.title).join(', ')}</td>
                             <td>{workHours[0].user.name}</td>
-                            <td>
-                              {workHours.map((workHour) =>
-                                workHour.task.workHourOfDays
-                                  .filter((workHourOfDay) => workHourOfDay.date === group.date)
-                                  .map(
-                                    (workHourOfDay) =>
-                                      workHour.comment &&
-                                      workHours[0].user.id === workHour.user.id && (
-                                        <div key={workHourOfDay.date}>{workHour.comment}</div>
-                                      ),
-                                  ),
-                              )}
-                            </td>
+                            <td>{workHours.map((workHour) => workHour.comment).join(', ')}</td>
                             <td className="text-right">
                               <FormattedDuration
                                 title="Combined hours for all tasks"

@@ -77,13 +77,6 @@ beforeAll(() => {
                       id: '1',
                       title: 'Task 1',
                       __typename: 'Task',
-                      workHourOfDays: [
-                        {
-                          date: '2024-02-16',
-                          isLocked: false,
-                          __typename: 'WorkHourOfDay',
-                        },
-                      ],
                     },
                     __typename: 'WorkHour',
                   },
@@ -99,13 +92,6 @@ beforeAll(() => {
                       id: '1',
                       title: 'Task 1',
                       __typename: 'Task',
-                      workHourOfDays: [
-                        {
-                          date: '2024-02-16',
-                          isLocked: false,
-                          __typename: 'WorkHourOfDay',
-                        },
-                      ],
                     },
                     __typename: 'WorkHour',
                   },
@@ -121,13 +107,6 @@ beforeAll(() => {
                       id: '2',
                       title: 'Task 2',
                       __typename: 'Task',
-                      workHourOfDays: [
-                        {
-                          date: '2024-02-16',
-                          isLocked: false,
-                          __typename: 'WorkHourOfDay',
-                        },
-                      ],
                     },
                     __typename: 'WorkHour',
                   },

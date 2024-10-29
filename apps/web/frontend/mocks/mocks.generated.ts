@@ -811,8 +811,6 @@ export type ReportQueryVariables = Exact<{
   year: Scalars['Int']
   userId?: InputMaybe<Scalars['ID']>
   groupByUser: Scalars['Boolean']
-  from: Scalars['Date']
-  to: Scalars['Date']
 }>
 
 export type ReportQuery = {
@@ -830,17 +828,7 @@ export type ReportQuery = {
         duration: number
         comment?: string | null
         user: { __typename?: 'User'; id: string; name?: string | null }
-        task: {
-          __typename?: 'Task'
-          id: string
-          title: string
-          workHourOfDays: Array<{
-            __typename?: 'WorkHourOfDay'
-            date: string
-            isLocked: boolean
-            workHour?: { __typename?: 'WorkHour'; user: { __typename?: 'User'; id: string } } | null
-          }>
-        }
+        task: { __typename?: 'Task'; id: string; title: string }
       }>
     }>
     groupedByTask: Array<{
@@ -1638,7 +1626,7 @@ export const mockReportProjectsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockReportQuery((req, res, ctx) => {
- *   const { projectId, month, year, userId, groupByUser, from, to } = req.variables;
+ *   const { projectId, month, year, userId, groupByUser } = req.variables;
  *   return res(
  *     ctx.data({ project, report })
  *   )
