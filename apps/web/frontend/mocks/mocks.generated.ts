@@ -58,6 +58,8 @@ export type Mutation = {
   organizationPaypalPlanIdCreate: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
+  /** Unsubscribe from an organization */
+  organizationUnsubscribe: Organization
   /** Update an organization */
   organizationUpdate: Organization
   /** Archive a project */
@@ -136,6 +138,10 @@ export type MutationOrganizationPaypalPlanIdCreateArgs = {
 }
 
 export type MutationOrganizationUnarchiveArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationUnsubscribeArgs = {
   organizationId: Scalars['ID']
 }
 
@@ -611,6 +617,24 @@ export type OrganizationFormFragment = {
   canModify: boolean
   id: string
   isArchived: boolean
+}
+
+export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
+  __typename?: 'Organization'
+  id: string
+  subscriptionExpiresAt?: string | null
+  title: string
+}
+
+export type UnsubscribeOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string }
+
+export type OrganizationUnsubscribeMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationUnsubscribeMutation = {
+  __typename?: 'Mutation'
+  organizationUnsubscribe: { __typename?: 'Organization'; id: string; subscriptionExpiresAt?: string | null }
 }
 
 export type OrganizationMemberListOrganizationFragment = {
@@ -1419,6 +1443,29 @@ export const mockOrganizationUnarchiveMutation = (
 ) =>
   graphql.mutation<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>(
     'organizationUnarchive',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationUnsubscribeMutation((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationUnsubscribe })
+ *   )
+ * })
+ */
+export const mockOrganizationUnsubscribeMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationUnsubscribeMutationVariables>,
+    GraphQLContext<OrganizationUnsubscribeMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationUnsubscribeMutation, OrganizationUnsubscribeMutationVariables>(
+    'organizationUnsubscribe',
     resolver,
   )
 

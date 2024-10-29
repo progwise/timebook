@@ -37,6 +37,12 @@ const documents = {
     types.OrganizationUnarchiveDocument,
   '\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n':
     types.OrganizationFormFragmentDoc,
+  '\n  fragment SubscribeOrUnsubscribeOrganizationButton on Organization {\n    id\n    subscriptionExpiresAt\n    ...UnsubscribeOrganizationButton\n  }\n':
+    types.SubscribeOrUnsubscribeOrganizationButtonFragmentDoc,
+  '\n  fragment UnsubscribeOrganizationButton on Organization {\n    id\n    title\n  }\n':
+    types.UnsubscribeOrganizationButtonFragmentDoc,
+  '\n  mutation organizationUnsubscribe($organizationId: ID!) {\n    organizationUnsubscribe(organizationId: $organizationId) {\n      id\n      subscriptionExpiresAt\n    }\n  }\n':
+    types.OrganizationUnsubscribeDocument,
   '\n  fragment OrganizationMemberListOrganization on Organization {\n    id\n    canModify\n    ...RemoveUserFromOrganizationButtonOrganization\n    members {\n      id\n      image\n      name\n      organizationRole(organizationId: $organizationId)\n      ...RemoveUserFromOrganizationButtonUser\n    }\n  }\n':
     types.OrganizationMemberListOrganizationFragmentDoc,
   '\n  mutation organizationMembershipUpdate($organizationId: ID!, $userId: ID!, $organizationRole: Role!) {\n    organizationMembershipCreate(\n      organizationId: $organizationId\n      userId: $userId\n      organizationRole: $organizationRole\n    ) {\n      id\n    }\n  }\n':
@@ -246,6 +252,24 @@ export function graphql(
 export function graphql(
   source: '\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n',
 ): (typeof documents)['\n  fragment OrganizationForm on Organization {\n    title\n    address\n    canModify\n    ...ArchiveOrUnarchiveOrganizationButton\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment SubscribeOrUnsubscribeOrganizationButton on Organization {\n    id\n    subscriptionExpiresAt\n    ...UnsubscribeOrganizationButton\n  }\n',
+): (typeof documents)['\n  fragment SubscribeOrUnsubscribeOrganizationButton on Organization {\n    id\n    subscriptionExpiresAt\n    ...UnsubscribeOrganizationButton\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment UnsubscribeOrganizationButton on Organization {\n    id\n    title\n  }\n',
+): (typeof documents)['\n  fragment UnsubscribeOrganizationButton on Organization {\n    id\n    title\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation organizationUnsubscribe($organizationId: ID!) {\n    organizationUnsubscribe(organizationId: $organizationId) {\n      id\n      subscriptionExpiresAt\n    }\n  }\n',
+): (typeof documents)['\n  mutation organizationUnsubscribe($organizationId: ID!) {\n    organizationUnsubscribe(organizationId: $organizationId) {\n      id\n      subscriptionExpiresAt\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

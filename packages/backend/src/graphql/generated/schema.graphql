@@ -79,6 +79,11 @@ type Mutation {
   organizationUnarchive(organizationId: ID!): Organization!
 
   """
+  Unsubscribe from an organization
+  """
+  organizationUnsubscribe(organizationId: ID!): Organization!
+
+  """
   Update an organization
   """
   organizationUpdate(data: OrganizationInput!, id: ID!): Organization!

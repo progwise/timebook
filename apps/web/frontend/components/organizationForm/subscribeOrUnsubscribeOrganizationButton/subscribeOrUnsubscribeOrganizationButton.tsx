@@ -19,7 +19,7 @@ interface SubscribeOrUnsubscribeOrganizationButtonProps {
 export const SubscribeOrUnsubscribeOrganizationButton = (props: SubscribeOrUnsubscribeOrganizationButtonProps) => {
   const organization = useFragment(SubscribeOrUnsubscribeOrganizationButtonFragment, props.organization)
 
-  if (new Date(organization.subscriptionExpiresAt) > new Date()) {
+  if (organization.subscriptionExpiresAt && new Date(organization.subscriptionExpiresAt) > new Date()) {
     return <UnsubscribeOrganizationButton organization={organization} disabled={props.disabled} />
   }
 
