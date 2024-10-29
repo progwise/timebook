@@ -21,10 +21,6 @@ const organizationPaypalPlanIdCreateMutationDocument = graphql(`
   }
 `)
 
-const onApprove: PayPalButtonsComponentProps['onApprove'] = async (data) => {
-  alert(`You have successfully subscribed to ${data.subscriptionID}`)
-}
-
 function onError() {
   // window.location.assign('/error-page')
   alert('An error has occured')
@@ -58,11 +54,9 @@ function onCancel() {
 
 const PayPalPage = (): JSX.Element => {
   const router = useRouter()
-  const { id } = router.query
+  const { id: organizationId } = router.query
 
   const [{ error }, paypalPlanCreate] = useMutation(organizationPaypalPlanIdCreateMutationDocument)
-
-  //todo: button to checkout page, unsubscribe button, add more webhook events
 
   const initialOptions: ReactPayPalScriptOptions = {
     clientId:
@@ -73,13 +67,17 @@ const PayPalPage = (): JSX.Element => {
   }
 
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async (_data, actions) => {
-    const { data } = await paypalPlanCreate({ organizationId: id!.toString() })
+    const { data } = await paypalPlanCreate({ organizationId: organizationId!.toString() })
     if (!data?.organizationPaypalPlanIdCreate.paypalPlanId) {
       throw new Error('Failed to create subscription')
     }
     return actions.subscription.create({
       plan_id: data.organizationPaypalPlanIdCreate.paypalPlanId,
     })
+  }
+
+  const onApprove: PayPalButtonsComponentProps['onApprove'] = async () => {
+    await router.push(`/organizations/${organizationId}?subscriptionSuccess=true`)
   }
 
   return (

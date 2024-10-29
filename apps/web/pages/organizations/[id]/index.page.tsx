@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { FaCheck, FaXmark } from 'react-icons/fa6'
 import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../../frontend/components/organizationForm/organizationForm'
@@ -32,7 +33,7 @@ const OrganizationUpdateMutationDocument = graphql(`
 
 const OrganizationDetails = (): JSX.Element => {
   const router = useRouter()
-  const { id } = router.query
+  const { id, subscriptionSuccess } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
@@ -43,6 +44,8 @@ const OrganizationDetails = (): JSX.Element => {
 
   const selectedOrganization = data?.organization
   const [organizationUpdateResult, organizationUpdate] = useMutation(OrganizationUpdateMutationDocument)
+
+  const [alertVisible, setAlertVisible] = useState(true)
 
   const handleSubmit = async (data: OrganizationInput) => {
     try {
@@ -71,6 +74,15 @@ const OrganizationDetails = (): JSX.Element => {
 
   return (
     <ProtectedPage>
+      {subscriptionSuccess && alertVisible && (
+        <div role="alert" className="alert alert-success mt-4 flex">
+          <FaCheck />
+          <span>Your purchase has been confirmed!</span>
+          <button className="btn btn-ghost btn-sm ml-auto" onClick={() => setAlertVisible(false)}>
+            <FaXmark />
+          </button>
+        </div>
+      )}
       <OrganizationForm
         organization={selectedOrganization}
         onCancel={handleCancel}

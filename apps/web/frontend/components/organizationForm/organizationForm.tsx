@@ -6,6 +6,7 @@ import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { OrganizationInput } from '../../mocks/mocks.generated'
 import { PageHeading } from '../pageHeading'
 import { ArchiveOrUnarchiveOrganizationButton } from './archiveOrUnarchiveOrganizationButton/archiveOrUnarchiveOrganizationButton'
+import { SubscribeOrUnsubscribeOrganizationButton } from './subscribeOrUnsubscribeOrganizationButton/subscribeOrUnsubscribeOrganizationButton'
 
 export const OrganizationFormFragment = graphql(`
   fragment OrganizationForm on Organization {
@@ -42,6 +43,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   }
 
   const isOrganizationFormReadOnly = !!organization && !organization.canModify
+
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
@@ -87,6 +89,9 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save organization.</span>}
       </div>
+      {organization?.canModify && (
+        <SubscribeOrUnsubscribeOrganizationButton organization={organization} disabled={isSubmitting} />
+      )}
     </div>
   )
 }

@@ -9,6 +9,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
   const event = request.body
 
+  //todo: add more webhook events
+
   if (event.event_type === 'PAYMENT.SALE.COMPLETED') {
     console.log('Payment completed:', event.resource.id)
   }
