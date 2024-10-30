@@ -52,15 +52,15 @@ export const UnsubscribeOrganizationButton = ({
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
-          <h3>Unsubscribe from Organization</h3>
-          <p>Are you sure you want to unsubscribe from {organization.title}?</p>
+          <h3 className="text-lg font-bold">Unsubscribe from Organization</h3>
+          <p className="py-4">Are you sure you want to unsubscribe from {organization.title}?</p>
           <div className="modal-action">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={fetching}>
                 Cancel
               </button>
             </form>
-            <button className="btn btn-primary btn-sm" onClick={handleUnsubscribeOrganization} disabled={fetching}>
+            <button className="btn btn-warning btn-sm" onClick={handleUnsubscribeOrganization} disabled={fetching}>
               Unsubscribe
             </button>
           </div>
