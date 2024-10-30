@@ -859,6 +859,7 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
+        comment?: string | null
         user: { __typename?: 'User'; id: string; name?: string | null }
         task: { __typename?: 'Task'; id: string; title: string }
       }>
@@ -3848,6 +3849,7 @@ export const ReportDocument = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'comment' } },
                             {
                               kind: 'Field',
                               name: { kind: 'Name', value: 'user' },

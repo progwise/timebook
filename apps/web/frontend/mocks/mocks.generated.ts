@@ -826,6 +826,7 @@ export type ReportQuery = {
         __typename?: 'WorkHour'
         id: string
         duration: number
+        comment?: string | null
         user: { __typename?: 'User'; id: string; name?: string | null }
         task: { __typename?: 'Task'; id: string; title: string }
       }>
