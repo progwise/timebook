@@ -59,7 +59,7 @@ builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
         body: JSON.stringify({
           product_id: product.id,
           name: 'Monthly Organization Subscription',
-          // "description": "A monthly Organization Subscription",
+          description: 'A monthly Organization Subscription',
           billing_cycles: [
             {
               frequency: {
@@ -77,7 +77,7 @@ builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
               },
               tenure_type: 'REGULAR',
               sequence: 2,
-              total_cycles: 12,
+              total_cycles: 0,
               pricing_scheme: {
                 fixed_price: {
                   value: '10',
@@ -89,7 +89,7 @@ builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
           payment_preferences: {
             auto_bill_outstanding: true,
             setup_fee: {
-              value: '10',
+              value: '5',
               currency_code: 'USD',
             },
             setup_fee_failure_action: 'CONTINUE',

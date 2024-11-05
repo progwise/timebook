@@ -73,6 +73,7 @@ const PayPalPage = (): JSX.Element => {
     }
     return actions.subscription.create({
       plan_id: data.organizationPaypalPlanIdCreate.paypalPlanId,
+      custom_id: organizationId!.toString(),
     })
   }
 
