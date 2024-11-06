@@ -93,6 +93,7 @@ builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
               currency_code: 'USD',
             },
             setup_fee_failure_action: 'CONTINUE',
+            // 1 attempt roughly every 5 days
             payment_failure_threshold: 3,
           },
           // taxes: {
