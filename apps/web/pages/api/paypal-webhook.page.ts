@@ -25,7 +25,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
           where: { id: activatedSubscriptionOrganizationId },
           data: {
             subscriptionExpiresAt: nextBillingTime,
-            paypalPlanId: event.resource.plan_id,
+            paypalSubscriptionId: event.resource.id,
           },
         })
         console.log('Subscription activated:', event.resource.id)
@@ -40,7 +40,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
           where: { id: cancelledSubscriptionOrganizationId },
           data: {
             subscriptionExpiresAt: null,
-            paypalPlanId: null,
+            // paypalSubscriptionId: null
           },
         })
         console.log('Subscription cancelled:', event.resource.id)

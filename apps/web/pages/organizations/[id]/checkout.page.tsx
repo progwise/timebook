@@ -11,11 +11,11 @@ import { PageHeading } from '../../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 
-const organizationPaypalPlanIdCreateMutationDocument = graphql(`
-  mutation organizationPaypalPlanIdCreate($organizationId: ID!) {
-    organizationPaypalPlanIdCreate(organizationId: $organizationId) {
+const organizationPaypalSubscriptionIdCreateMutationDocument = graphql(`
+  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {
+    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId) {
       id
-      paypalPlanId
+      paypalSubscriptionId
       subscriptionExpiresAt
     }
   }
@@ -56,23 +56,21 @@ const PayPalPage = (): JSX.Element => {
   const router = useRouter()
   const { id: organizationId } = router.query
 
-  const [{ error }, paypalPlanCreate] = useMutation(organizationPaypalPlanIdCreateMutationDocument)
+  const [{ error }, paypalSubscriptionCreate] = useMutation(organizationPaypalSubscriptionIdCreateMutationDocument)
 
   const initialOptions: ReactPayPalScriptOptions = {
-    clientId:
-      // 'AYcvyAIL8uS28byzWlowgR6pQgOyffZuOR-9e4gy6gl9I6BMRPOxqQf20tvyprzuj67iZfih5CBxqBk1',
-      process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
     vault: true,
     intent: 'subscription',
   }
 
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async (_data, actions) => {
-    const { data } = await paypalPlanCreate({ organizationId: organizationId!.toString() })
-    if (!data?.organizationPaypalPlanIdCreate.paypalPlanId) {
+    const { data } = await paypalSubscriptionCreate({ organizationId: organizationId!.toString() })
+    if (!data?.organizationPaypalSubscriptionIdCreate.paypalSubscriptionId) {
       throw new Error('Failed to create subscription')
     }
     return actions.subscription.create({
-      plan_id: data.organizationPaypalPlanIdCreate.paypalPlanId,
+      plan_id: data.organizationPaypalSubscriptionIdCreate.paypalSubscriptionId,
       custom_id: organizationId!.toString(),
     })
   }

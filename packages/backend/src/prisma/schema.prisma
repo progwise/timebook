@@ -27,7 +27,7 @@ model Organization {
   updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
 
-  paypalPlanId          String?
+  paypalSubscriptionId  String?
   subscriptionExpiresAt DateTime?
 
   organizationMemberships OrganizationMembership[]

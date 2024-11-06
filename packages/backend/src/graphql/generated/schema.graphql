@@ -69,11 +69,6 @@ type Mutation {
   organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
 
   """
-  Create a PayPal subscription plan for organization
-  """
-  organizationPaypalPlanIdCreate(organizationId: ID!): Organization!
-
-  """
   Unarchive an organization
   """
   organizationUnarchive(organizationId: ID!): Organization!
@@ -243,7 +238,7 @@ type Organization implements ModifyInterface {
   List of users that are member of the organization
   """
   members: [User!]!
-  paypalPlanId: String
+  paypalSubscriptionId: String
   projects: [Project!]!
 
   """

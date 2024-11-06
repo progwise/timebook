@@ -18,10 +18,10 @@ async function getAccessToken() {
   return data.access_token
 }
 
-builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
+builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Organization',
-    description: 'Create a PayPal subscription plan for organization',
+    description: 'Create a PayPal subscription for organization',
     args: {
       organizationId: t.arg.id(),
     },
@@ -109,10 +109,35 @@ builder.mutationField('organizationPaypalPlanIdCreate', (t) =>
 
       const plan = await createPlanResponse.json()
 
+      const createSubscriptionResponse = await fetch('https://api-m.sandbox.paypal.com/v1/billing/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          plan_id: plan.id,
+          start_time: new Date().toISOString(),
+          custom_id: organizationId,
+          application_context: {
+            brand_name: 'Timebook',
+            user_action: 'SUBSCRIBE_NOW',
+            // return_url: 'https://example.com/return',
+            // cancel_url: 'https://example.com/cancel',
+          },
+        }),
+      })
+
+      if (!createSubscriptionResponse.ok) {
+        throw new Error('Could not create subscription')
+      }
+
+      const subscription = await createSubscriptionResponse.json()
+
       return prisma.organization.update({
         ...query,
         where: { id: organizationId.toString() },
-        data: { paypalPlanId: plan.id },
+        data: { paypalSubscriptionId: subscription.id },
       })
     },
   }),

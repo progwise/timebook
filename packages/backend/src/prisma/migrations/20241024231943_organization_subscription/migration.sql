@@ -1,3 +1,3 @@
 -- AlterTable
-ALTER TABLE "Organization" ADD COLUMN     "paypalPlanId" TEXT,
+ALTER TABLE "Organization" ADD COLUMN     "paypalSubscriptionId" TEXT,
 ADD COLUMN     "subscriptionExpiresAt" TIMESTAMP(3);

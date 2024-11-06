@@ -137,8 +137,6 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
-  '\n  mutation organizationPaypalPlanIdCreate($organizationId: ID!) {\n    organizationPaypalPlanIdCreate(organizationId: $organizationId) {\n      id\n      paypalPlanId\n      subscriptionExpiresAt\n    }\n  }\n':
-    types.OrganizationPaypalPlanIdCreateDocument,
   '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n':
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
@@ -564,12 +562,6 @@ export function graphql(
 export function graphql(
   source: '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n',
 ): (typeof documents)['\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n']
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(
-  source: '\n  mutation organizationPaypalPlanIdCreate($organizationId: ID!) {\n    organizationPaypalPlanIdCreate(organizationId: $organizationId) {\n      id\n      paypalPlanId\n      subscriptionExpiresAt\n    }\n  }\n',
-): (typeof documents)['\n  mutation organizationPaypalPlanIdCreate($organizationId: ID!) {\n    organizationPaypalPlanIdCreate(organizationId: $organizationId) {\n      id\n      paypalPlanId\n      subscriptionExpiresAt\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
