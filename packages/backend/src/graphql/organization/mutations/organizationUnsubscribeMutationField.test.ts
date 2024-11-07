@@ -7,9 +7,9 @@ import { getTestServer } from '../../../getTestServer'
 
 const OrganizationUnsubscribeMutation = gql`
   mutation OrganizationUnsubscribe {
-    organizationUnsubscribe(organizationId: "O1") {
+    organizationPaypalSubscriptionCancel(organizationId: "O1") {
       id
-      subscriptionExpiresAt
+      subscriptionStatus
     }
   }
 `
@@ -32,6 +32,7 @@ beforeEach(async () => {
       id: 'O1',
       title: 'Organization 1',
       subscriptionExpiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      paypalSubscriptionId: 'PS1',
       organizationMemberships: {
         create: { userId: '1', organizationRole: 'ADMIN' },
       },
@@ -64,8 +65,7 @@ it('should unsubscribe from an organization', async () => {
   expect(response.data).toEqual({
     organizationUnsubscribe: {
       id: 'O1',
-      // eslint-disable-next-line unicorn/no-null
-      subscriptionExpiresAt: null,
+      subscriptionStatus: 'CANCELLED',
     },
   })
 })
