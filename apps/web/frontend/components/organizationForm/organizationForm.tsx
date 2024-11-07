@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-nested-ternary */
 import { useForm } from 'react-hook-form'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -13,6 +14,7 @@ export const OrganizationFormFragment = graphql(`
     title
     address
     canModify
+    subscriptionStatus
     ...ArchiveOrUnarchiveOrganizationButton
     ...SubscribeOrUnsubscribeOrganizationButton
   }
@@ -44,12 +46,24 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   }
 
   const isOrganizationFormReadOnly = !!organization && !organization.canModify
+  const organizationSubscriptionStatus = organization?.subscriptionStatus
 
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
         {organization ? (
-          <PageHeading>{isOrganizationFormReadOnly ? 'View' : 'Edit'} organization</PageHeading>
+          <PageHeading>
+            Organization {organization.title}
+            <span
+              className={`badge ${organizationSubscriptionStatus === 'ACTIVE' ? 'badge-success' : organizationSubscriptionStatus === 'CANCELLED' ? 'badge-warning' : 'badge-neutral'} ml-2`}
+            >
+              {organizationSubscriptionStatus === 'ACTIVE'
+                ? 'Active'
+                : organizationSubscriptionStatus === 'CANCELLED'
+                  ? 'Cancelled'
+                  : 'Free'}
+            </span>
+          </PageHeading>
         ) : (
           <PageHeading>Create a new organization</PageHeading>
         )}

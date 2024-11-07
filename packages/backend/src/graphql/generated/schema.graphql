@@ -69,14 +69,19 @@ type Mutation {
   organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
 
   """
+  Cancel a PayPal subscription for organization
+  """
+  organizationPaypalSubscriptionCancel(organizationId: ID!): Organization!
+
+  """
+  Create a PayPal subscription for organization
+  """
+  organizationPaypalSubscriptionIdCreate(organizationId: ID!): String!
+
+  """
   Unarchive an organization
   """
   organizationUnarchive(organizationId: ID!): Organization!
-
-  """
-  Unsubscribe from an organization
-  """
-  organizationUnsubscribe(organizationId: ID!): Organization!
 
   """
   Update an organization
@@ -245,6 +250,7 @@ type Organization implements ModifyInterface {
   Date when the current subscription expires
   """
   subscriptionExpiresAt: DateTime
+  subscriptionStatus: String
   title: String!
 }
 

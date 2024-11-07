@@ -6,7 +6,7 @@ import { UnsubscribeOrganizationButton } from './unsubscribeOrganizationButton'
 export const SubscribeOrUnsubscribeOrganizationButtonFragment = graphql(`
   fragment SubscribeOrUnsubscribeOrganizationButton on Organization {
     id
-    subscriptionExpiresAt
+    subscriptionStatus
     ...UnsubscribeOrganizationButton
   }
 `)
@@ -19,13 +19,13 @@ interface SubscribeOrUnsubscribeOrganizationButtonProps {
 export const SubscribeOrUnsubscribeOrganizationButton = (props: SubscribeOrUnsubscribeOrganizationButtonProps) => {
   const organization = useFragment(SubscribeOrUnsubscribeOrganizationButtonFragment, props.organization)
 
-  if (organization.subscriptionExpiresAt && new Date(organization.subscriptionExpiresAt) > new Date()) {
+  if (organization.subscriptionStatus === 'ACTIVE') {
     return <UnsubscribeOrganizationButton organization={organization} disabled={props.disabled} />
   }
 
   return (
     <Link className="btn btn-primary btn-sm" href={`/organizations/${organization.id}/checkout`}>
-      Subscribe
+      {organization.subscriptionStatus === 'CANCELLED' ? 'Renew' : 'Subscribe'}
     </Link>
   )
 }

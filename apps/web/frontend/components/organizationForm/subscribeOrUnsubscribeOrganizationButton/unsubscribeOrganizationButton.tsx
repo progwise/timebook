@@ -12,9 +12,8 @@ export const UnsubscribeOrganizationButtonFragment = graphql(`
 
 const OrganizationUnsubscribeMutationDocument = graphql(`
   mutation organizationUnsubscribe($organizationId: ID!) {
-    organizationUnsubscribe(organizationId: $organizationId) {
+    organizationPaypalSubscriptionCancel(organizationId: $organizationId) {
       id
-      subscriptionExpiresAt
     }
   }
 `)
@@ -43,7 +42,7 @@ export const UnsubscribeOrganizationButton = ({
   return (
     <>
       <button
-        className="btn btn-outline btn-sm"
+        className="btn btn-outline btn-error btn-sm"
         type="button"
         onClick={() => dialogReference.current?.showModal()}
         disabled={disabled}

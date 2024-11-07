@@ -1,6 +1,4 @@
 /* eslint-disable unicorn/filename-case */
-
-/* eslint-disable unicorn/no-null */
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma } from '@progwise/timebook-backend'
@@ -18,36 +16,32 @@ export default async function handler(request: NextApiRequest, response: NextApi
       case 'BILLING.SUBSCRIPTION.ACTIVATED':
         const activatedSubscriptionOrganizationId = event.resource.custom_id
 
-        // change final_payment_time to next_billing_time
-        const nextBillingTime = event.resource.billing_info.final_payment_time
+        // next_billing_time not working if setup fee is present
+        const nextBillingTime = event.resource.billing_info.next_billing_time
 
         await prisma.organization.update({
           where: { id: activatedSubscriptionOrganizationId },
           data: {
             subscriptionExpiresAt: nextBillingTime,
             paypalSubscriptionId: event.resource.id,
+            subscriptionStatus: 'ACTIVE',
           },
         })
-        console.log('Subscription activated:', event.resource.id)
         break
-      // case 'PAYMENT.SALE.COMPLETED':
-      //   console.log('Payment completed:', event.resource.id)
-      //   break
+
       case 'BILLING.SUBSCRIPTION.CANCELLED':
         const cancelledSubscriptionOrganizationId = event.resource.custom_id
 
         await prisma.organization.update({
           where: { id: cancelledSubscriptionOrganizationId },
           data: {
-            subscriptionExpiresAt: null,
-            // paypalSubscriptionId: null
+            subscriptionStatus: 'CANCELLED',
           },
         })
-        console.log('Subscription cancelled:', event.resource.id)
         break
     }
-  } catch (error) {
-    console.error('Webhook error:', error)
+  } catch {
     response.status(400).json({ error: 'Webhook handler failed' })
   }
+  response.json({})
 }

@@ -77,7 +77,7 @@ const OrganizationDetails = (): JSX.Element => {
       {subscriptionSuccess && alertVisible && (
         <div role="alert" className="alert alert-success mt-4 flex">
           <FaCheck />
-          <span>Your purchase has been confirmed!</span>
+          <span>Your purchase has been confirmed! It may take a few minutes to update.</span>
           <button className="btn btn-ghost btn-sm ml-auto" onClick={() => setAlertVisible(false)}>
             <FaXmark />
           </button>

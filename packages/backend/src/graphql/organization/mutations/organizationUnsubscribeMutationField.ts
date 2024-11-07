@@ -1,22 +1,63 @@
-/* eslint-disable unicorn/no-null */
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
-builder.mutationField('organizationUnsubscribe', (t) =>
-  t.prismaField({
+async function getAccessToken() {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET
+
+  const response = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64'),
+    },
+    body: 'grant_type=client_credentials',
+  })
+
+  const data = await response.json()
+  return data.access_token
+}
+
+builder.mutationField('organizationPaypalSubscriptionCancel', (t) =>
+  t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Organization',
-    description: 'Unsubscribe from an organization',
+    description: 'Cancel a PayPal subscription for organization',
     args: {
       organizationId: t.arg.id(),
     },
-    authScopes: (_source, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
-    resolve: async (query, _source, arguments_) => {
-      const organizationId = arguments_.organizationId.toString()
+    resolve: async (_query, _source, { organizationId }) => {
+      const accessToken = await getAccessToken()
 
-      return prisma.organization.update({
-        ...query,
-        where: { id: organizationId },
-        data: { subscriptionExpiresAt: null },
+      const organization = await prisma.organization.findUnique({
+        where: { id: organizationId.toString() },
+      })
+
+      if (!organization?.paypalSubscriptionId) {
+        throw new Error('Organization does not have a PayPal subscription')
+      }
+
+      const cancelSubscriptionResponse = await fetch(
+        `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${organization.paypalSubscriptionId}/cancel`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            reason: 'Customer requested cancellation',
+          }),
+        },
+      )
+      if (!cancelSubscriptionResponse.ok) {
+        throw new Error('Could not cancel subscription')
+      }
+
+      return await prisma.organization.update({
+        where: { id: organizationId.toString() },
+        data: {
+          subscriptionStatus: 'CANCELLED',
+        },
       })
     },
   }),

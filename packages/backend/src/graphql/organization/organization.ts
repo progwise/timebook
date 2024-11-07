@@ -51,5 +51,8 @@ export const Organization = builder.prismaObject('Organization', {
       resolve: (organization) => organization.subscriptionExpiresAt,
     }),
     paypalSubscriptionId: t.withAuth({ isLoggedIn: true }).exposeString('paypalSubscriptionId', { nullable: true }),
+    subscriptionStatus: t.withAuth({ isLoggedIn: true }).exposeString('subscriptionStatus', {
+      nullable: true,
+    }),
   }),
 })

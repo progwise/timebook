@@ -13,11 +13,7 @@ import { graphql } from '../../../frontend/generated/gql'
 
 const organizationPaypalSubscriptionIdCreateMutationDocument = graphql(`
   mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {
-    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId) {
-      id
-      paypalSubscriptionId
-      subscriptionExpiresAt
-    }
+    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId)
   }
 `)
 
@@ -64,15 +60,12 @@ const PayPalPage = (): JSX.Element => {
     intent: 'subscription',
   }
 
-  const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async (_data, actions) => {
+  const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async () => {
     const { data } = await paypalSubscriptionCreate({ organizationId: organizationId!.toString() })
-    if (!data?.organizationPaypalSubscriptionIdCreate.paypalSubscriptionId) {
+    if (!data?.organizationPaypalSubscriptionIdCreate) {
       throw new Error('Failed to create subscription')
     }
-    return actions.subscription.create({
-      plan_id: data.organizationPaypalSubscriptionIdCreate.paypalSubscriptionId,
-      custom_id: organizationId!.toString(),
-    })
+    return data.organizationPaypalSubscriptionIdCreate
   }
 
   const onApprove: PayPalButtonsComponentProps['onApprove'] = async () => {

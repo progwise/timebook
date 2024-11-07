@@ -52,10 +52,12 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
+  /** Cancel a PayPal subscription for organization */
+  organizationPaypalSubscriptionCancel: Organization
+  /** Create a PayPal subscription for organization */
+  organizationPaypalSubscriptionIdCreate: Scalars['String']
   /** Unarchive an organization */
   organizationUnarchive: Organization
-  /** Unsubscribe from an organization */
-  organizationUnsubscribe: Organization
   /** Update an organization */
   organizationUpdate: Organization
   /** Archive a project */
@@ -129,11 +131,15 @@ export type MutationOrganizationMembershipDeleteArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationOrganizationUnarchiveArgs = {
+export type MutationOrganizationPaypalSubscriptionCancelArgs = {
   organizationId: Scalars['ID']
 }
 
-export type MutationOrganizationUnsubscribeArgs = {
+export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
+  organizationId: Scalars['ID']
+}
+
+export type MutationOrganizationUnarchiveArgs = {
   organizationId: Scalars['ID']
 }
 
@@ -247,6 +253,7 @@ export type Organization = ModifyInterface & {
   projects: Array<Project>
   /** Date when the current subscription expires */
   subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
+  subscriptionStatus?: Maybe<Scalars['String']>
   title: Scalars['String']
 }
 
@@ -621,6 +628,7 @@ export type OrganizationFormFragment = ({
   title: string
   address?: string | null
   canModify: boolean
+  subscriptionStatus?: string | null
 } & {
   ' $fragmentRefs'?: {
     ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment
@@ -631,7 +639,7 @@ export type OrganizationFormFragment = ({
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = ({
   __typename?: 'Organization'
   id: string
-  subscriptionExpiresAt?: string | null
+  subscriptionStatus?: string | null
 } & { ' $fragmentRefs'?: { UnsubscribeOrganizationButtonFragment: UnsubscribeOrganizationButtonFragment } }) & {
   ' $fragmentName'?: 'SubscribeOrUnsubscribeOrganizationButtonFragment'
 }
@@ -646,7 +654,7 @@ export type OrganizationUnsubscribeMutationVariables = Exact<{
 
 export type OrganizationUnsubscribeMutation = {
   __typename?: 'Mutation'
-  organizationUnsubscribe: { __typename?: 'Organization'; id: string; subscriptionExpiresAt?: string | null }
+  organizationPaypalSubscriptionCancel: { __typename?: 'Organization'; id: string }
 }
 
 export type OrganizationMemberListOrganizationFragment = ({
@@ -1144,6 +1152,15 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
+export type OrganizationPaypalSubscriptionIdCreateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationPaypalSubscriptionIdCreateMutation = {
+  __typename?: 'Mutation'
+  organizationPaypalSubscriptionIdCreate: string
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1415,7 +1432,7 @@ export const SubscribeOrUnsubscribeOrganizationButtonFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
       },
@@ -1447,6 +1464,7 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
         ],
@@ -1510,7 +1528,7 @@ export const OrganizationFormFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
       },
@@ -3303,7 +3321,7 @@ export const OrganizationUnsubscribeDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'organizationUnsubscribe' },
+            name: { kind: 'Name', value: 'organizationPaypalSubscriptionCancel' },
             arguments: [
               {
                 kind: 'Argument',
@@ -3313,10 +3331,7 @@ export const OrganizationUnsubscribeDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
-              ],
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
         ],
@@ -4678,6 +4693,42 @@ export const AccessTokenCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
+export const OrganizationPaypalSubscriptionIdCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'organizationPaypalSubscriptionIdCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organizationPaypalSubscriptionIdCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  OrganizationPaypalSubscriptionIdCreateMutation,
+  OrganizationPaypalSubscriptionIdCreateMutationVariables
+>
 export const OrganizationDocument = {
   kind: 'Document',
   definitions: [
@@ -4783,7 +4834,7 @@ export const OrganizationDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionExpiresAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
       },
@@ -4822,6 +4873,7 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
         ],
