@@ -7,6 +7,7 @@ import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { OrganizationInput } from '../../mocks/mocks.generated'
 import { PageHeading } from '../pageHeading'
 import { ArchiveOrUnarchiveOrganizationButton } from './archiveOrUnarchiveOrganizationButton/archiveOrUnarchiveOrganizationButton'
+import { OrganizationSubscriptionStatusLabel } from './organizationSubscriptionStatusLabel'
 import { SubscribeOrUnsubscribeOrganizationButton } from './subscribeOrUnsubscribeOrganizationButton/subscribeOrUnsubscribeOrganizationButton'
 
 export const OrganizationFormFragment = graphql(`
@@ -17,6 +18,7 @@ export const OrganizationFormFragment = graphql(`
     subscriptionStatus
     ...ArchiveOrUnarchiveOrganizationButton
     ...SubscribeOrUnsubscribeOrganizationButton
+    ...OrganizationSubscriptionStatusLabel
   }
 `)
 
@@ -46,23 +48,14 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   }
 
   const isOrganizationFormReadOnly = !!organization && !organization.canModify
-  const organizationSubscriptionStatus = organization?.subscriptionStatus
 
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
         {organization ? (
           <PageHeading>
-            Organization {organization.title}
-            <span
-              className={`badge ${organizationSubscriptionStatus === 'ACTIVE' ? 'badge-success' : organizationSubscriptionStatus === 'CANCELLED' ? 'badge-warning' : 'badge-neutral'} ml-2`}
-            >
-              {organizationSubscriptionStatus === 'ACTIVE'
-                ? 'Active'
-                : organizationSubscriptionStatus === 'CANCELLED'
-                  ? 'Cancelled'
-                  : 'Free'}
-            </span>
+            Organization {organization.title}{' '}
+            <OrganizationSubscriptionStatusLabel subscriptionStatus={organization.subscriptionStatus ?? undefined} />
           </PageHeading>
         ) : (
           <PageHeading>Create a new organization</PageHeading>

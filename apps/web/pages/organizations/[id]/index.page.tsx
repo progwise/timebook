@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { FaCheck, FaXmark } from 'react-icons/fa6'
 import { useMutation, useQuery } from 'urql'
 
@@ -45,8 +45,6 @@ const OrganizationDetails = (): JSX.Element => {
   const selectedOrganization = data?.organization
   const [organizationUpdateResult, organizationUpdate] = useMutation(OrganizationUpdateMutationDocument)
 
-  const [alertVisible, setAlertVisible] = useState(true)
-
   const handleSubmit = async (data: OrganizationInput) => {
     try {
       if (!selectedOrganization?.id) {
@@ -74,11 +72,11 @@ const OrganizationDetails = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      {subscriptionSuccess && alertVisible && (
+      {subscriptionSuccess && (
         <div role="alert" className="alert alert-success mt-4 flex">
           <FaCheck />
           <span>Your purchase has been confirmed! It may take a few minutes to update.</span>
-          <button className="btn btn-ghost btn-sm ml-auto" onClick={() => setAlertVisible(false)}>
+          <button className="btn btn-ghost btn-sm ml-auto" onClick={() => router.replace(`/organizations/${id}`)}>
             <FaXmark />
           </button>
         </div>

@@ -250,7 +250,11 @@ type Organization implements ModifyInterface {
   Date when the current subscription expires
   """
   subscriptionExpiresAt: DateTime
-  subscriptionStatus: String
+
+  """
+  Status of the subscription
+  """
+  subscriptionStatus: SubscriptionStatus
   title: String!
 }
 
@@ -496,6 +500,14 @@ Roles a user can have in a team
 enum Role {
   ADMIN
   MEMBER
+}
+
+"""
+Status of the organization subscription
+"""
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
 }
 
 type Task implements ModifyInterface {

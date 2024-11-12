@@ -253,7 +253,8 @@ export type Organization = ModifyInterface & {
   projects: Array<Project>
   /** Date when the current subscription expires */
   subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
-  subscriptionStatus?: Maybe<Scalars['String']>
+  /** Status of the subscription */
+  subscriptionStatus?: Maybe<SubscriptionStatus>
   title: Scalars['String']
 }
 
@@ -443,6 +444,12 @@ export enum Role {
   Member = 'MEMBER',
 }
 
+/** Status of the organization subscription */
+export enum SubscriptionStatus {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
+}
+
 export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -628,18 +635,24 @@ export type OrganizationFormFragment = ({
   title: string
   address?: string | null
   canModify: boolean
-  subscriptionStatus?: string | null
+  subscriptionStatus?: SubscriptionStatus | null
 } & {
   ' $fragmentRefs'?: {
     ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment
     SubscribeOrUnsubscribeOrganizationButtonFragment: SubscribeOrUnsubscribeOrganizationButtonFragment
+    OrganizationSubscriptionStatusLabelFragment: OrganizationSubscriptionStatusLabelFragment
   }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
+
+export type OrganizationSubscriptionStatusLabelFragment = {
+  __typename?: 'Organization'
+  subscriptionStatus?: SubscriptionStatus | null
+} & { ' $fragmentName'?: 'OrganizationSubscriptionStatusLabelFragment' }
 
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = ({
   __typename?: 'Organization'
   id: string
-  subscriptionStatus?: string | null
+  subscriptionStatus?: SubscriptionStatus | null
 } & { ' $fragmentRefs'?: { UnsubscribeOrganizationButtonFragment: UnsubscribeOrganizationButtonFragment } }) & {
   ' $fragmentName'?: 'SubscribeOrUnsubscribeOrganizationButtonFragment'
 }
@@ -1451,6 +1464,20 @@ export const SubscribeOrUnsubscribeOrganizationButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SubscribeOrUnsubscribeOrganizationButtonFragment, unknown>
+export const OrganizationSubscriptionStatusLabelFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationSubscriptionStatusLabelFragment, unknown>
 export const OrganizationFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1467,6 +1494,7 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' } },
         ],
       },
     },
@@ -1531,6 +1559,15 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
       },
     },
   ],
@@ -4841,6 +4878,15 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -4876,6 +4922,7 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' } },
         ],
       },
     },

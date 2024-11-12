@@ -255,7 +255,8 @@ export type Organization = ModifyInterface & {
   projects: Array<Project>
   /** Date when the current subscription expires */
   subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
-  subscriptionStatus?: Maybe<Scalars['String']>
+  /** Status of the subscription */
+  subscriptionStatus?: Maybe<SubscriptionStatus>
   title: Scalars['String']
 }
 
@@ -445,6 +446,12 @@ export enum Role {
   Member = 'MEMBER',
 }
 
+/** Status of the organization subscription */
+export enum SubscriptionStatus {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
+}
+
 export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -616,15 +623,20 @@ export type OrganizationFormFragment = {
   title: string
   address?: string | null
   canModify: boolean
-  subscriptionStatus?: string | null
+  subscriptionStatus?: SubscriptionStatus | null
   id: string
   isArchived: boolean
+}
+
+export type OrganizationSubscriptionStatusLabelFragment = {
+  __typename?: 'Organization'
+  subscriptionStatus?: SubscriptionStatus | null
 }
 
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
   __typename?: 'Organization'
   id: string
-  subscriptionStatus?: string | null
+  subscriptionStatus?: SubscriptionStatus | null
   title: string
 }
 
@@ -1165,7 +1177,7 @@ export type OrganizationQuery = {
     title: string
     address?: string | null
     canModify: boolean
-    subscriptionStatus?: string | null
+    subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
     projects: Array<{
       __typename?: 'Project'
