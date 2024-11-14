@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { FaCheck, FaXmark } from 'react-icons/fa6'
+import { FaCircleCheck, FaCircleXmark, FaTriangleExclamation, FaXmark } from 'react-icons/fa6'
 import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../../frontend/components/organizationForm/organizationForm'
@@ -33,7 +33,7 @@ const OrganizationUpdateMutationDocument = graphql(`
 
 const OrganizationDetails = (): JSX.Element => {
   const router = useRouter()
-  const { id, subscriptionSuccess } = router.query
+  const { id, subscriptionSuccess, subscriptionError, subscriptionCancel } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
@@ -74,10 +74,37 @@ const OrganizationDetails = (): JSX.Element => {
     <ProtectedPage>
       {subscriptionSuccess && (
         <div role="alert" className="alert alert-success mt-4 flex">
-          <FaCheck />
+          <FaCircleCheck className="text-xl" />
           <span>Your purchase has been confirmed! It may take a few minutes to update.</span>
-          <button className="btn btn-ghost btn-sm ml-auto" onClick={() => router.replace(`/organizations/${id}`)}>
-            <FaXmark />
+          <button
+            className="btn btn-square btn-ghost btn-xs ml-auto"
+            onClick={() => router.replace(`/organizations/${id}`)}
+          >
+            <FaXmark className="text-lg" />
+          </button>
+        </div>
+      )}
+      {subscriptionError && (
+        <div role="alert" className="alert alert-error mt-4 flex">
+          <FaCircleXmark className="text-xl" />
+          <span>There was an error processing your payment. Please try again.</span>
+          <button
+            className="btn btn-square btn-ghost btn-xs ml-auto"
+            onClick={() => router.replace(`/organizations/${id}`)}
+          >
+            <FaXmark className="text-lg" />
+          </button>
+        </div>
+      )}
+      {subscriptionCancel && (
+        <div role="alert" className="alert alert-warning mt-4 flex">
+          <FaTriangleExclamation className="text-xl" />
+          <span>Payment process was cancelled.</span>
+          <button
+            className="btn btn-square btn-ghost btn-xs ml-auto"
+            onClick={() => router.replace(`/organizations/${id}`)}
+          >
+            <FaXmark className="text-lg" />
           </button>
         </div>
       )}

@@ -76,7 +76,7 @@ type Mutation {
   """
   Create a PayPal subscription for organization
   """
-  organizationPaypalSubscriptionIdCreate(organizationId: ID!): String!
+  organizationPaypalSubscriptionIdCreate(cancelUrl: String!, organizationId: ID!, returnUrl: String!): String!
 
   """
   Unarchive an organization

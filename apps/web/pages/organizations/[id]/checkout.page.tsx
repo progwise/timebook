@@ -12,20 +12,14 @@ import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 
 const organizationPaypalSubscriptionIdCreateMutationDocument = graphql(`
-  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {
-    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId)
+  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!, $returnUrl: String!, $cancelUrl: String!) {
+    organizationPaypalSubscriptionIdCreate(
+      organizationId: $organizationId
+      returnUrl: $returnUrl
+      cancelUrl: $cancelUrl
+    )
   }
 `)
-
-function onError() {
-  // window.location.assign('/error-page')
-  alert('An error has occured')
-}
-
-function onCancel() {
-  // window.location.assign('/error-page')
-  alert('A cancel has occured')
-}
 
 // const PayPalButtonWrapper = () => {
 //   const [{ options }, dispatch] = usePayPalScriptReducer()
@@ -60,8 +54,16 @@ const PayPalPage = (): JSX.Element => {
     intent: 'subscription',
   }
 
+  const returnUrl = `/organizations/${organizationId}?subscriptionSuccess=true`
+  const errorUrl = `/organizations/${organizationId}?subscriptionError=true`
+  const cancelUrl = `/organizations/${organizationId}?subscriptionCancel=true`
+
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async () => {
-    const { data } = await paypalSubscriptionCreate({ organizationId: organizationId!.toString() })
+    const { data } = await paypalSubscriptionCreate({
+      organizationId: organizationId!.toString(),
+      returnUrl,
+      cancelUrl,
+    })
     if (!data?.organizationPaypalSubscriptionIdCreate) {
       throw new Error('Failed to create subscription')
     }
@@ -69,7 +71,15 @@ const PayPalPage = (): JSX.Element => {
   }
 
   const onApprove: PayPalButtonsComponentProps['onApprove'] = async () => {
-    await router.push(`/organizations/${organizationId}?subscriptionSuccess=true`)
+    await router.push(returnUrl)
+  }
+
+  const onError: PayPalButtonsComponentProps['onError'] = async () => {
+    await router.push(errorUrl)
+  }
+
+  const onCancel: PayPalButtonsComponentProps['onCancel'] = async () => {
+    await router.push(cancelUrl)
   }
 
   return (

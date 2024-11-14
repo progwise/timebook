@@ -136,7 +136,9 @@ export type MutationOrganizationPaypalSubscriptionCancelArgs = {
 }
 
 export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
+  cancelUrl: Scalars['String']
   organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -1167,6 +1169,8 @@ export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCr
 
 export type OrganizationPaypalSubscriptionIdCreateMutationVariables = Exact<{
   organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
+  cancelUrl: Scalars['String']
 }>
 
 export type OrganizationPaypalSubscriptionIdCreateMutation = {
@@ -4743,6 +4747,16 @@ export const OrganizationPaypalSubscriptionIdCreateDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'returnUrl' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'cancelUrl' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -4755,6 +4769,16 @@ export const OrganizationPaypalSubscriptionIdCreateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'organizationId' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'returnUrl' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'returnUrl' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'cancelUrl' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'cancelUrl' } },
               },
             ],
           },

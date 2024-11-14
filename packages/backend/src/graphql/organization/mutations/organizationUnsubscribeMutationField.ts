@@ -1,5 +1,8 @@
+import createClient from 'openapi-fetch'
+
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
+import type { paths } from './../../../paypalapi/billing_subscriptions_v1'
 
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
@@ -36,20 +39,24 @@ builder.mutationField('organizationPaypalSubscriptionCancel', (t) =>
         throw new Error('Organization does not have a PayPal subscription')
       }
 
-      const cancelSubscriptionResponse = await fetch(
-        `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${organization.paypalSubscriptionId}/cancel`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+      const client = createClient<paths>({ baseUrl: 'https://api-m.sandbox.paypal.com' })
+
+      const cancelSubscriptionResponse = await client.POST('/v1/billing/subscriptions/{id}/cancel', {
+        params: {
+          path: {
+            id: organization.paypalSubscriptionId,
           },
-          body: JSON.stringify({
-            reason: 'Customer requested cancellation',
-          }),
         },
-      )
-      if (!cancelSubscriptionResponse.ok) {
+        body: {
+          reason: 'Customer requested cancellation',
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      if (!cancelSubscriptionResponse.response.ok) {
         throw new Error('Could not cancel subscription')
       }
 

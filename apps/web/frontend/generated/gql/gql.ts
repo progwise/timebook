@@ -139,7 +139,7 @@ const documents = {
     types.AccessTokensDocument,
   '\n  mutation accessTokenCreate($name: String!) {\n    accessTokenCreate(name: $name)\n  }\n':
     types.AccessTokenCreateDocument,
-  '\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {\n    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId)\n  }\n':
+  '\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!, $returnUrl: String!, $cancelUrl: String!) {\n    organizationPaypalSubscriptionIdCreate(\n      organizationId: $organizationId\n      returnUrl: $returnUrl\n      cancelUrl: $cancelUrl\n    )\n  }\n':
     types.OrganizationPaypalSubscriptionIdCreateDocument,
   '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n    }\n  }\n':
     types.OrganizationDocument,
@@ -576,8 +576,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {\n    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId)\n  }\n',
-): (typeof documents)['\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!) {\n    organizationPaypalSubscriptionIdCreate(organizationId: $organizationId)\n  }\n']
+  source: '\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!, $returnUrl: String!, $cancelUrl: String!) {\n    organizationPaypalSubscriptionIdCreate(\n      organizationId: $organizationId\n      returnUrl: $returnUrl\n      cancelUrl: $cancelUrl\n    )\n  }\n',
+): (typeof documents)['\n  mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!, $returnUrl: String!, $cancelUrl: String!) {\n    organizationPaypalSubscriptionIdCreate(\n      organizationId: $organizationId\n      returnUrl: $returnUrl\n      cancelUrl: $cancelUrl\n    )\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

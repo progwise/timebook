@@ -138,7 +138,9 @@ export type MutationOrganizationPaypalSubscriptionCancelArgs = {
 }
 
 export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
+  cancelUrl: Scalars['String']
   organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -1158,6 +1160,8 @@ export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCr
 
 export type OrganizationPaypalSubscriptionIdCreateMutationVariables = Exact<{
   organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
+  cancelUrl: Scalars['String']
 }>
 
 export type OrganizationPaypalSubscriptionIdCreateMutation = {
@@ -1901,7 +1905,7 @@ export const mockAccessTokenCreateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockOrganizationPaypalSubscriptionIdCreateMutation((req, res, ctx) => {
- *   const { organizationId } = req.variables;
+ *   const { organizationId, returnUrl, cancelUrl } = req.variables;
  *   return res(
  *     ctx.data({ organizationPaypalSubscriptionIdCreate })
  *   )
