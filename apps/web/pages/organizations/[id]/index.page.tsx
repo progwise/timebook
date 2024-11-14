@@ -77,19 +77,19 @@ const OrganizationDetails = (): JSX.Element => {
   return (
     <ProtectedPage>
       {subscriptionSuccess && (
-        <div role="alert" className="alert alert-success mt-4 flex" onClick={handleSubscriptionPopup}>
+        <div role="alert" className="alert alert-success mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
           <FaCircleCheck className="text-xl" />
           <span>Your purchase has been confirmed! It may take a few minutes to update.</span>
         </div>
       )}
       {subscriptionError && (
-        <div role="alert" className="alert alert-error mt-4 flex" onClick={handleSubscriptionPopup}>
+        <div role="alert" className="alert alert-error mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
           <FaCircleXmark className="text-xl" />
           <span>There was an error processing your payment. Please try again.</span>
         </div>
       )}
       {subscriptionCancel && (
-        <div role="alert" className="alert alert-warning mt-4 flex" onClick={handleSubscriptionPopup}>
+        <div role="alert" className="alert alert-warning mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
           <FaTriangleExclamation className="text-xl" />
           <span>Payment process was cancelled.</span>
         </div>
