@@ -1,8 +1,8 @@
 import createClient from 'openapi-fetch'
 
 import { builder } from '../../builder'
-import type { paths as billingPaths, components } from './../../../paypalapi/billing_subscriptions_v1'
-import type { paths as catalogsPaths } from './../../../paypalapi/catalogs_products_v1'
+import type { paths as billingPaths, components } from './../../../paypalapi/billingSubscriptionsV1'
+import type { paths as catalogsPaths } from './../../../paypalapi/catalogsProductsV1'
 
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
