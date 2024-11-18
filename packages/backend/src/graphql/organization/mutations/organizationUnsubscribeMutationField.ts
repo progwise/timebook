@@ -2,7 +2,7 @@ import createClient from 'openapi-fetch'
 
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import type { paths } from './../../../paypalapi/billing_subscriptions_v1'
+import type { paths } from './../../../paypalapi/billingSubscriptionsV1'
 
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
