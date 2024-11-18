@@ -1,8 +1,5 @@
-import createClient from 'openapi-fetch'
-
+import { components, paypalClient } from '../../../paypalapi/paypalClient'
 import { builder } from '../../builder'
-import type { paths as billingPaths, components } from './../../../paypalapi/billingSubscriptionsV1'
-import type { paths as catalogsPaths } from './../../../paypalapi/catalogsProductsV1'
 
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
@@ -29,12 +26,11 @@ builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
       returnUrl: t.arg.string(),
       cancelUrl: t.arg.string(),
     },
+    authScopes: (_sources, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (_source, { organizationId, returnUrl, cancelUrl }) => {
       const accessToken = await getAccessToken()
 
-      const catalogsClient = createClient<catalogsPaths>({ baseUrl: 'https://api-m.sandbox.paypal.com' })
-
-      const createProductResponse = await catalogsClient.POST('/v1/catalogs/products', {
+      const createProductResponse = await paypalClient.POST('/v1/catalogs/products', {
         body: {
           name: 'Monthly Organization Subscription',
           description: 'Monthly Organization Subscription product',
@@ -53,9 +49,7 @@ builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
         throw new Error('Could not create product')
       }
 
-      const billingClient = createClient<billingPaths>({ baseUrl: 'https://api-m.sandbox.paypal.com' })
-
-      const createPlanResponse = await billingClient.POST('/v1/billing/plans', {
+      const createPlanResponse = await paypalClient.POST('/v1/billing/plans', {
         body: {
           product_id: product.id,
           name: 'Monthly Organization Subscription',
@@ -109,7 +103,7 @@ builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
 
       const futureDate = new Date(Date.now() + 5 * 1000)
 
-      const createSubscriptionResponse = await billingClient.POST('/v1/billing/subscriptions', {
+      const createSubscriptionResponse = await paypalClient.POST('/v1/billing/subscriptions', {
         body: {
           plan_id: plan.id,
           start_time: futureDate.toISOString(),
@@ -118,8 +112,8 @@ builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
             brand_name: 'Timebook',
             shipping_preference: 'NO_SHIPPING',
             user_action: 'SUBSCRIBE_NOW',
-            return_url: 'http://localhost:3000' + returnUrl,
-            cancel_url: 'http://localhost:3000' + cancelUrl,
+            return_url: process.env.NEXTAUTH_URL + returnUrl,
+            cancel_url: process.env.NEXTAUTH_URL + cancelUrl,
           },
           auto_renewal: true,
         } satisfies components['schemas']['subscription_request_post'],

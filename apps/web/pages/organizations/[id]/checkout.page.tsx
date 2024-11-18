@@ -54,9 +54,9 @@ const PayPalPage = (): JSX.Element => {
     intent: 'subscription',
   }
 
-  const returnUrl = `/organizations/${organizationId}?subscriptionSuccess=true`
-  const errorUrl = `/organizations/${organizationId}?subscriptionError=true`
-  const cancelUrl = `/organizations/${organizationId}?subscriptionCancel=true`
+  const returnUrl = `/organizations/${organizationId}?status=subscriptionSuccess`
+  const errorUrl = `/organizations/${organizationId}?status=subscriptionError`
+  const cancelUrl = `/organizations/${organizationId}?status=subscriptionCancel`
 
   const createSubscription: PayPalButtonsComponentProps['createSubscription'] = async () => {
     const { data } = await paypalSubscriptionCreate({

@@ -1,9 +1,4 @@
 {
-  "compilerOptions": {
-    "noUncheckedIndexedAccess": true,
-    "module": "ESNext", // or "NodeNext"
-    "moduleResolution": "Bundler" // or "NodeNext"
-  },
   "extends": "tsconfig/base.json",
   "include": ["src"],
   "exclude": ["node_modules"]

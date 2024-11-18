@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
-import { FaCircleCheck, FaCircleXmark, FaTriangleExclamation } from 'react-icons/fa6'
 import { useMutation, useQuery } from 'urql'
 
 import { OrganizationForm } from '../../../frontend/components/organizationForm/organizationForm'
@@ -9,6 +8,7 @@ import { ProjectTable } from '../../../frontend/components/projectTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
+import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink'
 
 const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
@@ -33,7 +33,7 @@ const OrganizationUpdateMutationDocument = graphql(`
 
 const OrganizationDetails = (): JSX.Element => {
   const router = useRouter()
-  const { id, subscriptionSuccess, subscriptionError, subscriptionCancel } = router.query
+  const { id } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
@@ -62,10 +62,6 @@ const OrganizationDetails = (): JSX.Element => {
     await router.push('/organizations')
   }
 
-  const handleSubscriptionPopup = async () => {
-    await router.replace(`/organizations/${id}`)
-  }
-
   if (!router.isReady || fetching) {
     return <div>Loading...</div>
   }
@@ -76,24 +72,7 @@ const OrganizationDetails = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      {subscriptionSuccess && (
-        <div role="alert" className="alert alert-success mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
-          <FaCircleCheck className="text-xl" />
-          <span>Your purchase has been confirmed! It may take a few minutes to update.</span>
-        </div>
-      )}
-      {subscriptionError && (
-        <div role="alert" className="alert alert-error mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
-          <FaCircleXmark className="text-xl" />
-          <span>There was an error processing your payment. Please try again.</span>
-        </div>
-      )}
-      {subscriptionCancel && (
-        <div role="alert" className="alert alert-warning mt-4 flex cursor-pointer" onClick={handleSubscriptionPopup}>
-          <FaTriangleExclamation className="text-xl" />
-          <span>Payment process was cancelled.</span>
-        </div>
-      )}
+      <SubscriptionStatusOrganizationLink />
       <OrganizationForm
         organization={selectedOrganization}
         onCancel={handleCancel}

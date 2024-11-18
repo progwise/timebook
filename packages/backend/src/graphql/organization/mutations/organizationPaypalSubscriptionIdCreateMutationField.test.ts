@@ -7,20 +7,32 @@ import { getTestServer } from '../../../getTestServer'
 
 jest.mock('../../../paypalapi/paypalClient', () => ({
   paypalClient: {
-    POST: jest.fn().mockResolvedValue({ response: { ok: true } }),
+    POST: jest.fn((url) => {
+      const response = { ok: true }
+      if (url === '/v1/catalogs/products') {
+        return { response, data: { id: 'product1' } }
+      }
+      if (url === '/v1/billing/plans') {
+        return { response, data: { id: 'plan1' } }
+      }
+      if (url === '/v1/billing/subscriptions') {
+        return { response, data: { id: 'subscription1' } }
+      }
+    }),
   },
 }))
 
-const OrganizationUnsubscribeMutation = gql`
-  mutation OrganizationPaypalSubscriptionCancel {
-    organizationPaypalSubscriptionCancel(organizationId: "O1") {
-      id
-      subscriptionStatus
-    }
+const prisma = new PrismaClient()
+
+const OrganizationPaypalSubscriptionIdCreateMutation = gql`
+  mutation OrganizationPaypalSubscriptionIdCreate {
+    organizationPaypalSubscriptionIdCreate(
+      organizationId: "O1"
+      returnUrl: "http://example.com/returnUrl"
+      cancelUrl: "http://example.com/cancelUrl"
+    )
   }
 `
-
-const prisma = new PrismaClient()
 
 beforeEach(async () => {
   await prisma.user.deleteMany()
@@ -37,8 +49,6 @@ beforeEach(async () => {
     data: {
       id: 'O1',
       title: 'Organization 1',
-      subscriptionExpiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      paypalSubscriptionId: 'PS1',
       organizationMemberships: {
         create: { userId: '1', organizationRole: 'ADMIN' },
       },
@@ -48,7 +58,7 @@ beforeEach(async () => {
 
 it('should throw an error when user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalSubscriptionIdCreateMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
@@ -56,21 +66,18 @@ it('should throw an error when user is unauthorized', async () => {
 
 it('should throw an error when user is not an organization member', async () => {
   const testServer = getTestServer({ userId: '2' })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalSubscriptionIdCreateMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-it('should unsubscribe from an organization', async () => {
+it('should create a PayPal subscription', async () => {
   const testServer = getTestServer({ userId: '1' })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalSubscriptionIdCreateMutation })
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    organizationPaypalSubscriptionCancel: {
-      id: 'O1',
-      subscriptionStatus: 'CANCELLED',
-    },
+    organizationPaypalSubscriptionIdCreate: 'subscription1',
   })
 })

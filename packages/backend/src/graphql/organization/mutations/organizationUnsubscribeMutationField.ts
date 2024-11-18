@@ -1,8 +1,6 @@
-import createClient from 'openapi-fetch'
-
+import { paypalClient } from '../../../paypalapi/paypalClient'
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import type { paths } from './../../../paypalapi/billingSubscriptionsV1'
 
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
@@ -28,6 +26,7 @@ builder.mutationField('organizationPaypalSubscriptionCancel', (t) =>
     args: {
       organizationId: t.arg.id(),
     },
+    authScopes: (_sources, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (_query, _source, { organizationId }) => {
       const accessToken = await getAccessToken()
 
@@ -39,9 +38,7 @@ builder.mutationField('organizationPaypalSubscriptionCancel', (t) =>
         throw new Error('Organization does not have a PayPal subscription')
       }
 
-      const client = createClient<paths>({ baseUrl: 'https://api-m.sandbox.paypal.com' })
-
-      const cancelSubscriptionResponse = await client.POST('/v1/billing/subscriptions/{id}/cancel', {
+      const cancelSubscriptionResponse = await paypalClient.POST('/v1/billing/subscriptions/{id}/cancel', {
         params: {
           path: {
             id: organization.paypalSubscriptionId,

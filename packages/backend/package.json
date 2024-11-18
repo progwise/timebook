@@ -11,7 +11,6 @@
     "migrate-db": "prisma migrate deploy",
     "migrate-dev": "prisma migrate dev",
     "prisma-studio": "prisma studio",
-    "test:ts": "tsc --noEmit",
     "paypal-subscriptions:generate": "openapi-typescript https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/refs/heads/main/openapi/billing_subscriptions_v1.json -o ./src/paypalapi/billingSubscriptionsV1.d.ts && prettier --write ./src/paypalapi/billingSubscriptionsV1.d.ts",
     "paypal-products:generate": "openapi-typescript https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/refs/heads/main/openapi/catalogs_products_v1.json -o ./src/paypalapi/catalogsProductsV1.d.ts && prettier --write ./src/paypalapi/catalogsProductsV1.d.ts"
   },
