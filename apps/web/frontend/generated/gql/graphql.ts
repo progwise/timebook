@@ -745,10 +745,27 @@ export type ProjectMembershipInvitationCreateMutation = {
     expireDate: string
     project: {
       __typename?: 'Project'
+      id: string
       title: string
-      organization?: { __typename?: 'Organization'; title: string } | null
+      members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
+      organization?: {
+        __typename?: 'Organization'
+        title: string
+        members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+      } | null
     }
   }
+}
+
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+  projectRole: Role
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: { __typename?: 'Project'; id: string }
 }
 
 export type ProjectMemberListProjectFragment = ({
@@ -3444,13 +3461,49 @@ export const ProjectMembershipInvitationCreateDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'members' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'projectRole' },
+                              arguments: [
+                                {
+                                  kind: 'Argument',
+                                  name: { kind: 'Name', value: 'projectId' },
+                                  value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'organization' },
                         selectionSet: {
                           kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'members' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                                ],
+                              },
+                            },
+                          ],
                         },
                       },
                     ],
@@ -3467,6 +3520,63 @@ export const ProjectMembershipInvitationCreateDocument = {
   ProjectMembershipInvitationCreateMutation,
   ProjectMembershipInvitationCreateMutationVariables
 >
+export const ProjectMembershipCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectRole' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Role' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectRole' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectRole' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>
 export const ProjectMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [

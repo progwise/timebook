@@ -122,11 +122,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
-        {project ? (
-          <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
-        ) : (
-          <PageHeading>Create new project</PageHeading>
-        )}
+        {project ? <PageHeading>Project {project.title}</PageHeading> : <PageHeading>Create new project</PageHeading>}
         <InputField
           label="Name"
           type="text"
