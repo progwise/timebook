@@ -712,6 +712,11 @@ export type ProjectMembershipInvitationCreateMutation = {
     id: string
     invitationKey: string
     expireDate: string
+    project: {
+      __typename?: 'Project'
+      title: string
+      organization?: { __typename?: 'Organization'; title: string } | null
+    }
   }
 }
 

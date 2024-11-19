@@ -743,6 +743,11 @@ export type ProjectMembershipInvitationCreateMutation = {
     id: string
     invitationKey: string
     expireDate: string
+    project: {
+      __typename?: 'Project'
+      title: string
+      organization?: { __typename?: 'Organization'; title: string } | null
+    }
   }
 }
 
@@ -3433,6 +3438,24 @@ export const ProjectMembershipInvitationCreateDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'invitationKey' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'expireDate' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'organization' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
