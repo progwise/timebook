@@ -7,80 +7,75 @@ import { useMutation } from 'urql'
 
 import { InputField, toastSuccess } from '@progwise/timebook-ui'
 
-import { graphql } from '../generated/gql'
-import { Role } from '../generated/gql/graphql'
+import { FragmentType, graphql, useFragment } from '../generated/gql'
 
-export const ProjectMembershipInvitationMutation = graphql(`
+const ProjectMembershipInvitationMutation = graphql(`
   mutation projectMembershipInvitationCreate($projectId: ID!) {
     projectMembershipInvitationCreate(projectId: $projectId) {
       id
       invitationKey
       expireDate
-      project {
-        id
-        title
-        members {
-          id
-          projectRole(projectId: $projectId)
-        }
-        organization {
-          title
-          members {
-            id
-            name
-            image
-          }
-        }
-      }
     }
   }
 `)
 
 const ProjectMembershipCreateMutationDocument = graphql(`
-  mutation projectMembershipCreate($projectId: ID!, $userId: ID!, $projectRole: Role!) {
-    projectMembershipCreate(projectId: $projectId, userId: $userId, projectRole: $projectRole) {
+  mutation projectMembershipCreate($projectId: ID!, $userId: ID!) {
+    projectMembershipCreate(projectId: $projectId, userId: $userId) {
       id
+    }
+  }
+`)
+
+const ProjectMembershipCreateButtonFragment = graphql(`
+  fragment ProjectInvitationButton on Project {
+    id
+    title
+    members {
+      id
+      projectRole(projectId: $projectId)
+    }
+    organization {
+      title
+      members {
+        id
+        name
+        image
+      }
     }
   }
 `)
 
 interface ProjectInvitationButtonProps {
   projectId: string
+  project: FragmentType<typeof ProjectMembershipCreateButtonFragment>
 }
 
-export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonProps) => {
+export const ProjectInvitationButton = (props: ProjectInvitationButtonProps) => {
   const [{ data, fetching: invitationLoading, error }, invitationKeyCreate] = useMutation(
     ProjectMembershipInvitationMutation,
   )
-
-  const [{ fetching: projectMembershipCreateFetching }, projectMembershipCreate] = useMutation(
-    ProjectMembershipCreateMutationDocument,
-  )
-
-  const [clicked, setClicked] = useState(false)
-
+  const [, projectMembershipCreate] = useMutation(ProjectMembershipCreateMutationDocument)
+  const project = useFragment(ProjectMembershipCreateButtonFragment, props.project)
+  const [addedUserIds, setAddedUserIds] = useState<string[]>([])
   const dialogReference = useRef<HTMLDialogElement>(null)
 
   const invitationLink = `${process.env.NEXT_PUBLIC_APP_URL}/projects/join/${data?.projectMembershipInvitationCreate.invitationKey}`
-
   const invitationExpireDate = data && formatDistanceToNow(new Date(data.projectMembershipInvitationCreate.expireDate))
 
-  const project = data?.projectMembershipInvitationCreate.project
+  const usersToAdd =
+    project.organization?.members.filter((organizationMember) => {
+      const isMemberInProject = project.members.some((projectMember) => projectMember.id === organizationMember.id)
+      const wasRecentlyAdded = addedUserIds.includes(organizationMember.id)
+      return !isMemberInProject || wasRecentlyAdded
+    }) ?? []
 
-  const organizationMembersNotInProject = project?.organization?.members.filter(
-    (organizationMember) => !project.members.some((projectMember) => projectMember.id === organizationMember.id),
-  )
-
-  const handleCreateProjectMembership = async (userId: string, projectRole: Role) => {
-    const projectId = project?.id
-    if (!projectId) {
-      return
-    }
+  const handleCreateProjectMembershipClick = async (userId: string) => {
     await projectMembershipCreate({
-      projectId,
+      projectId: project.id,
       userId,
-      projectRole,
     })
+    setAddedUserIds((previous) => [...previous, userId])
   }
 
   return (
@@ -90,7 +85,8 @@ export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonPr
         type="button"
         onClick={() => {
           dialogReference.current?.showModal()
-          invitationKeyCreate({ projectId })
+          invitationKeyCreate({ projectId: project.id })
+          setAddedUserIds([])
         }}
       >
         Add members
@@ -103,54 +99,54 @@ export const ProjectInvitationButton = ({ projectId }: ProjectInvitationButtonPr
         ) : (
           <div className="modal-box flex flex-col whitespace-normal">
             <div className="modal-action mt-0 flex items-center justify-between">
-              <h3 className="text-lg font-bold">
-                Invite {project?.organization?.title ?? ''} members to {project?.title}
-              </h3>
+              <h3 className="text-lg font-bold">Add members to {project?.title}</h3>
               <form method="dialog">
                 <button className="btn btn-square btn-ghost btn-sm text-xl">
                   <FaXmark />
                 </button>
               </form>
             </div>
-            {project?.organization && organizationMembersNotInProject && (
+            {usersToAdd.length > 0 && (
               <>
                 <div className="max-h-96 overflow-y-auto">
                   <table className="table">
                     <tbody>
-                      {organizationMembersNotInProject.map((user) => (
-                        <tr key={user.id}>
-                          <td className="flex w-full items-center gap-2 pl-0">
-                            {user.image ? (
-                              <div className="avatar">
-                                <Image
-                                  className="rounded-box"
-                                  width={32}
-                                  height={32}
-                                  src={user.image}
-                                  alt={user.name ?? 'image of the user'}
-                                />
-                              </div>
-                            ) : (
-                              <div className="avatar placeholder">
-                                <div className="size-8 rounded-box bg-neutral text-neutral-content" />
-                              </div>
-                            )}
-                            {user.name}
-                          </td>
-                          <td className="w-0 pr-0">
-                            <button
-                              className={`btn btn-secondary btn-sm ${clicked ? 'btn-success no-animation' : ''}`}
-                              onClick={() => {
-                                handleCreateProjectMembership(user.id, Role.Member)
-                                setClicked(true)
-                              }}
-                              disabled={projectMembershipCreateFetching || clicked}
-                            >
-                              {clicked ? 'Added' : 'Invite'}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {usersToAdd.map((user) => {
+                        const hasUserBeenAdded = addedUserIds.includes(user.id)
+                        return (
+                          <tr key={user.id}>
+                            <td className="flex w-full items-center gap-2 pl-0">
+                              {user.image ? (
+                                <div className="avatar">
+                                  <Image
+                                    className="rounded-box"
+                                    width={32}
+                                    height={32}
+                                    src={user.image}
+                                    alt={user.name ?? 'image of the user'}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="avatar placeholder">
+                                  <div className="size-8 rounded-box bg-neutral text-neutral-content" />
+                                </div>
+                              )}
+                              {user.name}
+                            </td>
+                            <td className="w-0 pr-0">
+                              <button
+                                className={`btn btn-secondary btn-sm ${hasUserBeenAdded ? 'btn-success no-animation' : ''}`}
+                                onClick={() => {
+                                  handleCreateProjectMembershipClick(user.id)
+                                }}
+                                disabled={hasUserBeenAdded}
+                              >
+                                {hasUserBeenAdded ? 'Added' : 'Add'}
+                              </button>
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>

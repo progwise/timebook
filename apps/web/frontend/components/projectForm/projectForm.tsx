@@ -73,6 +73,7 @@ export const ProjectFormFragment = graphql(`
       isArchived
     }
     ...DeleteOrArchiveProjectButton
+    ...ProjectInvitationButton
   }
 `)
 
@@ -270,7 +271,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
 
-        {project?.canModify && <ProjectInvitationButton projectId={project.id} />}
+        {project?.canModify && <ProjectInvitationButton projectId={project.id} project={project} />}
       </div>
     </div>
   )
