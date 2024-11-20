@@ -27,7 +27,7 @@ const ProjectMembershipCreateMutationDocument = graphql(`
   }
 `)
 
-const ProjectMembershipCreateButtonFragment = graphql(`
+export const ProjectInvitationButtonFragment = graphql(`
   fragment ProjectInvitationButton on Project {
     id
     title
@@ -48,7 +48,7 @@ const ProjectMembershipCreateButtonFragment = graphql(`
 
 interface ProjectInvitationButtonProps {
   projectId: string
-  project: FragmentType<typeof ProjectMembershipCreateButtonFragment>
+  project: FragmentType<typeof ProjectInvitationButtonFragment>
 }
 
 export const ProjectInvitationButton = (props: ProjectInvitationButtonProps) => {
@@ -56,7 +56,7 @@ export const ProjectInvitationButton = (props: ProjectInvitationButtonProps) => 
     ProjectMembershipInvitationMutation,
   )
   const [, projectMembershipCreate] = useMutation(ProjectMembershipCreateMutationDocument)
-  const project = useFragment(ProjectMembershipCreateButtonFragment, props.project)
+  const project = useFragment(ProjectInvitationButtonFragment, props.project)
   const [addedUserIds, setAddedUserIds] = useState<string[]>([])
   const dialogReference = useRef<HTMLDialogElement>(null)
 

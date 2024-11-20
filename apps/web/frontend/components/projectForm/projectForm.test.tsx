@@ -5,7 +5,6 @@ import { Client, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
-import { DeleteOrArchiveProjectButtonFragment } from './deleteOrArchiveProjectButton/deleteOrArchiveProjectButton'
 import { OrganizationFragment, ProjectForm, ProjectFormFragment } from './projectForm'
 
 jest.mock('next/router', () => ({
@@ -64,10 +63,6 @@ describe('projectForm', () => {
             endDate: '2022-03-21',
             canModify: true,
             hasWorkHours: false,
-            ...makeFragmentData(
-              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
-              DeleteOrArchiveProjectButtonFragment,
-            ),
           },
           ProjectFormFragment,
         )}
@@ -106,10 +101,6 @@ describe('projectForm', () => {
             endDate: '',
             canModify: true,
             hasWorkHours: false,
-            ...makeFragmentData(
-              { id: '1', title: 'old project', hasWorkHours: false, isArchived: false },
-              DeleteOrArchiveProjectButtonFragment,
-            ),
           },
           ProjectFormFragment,
         )}
@@ -179,10 +170,6 @@ describe('projectForm', () => {
             endDate: '',
             canModify: true,
             hasWorkHours: false,
-            ...makeFragmentData(
-              { id: '1', title: 'test project', hasWorkHours: false, isArchived: false },
-              DeleteOrArchiveProjectButtonFragment,
-            ),
           },
           ProjectFormFragment,
         )}
