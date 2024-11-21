@@ -11,8 +11,8 @@ jest.mock('../../../paypalapi/paypalClient', () => ({
   },
 }))
 
-const OrganizationUnsubscribeMutation = gql`
-  mutation OrganizationPaypalSubscriptionCancel {
+const OrganizationPaypalUnsubscribeMutation = gql`
+  mutation OrganizationPaypalUnsubscribe {
     organizationPaypalUnsubscribe(organizationId: "O1") {
       id
       subscriptionStatus
@@ -48,7 +48,7 @@ beforeEach(async () => {
 
 it('should throw an error when user is unauthorized', async () => {
   const testServer = getTestServer({ noSession: true })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalUnsubscribeMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
@@ -56,7 +56,7 @@ it('should throw an error when user is unauthorized', async () => {
 
 it('should throw an error when user is not an organization member', async () => {
   const testServer = getTestServer({ userId: '2' })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalUnsubscribeMutation })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
@@ -64,7 +64,7 @@ it('should throw an error when user is not an organization member', async () => 
 
 it('should unsubscribe from an organization', async () => {
   const testServer = getTestServer({ userId: '1' })
-  const response = await testServer.executeOperation({ query: OrganizationUnsubscribeMutation })
+  const response = await testServer.executeOperation({ query: OrganizationPaypalUnsubscribeMutation })
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({

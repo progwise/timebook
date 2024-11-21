@@ -6,7 +6,7 @@ import { builder } from '../../builder'
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET
-  const oauthTokenUrl = process.env.PAYPAL_URL + 'v1/oauth2/token'
+  const oauthTokenUrl = process.env.PAYPAL_URL + '/v1/oauth2/token'
 
   const response = await fetch(oauthTokenUrl, {
     method: 'POST',
