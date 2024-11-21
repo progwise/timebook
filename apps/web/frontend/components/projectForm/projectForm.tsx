@@ -232,7 +232,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
             <select
               className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
-              {...register('organizationId', { disabled: isSubmitting })}
+              {...register('organizationId', { disabled: isSubmitting || isProjectFormReadOnly })}
             >
               <option value="">No organization</option>
               {organizations.map((organization) => (
