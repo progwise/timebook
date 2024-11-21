@@ -1,25 +1,5 @@
-import { Middleware } from 'openapi-fetch'
-
 import { components, paypalClient } from '../../../paypalapi/paypalClient'
 import { builder } from '../../builder'
-
-async function getAccessToken() {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET
-  const oauthTokenUrl = process.env.PAYPAL_URL + '/v1/oauth2/token'
-
-  const response = await fetch(oauthTokenUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64'),
-    },
-    body: 'grant_type=client_credentials',
-  })
-
-  const data = await response.json()
-  return data.access_token
-}
 
 builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
   t.withAuth({ isLoggedIn: true }).string({
@@ -31,17 +11,6 @@ builder.mutationField('organizationPaypalSubscriptionIdCreate', (t) =>
     },
     authScopes: (_sources, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (_source, { organizationId, returnUrl, cancelUrl }) => {
-      const accessToken = await getAccessToken()
-
-      const authMiddleware: Middleware = {
-        async onRequest({ request }) {
-          request.headers.set('Authorization', `Bearer ${accessToken}`)
-          return request
-        },
-      }
-
-      paypalClient.use(authMiddleware)
-
       const createProductResponse = await paypalClient.POST('/v1/catalogs/products', {
         body: {
           name: 'Monthly Organization Subscription',

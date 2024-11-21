@@ -2,24 +2,6 @@ import { paypalClient } from '../../../paypalapi/paypalClient'
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 
-async function getAccessToken() {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET
-  const oauthTokenUrl = process.env.PAYPAL_URL + '/v1/oauth2/token'
-
-  const response = await fetch(oauthTokenUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64'),
-    },
-    body: 'grant_type=client_credentials',
-  })
-
-  const data = await response.json()
-  return data.access_token
-}
-
 builder.mutationField('organizationPaypalUnsubscribe', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Organization',
@@ -29,8 +11,6 @@ builder.mutationField('organizationPaypalUnsubscribe', (t) =>
     },
     authScopes: (_sources, { organizationId }) => ({ isAdminByOrganization: organizationId.toString() }),
     resolve: async (_query, _source, { organizationId }) => {
-      const accessToken = await getAccessToken()
-
       const organization = await prisma.organization.findUnique({
         where: { id: organizationId.toString() },
       })
@@ -47,10 +27,6 @@ builder.mutationField('organizationPaypalUnsubscribe', (t) =>
         },
         body: {
           reason: 'Customer requested cancellation',
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
       })
 
