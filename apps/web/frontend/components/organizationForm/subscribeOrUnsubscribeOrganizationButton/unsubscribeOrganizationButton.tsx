@@ -10,9 +10,9 @@ export const UnsubscribeOrganizationButtonFragment = graphql(`
   }
 `)
 
-const OrganizationUnsubscribeMutationDocument = graphql(`
-  mutation organizationUnsubscribe($organizationId: ID!) {
-    organizationPaypalSubscriptionCancel(organizationId: $organizationId) {
+const OrganizationPaypalUnsubscribeMutationDocument = graphql(`
+  mutation organizationPaypalUnsubscribe($organizationId: ID!) {
+    organizationPaypalUnsubscribe(organizationId: $organizationId) {
       id
     }
   }
@@ -28,13 +28,13 @@ export const UnsubscribeOrganizationButton = ({
   disabled,
 }: UnsubscribeOrganizationButtonProps): JSX.Element => {
   const organization = useFragment(UnsubscribeOrganizationButtonFragment, organizationFragment)
-  const [{ fetching }, organizationUnsubscribe] = useMutation(OrganizationUnsubscribeMutationDocument)
+  const [{ fetching }, organizationPaypalUnsubscribe] = useMutation(OrganizationPaypalUnsubscribeMutationDocument)
 
   const dialogReference = useRef<HTMLDialogElement>(null)
 
   const handleUnsubscribeOrganization = async () => {
     try {
-      await organizationUnsubscribe({ organizationId: organization.id })
+      await organizationPaypalUnsubscribe({ organizationId: organization.id })
     } catch {}
     dialogReference.current?.close()
   }

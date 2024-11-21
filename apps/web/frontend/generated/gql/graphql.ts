@@ -52,10 +52,10 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
-  /** Cancel a PayPal subscription for organization */
-  organizationPaypalSubscriptionCancel: Organization
   /** Create a PayPal subscription for organization */
   organizationPaypalSubscriptionIdCreate: Scalars['String']
+  /** Cancel a PayPal subscription for organization */
+  organizationPaypalUnsubscribe: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -131,14 +131,14 @@ export type MutationOrganizationMembershipDeleteArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationOrganizationPaypalSubscriptionCancelArgs = {
-  organizationId: Scalars['ID']
-}
-
 export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
   cancelUrl: Scalars['String']
   organizationId: Scalars['ID']
   returnUrl: Scalars['String']
+}
+
+export type MutationOrganizationPaypalUnsubscribeArgs = {
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -642,14 +642,8 @@ export type OrganizationFormFragment = ({
   ' $fragmentRefs'?: {
     ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment
     SubscribeOrUnsubscribeOrganizationButtonFragment: SubscribeOrUnsubscribeOrganizationButtonFragment
-    OrganizationSubscriptionStatusLabelFragment: OrganizationSubscriptionStatusLabelFragment
   }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
-
-export type OrganizationSubscriptionStatusLabelFragment = {
-  __typename?: 'Organization'
-  subscriptionStatus?: SubscriptionStatus | null
-} & { ' $fragmentName'?: 'OrganizationSubscriptionStatusLabelFragment' }
 
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = ({
   __typename?: 'Organization'
@@ -663,13 +657,13 @@ export type UnsubscribeOrganizationButtonFragment = { __typename?: 'Organization
   ' $fragmentName'?: 'UnsubscribeOrganizationButtonFragment'
 }
 
-export type OrganizationUnsubscribeMutationVariables = Exact<{
+export type OrganizationPaypalUnsubscribeMutationVariables = Exact<{
   organizationId: Scalars['ID']
 }>
 
-export type OrganizationUnsubscribeMutation = {
+export type OrganizationPaypalUnsubscribeMutation = {
   __typename?: 'Mutation'
-  organizationPaypalSubscriptionCancel: { __typename?: 'Organization'; id: string }
+  organizationPaypalUnsubscribe: { __typename?: 'Organization'; id: string }
 }
 
 export type OrganizationMemberListOrganizationFragment = ({
@@ -1178,6 +1172,15 @@ export type OrganizationPaypalSubscriptionIdCreateMutation = {
   organizationPaypalSubscriptionIdCreate: string
 }
 
+export type OrganizationDetailsQueryVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationDetailsQuery = {
+  __typename?: 'Query'
+  organization: { __typename?: 'Organization'; id: string; title: string }
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1468,20 +1471,6 @@ export const SubscribeOrUnsubscribeOrganizationButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SubscribeOrUnsubscribeOrganizationButtonFragment, unknown>
-export const OrganizationSubscriptionStatusLabelFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationSubscriptionStatusLabelFragment, unknown>
 export const OrganizationFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1498,7 +1487,6 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' } },
         ],
       },
     },
@@ -1563,15 +1551,6 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
       },
     },
   ],
@@ -3343,13 +3322,13 @@ export const OrganizationUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>
-export const OrganizationUnsubscribeDocument = {
+export const OrganizationPaypalUnsubscribeDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'organizationUnsubscribe' },
+      name: { kind: 'Name', value: 'organizationPaypalUnsubscribe' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -3362,7 +3341,7 @@ export const OrganizationUnsubscribeDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'organizationPaypalSubscriptionCancel' },
+            name: { kind: 'Name', value: 'organizationPaypalUnsubscribe' },
             arguments: [
               {
                 kind: 'Argument',
@@ -3379,7 +3358,7 @@ export const OrganizationUnsubscribeDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<OrganizationUnsubscribeMutation, OrganizationUnsubscribeMutationVariables>
+} as unknown as DocumentNode<OrganizationPaypalUnsubscribeMutation, OrganizationPaypalUnsubscribeMutationVariables>
 export const OrganizationMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -4790,6 +4769,46 @@ export const OrganizationPaypalSubscriptionIdCreateDocument = {
   OrganizationPaypalSubscriptionIdCreateMutation,
   OrganizationPaypalSubscriptionIdCreateMutationVariables
 >
+export const OrganizationDetailsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'organizationDetails' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'organizationId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
 export const OrganizationDocument = {
   kind: 'Document',
   definitions: [
@@ -4902,15 +4921,6 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } }],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -4946,7 +4956,6 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationSubscriptionStatusLabel' } },
         ],
       },
     },

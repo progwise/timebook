@@ -44,15 +44,13 @@ export const Organization = builder.prismaObject('Organization', {
           orderBy: { name: 'asc' },
         }),
     }),
-    subscriptionExpiresAt: t.withAuth({ isLoggedIn: true }).field({
+    subscriptionExpiresAt: t.expose('subscriptionExpiresAt', {
       type: 'DateTime',
       nullable: true,
       description: 'Date when the current subscription expires',
-      select: { subscriptionExpiresAt: true },
-      resolve: (organization) => organization.subscriptionExpiresAt,
     }),
     paypalSubscriptionId: t.withAuth({ isLoggedIn: true }).exposeString('paypalSubscriptionId', { nullable: true }),
-    subscriptionStatus: t.withAuth({ isLoggedIn: true }).field({
+    subscriptionStatus: t.field({
       type: SubscriptionStatusEnum,
       nullable: true,
       description: 'Status of the subscription',

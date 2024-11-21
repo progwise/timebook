@@ -5,8 +5,9 @@ import { prisma } from '../../prisma'
 async function getAccessToken() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET
+  const oauthTokenUrl = process.env.PAYPAL_URL + 'v1/oauth2/token'
 
-  const response = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+  const response = await fetch(oauthTokenUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -19,7 +20,7 @@ async function getAccessToken() {
   return data.access_token
 }
 
-builder.mutationField('organizationPaypalSubscriptionCancel', (t) =>
+builder.mutationField('organizationPaypalUnsubscribe', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
     type: 'Organization',
     description: 'Cancel a PayPal subscription for organization',

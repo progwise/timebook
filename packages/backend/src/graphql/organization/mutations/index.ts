@@ -1,6 +1,6 @@
 import './organizationArchiveMutationField'
 import './organizationCreateMutationField'
 import './organizationPaypalSubscriptionIdCreateMutationField'
+import './organizationPaypalUnsubscribeMutationField'
 import './organizationUnarchiveMutationField'
-import './organizationUnsubscribeMutationField'
 import './organizationUpdateMutationField'

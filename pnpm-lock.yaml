@@ -92,9 +92,6 @@ importers:
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
         version: 1.0.7(@prisma/client@4.16.2)(next-auth@4.24.5)
-      '@paypal/checkout-server-sdk':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@prisma/client':
         specifier: ^4.2.1
         version: 4.16.2
@@ -228,9 +225,6 @@ importers:
       '@types/node':
         specifier: ^18.14.6
         version: 18.19.15
-      '@types/paypal__checkout-server-sdk':
-        specifier: ^1.0.8
-        version: 1.0.8
       '@types/react':
         specifier: ^18.0.0
         version: 18.2.55
@@ -4115,24 +4109,11 @@ packages:
       '@parcel/watcher-win32-x64': 2.4.0
     dev: true
 
-  /@paypal/checkout-server-sdk@1.0.3:
-    resolution: {integrity: sha512-UEdq8akEdMz0Vs4qoQFU2gMp8PpyE/HKyMwiZuK4vIWUKl8jfd1fWKjQN5cDFm9NkFUIp5U7h++rdMOVj9WMNA==}
-    engines: {node: '>=8'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    dependencies:
-      '@paypal/paypalhttp': 1.0.1
-    dev: false
-
   /@paypal/paypal-js@8.1.2:
     resolution: {integrity: sha512-EKshGSWRxLWU1NyPB9P1TiOkPajVmpTo5I9HuZKoSv8y2uk0XIskXqMkAJ/Y9qAg9iJyP102Jb/atX63tTy24w==}
     dependencies:
       promise-polyfill: 8.3.0
     dev: true
-
-  /@paypal/paypalhttp@1.0.1:
-    resolution: {integrity: sha512-DC7AHxTT7drF6dUi3YaFdPVuT15sIkpD5H2eHmdtFgxM4UanS1o1ZDfMhR9mpxd8o+X6pz2r+EZVRRq+n1cssQ==}
-    engines: {node: '>=4'}
-    dev: false
 
   /@paypal/react-paypal-js@8.7.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-KW4EdL8hlLWBY6f9l1csxQ8Szh5bhMFLxl+DV29jHNwdlM6z3s+w4LZQ7GtgHktSrlNBHgblNNvwLNpcDtsZgg==}
@@ -6342,18 +6323,6 @@ packages:
 
   /@types/parse-json@4.0.2:
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
-    dev: true
-
-  /@types/paypal__checkout-server-sdk@1.0.8:
-    resolution: {integrity: sha512-PNmNBlcany7Dh42Qb5mkl+KqYfR39aVcalLm3FXHCozKtDyfLE1JAig7C2mANPdC3fmQhdvcs0n3ym6K10CLnw==}
-    dependencies:
-      '@types/paypal__paypalhttp': 1.0.3
-    dev: true
-
-  /@types/paypal__paypalhttp@1.0.3:
-    resolution: {integrity: sha512-Zen2JyaCOPRkPFxXetopbYWsSpi3VlWWYBZKNEXruxp6vzh7f/an/IaeZ23tmd11rg56zYtmXS2e1PfllVRZtQ==}
-    dependencies:
-      '@types/node': 18.19.15
     dev: true
 
   /@types/pretty-hrtime@1.0.3:

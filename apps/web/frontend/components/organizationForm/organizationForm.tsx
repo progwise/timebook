@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-nested-ternary */
 import { useForm } from 'react-hook-form'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -18,7 +17,6 @@ export const OrganizationFormFragment = graphql(`
     subscriptionStatus
     ...ArchiveOrUnarchiveOrganizationButton
     ...SubscribeOrUnsubscribeOrganizationButton
-    ...OrganizationSubscriptionStatusLabel
   }
 `)
 

@@ -1,11 +1,4 @@
-import { graphql } from '../../generated/gql'
 import { SubscriptionStatus } from '../../generated/gql/graphql'
-
-export const OrganizationSubscriptionStatusLabelFragment = graphql(`
-  fragment OrganizationSubscriptionStatusLabel on Organization {
-    subscriptionStatus
-  }
-`)
 
 interface OrganizationSubscriptionStatusLabelProps {
   subscriptionStatus?: SubscriptionStatus

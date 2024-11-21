@@ -69,14 +69,14 @@ type Mutation {
   organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
 
   """
-  Cancel a PayPal subscription for organization
-  """
-  organizationPaypalSubscriptionCancel(organizationId: ID!): Organization!
-
-  """
   Create a PayPal subscription for organization
   """
   organizationPaypalSubscriptionIdCreate(cancelUrl: String!, organizationId: ID!, returnUrl: String!): String!
+
+  """
+  Cancel a PayPal subscription for organization
+  """
+  organizationPaypalUnsubscribe(organizationId: ID!): Organization!
 
   """
   Unarchive an organization

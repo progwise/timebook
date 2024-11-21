@@ -4,8 +4,9 @@ import {
   PayPalScriptProvider,
   ReactPayPalScriptOptions,
 } from '@paypal/react-paypal-js'
+import { addMonths, format } from 'date-fns'
 import { useRouter } from 'next/router'
-import { useMutation } from 'urql'
+import { useMutation, useQuery } from 'urql'
 
 import { PageHeading } from '../../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
@@ -21,30 +22,23 @@ const organizationPaypalSubscriptionIdCreateMutationDocument = graphql(`
   }
 `)
 
-// const PayPalButtonWrapper = () => {
-//   const [{ options }, dispatch] = usePayPalScriptReducer()
-//   const [currency, setCurrency] = useState(options.currency)
+const organizationDetailsQueryDocument = graphql(`
+  query organizationDetails($organizationId: ID!) {
+    organization(organizationId: $organizationId) {
+      id
+      title
+    }
+  }
+`)
 
-//   function onCurrencyChange({ target: { value } }: any) {
-//     setCurrency(value)
-//     dispatch({ type: 'resetOptions', value: { ...options, currency: value } })
-//   }
-
-//   return (
-//     <>
-//       <select value={currency} onChange={onCurrencyChange}>
-//         <option value="USD">US Dollar</option>
-//         <option value="EUR">Euro</option>
-//       </select>
-
-//       <PayPalButtons createOrder={createOrder} onApprove={onApprove} style={{ layout: 'vertical' }} />
-//     </>
-//   )
-// }
-
-const PayPalPage = (): JSX.Element => {
+const CheckoutPage = (): JSX.Element => {
   const router = useRouter()
   const { id: organizationId } = router.query
+
+  const [{ data: organizationData }] = useQuery({
+    query: organizationDetailsQueryDocument,
+    variables: { organizationId: organizationId!.toString() },
+  })
 
   const [{ error }, paypalSubscriptionCreate] = useMutation(organizationPaypalSubscriptionIdCreateMutationDocument)
 
@@ -82,10 +76,19 @@ const PayPalPage = (): JSX.Element => {
     await router.push(cancelUrl)
   }
 
+  const startDate = new Date()
+  const endDate = addMonths(startDate, 1)
+
   return (
     <ProtectedPage>
-      <PageHeading>PayPal Integration</PageHeading>
-      <div style={{ maxWidth: '750px', minHeight: '200px' }}>
+      <PageHeading>Upgrade to Pro plan for {organizationData?.organization.title}</PageHeading>
+      <div>
+        <p>
+          {format(startDate, 'MMM d')} - {format(endDate, 'MMM d yyyy')}
+        </p>
+        <p>Total price: 10 EUR</p>
+      </div>
+      <div className="max-w-96">
         {error && <span>Error: {error.message}</span>}
         <PayPalScriptProvider options={initialOptions}>
           <PayPalButtons
@@ -101,4 +104,4 @@ const PayPalPage = (): JSX.Element => {
   )
 }
 
-export default PayPalPage
+export default CheckoutPage

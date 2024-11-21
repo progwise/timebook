@@ -54,10 +54,10 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
-  /** Cancel a PayPal subscription for organization */
-  organizationPaypalSubscriptionCancel: Organization
   /** Create a PayPal subscription for organization */
   organizationPaypalSubscriptionIdCreate: Scalars['String']
+  /** Cancel a PayPal subscription for organization */
+  organizationPaypalUnsubscribe: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -133,14 +133,14 @@ export type MutationOrganizationMembershipDeleteArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationOrganizationPaypalSubscriptionCancelArgs = {
-  organizationId: Scalars['ID']
-}
-
 export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
   cancelUrl: Scalars['String']
   organizationId: Scalars['ID']
   returnUrl: Scalars['String']
+}
+
+export type MutationOrganizationPaypalUnsubscribeArgs = {
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -630,11 +630,6 @@ export type OrganizationFormFragment = {
   isArchived: boolean
 }
 
-export type OrganizationSubscriptionStatusLabelFragment = {
-  __typename?: 'Organization'
-  subscriptionStatus?: SubscriptionStatus | null
-}
-
 export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
   __typename?: 'Organization'
   id: string
@@ -644,13 +639,13 @@ export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
 
 export type UnsubscribeOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string }
 
-export type OrganizationUnsubscribeMutationVariables = Exact<{
+export type OrganizationPaypalUnsubscribeMutationVariables = Exact<{
   organizationId: Scalars['ID']
 }>
 
-export type OrganizationUnsubscribeMutation = {
+export type OrganizationPaypalUnsubscribeMutation = {
   __typename?: 'Mutation'
-  organizationPaypalSubscriptionCancel: { __typename?: 'Organization'; id: string }
+  organizationPaypalUnsubscribe: { __typename?: 'Organization'; id: string }
 }
 
 export type OrganizationMemberListOrganizationFragment = {
@@ -1169,6 +1164,15 @@ export type OrganizationPaypalSubscriptionIdCreateMutation = {
   organizationPaypalSubscriptionIdCreate: string
 }
 
+export type OrganizationDetailsQueryVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationDetailsQuery = {
+  __typename?: 'Query'
+  organization: { __typename?: 'Organization'; id: string; title: string }
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1464,22 +1468,22 @@ export const mockOrganizationUnarchiveMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockOrganizationUnsubscribeMutation((req, res, ctx) => {
+ * mockOrganizationPaypalUnsubscribeMutation((req, res, ctx) => {
  *   const { organizationId } = req.variables;
  *   return res(
- *     ctx.data({ organizationPaypalSubscriptionCancel })
+ *     ctx.data({ organizationPaypalUnsubscribe })
  *   )
  * })
  */
-export const mockOrganizationUnsubscribeMutation = (
+export const mockOrganizationPaypalUnsubscribeMutation = (
   resolver: ResponseResolver<
-    GraphQLRequest<OrganizationUnsubscribeMutationVariables>,
-    GraphQLContext<OrganizationUnsubscribeMutation>,
+    GraphQLRequest<OrganizationPaypalUnsubscribeMutationVariables>,
+    GraphQLContext<OrganizationPaypalUnsubscribeMutation>,
     any
   >,
 ) =>
-  graphql.mutation<OrganizationUnsubscribeMutation, OrganizationUnsubscribeMutationVariables>(
-    'organizationUnsubscribe',
+  graphql.mutation<OrganizationPaypalUnsubscribeMutation, OrganizationPaypalUnsubscribeMutationVariables>(
+    'organizationPaypalUnsubscribe',
     resolver,
   )
 
@@ -1922,6 +1926,25 @@ export const mockOrganizationPaypalSubscriptionIdCreateMutation = (
     OrganizationPaypalSubscriptionIdCreateMutation,
     OrganizationPaypalSubscriptionIdCreateMutationVariables
   >('organizationPaypalSubscriptionIdCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationDetailsQuery((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organization })
+ *   )
+ * })
+ */
+export const mockOrganizationDetailsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationDetailsQueryVariables>,
+    GraphQLContext<OrganizationDetailsQuery>,
+    any
+  >,
+) => graphql.query<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>('organizationDetails', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

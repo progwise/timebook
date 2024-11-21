@@ -13,7 +13,7 @@ jest.mock('../../../paypalapi/paypalClient', () => ({
 
 const OrganizationUnsubscribeMutation = gql`
   mutation OrganizationPaypalSubscriptionCancel {
-    organizationPaypalSubscriptionCancel(organizationId: "O1") {
+    organizationPaypalUnsubscribe(organizationId: "O1") {
       id
       subscriptionStatus
     }
@@ -68,7 +68,7 @@ it('should unsubscribe from an organization', async () => {
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    organizationPaypalSubscriptionCancel: {
+    organizationPaypalUnsubscribe: {
       id: 'O1',
       subscriptionStatus: 'CANCELLED',
     },

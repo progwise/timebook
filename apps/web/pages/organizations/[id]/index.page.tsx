@@ -8,7 +8,7 @@ import { ProjectTable } from '../../../frontend/components/projectTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
-import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink'
+import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
 
 const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
