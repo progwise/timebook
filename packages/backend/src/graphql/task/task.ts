@@ -44,13 +44,25 @@ export const Task = builder.prismaObject('Task', {
       args: {
         from: t.arg({ type: DateScalar, required: true }),
         to: t.arg({ type: DateScalar, required: false }),
+        forUserId: t.arg.id({
+          required: false,
+          description:
+            'Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned',
+        }),
       },
-      resolve: async (task, _arguments, context) => {
-        const interval = { start: _arguments.from, end: _arguments.to ?? _arguments.from }
+      // when signed in user requests work hours for another user, the signed in user must be an admin
+
+      authScopes: (task, { forUserId }, context) => {
+        const showWorkHoursForOtherUser = !!forUserId && forUserId !== context.session.user.id
+        return showWorkHoursForOtherUser ? { isAdminByTask: task.id } : { isLoggedIn: true }
+      },
+
+      resolve: async (task, { from, to, forUserId }, context) => {
+        const interval = { start: from, end: to ?? from }
         return eachDayOfInterval(interval).map(async (date) => ({
           date: subMinutes(date, date.getTimezoneOffset()),
           taskId: task.id,
-          userId: context.session.user.id,
+          userId: forUserId?.toString() ?? context.session.user.id,
         }))
       },
     }),

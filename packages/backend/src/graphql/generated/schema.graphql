@@ -362,6 +362,11 @@ type Query {
   """
   projects(
     filter: ProjectFilter! = ACTIVE
+
+    """
+    Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.
+    """
+    forUserId: ID
     from: Date!
 
     """
@@ -409,6 +414,11 @@ type Query {
     """
     userId: ID
   ): User!
+
+  """
+  Returns all members from projects where the user is an admin
+  """
+  usersForProjectAdminQueryField: [User!]!
 
   """
   Returns a list of work hours for a given time period and a list of users
@@ -511,7 +521,14 @@ type Task implements ModifyInterface {
   """
   The work hours of the task for each day of the given interval
   """
-  workHourOfDays(from: Date!, to: Date): [WorkHourOfDay!]!
+  workHourOfDays(
+    """
+    Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned
+    """
+    forUserId: ID
+    from: Date!
+    to: Date
+  ): [WorkHourOfDay!]!
   workHours(from: Date!, to: Date): [WorkHour!]!
 }
 
