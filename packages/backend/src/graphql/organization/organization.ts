@@ -49,7 +49,7 @@ export const Organization = builder.prismaObject('Organization', {
       nullable: true,
       description: 'Date when the current subscription expires',
     }),
-    paypalSubscriptionId: t.withAuth({ isLoggedIn: true }).exposeString('paypalSubscriptionId', { nullable: true }),
+    paypalSubscriptionId: t.exposeString('paypalSubscriptionId', { nullable: true }),
     subscriptionStatus: t.field({
       type: SubscriptionStatusEnum,
       nullable: true,
