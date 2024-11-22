@@ -231,7 +231,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               <span className="label-text">Organization</span>
             </div>
             <select
-              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''} ${isSubmitting || isProjectFormReadOnly ? 'text-opacity-80' : ''}`}
+              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''} disabled:text-opacity-100`}
               {...register('organizationId', { disabled: isSubmitting || isProjectFormReadOnly })}
             >
               <option value="">No organization</option>
