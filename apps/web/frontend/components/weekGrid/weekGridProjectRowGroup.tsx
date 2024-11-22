@@ -15,7 +15,7 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     tasks {
       id
       ...WeekGridTaskRow
-      workHourOfDays(from: $from, to: $to) {
+      workHourOfDays(from: $from, to: $to, forUserId: $forUserId) {
         workHour {
           duration
         }

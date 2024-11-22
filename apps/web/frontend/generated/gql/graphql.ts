@@ -333,6 +333,8 @@ export type Query = {
   task: Task
   /** Returns a single user */
   user: User
+  /** Returns all members from projects where the user is an admin */
+  usersForProjectAdminQueryField: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -355,6 +357,7 @@ export type QueryProjectArgs = {
 
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
+  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
@@ -448,6 +451,7 @@ export type Task = ModifyInterface & {
 }
 
 export type TaskWorkHourOfDaysArgs = {
+  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }
@@ -1072,6 +1076,18 @@ export type WeekGridTaskRowFragment = ({
   }
 }) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
 
+export type UsersForProjectAdminQueryQueryVariables = Exact<{ [key: string]: never }>
+
+export type UsersForProjectAdminQueryQuery = {
+  __typename?: 'Query'
+  usersForProjectAdminQueryField: Array<{
+    __typename?: 'User'
+    id: string
+    name?: string | null
+    image?: string | null
+  }>
+}
+
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
   id: string
@@ -1251,6 +1267,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
+  forUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -2233,6 +2250,11 @@ export const WorkHourCommentFragmentFragmentDoc = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -2291,6 +2313,11 @@ export const WeekGridTaskRowFragmentDoc = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
               },
             ],
             selectionSet: {
@@ -2400,6 +2427,11 @@ export const WeekGridTaskRowFragmentDoc = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -2456,6 +2488,11 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                       kind: 'Argument',
                       name: { kind: 'Name', value: 'to' },
                       value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'forUserId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
                     },
                   ],
                   selectionSet: {
@@ -2543,6 +2580,11 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -2596,6 +2638,11 @@ export const WeekGridProjectRowGroupFragmentDoc = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
               },
             ],
             selectionSet: {
@@ -2672,6 +2719,11 @@ export const WeekGridProjectFragmentDoc = {
                       kind: 'Argument',
                       name: { kind: 'Name', value: 'to' },
                       value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'forUserId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
                     },
                   ],
                   selectionSet: {
@@ -2761,6 +2813,11 @@ export const WeekGridProjectFragmentDoc = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -2814,6 +2871,11 @@ export const WeekGridProjectFragmentDoc = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
               },
             ],
             selectionSet: {
@@ -2908,6 +2970,11 @@ export const WeekGridProjectFragmentDoc = {
                       kind: 'Argument',
                       name: { kind: 'Name', value: 'to' },
                       value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'forUserId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
                     },
                   ],
                   selectionSet: {
@@ -4405,6 +4472,33 @@ export const WorkHourUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>
+export const UsersForProjectAdminQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'UsersForProjectAdminQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'usersForProjectAdminQueryField' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UsersForProjectAdminQueryQuery, UsersForProjectAdminQueryQueryVariables>
 export const CommentUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -5558,6 +5652,11 @@ export const WeekGridDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -5575,6 +5674,11 @@ export const WeekGridDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
               },
               {
                 kind: 'Argument',
@@ -5674,6 +5778,11 @@ export const WeekGridDocument = {
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
               },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
@@ -5727,6 +5836,11 @@ export const WeekGridDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'to' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'forUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
               },
             ],
             selectionSet: {
@@ -5803,6 +5917,11 @@ export const WeekGridDocument = {
                       name: { kind: 'Name', value: 'to' },
                       value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
                     },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'forUserId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
+                    },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
@@ -5851,6 +5970,11 @@ export const WeekGridDocument = {
                       kind: 'Argument',
                       name: { kind: 'Name', value: 'to' },
                       value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'forUserId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'forUserId' } },
                     },
                   ],
                   selectionSet: {

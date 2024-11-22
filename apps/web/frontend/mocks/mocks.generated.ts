@@ -335,6 +335,8 @@ export type Query = {
   task: Task
   /** Returns a single user */
   user: User
+  /** Returns all members from projects where the user is an admin */
+  usersForProjectAdminQueryField: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -357,6 +359,7 @@ export type QueryProjectArgs = {
 
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
+  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   to?: InputMaybe<Scalars['Date']>
@@ -450,6 +453,7 @@ export type Task = ModifyInterface & {
 }
 
 export type TaskWorkHourOfDaysArgs = {
+  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
 }
@@ -1074,6 +1078,18 @@ export type WeekGridTaskRowFragment = {
   } | null
 }
 
+export type UsersForProjectAdminQueryQueryVariables = Exact<{ [key: string]: never }>
+
+export type UsersForProjectAdminQueryQuery = {
+  __typename?: 'Query'
+  usersForProjectAdminQueryField: Array<{
+    __typename?: 'User'
+    id: string
+    name?: string | null
+    image?: string | null
+  }>
+}
+
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
   id: string
@@ -1270,6 +1286,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
+  forUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -1769,6 +1786,28 @@ export const mockWorkHourUpdateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockUsersForProjectAdminQueryQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ usersForProjectAdminQueryField })
+ *   )
+ * })
+ */
+export const mockUsersForProjectAdminQueryQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<UsersForProjectAdminQueryQueryVariables>,
+    GraphQLContext<UsersForProjectAdminQueryQuery>,
+    any
+  >,
+) =>
+  graphql.query<UsersForProjectAdminQueryQuery, UsersForProjectAdminQueryQueryVariables>(
+    'UsersForProjectAdminQuery',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCommentUpdateMutation((req, res, ctx) => {
  *   const { comment, date, taskId } = req.variables;
  *   return res(
@@ -2028,7 +2067,7 @@ export const mockOrganizationsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to } = req.variables;
+ *   const { from, to, forUserId } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )

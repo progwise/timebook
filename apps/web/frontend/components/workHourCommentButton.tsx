@@ -11,7 +11,7 @@ export const WorkHourCommentFragment = graphql(`
   fragment WorkHourCommentFragment on Task {
     id
     title
-    workHourOfDays(from: $from, to: $to) {
+    workHourOfDays(from: $from, to: $to, forUserId: $forUserId) {
       date
       workHour {
         comment
