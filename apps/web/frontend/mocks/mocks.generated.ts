@@ -29,6 +29,11 @@ export type AccessToken = {
   name: Scalars['String']
 }
 
+export type Invoice = {
+  __typename?: 'Invoice'
+  id: Scalars['ID']
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -319,6 +324,8 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Invoice for a project */
+  invoices: Array<Invoice>
   /** Returns a single Organization */
   organization: Organization
   /** Returns all organizations of the signed in user that are active */

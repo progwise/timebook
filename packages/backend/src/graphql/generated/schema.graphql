@@ -17,6 +17,10 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+type Invoice {
+  id: ID!
+}
+
 """
 Adds the information whether the user can edit the entity
 """
@@ -330,6 +334,11 @@ type Query {
   """
   accessTokens: [AccessToken!]!
   currentTracking: Tracking
+
+  """
+  Invoice for a project
+  """
+  invoices: [Invoice!]!
 
   """
   Returns a single Organization

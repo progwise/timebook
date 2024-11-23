@@ -16,6 +16,7 @@ import './task'
 import './tracking'
 import './user'
 import './workHour'
+import './invoice'
 
 export const schema = builder.toSchema()
 
