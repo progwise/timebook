@@ -4,7 +4,15 @@
     "build": {
       "dependsOn": ["^build", "graphql:generate"],
       "outputs": ["dist/**", ".next/**"],
-      "env": ["NEXTAUTH_URL", "NEXT_PUBLIC_APP_URL", "ROOT", "NEXTAUTH_SECRET", "CI"]
+      "env": [
+        "NEXTAUTH_URL",
+        "NEXT_PUBLIC_APP_URL",
+        "ROOT",
+        "NEXTAUTH_SECRET",
+        "CI",
+        "NEXT_PUBLIC_PAYPAL_CLIENT_ID",
+        "PAYPAL_URL"
+      ]
     },
     "lint": {
       "outputs": []
@@ -39,5 +47,12 @@
       "outputs": []
     }
   },
-  "globalEnv": ["GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET", "NODE_ENV", "SECRET", "DATABASE_URL"]
+  "globalEnv": [
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "NODE_ENV",
+    "SECRET",
+    "DATABASE_URL",
+    "PAYPAL_CLIENT_SECRET"
+  ]
 }

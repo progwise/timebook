@@ -69,6 +69,16 @@ type Mutation {
   organizationMembershipDelete(organizationId: ID!, userId: ID!): Organization!
 
   """
+  Create a PayPal subscription for organization
+  """
+  organizationPaypalSubscriptionIdCreate(cancelUrl: String!, organizationId: ID!, returnUrl: String!): String!
+
+  """
+  Cancel a PayPal subscription for organization
+  """
+  organizationPaypalUnsubscribe(organizationId: ID!): Organization!
+
+  """
   Unarchive an organization
   """
   organizationUnarchive(organizationId: ID!): Organization!
@@ -233,7 +243,18 @@ type Organization implements ModifyInterface {
   List of users that are member of the organization
   """
   members: [User!]!
+  paypalSubscriptionId: String
   projects: [Project!]!
+
+  """
+  Date when the current subscription expires
+  """
+  subscriptionExpiresAt: DateTime
+
+  """
+  Status of the subscription
+  """
+  subscriptionStatus: SubscriptionStatus
   title: String!
 }
 
@@ -479,6 +500,14 @@ Roles a user can have in a team
 enum Role {
   ADMIN
   MEMBER
+}
+
+"""
+Status of the organization subscription
+"""
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
 }
 
 type Task implements ModifyInterface {
