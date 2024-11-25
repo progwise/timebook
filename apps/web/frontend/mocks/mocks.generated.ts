@@ -696,7 +696,14 @@ export type ProjectFormFragment = {
   canModify: boolean
   hasWorkHours: boolean
   isArchived: boolean
-  organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
+  organization?: {
+    __typename?: 'Organization'
+    id: string
+    title: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  } | null
+  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
 }
 
 export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean }
@@ -713,6 +720,28 @@ export type ProjectMembershipInvitationCreateMutation = {
     invitationKey: string
     expireDate: string
   }
+}
+
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: { __typename?: 'Project'; id: string }
+}
+
+export type ProjectInvitationButtonFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
+  organization?: {
+    __typename?: 'Organization'
+    title: string
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  } | null
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -1201,7 +1230,13 @@ export type ProjectQuery = {
       isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
-    organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
+    organization?: {
+      __typename?: 'Organization'
+      id: string
+      title: string
+      isArchived: boolean
+      members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+    } | null
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; projectRole: Role }>
   }
   organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
@@ -1523,6 +1558,29 @@ export const mockProjectMembershipInvitationCreateMutation = (
 ) =>
   graphql.mutation<ProjectMembershipInvitationCreateMutation, ProjectMembershipInvitationCreateMutationVariables>(
     'projectMembershipInvitationCreate',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipCreateMutation((req, res, ctx) => {
+ *   const { projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    'projectMembershipCreate',
     resolver,
   )
 

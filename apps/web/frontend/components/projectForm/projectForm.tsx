@@ -73,6 +73,7 @@ export const ProjectFormFragment = graphql(`
       isArchived
     }
     ...DeleteOrArchiveProjectButton
+    ...ProjectInvitationButton
   }
 `)
 
@@ -122,11 +123,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
-        {project ? (
-          <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
-        ) : (
-          <PageHeading>Create new project</PageHeading>
-        )}
+        {project ? <PageHeading>Project {project.title}</PageHeading> : <PageHeading>Create new project</PageHeading>}
         <InputField
           label="Name"
           type="text"
@@ -274,7 +271,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
 
-        {project?.canModify && <ProjectInvitationButton projectId={project.id} />}
+        {project?.canModify && <ProjectInvitationButton projectId={project.id} project={project} />}
       </div>
     </div>
   )
