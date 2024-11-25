@@ -2,6 +2,7 @@ import { builder } from '../builder'
 import { ModifyInterface } from '../interfaces/modifyInterface'
 import { prisma } from '../prisma'
 import { getWhereUserIsMember } from '../project/queries/getWhereUserIsMember'
+import { SubscriptionStatus, SubscriptionStatusEnum } from './organizationSubscriptionStatusEnum'
 
 export const Organization = builder.prismaObject('Organization', {
   select: { id: true },
@@ -42,6 +43,26 @@ export const Organization = builder.prismaObject('Organization', {
           where: { organizationMemberships: { some: { organizationId: organization.id } } },
           orderBy: { name: 'asc' },
         }),
+    }),
+    subscriptionExpiresAt: t.expose('subscriptionExpiresAt', {
+      type: 'DateTime',
+      nullable: true,
+      description: 'Date when the current subscription expires',
+    }),
+    paypalSubscriptionId: t.exposeString('paypalSubscriptionId', { nullable: true }),
+    subscriptionStatus: t.field({
+      type: SubscriptionStatusEnum,
+      nullable: true,
+      description: 'Status of the subscription',
+      select: { subscriptionStatus: true },
+      resolve: (organization) => {
+        switch (organization.subscriptionStatus) {
+          case 'ACTIVE':
+            return SubscriptionStatus.ACTIVE
+          case 'CANCELLED':
+            return SubscriptionStatus.CANCELLED
+        }
+      },
     }),
   }),
 })
