@@ -724,9 +724,12 @@ export type ProjectFormFragment = ({
   canModify: boolean
   hasWorkHours: boolean
   organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
-} & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
-  ' $fragmentName'?: 'ProjectFormFragment'
-}
+} & {
+  ' $fragmentRefs'?: {
+    DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment
+    ProjectInvitationButtonFragment: ProjectInvitationButtonFragment
+  }
+}) & { ' $fragmentName'?: 'ProjectFormFragment' }
 
 export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } & {
   ' $fragmentName'?: 'OrganizationFragment'
@@ -745,6 +748,28 @@ export type ProjectMembershipInvitationCreateMutation = {
     expireDate: string
   }
 }
+
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: { __typename?: 'Project'; id: string }
+}
+
+export type ProjectInvitationButtonFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
+  organization?: {
+    __typename?: 'Organization'
+    title: string
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  } | null
+} & { ' $fragmentName'?: 'ProjectInvitationButtonFragment' }
 
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
@@ -1637,6 +1662,66 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<DeleteOrArchiveProjectButtonFragment, unknown>
+export const ProjectInvitationButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectInvitationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectRole' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'projectId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectInvitationButtonFragment, unknown>
 export const ProjectFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1666,6 +1751,7 @@ export const ProjectFormFragmentDoc = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationButton' } },
         ],
       },
     },
@@ -1718,6 +1804,61 @@ export const ProjectFormFragmentDoc = {
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectInvitationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectRole' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'projectId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3444,6 +3585,53 @@ export const ProjectMembershipInvitationCreateDocument = {
   ProjectMembershipInvitationCreateMutation,
   ProjectMembershipInvitationCreateMutationVariables
 >
+export const ProjectMembershipCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'projectMembershipCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'projectMembershipCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>
 export const ProjectMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -5051,6 +5239,61 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectInvitationButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'projectRole' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'projectId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -5122,6 +5365,7 @@ export const ProjectDocument = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationButton' } },
         ],
       },
     },
