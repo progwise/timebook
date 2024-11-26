@@ -1,2 +1,2 @@
+import './myProjectsMembersQueryField'
 import './userQueryField'
-import './usersForProjectAdminQueryField'

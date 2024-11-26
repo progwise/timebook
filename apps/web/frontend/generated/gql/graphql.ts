@@ -317,6 +317,8 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns all members from projects where the user is an admin */
+  myProjectsMembers: Array<User>
   /** Returns a single Organization */
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
@@ -333,8 +335,6 @@ export type Query = {
   task: Task
   /** Returns a single user */
   user: User
-  /** Returns all members from projects where the user is an admin */
-  usersForProjectAdminQueryField: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -885,6 +885,7 @@ export type ReportUserFragment = {
   __typename?: 'User'
   id: string
   name?: string | null
+  image?: string | null
   durationWorkedOnProject: number
 } & { ' $fragmentName'?: 'ReportUserFragment' }
 
@@ -996,6 +997,20 @@ export type TrackingCancelMutation = {
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
+export type ProjectMemberFragment = { __typename?: 'User'; id: string; name?: string | null; image?: string | null } & {
+  ' $fragmentName'?: 'ProjectMemberFragment'
+}
+
+export type MyProjectsMembersQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyProjectsMembersQuery = {
+  __typename?: 'Query'
+  myProjectsMembers: Array<
+    { __typename?: 'User' } & { ' $fragmentRefs'?: { ProjectMemberFragment: ProjectMemberFragment } }
+  >
+  user: { __typename?: 'User'; id: string }
+}
+
 export type WeekGridProjectFragment = ({
   __typename?: 'Project'
   id: string
@@ -1075,18 +1090,6 @@ export type WeekGridTaskRowFragment = ({
     WorkHourCommentFragmentFragment: WorkHourCommentFragmentFragment
   }
 }) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
-
-export type UsersForProjectAdminQueryQueryVariables = Exact<{ [key: string]: never }>
-
-export type UsersForProjectAdminQueryQuery = {
-  __typename?: 'Query'
-  usersForProjectAdminQueryField: Array<{
-    __typename?: 'User'
-    id: string
-    name?: string | null
-    image?: string | null
-  }>
-}
 
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
@@ -1931,6 +1934,7 @@ export const ReportUserFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'durationWorkedOnProject' },
@@ -2148,6 +2152,24 @@ export const SheetDayRowFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SheetDayRowFragment, unknown>
+export const ProjectMemberFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectMember' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectMemberFragment, unknown>
 export const WeekGridFooterFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4079,6 +4101,7 @@ export const ReportUsersDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'durationWorkedOnProject' },
@@ -4415,6 +4438,50 @@ export const TrackingCancelDocument = {
     },
   ],
 } as unknown as DocumentNode<TrackingCancelMutation, TrackingCancelMutationVariables>
+export const MyProjectsMembersDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'MyProjectsMembers' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'myProjectsMembers' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectMember' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'user' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProjectMember' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'User' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>
 export const WorkHourUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -4472,33 +4539,6 @@ export const WorkHourUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>
-export const UsersForProjectAdminQueryDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'UsersForProjectAdminQuery' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'usersForProjectAdminQueryField' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UsersForProjectAdminQueryQuery, UsersForProjectAdminQueryQueryVariables>
 export const CommentUpdateDocument = {
   kind: 'Document',
   definitions: [
