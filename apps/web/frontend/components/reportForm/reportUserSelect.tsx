@@ -11,6 +11,7 @@ const ReportUserFragment = graphql(`
   fragment ReportUser on User {
     id
     name
+    image
     durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
   }
 `)
@@ -68,7 +69,13 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
     <ListboxWithUnselect
       getKey={(user) => user?.id}
       value={selectedUser}
-      getLabel={(user) => <UserLabel name={user.name ?? user.id} duration={user.durationWorkedOnProject} />}
+      getLabel={(user) => (
+        <UserLabel
+          name={user.name ?? user.id}
+          duration={user.durationWorkedOnProject}
+          image="https://avatars.githubusercontent.com/u/34001594?v=4&size=64"
+        />
+      )}
       noOptionLabel={<UserLabel name="All Users" duration={allDurations} />}
       onChange={(user) => onUserChange(user?.id)}
       options={allUsers}
