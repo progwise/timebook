@@ -49,7 +49,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
       }}
     >
       {/* adds a border around week day headers, all hour inputs and week day footers */}
-      <div className="pointer-events-none absolute z-[28] col-start-3 col-end-[-3] size-full rounded-box border opacity-50" />
+      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-3] size-full rounded-box border opacity-50" />
 
       {/* adds a border around project row groups and task rows */}
       <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] size-full rounded-box border opacity-50" />
