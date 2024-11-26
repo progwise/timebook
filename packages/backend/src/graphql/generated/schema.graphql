@@ -332,6 +332,11 @@ type Query {
   currentTracking: Tracking
 
   """
+  Returns all members from projects where the user is an admin
+  """
+  myProjectsMembers: [User!]!
+
+  """
   Returns a single Organization
   """
   organization(
@@ -414,11 +419,6 @@ type Query {
     """
     userId: ID
   ): User!
-
-  """
-  Returns all members from projects where the user is an admin
-  """
-  usersForProjectAdminQueryField: [User!]!
 
   """
   Returns a list of work hours for a given time period and a list of users

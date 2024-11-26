@@ -1,51 +1,28 @@
 import { endOfWeek, isThisWeek, nextMonday, previousMonday, startOfWeek } from 'date-fns'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
+import Image from 'next/image'
 import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
-import { useQuery } from 'urql'
 
-import { graphql } from '../generated/gql'
+import { Listbox } from '@progwise/timebook-ui'
+
 import { CalendarSelector } from './calendarSelector'
+import { useProjectMembers } from './useProjectMembers'
 
 interface WeekSelectorProps {
   value: Date
   onChange: (newDay: Date) => void
 }
 
-const UsersForProjectAdminQueryDocument = graphql(`
-  query UsersForProjectAdminQuery {
-    usersForProjectAdminQueryField {
-      id
-      name
-      image
-    }
-  }
-`)
-
 export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const weekStartDate = startOfWeek(value)
   const isCurrentWeek = isThisWeek(weekStartDate)
-  const [selectedUserId, setSelectedUserId] = useState<string | undefined>()
-  const router = useRouter()
+  const { selectedUserId, handleUserChange, myProjectsMembersData } = useProjectMembers()
 
   const handleWeekSelect = (newDate: Date) => {
-    const monday = startOfWeek(newDate)
-    onChange(monday)
-  }
-
-  const handleUserChange = (userId: string) => {
-    setSelectedUserId(userId)
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, userId: userId },
-    })
+    const newWeekStartDate = startOfWeek(newDate)
+    onChange(newWeekStartDate)
   }
 
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-
-  const [{ data, fetching }] = useQuery({
-    query: UsersForProjectAdminQueryDocument,
-  })
 
   return (
     <div className="inline-flex flex-col items-center gap-2 p-4">
@@ -53,49 +30,53 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
       </h2>
-      <div className="flex flex-col gap-2 text-sm">
-        <div className="flex">
-          <button
-            className="btn btn-outline btn-neutral btn-sm"
-            aria-label="Previous week"
-            onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
-          >
-            <FaChevronLeft />
-          </button>
-          <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>
-            <FaCalendarCheck />
-            today
-          </button>
-          <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
-
-          <button
-            className="btn btn-outline btn-neutral btn-sm"
-            aria-label="Next week"
-            onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
-          >
-            <FaChevronRight />
-          </button>
-        </div>
-        {data && data.usersForProjectAdminQueryField.length > 0 && (
-          <label className="form-control flex w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Select User</span>
-            </div>
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={selectedUserId}
-              onChange={(event) => handleUserChange(event.target.value)}
-              disabled={fetching}
-            >
-              {data?.usersForProjectAdminQueryField.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+      <div className="flex gap-2 text-sm">
+        <button
+          className="btn btn-outline btn-neutral btn-sm"
+          aria-label="Previous week"
+          onClick={() => handleWeekSelect(previousMonday(weekStartDate))}
+        >
+          <FaChevronLeft />
+        </button>
+        <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>
+          <FaCalendarCheck />
+          Today
+        </button>
+        <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
+        <button
+          className="btn btn-outline btn-neutral btn-sm"
+          aria-label="Next week"
+          onClick={() => handleWeekSelect(nextMonday(weekStartDate))}
+        >
+          <FaChevronRight />
+        </button>
       </div>
+      {myProjectsMembersData.length > 0 && (
+        <Listbox
+          value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? myProjectsMembersData[0]}
+          getLabel={(user) => (
+            <div className="flex items-center gap-2">
+              {user?.image ? (
+                <Image
+                  src={user.image}
+                  alt={user.name ?? 'User avatar'}
+                  width={26}
+                  height={26}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="flex size-6 items-center justify-center rounded-full bg-neutral text-neutral-content">
+                  <span className="text-xl">{user?.name?.charAt(0)}</span>
+                </div>
+              )}
+              <span>{user?.name}</span>
+            </div>
+          )}
+          getKey={(user) => user.id}
+          onChange={(user) => handleUserChange(user.id)}
+          options={myProjectsMembersData}
+        />
+      )}
     </div>
   )
 }

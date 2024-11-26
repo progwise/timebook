@@ -319,6 +319,8 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns all members from projects where the user is an admin */
+  myProjectsMembers: Array<User>
   /** Returns a single Organization */
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
@@ -335,8 +337,6 @@ export type Query = {
   task: Task
   /** Returns a single user */
   user: User
-  /** Returns all members from projects where the user is an admin */
-  usersForProjectAdminQueryField: Array<User>
   /** Returns a list of work hours for a given time period and a list of users */
   workHours: Array<WorkHour>
 }
@@ -852,6 +852,7 @@ export type ReportUserFragment = {
   __typename?: 'User'
   id: string
   name?: string | null
+  image?: string | null
   durationWorkedOnProject: number
 }
 
@@ -866,7 +867,13 @@ export type ReportUsersQuery = {
   project: {
     __typename?: 'Project'
     id: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; durationWorkedOnProject: number }>
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      name?: string | null
+      image?: string | null
+      durationWorkedOnProject: number
+    }>
   }
 }
 
@@ -966,6 +973,16 @@ export type TrackingCancelMutationVariables = Exact<{ [key: string]: never }>
 export type TrackingCancelMutation = {
   __typename?: 'Mutation'
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
+}
+
+export type ProjectMemberFragment = { __typename?: 'User'; id: string; name?: string | null; image?: string | null }
+
+export type MyProjectsMembersQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyProjectsMembersQuery = {
+  __typename?: 'Query'
+  myProjectsMembers: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  user: { __typename?: 'User'; id: string }
 }
 
 export type WeekGridProjectFragment = {
@@ -1076,18 +1093,6 @@ export type WeekGridTaskRowFragment = {
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
-}
-
-export type UsersForProjectAdminQueryQueryVariables = Exact<{ [key: string]: never }>
-
-export type UsersForProjectAdminQueryQuery = {
-  __typename?: 'Query'
-  usersForProjectAdminQueryField: Array<{
-    __typename?: 'User'
-    id: string
-    name?: string | null
-    image?: string | null
-  }>
 }
 
 export type WorkHourCommentFragmentFragment = {
@@ -1767,6 +1772,24 @@ export const mockTrackingCancelMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockMyProjectsMembersQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ myProjectsMembers, user })
+ *   )
+ * })
+ */
+export const mockMyProjectsMembersQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<MyProjectsMembersQueryVariables>,
+    GraphQLContext<MyProjectsMembersQuery>,
+    any
+  >,
+) => graphql.query<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>('MyProjectsMembers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
  *   const { data, date, taskId } = req.variables;
  *   return res(
@@ -1781,28 +1804,6 @@ export const mockWorkHourUpdateMutation = (
     any
   >,
 ) => graphql.mutation<WorkHourUpdateMutation, WorkHourUpdateMutationVariables>('workHourUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockUsersForProjectAdminQueryQuery((req, res, ctx) => {
- *   return res(
- *     ctx.data({ usersForProjectAdminQueryField })
- *   )
- * })
- */
-export const mockUsersForProjectAdminQueryQuery = (
-  resolver: ResponseResolver<
-    GraphQLRequest<UsersForProjectAdminQueryQueryVariables>,
-    GraphQLContext<UsersForProjectAdminQueryQuery>,
-    any
-  >,
-) =>
-  graphql.query<UsersForProjectAdminQueryQuery, UsersForProjectAdminQueryQueryVariables>(
-    'UsersForProjectAdminQuery',
-    resolver,
-  )
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

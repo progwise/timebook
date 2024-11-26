@@ -14,8 +14,13 @@ const projectsQuery = gql`
     $from: Date!
     $includePastMembers: Boolean
     $includeProjectsWhereUserBookedWorkHours: Boolean! = false
+    $forUserId: ID
   ) {
-    projects(from: $from, includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours) {
+    projects(
+      from: $from
+      forUserId: $forUserId
+      includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours
+    ) {
       id
       title
       startDate
@@ -43,6 +48,7 @@ beforeEach(async () => {
       { id: '1', name: 'user with project membership' },
       { id: '2', name: 'user without project membership who booked on project' },
       { id: '3', name: 'user without project membership' },
+      { id: '4', name: 'user with admin role' },
     ],
   })
 
@@ -58,7 +64,14 @@ beforeEach(async () => {
           ],
         },
       },
-      projectMemberships: { create: { userId: '1' } },
+      projectMemberships: {
+        createMany: {
+          data: [
+            { userId: '1', projectRole: 'MEMBER' },
+            { userId: '4', projectRole: 'ADMIN' },
+          ],
+        },
+      },
     },
   })
 
@@ -129,7 +142,10 @@ describe('members', () => {
           startDate: null,
           endDate: null,
           isProjectMember: true,
-          members: [{ id: '1', name: 'user with project membership' }],
+          members: [
+            { id: '4', name: 'user with admin role' },
+            { id: '1', name: 'user with project membership' },
+          ],
           tasks: expect.any(Array),
         },
       ],
@@ -153,7 +169,34 @@ describe('members', () => {
           endDate: null,
           isProjectMember: true,
           members: [
+            { id: '4', name: 'user with admin role' },
             { id: '2', name: 'user without project membership who booked on project' },
+            { id: '1', name: 'user with project membership' },
+          ],
+          tasks: expect.any(Array),
+        },
+      ],
+    })
+  })
+
+  it('should return projects of members when the user is an admin', async () => {
+    const testServer = getTestServer({ userId: '4' })
+    const response = await testServer.executeOperation({
+      query: projectsQuery,
+      variables: { from: '2023-01-01', forUserId: '1' },
+    })
+
+    expect(response.errors).toBeUndefined()
+    expect(response.data).toEqual({
+      projects: [
+        {
+          id: 'P1',
+          title: 'Project 1',
+          startDate: null,
+          endDate: null,
+          isProjectMember: true,
+          members: [
+            { id: '4', name: 'user with admin role' },
             { id: '1', name: 'user with project membership' },
           ],
           tasks: expect.any(Array),

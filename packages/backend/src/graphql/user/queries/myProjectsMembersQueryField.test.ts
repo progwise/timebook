@@ -7,9 +7,9 @@ import { getTestServer } from '../../../getTestServer'
 
 const prisma = new PrismaClient()
 
-const usersForProjectAdminQuery = gql`
+const myProjectsMembersQuery = gql`
   query {
-    usersForProjectAdminQueryField {
+    myProjectsMembers {
       id
       name
     }
@@ -46,32 +46,32 @@ beforeEach(async () => {
 it('should throw an error when the user is not signed in', async () => {
   const testServer = getTestServer({ noSession: true })
   const response = await testServer.executeOperation({
-    query: usersForProjectAdminQuery,
+    query: myProjectsMembersQuery,
   })
 
   expect(response.data).toBeNull()
   expect(response.errors).toEqual([new GraphQLError('Not authorized')])
 })
 
-it('should throw an error when the user is not an admin', async () => {
+it('should return an empty array when the user is not an admin', async () => {
   const testServer = getTestServer({ userId: '2' })
   const response = await testServer.executeOperation({
-    query: usersForProjectAdminQuery,
+    query: myProjectsMembersQuery,
   })
 
-  expect(response.errors).toEqual([new GraphQLError('Not authorized')])
-  expect(response.data).toBeNull()
+  expect(response.errors).toBeUndefined()
+  expect(response.data).toEqual({ myProjectsMembers: [] })
 })
 
 it('should return all members from projects where the user is an admin', async () => {
   const testServer = getTestServer({ userId: '1' })
   const response = await testServer.executeOperation({
-    query: usersForProjectAdminQuery,
+    query: myProjectsMembersQuery,
   })
 
   expect(response.errors).toBeUndefined()
   expect(response.data).toEqual({
-    usersForProjectAdminQueryField: [
+    myProjectsMembers: [
       { id: '1', name: 'Admin' },
       { id: '2', name: 'Member' },
     ],

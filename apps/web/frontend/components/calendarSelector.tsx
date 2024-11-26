@@ -108,7 +108,7 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
           <FaRegCalendar />
-          {props.selectLabel && 'select'}
+          {props.selectLabel && 'Select'}
         </Popover.Button>
 
         <div style={floatingStyles} ref={refs.setFloating} className="z-40">
