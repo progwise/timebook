@@ -1,7 +1,7 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
 import Link from 'next/link'
-import { FaAngleRight, FaArrowUpRightFromSquare } from 'react-icons/fa6'
+import { FaAngleRight } from 'react-icons/fa6'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -57,9 +57,8 @@ export const WeekGridProjectRowGroup = ({
           role="cell"
         >
           <FaAngleRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
-          <Link href={`projects/${project.id}`} className="flex items-center gap-1">
+          <Link href={`projects/${project.id}`} className="link-hover link flex items-center gap-1">
             {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
-            <FaArrowUpRightFromSquare />
           </Link>
         </div>
         {eachDayOfInterval(interval).map((day) => (
