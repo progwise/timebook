@@ -921,6 +921,7 @@ export type ReportUserFragment = {
   __typename?: 'User'
   id: string
   name?: string | null
+  image?: string | null
   durationWorkedOnProject: number
 }
 
@@ -935,7 +936,13 @@ export type ReportUsersQuery = {
   project: {
     __typename?: 'Project'
     id: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; durationWorkedOnProject: number }>
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      name?: string | null
+      image?: string | null
+      durationWorkedOnProject: number
+    }>
   }
 }
 
