@@ -1,11 +1,11 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import { ParsedUrlQuery } from 'querystring'
-import { Client, Provider } from 'urql'
+import { cacheExchange, Client, fetchExchange, Provider } from 'urql'
 
 import '../../frontend/mocks/mockServer'
 import { default as WeekPage } from './index.page'
 
-const client = new Client({ url: '/api/graphql', exchanges: [] })
+const client = new Client({ url: '/api/graphql', exchanges: [cacheExchange, fetchExchange] })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )

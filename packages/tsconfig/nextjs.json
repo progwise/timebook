@@ -17,6 +17,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "moduleResolution": "nodenext",
-    "types": ["jest", "node", "next", "react", "react-dom"],
+    "types": ["jest", "node", "next", "react", "react-dom"]
   }
 }

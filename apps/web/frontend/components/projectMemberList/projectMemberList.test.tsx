@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import { Client, Provider } from 'urql'
+import { cacheExchange, Client, fetchExchange, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { ProjectMemberList, ProjectMemberListProjectFragment } from './projectMemberList'
 
-const client = new Client({ url: '/api/graphql', exchanges: [] })
+const client = new Client({ url: '/api/graphql', exchanges: [cacheExchange, fetchExchange] })
 
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>

@@ -1,8 +1,7 @@
 import '@testing-library/jest-dom'
-import 'whatwg-fetch'
 import 'intersection-observer'
-
 import resizeObserver from 'resize-observer-polyfill'
+import 'whatwg-fetch'
 
 global.ResizeObserver = resizeObserver
 
