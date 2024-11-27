@@ -111,33 +111,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Getting started with PayPal
-
-To integrate PayPal with your application, you need to create a PayPal client and client secret. Follow these steps:
-
-1. **Log in to PayPal Developer Dashboard**:
-   Go to the [PayPal Developer Dashboard](https://developer.paypal.com/) and log in with your PayPal account.
-
-2. **Create a New App**:
-
-   - Navigate to the "Dashboard" tab.
-   - Click on "My Apps & Credentials".
-   - Under the "REST API apps" section, click on "Create App".
-   - Enter a name for your app and select the sandbox or live environment.
-   - Click "Create App".
-
-3. **Retrieve Client ID and Secret**:
-
-   - After creating the app, you will be redirected to the app details page.
-   - Here, you will find your "Client ID" and "Secret". Copy these values.
-
-4. **Set Environment Variables**:
-
-   - Open your `.env` file in the root of your project.
-   - Add the following environment variables with the values you copied:
-
-   ```env
-   NEXT_PUBLIC_PAYPAL_CLIENT_ID=your-client-id
-   PAYPAL_CLIENT_SECRET=your-client-secret
-   ```

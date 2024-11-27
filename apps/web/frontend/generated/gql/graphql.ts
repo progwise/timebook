@@ -57,10 +57,6 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
-  /** Create a PayPal subscription for organization */
-  organizationPaypalSubscriptionIdCreate: Scalars['String']
-  /** Cancel a PayPal subscription for organization */
-  organizationPaypalUnsubscribe: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -134,16 +130,6 @@ export type MutationOrganizationMembershipCreateArgs = {
 export type MutationOrganizationMembershipDeleteArgs = {
   organizationId: Scalars['ID']
   userId: Scalars['ID']
-}
-
-export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
-  cancelUrl: Scalars['String']
-  organizationId: Scalars['ID']
-  returnUrl: Scalars['String']
-}
-
-export type MutationOrganizationPaypalUnsubscribeArgs = {
-  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -256,12 +242,7 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
-  paypalSubscriptionId?: Maybe<Scalars['String']>
   projects: Array<Project>
-  /** Date when the current subscription expires */
-  subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
-  /** Status of the subscription */
-  subscriptionStatus?: Maybe<SubscriptionStatus>
   title: Scalars['String']
 }
 
@@ -453,12 +434,6 @@ export enum Role {
   Member = 'MEMBER',
 }
 
-/** Status of the organization subscription */
-export enum SubscriptionStatus {
-  Active = 'ACTIVE',
-  Cancelled = 'CANCELLED',
-}
-
 export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -644,34 +619,9 @@ export type OrganizationFormFragment = ({
   title: string
   address?: string | null
   canModify: boolean
-  subscriptionStatus?: SubscriptionStatus | null
 } & {
-  ' $fragmentRefs'?: {
-    ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment
-    SubscribeOrUnsubscribeOrganizationButtonFragment: SubscribeOrUnsubscribeOrganizationButtonFragment
-  }
+  ' $fragmentRefs'?: { ArchiveOrUnarchiveOrganizationButtonFragment: ArchiveOrUnarchiveOrganizationButtonFragment }
 }) & { ' $fragmentName'?: 'OrganizationFormFragment' }
-
-export type SubscribeOrUnsubscribeOrganizationButtonFragment = ({
-  __typename?: 'Organization'
-  id: string
-  subscriptionStatus?: SubscriptionStatus | null
-} & { ' $fragmentRefs'?: { UnsubscribeOrganizationButtonFragment: UnsubscribeOrganizationButtonFragment } }) & {
-  ' $fragmentName'?: 'SubscribeOrUnsubscribeOrganizationButtonFragment'
-}
-
-export type UnsubscribeOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string } & {
-  ' $fragmentName'?: 'UnsubscribeOrganizationButtonFragment'
-}
-
-export type OrganizationPaypalUnsubscribeMutationVariables = Exact<{
-  organizationId: Scalars['ID']
-}>
-
-export type OrganizationPaypalUnsubscribeMutation = {
-  __typename?: 'Mutation'
-  organizationPaypalUnsubscribe: { __typename?: 'Organization'; id: string }
-}
 
 export type OrganizationMemberListOrganizationFragment = ({
   __typename?: 'Organization'
@@ -781,12 +731,9 @@ export type ProjectFormFragment = ({
   canModify: boolean
   hasWorkHours: boolean
   organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
-} & {
-  ' $fragmentRefs'?: {
-    DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment
-    ProjectInvitationButtonFragment: ProjectInvitationButtonFragment
-  }
-}) & { ' $fragmentName'?: 'ProjectFormFragment' }
+} & { ' $fragmentRefs'?: { DeleteOrArchiveProjectButtonFragment: DeleteOrArchiveProjectButtonFragment } }) & {
+  ' $fragmentName'?: 'ProjectFormFragment'
+}
 
 export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } & {
   ' $fragmentName'?: 'OrganizationFragment'
@@ -805,28 +752,6 @@ export type ProjectMembershipInvitationCreateMutation = {
     expireDate: string
   }
 }
-
-export type ProjectMembershipCreateMutationVariables = Exact<{
-  projectId: Scalars['ID']
-  userId: Scalars['ID']
-}>
-
-export type ProjectMembershipCreateMutation = {
-  __typename?: 'Mutation'
-  projectMembershipCreate: { __typename?: 'Project'; id: string }
-}
-
-export type ProjectInvitationButtonFragment = {
-  __typename?: 'Project'
-  id: string
-  title: string
-  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
-  organization?: {
-    __typename?: 'Organization'
-    title: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
-  } | null
-} & { ' $fragmentName'?: 'ProjectInvitationButtonFragment' }
 
 export type ProjectMemberListProjectFragment = ({
   __typename?: 'Project'
@@ -1194,26 +1119,6 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
-export type OrganizationPaypalSubscriptionIdCreateMutationVariables = Exact<{
-  organizationId: Scalars['ID']
-  returnUrl: Scalars['String']
-  cancelUrl: Scalars['String']
-}>
-
-export type OrganizationPaypalSubscriptionIdCreateMutation = {
-  __typename?: 'Mutation'
-  organizationPaypalSubscriptionIdCreate: string
-}
-
-export type OrganizationDetailsQueryVariables = Exact<{
-  organizationId: Scalars['ID']
-}>
-
-export type OrganizationDetailsQuery = {
-  __typename?: 'Query'
-  organization: { __typename?: 'Organization'; id: string; title: string }
-}
-
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1457,53 +1362,6 @@ export const ArchiveOrUnarchiveOrganizationButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ArchiveOrUnarchiveOrganizationButtonFragment, unknown>
-export const UnsubscribeOrganizationButtonFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<UnsubscribeOrganizationButtonFragment, unknown>
-export const SubscribeOrUnsubscribeOrganizationButtonFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SubscribeOrUnsubscribeOrganizationButtonFragment, unknown>
 export const OrganizationFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1517,9 +1375,7 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
         ],
       },
     },
@@ -1549,18 +1405,6 @@ export const OrganizationFormFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -1570,19 +1414,6 @@ export const OrganizationFormFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveOrganizationButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrganizationButton' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
         ],
       },
     },
@@ -1813,66 +1644,6 @@ export const DeleteOrArchiveProjectButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<DeleteOrArchiveProjectButtonFragment, unknown>
-export const ProjectInvitationButtonFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'members' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'projectRole' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectInvitationButtonFragment, unknown>
 export const ProjectFormFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -1902,7 +1673,6 @@ export const ProjectFormFragmentDoc = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationButton' } },
         ],
       },
     },
@@ -1955,61 +1725,6 @@ export const ProjectFormFragmentDoc = {
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteProjectButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnarchiveProjectButton' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveProjectButton' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'members' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'projectRole' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
         ],
       },
     },
@@ -3471,43 +3186,6 @@ export const OrganizationUnarchiveDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUnarchiveMutation, OrganizationUnarchiveMutationVariables>
-export const OrganizationPaypalUnsubscribeDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'organizationPaypalUnsubscribe' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organizationPaypalUnsubscribe' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'organizationId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationPaypalUnsubscribeMutation, OrganizationPaypalUnsubscribeMutationVariables>
 export const OrganizationMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -3773,53 +3451,6 @@ export const ProjectMembershipInvitationCreateDocument = {
   ProjectMembershipInvitationCreateMutation,
   ProjectMembershipInvitationCreateMutationVariables
 >
-export const ProjectMembershipCreateDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'projectMembershipCreate' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'projectMembershipCreate' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'projectId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'userId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>
 export const ProjectMembershipUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -4910,102 +4541,6 @@ export const AccessTokenCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>
-export const OrganizationPaypalSubscriptionIdCreateDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'organizationPaypalSubscriptionIdCreate' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'returnUrl' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'cancelUrl' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organizationPaypalSubscriptionIdCreate' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'organizationId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'returnUrl' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'returnUrl' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cancelUrl' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'cancelUrl' } },
-              },
-            ],
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  OrganizationPaypalSubscriptionIdCreateMutation,
-  OrganizationPaypalSubscriptionIdCreateMutationVariables
->
-export const OrganizationDetailsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'organizationDetails' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'organizationId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>
 export const OrganizationDocument = {
   kind: 'Document',
   definitions: [
@@ -5093,31 +4628,6 @@ export const OrganizationDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'UnsubscribeOrganizationButton' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromOrganizationButtonOrganization' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Organization' } },
       selectionSet: {
@@ -5150,9 +4660,7 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'address' } },
           { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subscriptionStatus' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ArchiveOrUnarchiveOrganizationButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SubscribeOrUnsubscribeOrganizationButton' } },
         ],
       },
     },
@@ -5550,61 +5058,6 @@ export const ProjectDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProjectInvitationButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'members' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'projectRole' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectId' } },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'RemoveUserFromProjectButtonProject' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
@@ -5676,7 +5129,6 @@ export const ProjectDocument = {
             },
           },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'DeleteOrArchiveProjectButton' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectInvitationButton' } },
         ],
       },
     },

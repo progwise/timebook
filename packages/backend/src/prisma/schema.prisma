@@ -46,11 +46,6 @@ model InvoiceItem {
   task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELLED
-}
-
 model Organization {
   id      String  @id @default(cuid())
   title   String  @db.VarChar(255)
@@ -59,10 +54,6 @@ model Organization {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
-
-  paypalSubscriptionId  String?
-  subscriptionExpiresAt DateTime?
-  subscriptionStatus    SubscriptionStatus?
 
   organizationMemberships OrganizationMembership[]
   projects                Project[]

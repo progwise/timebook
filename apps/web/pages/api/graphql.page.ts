@@ -3,7 +3,8 @@ import { ApolloServer } from 'apollo-server-micro'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 
-import { Context, hashAccessToken, prisma, schema } from '@progwise/timebook-backend'
+import { Context, schema } from '@progwise/timebook-backend'
+import { prisma, hashAccessToken } from '@progwise/timebook-backend'
 
 import { nextAuthOptions } from './auth/[...nextauth].page'
 
