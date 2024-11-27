@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Client, Provider } from 'urql'
 
@@ -14,7 +14,7 @@ import { ReportForm } from './reportForm'
 
 jest.mock('next/router', () => ({ useRouter: () => ({ isReady: true }) }))
 
-const client = new Client({ url: '/api/graphql' })
+const client = new Client({ url: '/api/graphql', exchanges: [] })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )
@@ -136,7 +136,7 @@ it('should be possible to lock and unlock a report', async () => {
   const user = userEvent.setup()
   render(<ReportForm date={new Date()} projectId="project1" userId="1" />, { wrapper })
 
-  const lockButton = await screen.findByRole('button', { name: /^Lock/ })
+  const lockButton = await screen.findAllByRole('button', { name: /^Lock/ })
 
   await user.click(lockButton)
   await waitFor(() => expect(lockButton).toHaveTextContent(/^Unlock/))

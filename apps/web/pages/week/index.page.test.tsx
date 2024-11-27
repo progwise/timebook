@@ -5,7 +5,7 @@ import { Client, Provider } from 'urql'
 import '../../frontend/mocks/mockServer'
 import { default as WeekPage } from './index.page'
 
-const client = new Client({ url: '/api/graphql' })
+const client = new Client({ url: '/api/graphql', exchanges: [] })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )

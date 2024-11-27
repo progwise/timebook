@@ -15,7 +15,7 @@ jest.mock('next/router', () => ({
     },
   }),
 }))
-const client = new Client({ url: '/api/team1/graphql' })
+const client = new Client({ url: '/api/team1/graphql', exchanges: [] })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )

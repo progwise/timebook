@@ -5,7 +5,7 @@ import { makeFragmentData } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { OrganizationMemberList, OrganizationMemberListOrganizationFragment } from './organizationMemberList'
 
-const client = new Client({ url: '/api/graphql' })
+const client = new Client({ url: '/api/graphql', exchanges: [] })
 
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>

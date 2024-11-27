@@ -53,6 +53,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
 export default withUrqlClient(
   (_ssrExchange, context) => ({
     url: `${process.env.NEXTAUTH_URL ?? ''}/api/graphql`,
+    exchanges: [],
     fetchOptions: () => ({
       headers: {
         cookie: context ? (context.req?.headers.cookie ?? '') : document.cookie,
