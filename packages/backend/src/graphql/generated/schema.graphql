@@ -17,8 +17,54 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-type Invoice {
+type Invoice implements ModifyInterface {
+  """
+  Can the user modify the entity
+  """
+  canModify: Boolean!
+  customerAddress: String
+  customerName: String!
+
+  """
+  identifies the invoice
+  """
   id: ID!
+  invoiceDate: Date!
+
+  """
+  Items associated with the invoice
+  """
+  items: [InvoiceItem!]!
+  organization: Organization!
+}
+
+type InvoiceItem {
+  """
+  Duration of the invoice item in minutes
+  """
+  duration: Int!
+  end: DateTime
+
+  """
+  Hourly rate for the invoice item
+  """
+  hourlyRate: Float
+
+  """
+  Identifies the invoice item
+  """
+  id: ID!
+
+  """
+  Invoice to which the invoice item belongs
+  """
+  invoice: Invoice!
+  start: DateTime
+
+  """
+  Task for which the invoice item was booked
+  """
+  task: Task!
 }
 
 """
@@ -241,6 +287,11 @@ type Organization implements ModifyInterface {
   identifies the organization
   """
   id: ID!
+
+  """
+  List of invoices associated with the organization
+  """
+  invoices: [Invoice!]!
   isArchived: Boolean!
 
   """
@@ -355,11 +406,6 @@ type Query {
   """
   accessTokens: [AccessToken!]!
   currentTracking: Tracking
-
-  """
-  Invoice for a project
-  """
-  invoices: [Invoice!]!
 
   """
   Returns a single Organization
