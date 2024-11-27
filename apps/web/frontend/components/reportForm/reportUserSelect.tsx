@@ -70,11 +70,7 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
       getKey={(user) => user?.id}
       value={selectedUser}
       getLabel={(user) => (
-        <UserLabel
-          name={user.name ?? user.id}
-          duration={user.durationWorkedOnProject}
-          image="https://avatars.githubusercontent.com/u/34001594?v=4&size=64"
-        />
+        <UserLabel name={user.name ?? user.id} image={user.image} duration={user.durationWorkedOnProject} />
       )}
       noOptionLabel={<UserLabel name="All Users" duration={allDurations} />}
       onChange={(user) => onUserChange(user?.id)}

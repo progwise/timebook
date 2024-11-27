@@ -956,6 +956,7 @@ export type ReportUserFragment = {
   __typename?: 'User'
   id: string
   name?: string | null
+  image?: string | null
   durationWorkedOnProject: number
 } & { ' $fragmentName'?: 'ReportUserFragment' }
 
@@ -2199,6 +2200,7 @@ export const ReportUserFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'durationWorkedOnProject' },
@@ -4381,6 +4383,7 @@ export const ReportUsersDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'image' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'durationWorkedOnProject' },

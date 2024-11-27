@@ -98,7 +98,7 @@ const documents = {
     types.ReportProjectsDocument,
   '\n  query report($projectId: ID!, $month: Int!, $year: Int!, $userId: ID, $groupByUser: Boolean!) {\n    project(projectId: $projectId) {\n      canModify\n    }\n    report(projectId: $projectId, month: $month, year: $year, userId: $userId) {\n      groupedByDate {\n        date\n        duration\n        workHours {\n          id\n          duration\n          comment\n          user {\n            id\n            name\n          }\n          task {\n            id\n            title\n          }\n        }\n      }\n      groupedByTask {\n        task {\n          id\n          title\n        }\n        duration\n      }\n      groupedByUser @include(if: $groupByUser) {\n        user {\n          id\n          name\n        }\n        duration\n      }\n    }\n  }\n':
     types.ReportDocument,
-  '\n  fragment ReportUser on User {\n    id\n    name\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n':
+  '\n  fragment ReportUser on User {\n    id\n    name\n    image\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n':
     types.ReportUserFragmentDoc,
   '\n  query reportUsers($projectId: ID!, $from: Date!, $to: Date!) {\n    project(projectId: $projectId) {\n      id\n      members(includePastMembers: true) {\n        ...ReportUser\n      }\n    }\n  }\n':
     types.ReportUsersDocument,
@@ -454,8 +454,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment ReportUser on User {\n    id\n    name\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n',
-): (typeof documents)['\n  fragment ReportUser on User {\n    id\n    name\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n']
+  source: '\n  fragment ReportUser on User {\n    id\n    name\n    image\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n',
+): (typeof documents)['\n  fragment ReportUser on User {\n    id\n    name\n    image\n    durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
