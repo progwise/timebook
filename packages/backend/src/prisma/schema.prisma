@@ -18,6 +18,34 @@ generator pothos {
   output   = "../../node_modules/.pothos/plugin-prisma/generated.ts"
 }
 
+model Invoice {
+  id          String   @id @default(cuid())
+  invoiceDate DateTime @default(now())
+
+  createdByUserId String
+  customerAddress String?
+  organizationId  String
+  customerName    String
+
+  createdByUser User          @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  InvoiceItems  InvoiceItem[]
+}
+
+model InvoiceItem {
+  id        String @id @default(cuid())
+  invoiceId String
+
+  taskId     String
+  start      DateTime? @db.Date
+  end        DateTime? @db.Date
+  duration   Int
+  hourlyRate Float?
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
 model Organization {
   id      String  @id @default(cuid())
   title   String  @db.VarChar(255)
@@ -218,29 +246,4 @@ model ProjectInvitation {
   project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdByUser      User                @relation(fields: [createdByUserId], references: [id])
   projectMemberships ProjectMembership[]
-}
-
-model Invoice {
-  id              String   @id @default(cuid())
-  invoiceDate     DateTime
-  createdByUserId String
-  address         String?
-  organizationId  String
-  name            String
-
-  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdByUser User          @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
-  InvoiceItem   InvoiceItem[]
-}
-
-model InvoiceItem {
-  id        String    @id @default(cuid())
-  invoiceId String
-  taskId    String
-  startDate DateTime? @db.Date
-  endDate   DateTime? @db.Date
-  duration  Int
-
-  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
