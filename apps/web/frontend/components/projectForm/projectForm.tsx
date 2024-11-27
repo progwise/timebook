@@ -73,6 +73,7 @@ export const ProjectFormFragment = graphql(`
       isArchived
     }
     ...DeleteOrArchiveProjectButton
+    ...ProjectInvitationButton
   }
 `)
 
@@ -122,11 +123,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
-        {project ? (
-          <PageHeading>{isProjectFormReadOnly ? 'View' : 'Edit'} project</PageHeading>
-        ) : (
-          <PageHeading>Create new project</PageHeading>
-        )}
+        {project ? <PageHeading>Project {project.title}</PageHeading> : <PageHeading>Create new project</PageHeading>}
         <InputField
           label="Name"
           type="text"
@@ -231,8 +228,8 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               <span className="label-text">Organization</span>
             </div>
             <select
-              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''}`}
-              {...register('organizationId', { disabled: isSubmitting })}
+              className={`select select-bordered w-full max-w-xs ${dirtyFields.organizationId ? 'select-warning' : ''} disabled:text-opacity-100`}
+              {...register('organizationId', { disabled: isSubmitting || isProjectFormReadOnly })}
             >
               <option value="">No organization</option>
               {organizations.map((organization) => (
@@ -274,7 +271,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save project.</span>}
 
-        {project?.canModify && <ProjectInvitationButton projectId={project.id} />}
+        {project?.canModify && <ProjectInvitationButton projectId={project.id} project={project} />}
       </div>
     </div>
   )
