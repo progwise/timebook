@@ -59,6 +59,10 @@ export type Mutation = {
   organizationMembershipCreate: Organization
   /** Unassign user from an organization */
   organizationMembershipDelete: Organization
+  /** Create a PayPal subscription for organization */
+  organizationPaypalSubscriptionIdCreate: Scalars['String']
+  /** Cancel a PayPal subscription for organization */
+  organizationPaypalUnsubscribe: Organization
   /** Unarchive an organization */
   organizationUnarchive: Organization
   /** Update an organization */
@@ -132,6 +136,16 @@ export type MutationOrganizationMembershipCreateArgs = {
 export type MutationOrganizationMembershipDeleteArgs = {
   organizationId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationOrganizationPaypalSubscriptionIdCreateArgs = {
+  cancelUrl: Scalars['String']
+  organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
+}
+
+export type MutationOrganizationPaypalUnsubscribeArgs = {
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationUnarchiveArgs = {
@@ -244,7 +258,12 @@ export type Organization = ModifyInterface & {
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>
+  paypalSubscriptionId?: Maybe<Scalars['String']>
   projects: Array<Project>
+  /** Date when the current subscription expires */
+  subscriptionExpiresAt?: Maybe<Scalars['DateTime']>
+  /** Status of the subscription */
+  subscriptionStatus?: Maybe<SubscriptionStatus>
   title: Scalars['String']
 }
 
@@ -436,6 +455,12 @@ export enum Role {
   Member = 'MEMBER',
 }
 
+/** Status of the organization subscription */
+export enum SubscriptionStatus {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
+}
+
 export type Task = ModifyInterface & {
   __typename?: 'Task'
   archived: Scalars['Boolean']
@@ -607,8 +632,27 @@ export type OrganizationFormFragment = {
   title: string
   address?: string | null
   canModify: boolean
+  subscriptionStatus?: SubscriptionStatus | null
   id: string
   isArchived: boolean
+}
+
+export type SubscribeOrUnsubscribeOrganizationButtonFragment = {
+  __typename?: 'Organization'
+  id: string
+  subscriptionStatus?: SubscriptionStatus | null
+  title: string
+}
+
+export type UnsubscribeOrganizationButtonFragment = { __typename?: 'Organization'; id: string; title: string }
+
+export type OrganizationPaypalUnsubscribeMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationPaypalUnsubscribeMutation = {
+  __typename?: 'Mutation'
+  organizationPaypalUnsubscribe: { __typename?: 'Organization'; id: string }
 }
 
 export type OrganizationMemberListOrganizationFragment = {
@@ -703,7 +747,14 @@ export type ProjectFormFragment = {
   canModify: boolean
   hasWorkHours: boolean
   isArchived: boolean
-  organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
+  organization?: {
+    __typename?: 'Organization'
+    id: string
+    title: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  } | null
+  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
 }
 
 export type OrganizationFragment = { __typename?: 'Organization'; id: string; title: string; isArchived: boolean }
@@ -720,6 +771,28 @@ export type ProjectMembershipInvitationCreateMutation = {
     invitationKey: string
     expireDate: string
   }
+}
+
+export type ProjectMembershipCreateMutationVariables = Exact<{
+  projectId: Scalars['ID']
+  userId: Scalars['ID']
+}>
+
+export type ProjectMembershipCreateMutation = {
+  __typename?: 'Mutation'
+  projectMembershipCreate: { __typename?: 'Project'; id: string }
+}
+
+export type ProjectInvitationButtonFragment = {
+  __typename?: 'Project'
+  id: string
+  title: string
+  members: Array<{ __typename?: 'User'; id: string; projectRole: Role }>
+  organization?: {
+    __typename?: 'Organization'
+    title: string
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  } | null
 }
 
 export type ProjectMemberListProjectFragment = {
@@ -1117,6 +1190,26 @@ export type AccessTokenCreateMutationVariables = Exact<{
 
 export type AccessTokenCreateMutation = { __typename?: 'Mutation'; accessTokenCreate: string }
 
+export type OrganizationPaypalSubscriptionIdCreateMutationVariables = Exact<{
+  organizationId: Scalars['ID']
+  returnUrl: Scalars['String']
+  cancelUrl: Scalars['String']
+}>
+
+export type OrganizationPaypalSubscriptionIdCreateMutation = {
+  __typename?: 'Mutation'
+  organizationPaypalSubscriptionIdCreate: string
+}
+
+export type OrganizationDetailsQueryVariables = Exact<{
+  organizationId: Scalars['ID']
+}>
+
+export type OrganizationDetailsQuery = {
+  __typename?: 'Query'
+  organization: { __typename?: 'Organization'; id: string; title: string }
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1129,6 +1222,7 @@ export type OrganizationQuery = {
     title: string
     address?: string | null
     canModify: boolean
+    subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
     projects: Array<{
       __typename?: 'Project'
@@ -1208,7 +1302,13 @@ export type ProjectQuery = {
       isLockedByAdmin: boolean
       hasWorkHours: boolean
     }>
-    organization?: { __typename?: 'Organization'; id: string; title: string; isArchived: boolean } | null
+    organization?: {
+      __typename?: 'Organization'
+      id: string
+      title: string
+      isArchived: boolean
+      members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+    } | null
     members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null; projectRole: Role }>
   }
   organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
@@ -1411,6 +1511,29 @@ export const mockOrganizationUnarchiveMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockOrganizationPaypalUnsubscribeMutation((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationPaypalUnsubscribe })
+ *   )
+ * })
+ */
+export const mockOrganizationPaypalUnsubscribeMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationPaypalUnsubscribeMutationVariables>,
+    GraphQLContext<OrganizationPaypalUnsubscribeMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<OrganizationPaypalUnsubscribeMutation, OrganizationPaypalUnsubscribeMutationVariables>(
+    'organizationPaypalUnsubscribe',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockOrganizationMembershipUpdateMutation((req, res, ctx) => {
  *   const { organizationId, userId, organizationRole } = req.variables;
  *   return res(
@@ -1530,6 +1653,29 @@ export const mockProjectMembershipInvitationCreateMutation = (
 ) =>
   graphql.mutation<ProjectMembershipInvitationCreateMutation, ProjectMembershipInvitationCreateMutationVariables>(
     'projectMembershipInvitationCreate',
+    resolver,
+  )
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockProjectMembershipCreateMutation((req, res, ctx) => {
+ *   const { projectId, userId } = req.variables;
+ *   return res(
+ *     ctx.data({ projectMembershipCreate })
+ *   )
+ * })
+ */
+export const mockProjectMembershipCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<ProjectMembershipCreateMutationVariables>,
+    GraphQLContext<ProjectMembershipCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<ProjectMembershipCreateMutation, ProjectMembershipCreateMutationVariables>(
+    'projectMembershipCreate',
     resolver,
   )
 
@@ -1823,6 +1969,48 @@ export const mockAccessTokenCreateMutation = (
     any
   >,
 ) => graphql.mutation<AccessTokenCreateMutation, AccessTokenCreateMutationVariables>('accessTokenCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationPaypalSubscriptionIdCreateMutation((req, res, ctx) => {
+ *   const { organizationId, returnUrl, cancelUrl } = req.variables;
+ *   return res(
+ *     ctx.data({ organizationPaypalSubscriptionIdCreate })
+ *   )
+ * })
+ */
+export const mockOrganizationPaypalSubscriptionIdCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationPaypalSubscriptionIdCreateMutationVariables>,
+    GraphQLContext<OrganizationPaypalSubscriptionIdCreateMutation>,
+    any
+  >,
+) =>
+  graphql.mutation<
+    OrganizationPaypalSubscriptionIdCreateMutation,
+    OrganizationPaypalSubscriptionIdCreateMutationVariables
+  >('organizationPaypalSubscriptionIdCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockOrganizationDetailsQuery((req, res, ctx) => {
+ *   const { organizationId } = req.variables;
+ *   return res(
+ *     ctx.data({ organization })
+ *   )
+ * })
+ */
+export const mockOrganizationDetailsQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<OrganizationDetailsQueryVariables>,
+    GraphQLContext<OrganizationDetailsQuery>,
+    any
+  >,
+) => graphql.query<OrganizationDetailsQuery, OrganizationDetailsQueryVariables>('organizationDetails', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
