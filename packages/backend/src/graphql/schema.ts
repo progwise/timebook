@@ -5,6 +5,7 @@ import { format, resolveConfig } from 'prettier'
 
 import './accessToken'
 import { builder } from './builder'
+import './invoice'
 import './organization'
 import './organizationMembership'
 import './project'
@@ -16,7 +17,6 @@ import './task'
 import './tracking'
 import './user'
 import './workHour'
-import './invoice'
 
 export const schema = builder.toSchema()
 
