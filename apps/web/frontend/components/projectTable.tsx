@@ -43,7 +43,9 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
             return (
               <tr key={project.id}>
                 <td>
-                  <Link href={`/projects/${project.id}`}>{project.title}</Link>
+                  <Link href={`/projects/${project.id}`} className="link-hover link">
+                    {project.title}
+                  </Link>
                 </td>
                 <td>
                   <div className="avatar-group -space-x-3">
