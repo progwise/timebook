@@ -1,5 +1,9 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"]
+  "include": ["./jestSetup.ts", "src"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "nodenext"
+  }
 }

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { InputField } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { OrganizationInput } from '../../mocks/mocks.generated'
+import { OrganizationInput } from '../../generated/gql/graphql'
 import { PageHeading } from '../pageHeading'
 import { ArchiveOrUnarchiveOrganizationButton } from './archiveOrUnarchiveOrganizationButton/archiveOrUnarchiveOrganizationButton'
 import { OrganizationSubscriptionStatusLabel } from './organizationSubscriptionStatusLabel'

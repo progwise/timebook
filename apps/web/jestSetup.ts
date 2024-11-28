@@ -1,10 +1,9 @@
-/* eslint-disable unicorn/filename-case */
-/* eslint-disable unicorn/prefer-module */
+import '@testing-library/jest-dom'
+import 'intersection-observer'
+import resizeObserver from 'resize-observer-polyfill'
+import 'whatwg-fetch'
 
-require('@testing-library/jest-dom')
-require('whatwg-fetch')
-require('intersection-observer')
-global.ResizeObserver = require('resize-observer-polyfill')
+global.ResizeObserver = resizeObserver
 
 jest.mock('next/image', () => ({
   __esModule: true,
@@ -13,6 +12,7 @@ jest.mock('next/image', () => ({
   },
 }))
 
+// eslint-disable-next-line unicorn/prefer-module
 jest.mock('next/router', () => require('next-router-mock'))
 
 Object.defineProperty(window, 'matchMedia', {
