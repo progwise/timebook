@@ -12,6 +12,7 @@ import { getWhereUserIsMember } from './project/queries/getWhereUserIsMember'
 import PrismaTypes from '.pothos/plugin-prisma/generated'
 
 export const builder = new SchemaBuilder<{
+  Defaults: 'v3'
   PrismaTypes: PrismaTypes
   Context: Context
   DefaultInputFieldRequiredness: true
@@ -65,6 +66,7 @@ export const builder = new SchemaBuilder<{
     }
   }
 }>({
+  defaults: 'v3',
   plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin, ErrorsPlugin],
   prisma: {
     client: prisma,

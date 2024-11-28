@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { Client, Provider } from 'urql'
+import { cacheExchange, Client, fetchExchange, Provider } from 'urql'
 
 import { makeFragmentData } from '../../generated/gql'
 import '../../mocks/mockServer'
 import { TaskRow, TaskRowFragment } from './taskRow'
 
-const client = new Client({ url: '/api/graphql' })
+const client = new Client({ url: '/api/graphql', exchanges: [cacheExchange, fetchExchange] })
 const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Provider value={client}>{children}</Provider>
 )

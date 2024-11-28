@@ -6,7 +6,6 @@ const config: Meta<InputFieldProps> = {
   title: 'InputField',
   component: InputField,
   args: {
-    variant: 'primary',
     label: 'Label',
     placeholder: 'Placeholder',
   },
