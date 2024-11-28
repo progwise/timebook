@@ -44,15 +44,21 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
   })
 
   const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
-  const allDurations = allUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
-  const selectedUser = allUsers.find((user) => user.id === selectedUserId)
+  const mutableAllUsers = allUsers.map((user) => ({
+    id: user.id,
+    image: user.image ?? undefined,
+    name: user.name ?? undefined,
+    durationWorkedOnProject: user.durationWorkedOnProject,
+  }))
+  const allDurations = mutableAllUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
+  const selectedUser = mutableAllUsers.find((user) => user.id === selectedUserId)
 
   // After receiving new data, check that the selected user is still in the user list
   useEffect(() => {
     if (fetching) {
       return
     }
-    const isSelectedUserInList = allUsers.some((user) => user.id === selectedUserId)
+    const isSelectedUserInList = mutableAllUsers.some((user) => user.id === selectedUserId)
 
     if (!isSelectedUserInList) {
       // eslint-disable-next-line unicorn/no-useless-undefined
@@ -76,9 +82,9 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
           duration={user.durationWorkedOnProject}
         />
       )}
-      noOptionLabel={<UserLabel name="All Users" duration={allDurations} />}
+      noOptionLabel={<UserLabel name="All Users" duration={allDurations} members={mutableAllUsers} isAllUsers />}
       onChange={(user) => onUserChange(user?.id)}
-      options={allUsers}
+      options={mutableAllUsers}
     />
   )
 }
