@@ -149,7 +149,7 @@ importers:
         version: 4.24.10(next@13.5.7(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(nodemailer@6.9.16)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-urql:
         specifier: ^4.0.0
-        version: 4.0.3(react@18.2.0)(urql@3.0.4(graphql@16.9.0)(react@18.2.0))
+        version: 4.0.3(react@18.2.0)(urql@4.2.1(graphql@16.9.0)(react@18.2.0))
       nodemailer:
         specifier: ^6.8.0
         version: 6.9.16
@@ -178,8 +178,8 @@ importers:
         specifier: ^0.32.1
         version: 0.32.6
       urql:
-        specifier: ^3.0.3
-        version: 3.0.4(graphql@16.9.0)(react@18.2.0)
+        specifier: 4.2.1
+        version: 4.2.1(graphql@16.9.0)(react@18.2.0)
       zod:
         specifier: ^3.20.3
         version: 3.23.8
@@ -212,19 +212,19 @@ importers:
         specifier: ^0.5.13
         version: 0.5.15(tailwindcss@3.4.15(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2)))
       '@testing-library/dom':
-        specifier: ^9.0.0
-        version: 9.3.4
+        specifier: ^10.4.0
+        version: 10.4.0
       '@testing-library/jest-dom':
-        specifier: ^5.16.2
-        version: 5.17.0
+        specifier: ^6.6.3
+        version: 6.6.3
       '@testing-library/react':
-        specifier: ^14.0.0
-        version: 14.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^16.0.1
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@testing-library/user-event':
-        specifier: ^14.4.3
-        version: 14.5.2(@testing-library/dom@9.3.4)
+        specifier: ^14.5.2
+        version: 14.5.2(@testing-library/dom@10.4.0)
       '@types/jest':
-        specifier: ^29.1.2
+        specifier: ^29.5.14
         version: 29.5.14
       '@types/node':
         specifier: ^18.14.6
@@ -232,12 +232,12 @@ importers:
       '@types/react':
         specifier: ^18.0.0
         version: 18.3.12
+      '@types/react-dom':
+        specifier: ^18.0.0
+        version: 18.3.1
       '@types/react-input-mask':
         specifier: ^3.0.1
         version: 3.0.6
-      '@types/testing-library__jest-dom':
-        specifier: ^5.14.5
-        version: 5.14.9
       autoprefixer:
         specifier: ^10.4.2
         version: 10.4.20(postcss@8.4.49)
@@ -245,7 +245,7 @@ importers:
         specifier: ^8.0.0
         version: 8.2.2
       eslint:
-        specifier: ^8.6.0
+        specifier: 8.56.0
         version: 8.56.0
       eslint-config-custom:
         specifier: workspace:*
@@ -257,13 +257,16 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2
       jest:
-        specifier: ^29.1.2
+        specifier: ^29.7.0
         version: 29.7.0(@types/node@18.19.66)(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2))
+      jest-environment-jsdom:
+        specifier: ^29.1.2
+        version: 29.7.0
       jest-transform-stub:
         specifier: ^2.0.0
         version: 2.0.0
       msw:
-        specifier: ^1.0.0
+        specifier: 1.3.5
         version: 1.3.5(encoding@0.1.13)(typescript@5.7.2)
       next-router-mock:
         specifier: ^0.9.2
@@ -319,7 +322,7 @@ importers:
         version: link:../../packages/eslint-config-custom
       eslint-plugin-playwright:
         specifier: ^0.12.0
-        version: 0.12.0(eslint-plugin-jest@27.9.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)
+        version: 0.12.0(eslint-plugin-jest@27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0(@types/node@18.19.66))(typescript@5.7.2))(eslint@8.56.0)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -330,23 +333,23 @@ importers:
   packages/backend:
     dependencies:
       '@pothos/core':
-        specifier: ^3.29.0
-        version: 3.41.2(graphql@16.9.0)
+        specifier: ^4.3.0
+        version: 4.3.0(graphql@16.9.0)
       '@pothos/plugin-errors':
-        specifier: ^3.11.0
-        version: 3.11.2(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)
+        specifier: ^4.2.0
+        version: 4.2.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)
       '@pothos/plugin-prisma':
-        specifier: ^3.62.0
-        version: 3.65.3(@pothos/core@3.41.2(graphql@16.9.0))(@prisma/client@5.22.0(prisma@5.22.0))(graphql@16.9.0)(typescript@5.7.2)
+        specifier: ^4.3.1
+        version: 4.3.1(@pothos/core@4.3.0(graphql@16.9.0))(@prisma/client@5.22.0(prisma@5.22.0))(graphql@16.9.0)(typescript@5.7.2)
       '@pothos/plugin-scope-auth':
-        specifier: ^3.19.0
-        version: 3.22.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)
+        specifier: ^4.1.0
+        version: 4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)
       '@pothos/plugin-simple-objects':
-        specifier: ^3.6.7
-        version: 3.7.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)
+        specifier: ^4.1.0
+        version: 4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)
       '@pothos/plugin-validation':
-        specifier: ^3.9.0
-        version: 3.10.2(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)
+        specifier: ^3.10.2
+        version: 3.10.2(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)
       '@prisma/client':
         specifier: ^5.7.0
         version: 5.22.0(prisma@5.22.0)
@@ -415,7 +418,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.7.2
         version: 5.7.2
 
   packages/eslint-config-custom:
@@ -510,19 +513,19 @@ importers:
         specifier: ^7.0.0-beta.38
         version: 7.6.20(encoding@0.1.13)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.27.4)(typescript@5.7.2)(vite@4.5.5(@types/node@20.8.10)(terser@5.36.0))
       '@testing-library/dom':
-        specifier: ^9.0.0
-        version: 9.3.4
+        specifier: ^10.4.0
+        version: 10.4.0
       '@testing-library/jest-dom':
-        specifier: ^5.16.2
-        version: 5.17.0
+        specifier: ^6.6.3
+        version: 6.6.3
       '@testing-library/react':
-        specifier: ^14.0.0
-        version: 14.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: ^16.0.1
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@testing-library/user-event':
-        specifier: ^14.4.3
-        version: 14.5.2(@testing-library/dom@9.3.4)
+        specifier: ^14.5.2
+        version: 14.5.2(@testing-library/dom@10.4.0)
       '@types/jest':
-        specifier: ^29.0.0
+        specifier: ^29.5.14
         version: 29.5.14
       '@types/react':
         specifier: ^18.0.0
@@ -530,20 +533,17 @@ importers:
       '@types/react-dom':
         specifier: ^18.0.0
         version: 18.3.1
-      '@types/testing-library__jest-dom':
-        specifier: ^5.14.5
-        version: 5.14.9
       concurrently:
         specifier: ^8.0.0
         version: 8.2.2
       eslint:
-        specifier: ^8.24.0
+        specifier: 8.56.0
         version: 8.56.0
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
       jest:
-        specifier: ^29.1.2
+        specifier: ^29.7.0
         version: 29.7.0(@types/node@20.8.10)(ts-node@10.9.2(@types/node@20.8.10)(typescript@5.7.2))
       jest-environment-jsdom:
         specifier: ^29.1.2
@@ -551,12 +551,6 @@ importers:
       postcss:
         specifier: ^8.4.4
         version: 8.4.49
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
       storybook:
         specifier: ^7.0.0-beta.38
         version: 7.6.20(encoding@0.1.13)
@@ -590,6 +584,14 @@ importers:
         version: 5.7.2
 
 packages:
+
+  '@0no-co/graphql.web@1.0.11':
+    resolution: {integrity: sha512-xuSJ9WXwTmtngWkbdEoopMo6F8NLtjy84UNAMsAr5C3/2SgAL/dEU10TMqTIsipqPQ8HA/7WzeqQ9DEQxSvPPA==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
 
   '@adobe/css-tools@4.4.1':
     resolution: {integrity: sha512-12WGKBQzjUAI4ayyF4IAtfw2QR/IDoqk6jTddXDhtYTJF9ASmoE1zst7cVtP0aL/F1jUJL5r+JxKXKEgHNbEUQ==}
@@ -2354,37 +2356,37 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@pothos/core@3.41.2':
-    resolution: {integrity: sha512-iR1gqd93IyD/snTW47HwKSsRCrvnJaYwjVNcUG8BztZPqMxyJKPAnjPHAgu1XB82KEdysrNqIUnXqnzZIs08QA==}
+  '@pothos/core@4.3.0':
+    resolution: {integrity: sha512-i4nyI8wSCjxdHUomqQ2K3FH0Glklomfv4tJNifQVU9lPtQKoKaS69VxGv+fru0HAZzb1eC1XPEPN3XPCYcvZ7Q==}
     peerDependencies:
-      graphql: '>=15.1.0'
+      graphql: '>=16.6.0'
 
-  '@pothos/plugin-errors@3.11.2':
-    resolution: {integrity: sha512-7F4ErT2z+9ppV76yHbQ4FaLEQoZ+fT8zgcEIs4q8o7oFxkZOeGkXTiA519pYxmRE1Q4LDIQviR/3ifarRTTEPg==}
+  '@pothos/plugin-errors@4.2.0':
+    resolution: {integrity: sha512-Yt87hn7z0+1bv7bhrJCD5GH9+NTO/5CJEkbebyM4scnnmQ0rpqyO/yViIirtzCXk/NKBHEiLrthL2frQxUmJ5w==}
     peerDependencies:
       '@pothos/core': '*'
-      graphql: '>=15.1.0'
+      graphql: '>=16.6.0'
 
-  '@pothos/plugin-prisma@3.65.3':
-    resolution: {integrity: sha512-fLdweQFjMBaGHgpO5CMQe8rKHBaVTEvYV4PLCtEDXC7mElnGKZBF5XVTk+d2l9P54DYchcYwDHWZ1CPpjF03ew==}
+  '@pothos/plugin-prisma@4.3.1':
+    resolution: {integrity: sha512-5maJe2o8VCBye5m/fXG+TsvQzhEmF9YpXnLtR9/3T8Z3H51VgthU60xZoN8N+oMKFOqOYEMX1i21J/ojXrTj9A==}
     hasBin: true
     peerDependencies:
       '@pothos/core': '*'
       '@prisma/client': '*'
-      graphql: ^16.8.1
+      graphql: '>=16.6.0'
       typescript: '>=4.7.2'
 
-  '@pothos/plugin-scope-auth@3.22.1':
-    resolution: {integrity: sha512-mkfbiS6tSYXFrxY9U5mEqSzAWDB3YoqQLTE/D7J/QghbDbkfFSiwQwYHHl0tL1FO32l69RMCdZy3Kz7MBBZG8w==}
+  '@pothos/plugin-scope-auth@4.1.0':
+    resolution: {integrity: sha512-xSMV7xHZAahGmtYEoibjBgJ7Y6v6GSALOt3ZS2lZMaPKuoPFf9uz4r8N0ecz2lopwHH1u88f7thN+kgurqUvtw==}
     peerDependencies:
       '@pothos/core': '*'
-      graphql: '>=15.1.0'
+      graphql: '>=16.6.0'
 
-  '@pothos/plugin-simple-objects@3.7.1':
-    resolution: {integrity: sha512-641qxavEa4GJGIYfZuhOdlUy6MjQ/z0gWS5x4pSU72GIJFPSyMAFjHI8O413TzmMf4SpDGWPq0S6UNNXcrGCBQ==}
+  '@pothos/plugin-simple-objects@4.1.0':
+    resolution: {integrity: sha512-R4u3Hnd6btWt1XHG3bgBa463XbDgH380GRWg88FMrDfoqqkB1EI02gsWgmASqHHJgFI35V9Tc62loGy2XpTUyA==}
     peerDependencies:
       '@pothos/core': '*'
-      graphql: '>=15.1.0'
+      graphql: '>=16.6.0'
 
   '@pothos/plugin-validation@3.10.2':
     resolution: {integrity: sha512-oA1z2NXYNozol47+opKiNzKc7+lfMKQeyu2oQd8ijQyRv+cMLpwx1kkd/E8gkt63XUpBWPmE7IZDJ6/Xyrfs3g==}
@@ -3299,24 +3301,32 @@ packages:
   '@tanstack/virtual-core@3.10.9':
     resolution: {integrity: sha512-kBknKOKzmeR7lN+vSadaKWXaLS0SZZG+oqpQ/k80Q6g9REn6zRHS/ZYdrIzHnpHgy/eWs00SujveUN/GJT2qTw==}
 
+  '@testing-library/dom@10.4.0':
+    resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
+    engines: {node: '>=18'}
+
   '@testing-library/dom@8.20.1':
     resolution: {integrity: sha512-/DiOQ5xBxgdYRC8LNk7U+RWat0S3qRLeIw3ZIkMQ9kkVlRmwD/Eg8k8CqIpD6GW7u20JIUOfMKbxtiLutpjQ4g==}
     engines: {node: '>=12'}
 
-  '@testing-library/dom@9.3.4':
-    resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
-    engines: {node: '>=14'}
+  '@testing-library/jest-dom@6.6.3':
+    resolution: {integrity: sha512-IteBhl4XqYNkM54f4ejhLRJiZNqcSCoXUOG2CPK7qbD322KjQozM4kHQOfkG2oln9b9HTYqs+Sae8vBATubxxA==}
+    engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
-  '@testing-library/jest-dom@5.17.0':
-    resolution: {integrity: sha512-ynmNeT7asXyH3aSVv4vvX4Rb+0qjOhdNHnO/3vuZNqPmhDpV/+rCSGwQ7bLcmU2cJ4dvoheIO85LQj0IbJHEtg==}
-    engines: {node: '>=8', npm: '>=6', yarn: '>=1'}
-
-  '@testing-library/react@14.3.1':
-    resolution: {integrity: sha512-H99XjUhWQw0lTgyMN05W3xQG1Nh4lq574D8keFf1dDoNTJgp66VbJozRaczoF+wsiaPJNt/TcnfpLGufGxSrZQ==}
-    engines: {node: '>=14'}
+  '@testing-library/react@16.0.1':
+    resolution: {integrity: sha512-dSmwJVtJXmku+iocRhWOUFbrERC76TX2Mnf0ATODz8brzAZrMBbzLwQixlBSanZxR6LddK3eiwpSFZgDET1URg==}
+    engines: {node: '>=18'}
     peerDependencies:
+      '@testing-library/dom': ^10.0.0
+      '@types/react': ^18.0.0
+      '@types/react-dom': ^18.0.0
       react: ^18.0.0
       react-dom: ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
 
   '@testing-library/user-event@14.5.2':
     resolution: {integrity: sha512-YAh82Wh4TIrxYLmfGcixwD18oIjyC1pFQC2Y01F2lzV2HTMiYrI0nze0FD0ocB//CKS/7jIUgae+adPqxK5yCQ==}
@@ -3564,9 +3574,6 @@ packages:
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
 
-  '@types/testing-library__jest-dom@5.14.9':
-    resolution: {integrity: sha512-FSYhIjFlfOpGSRyVoMBMuS3ws5ehFQODymf3vlI7U1K8c7PHwWwFY7VREfmsuzHSOnoKs/9/Y983ayOs7eRzqw==}
-
   '@types/tmp@0.2.6':
     resolution: {integrity: sha512-chhaNf2oKHlRkDGt+tiKE2Z5aJ6qalm7Z9rlLdBwmOiAAf09YQvvoLXjWK4HWPF1xU/fqvMgfNfpVoBscA/tKA==}
 
@@ -3710,10 +3717,8 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@urql/core@3.2.2':
-    resolution: {integrity: sha512-i046Cz8cZ4xIzGMTyHZrbdgzcFMcKD7+yhCAH5FwWBRjcKrc+RjEOuR9X5AMuBvr8c6IAaE92xAqa4wmlGfWTQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  '@urql/core@5.0.8':
+    resolution: {integrity: sha512-1GOnUw7/a9bzkcM0+U8U5MmxW2A7FE5YquuEmcJzTtW5tIs2EoS4F2ITpuKBjRBbyRjZgO860nWFPo1m4JImGA==}
 
   '@vitejs/plugin-react@3.1.0':
     resolution: {integrity: sha512-AfgcRL8ZBhAlc3BFdigClmTUMISmmzHn7sB2h9U1odvc5U/MjWXsAaz18b/WoppUTDBzxOJwo2VdClfUcItu9g==}
@@ -3931,6 +3936,9 @@ packages:
 
   aria-query@5.1.3:
     resolution: {integrity: sha512-R5iJ5lkuHybztUfuOAznmboyjWq8O6sqNqtK7CLOqdydi54VNbORp49mb14KbWgG1QD3JFO9hJdZ+y4KutfdOQ==}
+
+  aria-query@5.3.0:
+    resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
@@ -4756,6 +4764,9 @@ packages:
 
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
+
+  dom-accessibility-api@0.6.3:
+    resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
   domexception@4.0.0:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
@@ -8665,10 +8676,9 @@ packages:
   urlpattern-polyfill@8.0.2:
     resolution: {integrity: sha512-Qp95D4TPJl1kC9SKigDcqgyM2VDVO4RiJc2d4qe5GrYm+zbIQCWWKAFaJNQ4BhdFeDGwBmAxqJBwWSJDb9T3BQ==}
 
-  urql@3.0.4:
-    resolution: {integrity: sha512-okmQKQ9pF4t8O8iCC5gH9acqfFji5lkhW3nLBjx8WKDd2zZG7PXoUpUK19VQEMK87L6VFBOO/XZ52MMKFEI0AA==}
+  urql@4.2.1:
+    resolution: {integrity: sha512-Y/cVi1rsR96kbF3VX6YgfHw1V3kJ287nR1TqpjGzVPyAmXuwRvBvABI+sHY2WOquWCNh+kvFapM/LLYeiC3wig==}
     peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
       react: '>= 16.8.0'
 
   use-callback-ref@1.3.2:
@@ -9017,6 +9027,10 @@ packages:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
+
+  '@0no-co/graphql.web@1.0.11(graphql@16.9.0)':
+    optionalDependencies:
+      graphql: 16.9.0
 
   '@adobe/css-tools@4.4.1': {}
 
@@ -11438,36 +11452,36 @@ snapshots:
     dependencies:
       playwright: 1.49.0
 
-  '@pothos/core@3.41.2(graphql@16.9.0)':
+  '@pothos/core@4.3.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
 
-  '@pothos/plugin-errors@3.11.2(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-errors@4.2.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@pothos/core': 3.41.2(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
 
-  '@pothos/plugin-prisma@3.65.3(@pothos/core@3.41.2(graphql@16.9.0))(@prisma/client@5.22.0(prisma@5.22.0))(graphql@16.9.0)(typescript@5.7.2)':
+  '@pothos/plugin-prisma@4.3.1(@pothos/core@4.3.0(graphql@16.9.0))(@prisma/client@5.22.0(prisma@5.22.0))(graphql@16.9.0)(typescript@5.7.2)':
     dependencies:
-      '@pothos/core': 3.41.2(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       '@prisma/client': 5.22.0(prisma@5.22.0)
       '@prisma/generator-helper': 5.22.0
       graphql: 16.9.0
       typescript: 5.7.2
 
-  '@pothos/plugin-scope-auth@3.22.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-scope-auth@4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@pothos/core': 3.41.2(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
 
-  '@pothos/plugin-simple-objects@3.7.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-simple-objects@4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@pothos/core': 3.41.2(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
 
-  '@pothos/plugin-validation@3.10.2(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)':
+  '@pothos/plugin-validation@3.10.2(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)':
     dependencies:
-      '@pothos/core': 3.41.2(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
       zod: 3.23.8
 
@@ -12730,6 +12744,17 @@ snapshots:
 
   '@tanstack/virtual-core@3.10.9': {}
 
+  '@testing-library/dom@10.4.0':
+    dependencies:
+      '@babel/code-frame': 7.26.2
+      '@babel/runtime': 7.26.0
+      '@types/aria-query': 5.0.4
+      aria-query: 5.3.0
+      chalk: 4.1.2
+      dom-accessibility-api: 0.5.16
+      lz-string: 1.5.0
+      pretty-format: 27.5.1
+
   '@testing-library/dom@8.20.1':
     dependencies:
       '@babel/code-frame': 7.26.2
@@ -12741,40 +12766,29 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/dom@9.3.4':
-    dependencies:
-      '@babel/code-frame': 7.26.2
-      '@babel/runtime': 7.26.0
-      '@types/aria-query': 5.0.4
-      aria-query: 5.1.3
-      chalk: 4.1.2
-      dom-accessibility-api: 0.5.16
-      lz-string: 1.5.0
-      pretty-format: 27.5.1
-
-  '@testing-library/jest-dom@5.17.0':
+  '@testing-library/jest-dom@6.6.3':
     dependencies:
       '@adobe/css-tools': 4.4.1
-      '@babel/runtime': 7.26.0
-      '@types/testing-library__jest-dom': 5.14.9
       aria-query: 5.3.2
       chalk: 3.0.0
       css.escape: 1.5.1
-      dom-accessibility-api: 0.5.16
+      dom-accessibility-api: 0.6.3
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@14.3.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@testing-library/react@16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@babel/runtime': 7.26.0
-      '@testing-library/dom': 9.3.4
-      '@types/react-dom': 18.3.1
+      '@testing-library/dom': 10.4.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.3.12
+      '@types/react-dom': 18.3.1
 
-  '@testing-library/user-event@14.5.2(@testing-library/dom@9.3.4)':
+  '@testing-library/user-event@14.5.2(@testing-library/dom@10.4.0)':
     dependencies:
-      '@testing-library/dom': 9.3.4
+      '@testing-library/dom': 10.4.0
 
   '@tootallnate/once@2.0.0': {}
 
@@ -13023,10 +13037,6 @@ snapshots:
 
   '@types/stack-utils@2.0.3': {}
 
-  '@types/testing-library__jest-dom@5.14.9':
-    dependencies:
-      '@types/jest': 29.5.14
-
   '@types/tmp@0.2.6': {}
 
   '@types/tough-cookie@4.0.5': {}
@@ -13213,10 +13223,12 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@urql/core@3.2.2(graphql@16.9.0)':
+  '@urql/core@5.0.8(graphql@16.9.0)':
     dependencies:
-      graphql: 16.9.0
+      '@0no-co/graphql.web': 1.0.11(graphql@16.9.0)
       wonka: 6.3.4
+    transitivePeerDependencies:
+      - graphql
 
   '@vitejs/plugin-react@3.1.0(vite@4.5.5(@types/node@20.8.10)(terser@5.36.0))':
     dependencies:
@@ -13464,6 +13476,10 @@ snapshots:
   aria-query@5.1.3:
     dependencies:
       deep-equal: 2.2.3
+
+  aria-query@5.3.0:
+    dependencies:
+      dequal: 2.0.3
 
   aria-query@5.3.2: {}
 
@@ -14441,6 +14457,8 @@ snapshots:
 
   dom-accessibility-api@0.5.16: {}
 
+  dom-accessibility-api@0.6.3: {}
+
   domexception@4.0.0:
     dependencies:
       webidl-conversions: 7.0.0
@@ -14717,7 +14735,7 @@ snapshots:
       debug: 4.3.7(supports-color@9.4.0)
       enhanced-resolve: 5.17.1
       eslint: 8.56.0
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.56.0))(eslint@8.56.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.3.0
@@ -14730,7 +14748,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.56.0))(eslint@8.56.0):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -14752,7 +14770,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.31.0)(eslint@8.56.0))(eslint@8.56.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -14776,6 +14794,18 @@ snapshots:
       '@testing-library/dom': 8.20.1
       eslint: 8.56.0
       requireindex: 1.2.0
+
+  eslint-plugin-jest@27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0(@types/node@18.19.66))(typescript@5.7.2):
+    dependencies:
+      '@typescript-eslint/utils': 5.62.0(eslint@8.56.0)(typescript@5.7.2)
+      eslint: 8.56.0
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2)
+      jest: 29.7.0(@types/node@18.19.66)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+    optional: true
 
   eslint-plugin-jest@27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0)(typescript@5.7.2):
     dependencies:
@@ -14807,11 +14837,11 @@ snapshots:
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.1
 
-  eslint-plugin-playwright@0.12.0(eslint-plugin-jest@27.9.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0):
+  eslint-plugin-playwright@0.12.0(eslint-plugin-jest@27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0(@types/node@18.19.66))(typescript@5.7.2))(eslint@8.56.0):
     dependencies:
       eslint: 8.56.0
     optionalDependencies:
-      eslint-plugin-jest: 27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0)(typescript@5.7.2)
+      eslint-plugin-jest: 27.9.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(typescript@5.7.2))(eslint@8.56.0)(jest@29.7.0(@types/node@18.19.66))(typescript@5.7.2)
 
   eslint-plugin-react-hooks@5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0):
     dependencies:
@@ -16429,6 +16459,19 @@ snapshots:
       - supports-color
       - ts-node
 
+  jest@29.7.0(@types/node@18.19.66):
+    dependencies:
+      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2))
+      '@jest/types': 29.6.3
+      import-local: 3.2.0
+      jest-cli: 29.7.0(@types/node@18.19.66)(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2))
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+    optional: true
+
   jest@29.7.0(@types/node@18.19.66)(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2)):
     dependencies:
       '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@18.19.66)(typescript@5.7.2))
@@ -16990,11 +17033,11 @@ snapshots:
       next: 13.5.7(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
 
-  next-urql@4.0.3(react@18.2.0)(urql@3.0.4(graphql@16.9.0)(react@18.2.0)):
+  next-urql@4.0.3(react@18.2.0)(urql@4.2.1(graphql@16.9.0)(react@18.2.0)):
     dependencies:
       react: 18.2.0
       react-ssr-prepass: 1.6.0(react@18.2.0)
-      urql: 3.0.4(graphql@16.9.0)(react@18.2.0)
+      urql: 4.2.1(graphql@16.9.0)(react@18.2.0)
 
   next@13.5.7(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -19172,12 +19215,13 @@ snapshots:
 
   urlpattern-polyfill@8.0.2: {}
 
-  urql@3.0.4(graphql@16.9.0)(react@18.2.0):
+  urql@4.2.1(graphql@16.9.0)(react@18.2.0):
     dependencies:
-      '@urql/core': 3.2.2(graphql@16.9.0)
-      graphql: 16.9.0
+      '@urql/core': 5.0.8(graphql@16.9.0)
       react: 18.2.0
       wonka: 6.3.4
+    transitivePeerDependencies:
+      - graphql
 
   use-callback-ref@1.3.2(@types/react@18.3.12)(react@18.2.0):
     dependencies:
