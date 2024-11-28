@@ -57,7 +57,7 @@ export default withUrqlClient(
     exchanges: [cacheExchange, fetchExchange],
     fetchOptions: () => ({
       headers: {
-        cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
+        cookie: context ? (context.req?.headers.cookie ?? '') : document.cookie,
       },
     }),
     requestPolicy: 'cache-and-network',
