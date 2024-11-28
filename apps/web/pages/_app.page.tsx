@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { withUrqlClient } from 'next-urql'
 import Head from 'next/head'
 import Link from 'next/link'
+import { cacheExchange, fetchExchange } from 'urql'
 
 import { TimebookToaster } from '@progwise/timebook-ui'
 
@@ -53,10 +54,10 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
 export default withUrqlClient(
   (_ssrExchange, context) => ({
     url: `${process.env.NEXTAUTH_URL ?? ''}/api/graphql`,
-    exchanges: [],
+    exchanges: [cacheExchange, fetchExchange],
     fetchOptions: () => ({
       headers: {
-        cookie: context ? (context.req?.headers.cookie ?? '') : document.cookie,
+        cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
       },
     }),
     requestPolicy: 'cache-and-network',

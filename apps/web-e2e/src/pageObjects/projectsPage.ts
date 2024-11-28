@@ -8,7 +8,12 @@ export class ProjectsPage {
     this._page = page
   }
 
+  private async _gotoHomePage() {
+    await this._page.goto('http://localhost:3000')
+  }
+
   private async _gotoProjectPage() {
+    await this._gotoHomePage()
     await this._page.getByRole('link', { name: 'Projects' }).click()
   }
 

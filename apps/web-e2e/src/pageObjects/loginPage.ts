@@ -15,6 +15,10 @@ export class LoginPage {
     this._page = page
   }
 
+  private async _gotoHomePage() {
+    await this._page.goto('http://localhost:3000')
+  }
+
   async login() {
     const token = randomBytes(10).toString('hex')
     const hashedToken = createHash('sha256')
@@ -34,6 +38,7 @@ export class LoginPage {
 
     await this._page.goto(signInUrl)
     await this._page.waitForURL('http://localhost:3000/week')
+    await this._gotoHomePage()
   }
 
   async deleteAccount() {
