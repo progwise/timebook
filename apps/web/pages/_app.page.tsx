@@ -55,7 +55,7 @@ export default withUrqlClient(
     url: `${process.env.NEXTAUTH_URL ?? ''}/api/graphql`,
     fetchOptions: () => ({
       headers: {
-        cookie: context ? context.req?.headers.cookie ?? '' : document.cookie,
+        cookie: context ? (context.req?.headers.cookie ?? '') : document.cookie,
       },
     }),
     requestPolicy: 'cache-and-network',
