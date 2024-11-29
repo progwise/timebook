@@ -1,6 +1,7 @@
 FROM node:20-alpine AS base
 
 ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_PAYPAL_CLIENT_ID
 
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
