@@ -8,6 +8,7 @@ module.exports = {
     ROOT: __dirname,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
   },
   pageExtensions: ['page.tsx', 'page.ts'],
   images: {
