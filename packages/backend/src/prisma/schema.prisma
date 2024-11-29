@@ -18,6 +18,34 @@ generator pothos {
   output   = "../../node_modules/.pothos/plugin-prisma/generated.ts"
 }
 
+model Invoice {
+  id          String   @id @default(cuid())
+  invoiceDate DateTime @default(now())
+
+  createdByUserId String
+  customerAddress String?
+  organizationId  String
+  customerName    String
+
+  createdByUser User          @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  InvoiceItems  InvoiceItem[]
+}
+
+model InvoiceItem {
+  id        String @id @default(cuid())
+  invoiceId String
+
+  taskId     String
+  start      DateTime? @db.Date
+  end        DateTime? @db.Date
+  duration   Int
+  hourlyRate Float?
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
 enum SubscriptionStatus {
   ACTIVE
   CANCELLED
@@ -38,6 +66,8 @@ model Organization {
 
   organizationMemberships OrganizationMembership[]
   projects                Project[]
+
+  Invoice Invoice[]
 }
 
 model OrganizationMembership {
@@ -103,9 +133,10 @@ model Task {
   updatedAt  DateTime  @updatedAt
   archivedAt DateTime?
 
-  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  workHours WorkHour[]
-  trackings Tracking[]
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workHours   WorkHour[]
+  trackings   Tracking[]
+  InvoiceItem InvoiceItem[]
 }
 
 model WorkHour {
@@ -174,6 +205,7 @@ model User {
   accessTokens              AccessToken[]
   createdProjectInvitations ProjectInvitation[]
   organizationMemberships   OrganizationMembership[]
+  Invoice                   Invoice[]
 }
 
 model VerificationToken {

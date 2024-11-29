@@ -64,5 +64,17 @@ export const Organization = builder.prismaObject('Organization', {
         }
       },
     }),
+    invoices: t.prismaField({
+      description: 'List of invoices associated with the organization',
+      select: { id: true },
+      authScopes: (organization) => ({ isAdminByOrganization: organization.id }),
+      type: ['Invoice'],
+      resolve: (query, organization) =>
+        prisma.invoice.findMany({
+          ...query,
+          where: { organizationId: organization.id },
+          orderBy: { invoiceDate: 'asc' },
+        }),
+    }),
   }),
 })
