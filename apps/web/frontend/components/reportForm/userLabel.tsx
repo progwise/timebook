@@ -17,7 +17,7 @@ export const UserLabel = ({ name, duration, image, members, isAllUsers }: UserLa
     MAX_NUMBER_OF_AVATARS === members?.length ? MAX_NUMBER_OF_AVATARS : MAX_NUMBER_OF_AVATARS - 1
 
   return (
-    <div className="flex items-center gap-0">
+    <div className="flex items-center gap-1">
       {isAllUsers && members ? (
         <>
           <div className="avatar-group -space-x-3 rtl:space-x-reverse">
@@ -49,7 +49,7 @@ export const UserLabel = ({ name, duration, image, members, isAllUsers }: UserLa
           </span>
         </>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {image ? (
             <Image src={image} alt={name ?? 'User avatar'} width={26} height={26} className="rounded-full" />
           ) : (
