@@ -27,6 +27,36 @@ export type AccessToken = {
   name: Scalars['String']
 }
 
+export type Invoice = ModifyInterface & {
+  __typename?: 'Invoice'
+  /** Can the user modify the entity */
+  canModify: Scalars['Boolean']
+  customerAddress?: Maybe<Scalars['String']>
+  customerName: Scalars['String']
+  /** identifies the invoice */
+  id: Scalars['ID']
+  invoiceDate: Scalars['Date']
+  /** Items associated with the invoice */
+  items: Array<InvoiceItem>
+  organization: Organization
+}
+
+export type InvoiceItem = {
+  __typename?: 'InvoiceItem'
+  /** Duration of the invoice item in minutes */
+  duration: Scalars['Int']
+  end?: Maybe<Scalars['DateTime']>
+  /** Hourly rate for the invoice item */
+  hourlyRate?: Maybe<Scalars['Float']>
+  /** Identifies the invoice item */
+  id: Scalars['ID']
+  /** Invoice to which the invoice item belongs */
+  invoice: Invoice
+  start?: Maybe<Scalars['DateTime']>
+  /** Task for which the invoice item was booked */
+  task: Task
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -248,6 +278,8 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
+  /** List of invoices associated with the organization */
+  invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
   members: Array<User>

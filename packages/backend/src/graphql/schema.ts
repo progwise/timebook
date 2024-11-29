@@ -5,6 +5,8 @@ import { format, resolveConfig } from 'prettier'
 
 import './accessToken'
 import { builder } from './builder'
+import './invoice'
+import './invoiceItem'
 import './organization'
 import './organizationMembership'
 import './project'
