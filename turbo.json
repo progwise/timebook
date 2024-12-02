@@ -11,7 +11,8 @@
         "NEXTAUTH_SECRET",
         "CI",
         "NEXT_PUBLIC_PAYPAL_CLIENT_ID",
-        "PAYPAL_URL"
+        "PAYPAL_URL",
+        "ROLLUP_WATCH"
       ]
     },
     "lint": {
