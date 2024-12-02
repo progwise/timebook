@@ -44,7 +44,7 @@ export const useProjectMembers = () => {
   //Renders the logged in user by default
   useEffect(() => {
     const userId = router.query.userId?.toString() ?? data?.user.id
-    if (userId) {
+    if (userId && userId !== selectedUserId) {
       setSelectedUserId(userId)
       if (!router.query.userId) {
         router.push({
