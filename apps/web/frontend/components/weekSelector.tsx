@@ -33,10 +33,9 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
         >
           <FaChevronLeft />
         </button>
-
         <button className="btn btn-sm" onClick={() => handleWeekSelect(new Date())}>
           <FaCalendarCheck />
-          today
+          Today
         </button>
         <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
         <button
