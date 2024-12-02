@@ -1,11 +1,7 @@
 import { endOfWeek, isThisWeek, nextMonday, previousMonday, startOfWeek } from 'date-fns'
-import Image from 'next/image'
 import { FaCalendarCheck, FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
-import { Listbox } from '@progwise/timebook-ui'
-
 import { CalendarSelector } from './calendarSelector'
-import { useProjectMembers } from './useProjectMembers'
 
 interface WeekSelectorProps {
   value: Date
@@ -15,11 +11,10 @@ interface WeekSelectorProps {
 export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const weekStartDate = startOfWeek(value)
   const isCurrentWeek = isThisWeek(weekStartDate)
-  const { selectedUserId, handleUserChange, myProjectsMembersData } = useProjectMembers()
 
   const handleWeekSelect = (newDate: Date) => {
-    const newWeekStartDate = startOfWeek(newDate)
-    onChange(newWeekStartDate)
+    const monday = startOfWeek(newDate)
+    onChange(monday)
   }
 
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -51,32 +46,6 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           <FaChevronRight />
         </button>
       </div>
-      {myProjectsMembersData.length > 0 && (
-        <Listbox
-          value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? myProjectsMembersData[0]}
-          getLabel={(user) => (
-            <div className="flex items-center gap-2">
-              {user?.image ? (
-                <Image
-                  src={user.image}
-                  alt={user.name ?? 'User avatar'}
-                  width={26}
-                  height={26}
-                  className="rounded-full"
-                />
-              ) : (
-                <div className="flex size-6 items-center justify-center rounded-full bg-neutral text-neutral-content">
-                  <span className="text-xl">{user?.name?.charAt(0)}</span>
-                </div>
-              )}
-              <span>{user?.name}</span>
-            </div>
-          )}
-          getKey={(user) => user.id}
-          onChange={(user) => handleUserChange(user.id)}
-          options={myProjectsMembersData}
-        />
-      )}
     </div>
   )
 }
