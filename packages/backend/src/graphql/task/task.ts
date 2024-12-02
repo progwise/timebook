@@ -53,7 +53,7 @@ export const Task = builder.prismaObject('Task', {
       // when signed in user requests work hours for another user, the signed in user must be an admin
 
       authScopes: (task, { projectMemberUserId }, context) => {
-        const showWorkHoursForOtherUser = projectMemberUserId && projectMemberUserId !== context.session.user.id
+        const showWorkHoursForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
         return showWorkHoursForOtherUser ? { isAdminByTask: task.id } : { isLoggedIn: true }
       },
 
