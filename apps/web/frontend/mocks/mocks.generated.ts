@@ -378,9 +378,9 @@ export type QueryProjectArgs = {
 
 export type QueryProjectsArgs = {
   filter?: ProjectFilter
-  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -478,8 +478,8 @@ export type Task = ModifyInterface & {
 }
 
 export type TaskWorkHourOfDaysArgs = {
-  forUserId?: InputMaybe<Scalars['ID']>
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1384,7 +1384,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
-  forUserId?: InputMaybe<Scalars['ID']>
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -2249,7 +2249,7 @@ export const mockOrganizationsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to, forUserId } = req.variables;
+ *   const { from, to, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )

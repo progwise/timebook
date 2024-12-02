@@ -18,14 +18,19 @@ builder.queryField('projects', (t) =>
         description:
           'If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.',
       }),
-      forUserId: t.arg.id({
+      projectMemberUserId: t.arg.id({
         required: false,
         description:
           'Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.',
       }),
     },
-    resolve: (query, _source, { from, to, filter, includeProjectsWhereUserBookedWorkHours, forUserId }, context) => {
-      const showProjectsForOtherUser = !!forUserId && forUserId !== context.session.user.id
+    resolve: (
+      query,
+      _source,
+      { from, to, filter, includeProjectsWhereUserBookedWorkHours, projectMemberUserId },
+      context,
+    ) => {
+      const showProjectsForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
 
       return prisma.project.findMany({
         ...query,
@@ -43,7 +48,7 @@ builder.queryField('projects', (t) =>
                       showProjectsForOtherUser,
                     ),
                     // check if the given user is allowed to see the project
-                    showProjectsForOtherUser ? getWhereUserIsMember(forUserId.toString()) : {},
+                    showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
                   ],
                 },
                 // or get projects where user booked work hours
@@ -53,7 +58,7 @@ builder.queryField('projects', (t) =>
                     some: {
                       workHours: {
                         some: {
-                          userId: forUserId?.toString() ?? context.session.user.id,
+                          userId: projectMemberUserId?.toString() ?? context.session.user.id,
                           AND: [{ date: { gte: from } }, { date: { lte: to ?? from } }],
                           OR: [
                             { duration: { gt: 0 } },
@@ -82,7 +87,7 @@ builder.queryField('projects', (t) =>
                   showProjectsForOtherUser,
                 ),
                 // check if the given user is allowed to see the project
-                showProjectsForOtherUser ? getWhereUserIsMember(forUserId.toString()) : {},
+                showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
               ],
             },
         orderBy: { title: 'asc' },

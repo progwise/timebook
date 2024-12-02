@@ -9,8 +9,13 @@ import { WeekSelector } from '../../frontend/components/weekSelector'
 import { graphql } from '../../frontend/generated/gql'
 
 const weekGridQueryDocument = graphql(`
-  query weekGrid($from: Date!, $to: Date, $forUserId: ID) {
-    projects(from: $from, to: $to, forUserId: $forUserId, includeProjectsWhereUserBookedWorkHours: true) {
+  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID) {
+    projects(
+      from: $from
+      to: $to
+      projectMemberUserId: $projectMemberUserId
+      includeProjectsWhereUserBookedWorkHours: true
+    ) {
       ...WeekGridProject
     }
   }
@@ -24,17 +29,17 @@ const WeekPage = () => {
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const forUserId = router.query.userId?.toString()
+  const projectMemberUserId = router.query.userId?.toString()
   const [{ data: weekGridData, fetching }] = useQuery({
     query: weekGridQueryDocument,
-    variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd'), forUserId },
+    variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd'), projectMemberUserId },
     context: weekGridContext,
   })
 
   const isDataOutdated = !!weekGridData && fetching
 
   const handleWeekChange = (newDate: Date) => {
-    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${forUserId ? `?userId=${forUserId}` : ''}`
+    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${projectMemberUserId ? `?userId=${projectMemberUserId}` : ''}`
     router.push(path)
   }
 

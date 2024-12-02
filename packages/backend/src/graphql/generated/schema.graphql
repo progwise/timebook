@@ -388,17 +388,17 @@ type Query {
   """
   projects(
     filter: ProjectFilter! = ACTIVE
-
-    """
-    Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.
-    """
-    forUserId: ID
     from: Date!
 
     """
     If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.
     """
     includeProjectsWhereUserBookedWorkHours: Boolean! = false
+
+    """
+    Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.
+    """
+    projectMemberUserId: ID
     to: Date
   ): [Project!]!
   projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
@@ -551,11 +551,12 @@ type Task implements ModifyInterface {
   The work hours of the task for each day of the given interval
   """
   workHourOfDays(
+    from: Date!
+
     """
     Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned
     """
-    forUserId: ID
-    from: Date!
+    projectMemberUserId: ID
     to: Date
   ): [WorkHourOfDay!]!
   workHours(from: Date!, to: Date): [WorkHour!]!

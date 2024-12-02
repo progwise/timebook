@@ -14,11 +14,11 @@ const projectsQuery = gql`
     $from: Date!
     $includePastMembers: Boolean
     $includeProjectsWhereUserBookedWorkHours: Boolean! = false
-    $forUserId: ID
+    $projectMemberUserId: ID
   ) {
     projects(
       from: $from
-      forUserId: $forUserId
+      projectMemberUserId: $projectMemberUserId
       includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours
     ) {
       id
@@ -179,11 +179,11 @@ describe('members', () => {
     })
   })
 
-  it('should return projects of members when the user is an admin', async () => {
+  it('should return projects when the requesting user has admin role', async () => {
     const testServer = getTestServer({ userId: '4' })
     const response = await testServer.executeOperation({
       query: projectsQuery,
-      variables: { from: '2023-01-01', forUserId: '1' },
+      variables: { from: '2023-01-01', projectMemberUserId: '1' },
     })
 
     expect(response.errors).toBeUndefined()
