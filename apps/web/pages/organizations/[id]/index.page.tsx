@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
@@ -8,12 +9,17 @@ import { ProjectTable } from '../../../frontend/components/projectTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
+import { InvoiceTable } from './invoiceTable'
 import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
 
 const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
     organization(organizationId: $organizationId) {
       id
+      members {
+        id
+        organizationRole(organizationId: $organizationId)
+      }
       ...OrganizationForm
       ...OrganizationMemberListOrganization
       projects {
@@ -21,6 +27,7 @@ const OrganizationQueryDocument = graphql(`
       }
       invoices {
         id
+        ...InvoiceTableItem
       }
     }
   }
@@ -48,6 +55,8 @@ const OrganizationDetails = (): JSX.Element => {
   const selectedOrganization = data?.organization
   const [organizationUpdateResult, organizationUpdate] = useMutation(OrganizationUpdateMutationDocument)
 
+  const session = useSession()
+
   const handleSubmit = async (data: OrganizationInput) => {
     try {
       if (!selectedOrganization?.id) {
@@ -73,6 +82,10 @@ const OrganizationDetails = (): JSX.Element => {
     return <div>Organization {id} not found</div>
   }
 
+  const isAdmin = selectedOrganization.members.some(
+    (member) => member.id === session.data?.user.id && member.organizationRole === 'ADMIN',
+  )
+
   return (
     <ProtectedPage>
       <SubscriptionStatusOrganizationLink />
@@ -95,11 +108,18 @@ const OrganizationDetails = (): JSX.Element => {
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
           <OrganizationMemberList organization={selectedOrganization} />
         </div>
-        <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
-        <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
-          Invoices
-          {/* {selectedOrganization} */}
-        </div>
+        {isAdmin && (
+          <>
+            <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
+            <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+              {selectedOrganization.invoices.length > 0 ? (
+                <InvoiceTable invoices={selectedOrganization.invoices} />
+              ) : (
+                <div>There is currently no invoices in this organization</div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </ProtectedPage>
   )

@@ -106,7 +106,13 @@ const Projects = (): JSX.Element => {
         {error && <span>{error.message}</span>}
         {projectsLoading && <span className="loading loading-spinner" />}
         {data &&
-          (data.projects.length === 0 ? <div>No projects found</div> : <ProjectTable projects={data.projects} />)}
+          (data.projects.length === 0 ? (
+            <div>No projects found</div>
+          ) : (
+            <div className="w-full rounded-box border border-base-content/50 shadow-lg">
+              <ProjectTable projects={data.projects} />
+            </div>
+          ))}
       </article>
     </ProtectedPage>
   )

@@ -1248,6 +1248,13 @@ export type OrganizationQuery = {
     canModify: boolean
     subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      organizationRole: Role
+      image?: string | null
+      name?: string | null
+    }>
     projects: Array<{
       __typename?: 'Project'
       id: string
@@ -1256,13 +1263,12 @@ export type OrganizationQuery = {
       endDate?: string | null
       members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
     }>
-    invoices: Array<{ __typename?: 'Invoice'; id: string }>
-    members: Array<{
-      __typename?: 'User'
+    invoices: Array<{
+      __typename?: 'Invoice'
       id: string
-      image?: string | null
-      name?: string | null
-      organizationRole: Role
+      invoiceDate: string
+      customerName: string
+      items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
     }>
   }
 }
@@ -1275,6 +1281,14 @@ export type OrganizationUpdateMutationVariables = Exact<{
 export type OrganizationUpdateMutation = {
   __typename?: 'Mutation'
   organizationUpdate: { __typename?: 'Organization'; id: string }
+}
+
+export type InvoiceTableItemFragment = {
+  __typename?: 'Invoice'
+  id: string
+  invoiceDate: string
+  customerName: string
+  items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
 }
 
 export type MyOrganizationsQueryVariables = Exact<{
