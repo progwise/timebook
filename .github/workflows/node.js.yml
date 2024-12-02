@@ -18,7 +18,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - run: pnpm run build
 
@@ -33,7 +33,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - run: docker compose -f ./docker-compose.yml up -d
       - run: pnpm run test
@@ -49,7 +49,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - run: pnpm run lint
 
@@ -64,7 +64,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - run: pnpm run format:check
 
@@ -79,7 +79,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - run: pnpm run graphql:generate
       - run: node apps/web/.ci/check-graphql-generator
@@ -99,7 +99,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - name: Install Playwright Browsers
         working-directory: ./apps/web-e2e
@@ -132,7 +132,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - uses: pulumi/actions@v4
         with:
@@ -146,6 +146,9 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.AUTH_GITHUB_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.AUTH_GITHUB_CLIENT_SECRET }}
+          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
+          PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+          PAYPAL_URL: ${{ secrets.PAYPAL_URL }}
 
   deploy:
     needs: [pulumi]
@@ -155,7 +158,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: DigitalOcean App Platform deployment
-        uses: digitalocean/app_action@main
+        uses: digitalocean/app_action/deploy@v2
         with:
           app_name: timebook
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
@@ -170,7 +173,7 @@ jobs:
       - uses: pnpm/action-setup@v4.0.0
         name: Install pnpm
         with:
-          version: 8.15.8
+          version: 9.14.0
           run_install: true
       - name: Database migration
         run: pnpm run migrate-db

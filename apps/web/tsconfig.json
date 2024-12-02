@@ -1,5 +1,12 @@
 {
   "extends": "tsconfig/nextjs.json",
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.ts", "jest-setup.js"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.ts", "jestSetup.ts"],
+  "exclude": ["node_modules", "frontend/mocks/*.ts", "codegen.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext", "DOM"],
+    "types": ["jest", "node", "next", "react", "react-dom", "@testing-library/jest-dom", "@testing-library/react"]
+  }
 }

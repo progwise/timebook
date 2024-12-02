@@ -3,7 +3,7 @@ import type { Config } from 'jest'
 const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jestSetup.ts'],
   transform: {
     '.+\\.(svg|css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
