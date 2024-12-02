@@ -287,10 +287,6 @@ type Organization implements ModifyInterface {
   identifies the organization
   """
   id: ID!
-
-  """
-  List of invoices associated with the organization
-  """
   invoices: [Invoice!]!
   isArchived: Boolean!
 

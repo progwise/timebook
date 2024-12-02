@@ -278,7 +278,6 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
-  /** List of invoices associated with the organization */
   invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
@@ -1251,6 +1250,7 @@ export type OrganizationQuery = {
     projects: Array<
       { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
     >
+    invoices: Array<{ __typename?: 'Invoice'; id: string }>
   } & {
     ' $fragmentRefs'?: {
       OrganizationFormFragment: OrganizationFormFragment
@@ -5070,6 +5070,14 @@ export const OrganizationDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'invoices' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
                   },
                 },
               ],

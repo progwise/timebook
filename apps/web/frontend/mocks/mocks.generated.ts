@@ -280,7 +280,6 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
-  /** List of invoices associated with the organization */
   invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
@@ -1257,6 +1256,7 @@ export type OrganizationQuery = {
       endDate?: string | null
       members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
     }>
+    invoices: Array<{ __typename?: 'Invoice'; id: string }>
     members: Array<{
       __typename?: 'User'
       id: string
