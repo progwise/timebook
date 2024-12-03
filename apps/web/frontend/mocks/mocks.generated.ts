@@ -270,6 +270,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -517,6 +518,7 @@ export type TaskWorkHourOfDaysArgs = {
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1159,6 +1161,7 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1962,7 +1965,7 @@ export const mockMyProjectsMembersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { data, date, taskId } = req.variables;
+ *   const { data, date, taskId, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )
