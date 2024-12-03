@@ -20,7 +20,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (
-    <div className="inline-flex flex-col items-center gap-2 p-4">
+    <div className="inline-flex flex-col items-center gap-2">
       <h2 className="text-lg font-bold">
         {dateTimeFormat.formatRange(weekStartDate, endOfWeek(weekStartDate))}
         {isCurrentWeek && '*'}
