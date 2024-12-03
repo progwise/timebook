@@ -40,7 +40,7 @@ model InvoiceItem {
   start      DateTime? @db.Date
   end        DateTime? @db.Date
   duration   Int
-  hourlyRate Float?
+  hourlyRate Decimal
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
