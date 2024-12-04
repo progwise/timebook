@@ -45,7 +45,7 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
 
   const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
   const formattedUsers = allUsers.map(({ id, image, name, durationWorkedOnProject }) => ({
- id,
+    id,
     image: image ?? undefined,
     name: name ?? undefined,
     durationWorkedOnProject,

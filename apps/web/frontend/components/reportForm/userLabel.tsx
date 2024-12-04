@@ -5,12 +5,11 @@ interface UserLabelProps {
   duration: number
   image?: string
   members?: { id: string; image?: string; name?: string }[]
-  isAllUsers?: boolean
 }
 
 const MAX_NUMBER_OF_AVATARS = 3
 
-export const UserLabel = ({ name, duration, image, members, isAllUsers }: UserLabelProps) => {
+export const UserLabel = ({ name, duration, image, members }: UserLabelProps) => {
   const hours = Math.floor(duration / 60).toString()
   const minutes = (duration % 60).toString().padStart(2, '0')
   const numberOfMembersToBeDisplayed =
@@ -18,9 +17,9 @@ export const UserLabel = ({ name, duration, image, members, isAllUsers }: UserLa
 
   return (
     <div className="flex items-center gap-1">
-      {isAllUsers && members ? (
+      {members ? (
         <>
-          <div className="avatar-group -ml-1 -space-x-3 rtl:space-x-reverse">
+          <div className="avatar-group -ml-1 -space-x-3">
             {members.slice(0, numberOfMembersToBeDisplayed).map((member) =>
               member.image ? (
                 <div key={member.id} className="avatar border-transparent">
@@ -37,7 +36,7 @@ export const UserLabel = ({ name, duration, image, members, isAllUsers }: UserLa
               ),
             )}
             {members.length > numberOfMembersToBeDisplayed && (
-              <div className="avatar placeholder">
+              <div className="avatar placeholder border-transparent">
                 <div className="size-6 rounded-full bg-neutral text-neutral-content">
                   <span>+{members.length - numberOfMembersToBeDisplayed}</span>
                 </div>
