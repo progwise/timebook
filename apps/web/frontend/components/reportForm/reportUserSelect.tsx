@@ -44,11 +44,11 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
   })
 
   const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
-  const mutableAllUsers = allUsers.map((user) => ({
-    id: user.id,
-    image: user.image ?? undefined,
-    name: user.name ?? undefined,
-    durationWorkedOnProject: user.durationWorkedOnProject,
+  const formattedUsers = allUsers.map(({ id, image, name, durationWorkedOnProject }) => ({
+ id,
+    image: image ?? undefined,
+    name: name ?? undefined,
+    durationWorkedOnProject,
   }))
   const allDurations = mutableAllUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
   const selectedUser = mutableAllUsers.find((user) => user.id === selectedUserId)
