@@ -5,7 +5,7 @@ import { useQuery } from 'urql'
 import { ListboxWithUnselect } from '@progwise/timebook-ui'
 
 import { graphql, useFragment } from '../../generated/gql'
-import { UserLabel } from './userLabel'
+import { UserLabel } from '../userLabel'
 
 const ReportUserFragment = graphql(`
   fragment ReportUser on User {
@@ -44,21 +44,21 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
   })
 
   const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
-  const mutableAllUsers = allUsers.map((user) => ({
-    id: user.id,
-    image: user.image ?? undefined,
-    name: user.name ?? undefined,
-    durationWorkedOnProject: user.durationWorkedOnProject,
+  const formattedUsers = allUsers.map(({ id, image, name, durationWorkedOnProject }) => ({
+    id: id!,
+    image: image ?? undefined,
+    name: name ?? undefined,
+    durationWorkedOnProject,
   }))
-  const allDurations = mutableAllUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
-  const selectedUser = mutableAllUsers.find((user) => user.id === selectedUserId)
+  const allDurations = formattedUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
+  const selectedUser = formattedUsers.find((user) => user.id === selectedUserId)
 
   // After receiving new data, check that the selected user is still in the user list
   useEffect(() => {
     if (fetching) {
       return
     }
-    const isSelectedUserInList = mutableAllUsers.some((user) => user.id === selectedUserId)
+    const isSelectedUserInList = formattedUsers.some((user) => user.id === selectedUserId)
 
     if (!isSelectedUserInList) {
       // eslint-disable-next-line unicorn/no-useless-undefined
@@ -73,7 +73,7 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
 
   return (
     <ListboxWithUnselect
-      getKey={(user) => user?.id}
+      getKey={(user) => user.id}
       value={selectedUser}
       getLabel={(user) => (
         <UserLabel
@@ -82,9 +82,9 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
           duration={user.durationWorkedOnProject}
         />
       )}
-      noOptionLabel={<UserLabel name="All Users" duration={allDurations} members={mutableAllUsers} isAllUsers />}
+      noOptionLabel={<UserLabel name="All Users" duration={allDurations} members={formattedUsers} />}
       onChange={(user) => onUserChange(user?.id)}
-      options={mutableAllUsers}
+      options={formattedUsers}
     />
   )
 }
