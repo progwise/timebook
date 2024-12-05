@@ -50,7 +50,7 @@ const WeekPage = () => {
 
   return (
     <ProtectedPage>
-      <div className="flex items-start justify-between">
+      <div className="mb-4 flex items-end justify-between">
         {myProjectsMembersData.length > 0 && (
           <Listbox
             value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? myProjectsMembersData[0]}
