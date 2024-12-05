@@ -3,6 +3,7 @@ import { eachDayOfInterval, isSameMonth } from 'date-fns'
 import {
   ProjectMemberListProjectFragment,
   Role,
+  mockMyProjectsMembersQuery,
   mockMyProjectsQuery,
   mockProjectMembershipDeleteMutation,
   mockProjectMembershipUpdateMutation,
@@ -86,6 +87,16 @@ export const projectHandlers = [
       context.data({
         __typename: 'Query',
         projects: [testProject1, testProject2],
+      }),
+    )
+    return result
+  }),
+  mockMyProjectsMembersQuery((_request, response, context) => {
+    const result = response(
+      context.data({
+        __typename: 'Query',
+        myProjectsMembers: members,
+        user: { id: '1', __typename: 'User' },
       }),
     )
     return result

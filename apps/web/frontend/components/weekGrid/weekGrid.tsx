@@ -10,7 +10,7 @@ export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
     tasks {
-      workHourOfDays(from: $from, to: $to) {
+      workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
         ...WeekGridFooter
         workHour {
           duration

@@ -1,1 +1,2 @@
+import './myProjectsMembersQueryField'
 import './userQueryField'
