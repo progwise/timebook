@@ -370,6 +370,8 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns all members from projects where the user is an admin */
+  myProjectsMembers: Array<User>
   /** Returns a single Organization */
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
@@ -410,6 +412,7 @@ export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -508,6 +511,7 @@ export type Task = ModifyInterface & {
 
 export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1069,6 +1073,16 @@ export type TrackingCancelMutation = {
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
+export type ProjectMemberFragment = { __typename?: 'User'; id: string; name?: string | null; image?: string | null }
+
+export type MyProjectsMembersQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyProjectsMembersQuery = {
+  __typename?: 'Query'
+  myProjectsMembers: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  user: { __typename?: 'User'; id: string }
+}
+
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
@@ -1402,6 +1416,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -1928,6 +1943,24 @@ export const mockTrackingCancelMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockMyProjectsMembersQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ myProjectsMembers, user })
+ *   )
+ * })
+ */
+export const mockMyProjectsMembersQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<MyProjectsMembersQueryVariables>,
+    GraphQLContext<MyProjectsMembersQuery>,
+    any
+  >,
+) => graphql.query<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>('MyProjectsMembers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
  *   const { data, date, taskId } = req.variables;
  *   return res(
@@ -2248,7 +2281,7 @@ export const mockOrganizationsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to } = req.variables;
+ *   const { from, to, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
