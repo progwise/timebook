@@ -5,12 +5,13 @@ import { useQuery } from 'urql'
 import { ListboxWithUnselect } from '@progwise/timebook-ui'
 
 import { graphql, useFragment } from '../../generated/gql'
-import { UserLabel } from './userLabel'
+import { UserLabel } from '../userLabel'
 
 const ReportUserFragment = graphql(`
   fragment ReportUser on User {
     id
     name
+    image
     durationWorkedOnProject(from: $from, to: $to, projectId: $projectId)
   }
 `)
@@ -43,15 +44,21 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
   })
 
   const allUsers = useFragment(ReportUserFragment, data?.project.members) ?? []
-  const allDurations = allUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
-  const selectedUser = allUsers.find((user) => user.id === selectedUserId)
+  const formattedUsers = allUsers.map(({ id, image, name, durationWorkedOnProject }) => ({
+    id: id,
+    image: image ?? undefined,
+    name: name ?? undefined,
+    durationWorkedOnProject,
+  }))
+  const allDurations = formattedUsers.reduce((previous, current) => previous + current.durationWorkedOnProject, 0)
+  const selectedUser = formattedUsers.find((user) => user.id === selectedUserId)
 
   // After receiving new data, check that the selected user is still in the user list
   useEffect(() => {
     if (fetching) {
       return
     }
-    const isSelectedUserInList = allUsers.some((user) => user.id === selectedUserId)
+    const isSelectedUserInList = formattedUsers.some((user) => user.id === selectedUserId)
 
     if (!isSelectedUserInList) {
       // eslint-disable-next-line unicorn/no-useless-undefined
@@ -66,12 +73,18 @@ export const ReportUserSelect = ({ projectId, selectedUserId, onUserChange, from
 
   return (
     <ListboxWithUnselect
-      getKey={(user) => user?.id}
+      getKey={(user) => user.id}
       value={selectedUser}
-      getLabel={(user) => <UserLabel name={user.name ?? user.id} duration={user.durationWorkedOnProject} />}
-      noOptionLabel={<UserLabel name="All Users" duration={allDurations} />}
+      getLabel={(user) => (
+        <UserLabel
+          name={user.name ?? user.id}
+          image={user.image ?? undefined}
+          duration={user.durationWorkedOnProject}
+        />
+      )}
+      noOptionLabel={<UserLabel name="All Users" duration={allDurations} members={formattedUsers} />}
       onChange={(user) => onUserChange(user?.id)}
-      options={allUsers}
+      options={formattedUsers}
     />
   )
 }
