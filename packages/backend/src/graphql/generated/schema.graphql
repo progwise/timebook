@@ -410,6 +410,16 @@ type Query {
   currentTracking: Tracking
 
   """
+  Returns a single invoice
+  """
+  invoice(
+    """
+    Identifier for the invoice
+    """
+    invoiceId: ID!
+  ): Invoice!
+
+  """
   Returns all members from projects where the user is an admin
   """
   myProjectsMembers: [User!]!
