@@ -101,7 +101,7 @@ const OrganizationDetails = (): JSX.Element => {
           {selectedOrganization.projects.length > 0 ? (
             <ProjectTable projects={selectedOrganization.projects} />
           ) : (
-            <div>There is currently no projects in this organization</div>
+            <div>There are currently no projects in this organization</div>
           )}
         </div>
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
@@ -115,7 +115,7 @@ const OrganizationDetails = (): JSX.Element => {
               {selectedOrganization.invoices.length > 0 ? (
                 <InvoiceTable invoices={selectedOrganization.invoices} />
               ) : (
-                <div>There is currently no invoices in this organization</div>
+                <div>There are currently no invoices in this organization</div>
               )}
             </div>
           </>
