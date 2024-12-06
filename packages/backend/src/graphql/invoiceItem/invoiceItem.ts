@@ -11,7 +11,6 @@ export const InvoiceItem = builder.prismaObject('InvoiceItem', {
     hourlyRate: t.expose('hourlyRate', {
       type: DecimalScalar,
       description: 'Hourly rate for the invoice item',
-      nullable: true,
     }),
     invoice: t.relation('invoice', {
       description: 'Invoice to which the invoice item belongs',
