@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
@@ -52,8 +51,6 @@ const OrganizationDetails = (): JSX.Element => {
   const selectedOrganization = data?.organization
   const [organizationUpdateResult, organizationUpdate] = useMutation(OrganizationUpdateMutationDocument)
 
-  const session = useSession()
-
   const handleSubmit = async (data: OrganizationInput) => {
     try {
       if (!selectedOrganization?.id) {
@@ -78,10 +75,6 @@ const OrganizationDetails = (): JSX.Element => {
   if (!selectedOrganization) {
     return <div>Organization {id} not found</div>
   }
-
-  // const isAdmin = selectedOrganization.members.some(
-  //   (member) => member.id === session.data?.user.id && member.organizationRole === 'ADMIN',
-  // )
 
   return (
     <ProtectedPage>
