@@ -1247,7 +1247,7 @@ export type OrganizationQuery = {
   organization: {
     __typename?: 'Organization'
     id: string
-    members: Array<{ __typename?: 'User'; id: string; organizationRole: Role }>
+    canModify: boolean
     projects: Array<
       { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
     >
@@ -5105,27 +5105,7 @@ export const OrganizationDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'members' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'organizationRole' },
-                        arguments: [
-                          {
-                            kind: 'Argument',
-                            name: { kind: 'Name', value: 'organizationId' },
-                            value: { kind: 'Variable', name: { kind: 'Name', value: 'organizationId' } },
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationMemberListOrganization' } },
                 {

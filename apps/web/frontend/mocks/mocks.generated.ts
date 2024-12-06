@@ -1243,18 +1243,11 @@ export type OrganizationQuery = {
   organization: {
     __typename?: 'Organization'
     id: string
+    canModify: boolean
     title: string
     address?: string | null
-    canModify: boolean
     subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
-    members: Array<{
-      __typename?: 'User'
-      id: string
-      organizationRole: Role
-      image?: string | null
-      name?: string | null
-    }>
     projects: Array<{
       __typename?: 'Project'
       id: string
@@ -1269,6 +1262,13 @@ export type OrganizationQuery = {
       invoiceDate: string
       customerName: string
       items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
+    }>
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      image?: string | null
+      name?: string | null
+      organizationRole: Role
     }>
   }
 }

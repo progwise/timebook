@@ -16,10 +16,7 @@ const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
     organization(organizationId: $organizationId) {
       id
-      members {
-        id
-        organizationRole(organizationId: $organizationId)
-      }
+      canModify
       ...OrganizationForm
       ...OrganizationMemberListOrganization
       projects {
@@ -82,9 +79,9 @@ const OrganizationDetails = (): JSX.Element => {
     return <div>Organization {id} not found</div>
   }
 
-  const isAdmin = selectedOrganization.members.some(
-    (member) => member.id === session.data?.user.id && member.organizationRole === 'ADMIN',
-  )
+  // const isAdmin = selectedOrganization.members.some(
+  //   (member) => member.id === session.data?.user.id && member.organizationRole === 'ADMIN',
+  // )
 
   return (
     <ProtectedPage>
@@ -108,7 +105,7 @@ const OrganizationDetails = (): JSX.Element => {
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
           <OrganizationMemberList organization={selectedOrganization} />
         </div>
-        {isAdmin && (
+        {selectedOrganization.canModify && (
           <>
             <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
             <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
