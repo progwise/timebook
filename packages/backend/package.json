@@ -6,7 +6,6 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "lint": "eslint *.ts*",
     "typecheck": "tsc --noEmit",
-    "seed": "prisma db seed",
     "postinstall": "prisma generate",
     "migrate-db": "prisma migrate deploy",
     "migrate-dev": "prisma migrate dev",
@@ -49,7 +48,6 @@
     "typescript": "^5.7.2"
   },
   "prisma": {
-    "schema": "src/prisma/schema.prisma",
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} backend/prisma/seed.ts"
+    "schema": "src/prisma/schema.prisma"
   }
 }

@@ -12,14 +12,21 @@ builder.mutationField('workHourUpdate', (t) =>
       data: t.arg({ type: WorkHourInput }),
       date: t.arg({ type: DateScalar }),
       taskId: t.arg.id(),
+      projectMemberUserId: t.arg.id({
+        required: false,
+        description:
+          "ID of the project member whose work hours are being updated. If not provided, the signed-in user's work hours are updated.",
+      }),
     },
-    authScopes: async (_source, { data, date, taskId }, context) => {
+    authScopes: async (_source, { data, date, taskId, projectMemberUserId }, context) => {
       if (!context.session) return false
+
+      const userId = projectMemberUserId?.toString() ?? context.session.user.id
 
       const workHour = await prisma.workHour.findUnique({
         select: { task: { select: { projectId: true } } },
         where: {
-          date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
+          date_userId_taskId: { date: date, taskId: taskId.toString(), userId },
         },
       })
 
@@ -37,8 +44,8 @@ builder.mutationField('workHourUpdate', (t) =>
       const oldProjectId = workHour.task.projectId
       return { isMemberByProjects: [oldProjectId, newProjectId] }
     },
-    resolve: async (query, _source, { data, date, taskId }, context) => {
-      const userId = context.session.user.id
+    resolve: async (query, _source, { data, date, taskId, projectMemberUserId }, context) => {
+      const userId = projectMemberUserId?.toString() ?? context.session.user.id
 
       const previousTask = await prisma.task.findUnique({
         select: { projectId: true, isLocked: true },
@@ -73,7 +80,7 @@ builder.mutationField('workHourUpdate', (t) =>
       return prisma.workHour.upsert({
         ...query,
         where: {
-          date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
+          date_userId_taskId: { date: date, taskId: taskId.toString(), userId },
         },
         create: { ...data, taskId: data.taskId.toString(), userId },
         update: { ...data, taskId: data.taskId.toString(), userId },

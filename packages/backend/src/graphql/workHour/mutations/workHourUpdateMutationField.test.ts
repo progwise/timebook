@@ -8,8 +8,8 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const workHourUpdateMutation = gql`
-  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: ID!) {
-    workHourUpdate(data: $data, date: $date, taskId: $taskId) {
+  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {
       date
       duration
       user {
@@ -35,11 +35,15 @@ describe('workHourUpdateMutationField', () => {
       data: [
         {
           id: '1',
-          name: 'Test User with project membership',
+          name: 'Test User with project membership and admin role',
         },
         {
           id: '2',
           name: 'Test User without project membership',
+        },
+        {
+          id: '3',
+          name: 'Test User with project membership and member role',
         },
       ],
     })
@@ -62,7 +66,14 @@ describe('workHourUpdateMutationField', () => {
             ],
           },
         },
-        projectMemberships: { create: { userId: '1' } },
+        projectMemberships: {
+          createMany: {
+            data: [
+              { userId: '1', projectRole: 'ADMIN' },
+              { userId: '3', projectRole: 'MEMBER' },
+            ],
+          },
+        },
       },
     })
     await prisma.project.create({
@@ -132,7 +143,7 @@ describe('workHourUpdateMutationField', () => {
         },
         user: {
           id: '1',
-          name: 'Test User with project membership',
+          name: 'Test User with project membership and admin role',
         },
       },
     })
@@ -293,7 +304,7 @@ describe('workHourUpdateMutationField', () => {
         },
         user: {
           id: '1',
-          name: 'Test User with project membership',
+          name: 'Test User with project membership and admin role',
         },
       },
     })
@@ -326,5 +337,57 @@ describe('workHourUpdateMutationField', () => {
 
     expect(response.data).toBeNull()
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
+  })
+
+  it('should update project member work hours when the updating user has admin role', async () => {
+    await prisma.workHour.create({
+      data: {
+        date: new Date('2022-01-01'),
+        duration: 30,
+        userId: '3',
+        taskId: 'T1',
+      },
+    })
+
+    const testServer = getTestServer({ userId: '1' })
+    const response = await testServer.executeOperation({
+      query: workHourUpdateMutation,
+      variables: {
+        data: {
+          date: '2022-01-01',
+          duration: 60,
+          taskId: 'T1',
+        },
+        date: '2022-01-01',
+        taskId: 'T1',
+        projectMemberUserId: '3',
+      },
+    })
+
+    expect(response.data).toEqual({
+      workHourUpdate: {
+        date: '2022-01-01',
+        duration: 60,
+        task: {
+          id: 'T1',
+          title: 'Task 1',
+        },
+        user: {
+          id: '3',
+          name: 'Test User with project membership and member role',
+        },
+      },
+    })
+    expect(response.errors).toBeUndefined()
+
+    const oldWorkHour = await prisma.workHour.findUnique({
+      where: { date_userId_taskId: { date: new Date('2022-01-02'), taskId: 'T1', userId: '3' } },
+    })
+    expect(oldWorkHour).toBeNull() // old work hour of project member is set to new date and should therefore not exist anymore
+
+    const loggedInUserWorkHour = await prisma.workHour.findUnique({
+      where: { date_userId_taskId: { date: new Date('2022-01-01'), taskId: 'T1', userId: '1' } },
+    })
+    expect(loggedInUserWorkHour).toBeNull() // logged-in (admin) user's work hour should not be affected
   })
 })

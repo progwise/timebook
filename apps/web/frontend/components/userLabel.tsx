@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 interface UserLabelProps {
   name: string
-  duration: number
+  duration?: number
   image?: string
   members?: { id: string; image?: string; name?: string }[]
 }
@@ -10,8 +10,8 @@ interface UserLabelProps {
 const MAX_NUMBER_OF_AVATARS = 3
 
 export const UserLabel = ({ name, duration, image, members }: UserLabelProps) => {
-  const hours = Math.floor(duration / 60).toString()
-  const minutes = (duration % 60).toString().padStart(2, '0')
+  const hours = Math.floor((duration ?? 0) / 60).toString()
+  const minutes = ((duration ?? 0) % 60).toString().padStart(2, '0')
   const numberOfMembersToBeDisplayed =
     MAX_NUMBER_OF_AVATARS === members?.length ? MAX_NUMBER_OF_AVATARS : MAX_NUMBER_OF_AVATARS - 1
 
@@ -57,7 +57,8 @@ export const UserLabel = ({ name, duration, image, members }: UserLabelProps) =>
             </div>
           )}
           <span>
-            {name} ({hours}:{minutes})
+            {name}
+            {duration !== undefined && ` (${hours}:${minutes})`}
           </span>
         </div>
       )}

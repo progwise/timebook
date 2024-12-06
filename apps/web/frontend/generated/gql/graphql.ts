@@ -269,6 +269,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -516,6 +517,7 @@ export type TaskWorkHourOfDaysArgs = {
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1161,6 +1163,7 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WorkHourUpdateMutation = {
@@ -4907,6 +4910,11 @@ export const WorkHourUpdateDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -4929,6 +4937,11 @@ export const WorkHourUpdateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'taskId' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectMemberUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
               },
             ],
             selectionSet: {
