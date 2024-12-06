@@ -8,16 +8,22 @@ import { ProjectTable } from '../../../frontend/components/projectTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
+import { InvoiceTable } from './invoiceTable'
 import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
 
 const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
     organization(organizationId: $organizationId) {
       id
+      canModify
       ...OrganizationForm
       ...OrganizationMemberListOrganization
       projects {
         ...ProjectTableItem
+      }
+      invoices {
+        id
+        ...InvoiceTableItem
       }
     }
   }
@@ -85,13 +91,25 @@ const OrganizationDetails = (): JSX.Element => {
           {selectedOrganization.projects.length > 0 ? (
             <ProjectTable projects={selectedOrganization.projects} />
           ) : (
-            <div>There is currently no projects in this organization</div>
+            <div>There are currently no projects in this organization</div>
           )}
         </div>
         <input type="radio" name="tab" role="tab" className="tab" aria-label="Members" />
         <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
           <OrganizationMemberList organization={selectedOrganization} />
         </div>
+        {selectedOrganization.canModify && (
+          <>
+            <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
+            <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
+              {selectedOrganization.invoices.length > 0 ? (
+                <InvoiceTable invoices={selectedOrganization.invoices} />
+              ) : (
+                <div>There are currently no invoices in this organization</div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </ProtectedPage>
   )
