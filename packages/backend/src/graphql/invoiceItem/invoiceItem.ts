@@ -1,5 +1,6 @@
 import { builder } from '../builder'
 import { prisma } from '../prisma'
+import { DecimalScalar } from '../scalars'
 
 export const InvoiceItem = builder.prismaObject('InvoiceItem', {
   fields: (t) => ({
@@ -7,7 +8,10 @@ export const InvoiceItem = builder.prismaObject('InvoiceItem', {
     start: t.expose('start', { type: 'DateTime', nullable: true }),
     end: t.expose('end', { type: 'DateTime', nullable: true }),
     duration: t.exposeInt('duration', { description: 'Duration of the invoice item in minutes' }),
-    hourlyRate: t.exposeFloat('hourlyRate', { description: 'Hourly rate for the invoice item', nullable: true }),
+    hourlyRate: t.expose('hourlyRate', {
+      type: DecimalScalar,
+      description: 'Hourly rate for the invoice item',
+    }),
     invoice: t.relation('invoice', {
       description: 'Invoice to which the invoice item belongs',
       resolve: async (query, invoiceItem) => {
