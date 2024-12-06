@@ -6,6 +6,8 @@ import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import ValidationPlugin from '@pothos/plugin-validation'
 import { ForbiddenError, UserInputError } from 'apollo-server-core'
 
+import { Prisma } from '@progwise/timebook-prisma'
+
 import { Context, LoggedInContext } from './context'
 import { prisma } from './prisma'
 import { getWhereUserIsMember } from './project/queries/getWhereUserIsMember'
@@ -47,6 +49,10 @@ export const builder = new SchemaBuilder<{
     DateTime: {
       Input: Date
       Output: Date
+    }
+    Decimal: {
+      Input: Prisma.Decimal
+      Output: Prisma.Decimal
     }
   }
   Objects: {
