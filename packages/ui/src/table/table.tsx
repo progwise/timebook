@@ -47,7 +47,7 @@ export const TableCell: React.FC<DefaultTableComponentProps & { colSpan?: number
   colSpan,
 }) => {
   return (
-    <td className={` p-2 ${className}`} colSpan={colSpan}>
+    <td className={`p-2 ${className}`} colSpan={colSpan}>
       {children}
     </td>
   )
