@@ -282,7 +282,6 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
-  /** List of invoices associated with the organization */
   invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
@@ -1269,9 +1268,9 @@ export type OrganizationQuery = {
   organization: {
     __typename?: 'Organization'
     id: string
+    canModify: boolean
     title: string
     address?: string | null
-    canModify: boolean
     subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
     projects: Array<{
@@ -1281,6 +1280,13 @@ export type OrganizationQuery = {
       startDate?: string | null
       endDate?: string | null
       members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
+    }>
+    invoices: Array<{
+      __typename?: 'Invoice'
+      id: string
+      invoiceDate: string
+      customerName: string
+      items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
     }>
     members: Array<{
       __typename?: 'User'
@@ -1300,6 +1306,14 @@ export type OrganizationUpdateMutationVariables = Exact<{
 export type OrganizationUpdateMutation = {
   __typename?: 'Mutation'
   organizationUpdate: { __typename?: 'Organization'; id: string }
+}
+
+export type InvoiceTableItemFragment = {
+  __typename?: 'Invoice'
+  id: string
+  invoiceDate: string
+  customerName: string
+  items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
 }
 
 export type MyOrganizationsQueryVariables = Exact<{
