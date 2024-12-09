@@ -48,7 +48,7 @@ export const WeekGridTaskDayCell = ({
                 },
                 date: format(day, 'yyyy-MM-dd'),
                 taskId,
-                projectMemberUserId: projectMemberUserId,
+                projectMemberUserId,
               })
             }}
             duration={duration}
