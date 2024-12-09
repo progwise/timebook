@@ -24,7 +24,7 @@ export const SubscribeOrUnsubscribeOrganizationButton = (props: SubscribeOrUnsub
   }
 
   return (
-    <Link className="btn btn-primary btn-sm" href={`/organizations/${organization.id}/checkout`}>
+    <Link className="btn btn-primary btn-sm mb-8" href={`/organizations/${organization.id}/checkout`}>
       {organization.subscriptionStatus === 'CANCELLED' ? 'Renew' : 'Subscribe'}
     </Link>
   )
