@@ -152,7 +152,7 @@ const documents = {
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
-  '\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    items {\n      id\n      duration\n      hourlyRate\n    }\n  }\n':
+  '\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n':
     types.InvoiceTableItemFragmentDoc,
   '\n  query myOrganizations($filter: OrganizationFilter) {\n    organizations(filter: $filter) {\n      ...OrganizationTableItem\n    }\n  }\n':
     types.MyOrganizationsDocument,
@@ -627,8 +627,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    items {\n      id\n      duration\n      hourlyRate\n    }\n  }\n',
-): (typeof documents)['\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    items {\n      id\n      duration\n      hourlyRate\n    }\n  }\n']
+  source: '\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n',
+): (typeof documents)['\n  fragment InvoiceTableItem on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -40,7 +40,7 @@ export type Invoice = ModifyInterface & {
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
   /** Items associated with the invoice */
-  items: Array<InvoiceItem>
+  invoiceItems: Array<InvoiceItem>
   organization: Organization
 }
 
@@ -50,7 +50,7 @@ export type InvoiceItem = {
   duration: Scalars['Int']
   end?: Maybe<Scalars['DateTime']>
   /** Hourly rate for the invoice item */
-  hourlyRate?: Maybe<Scalars['Decimal']>
+  hourlyRate: Scalars['Decimal']
   /** Identifies the invoice item */
   id: Scalars['ID']
   /** Invoice to which the invoice item belongs */
@@ -1286,7 +1286,7 @@ export type OrganizationQuery = {
       id: string
       invoiceDate: string
       customerName: string
-      items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
+      invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
     }>
     members: Array<{
       __typename?: 'User'
@@ -1313,7 +1313,7 @@ export type InvoiceTableItemFragment = {
   id: string
   invoiceDate: string
   customerName: string
-  items: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate?: number | null }>
+  invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
 }
 
 export type MyOrganizationsQueryVariables = Exact<{
