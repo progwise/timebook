@@ -49,6 +49,7 @@ export const organizationHandlers = [
           title: 'Member',
           isArchived: false,
           members,
+          invoices: [],
           __typename: 'Organization',
         },
       }),

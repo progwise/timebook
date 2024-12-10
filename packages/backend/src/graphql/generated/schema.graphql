@@ -36,7 +36,7 @@ type Invoice implements ModifyInterface {
   """
   Items associated with the invoice
   """
-  items: [InvoiceItem!]!
+  invoiceItems: [InvoiceItem!]!
   organization: Organization!
 }
 
@@ -50,7 +50,7 @@ type InvoiceItem {
   """
   Hourly rate for the invoice item
   """
-  hourlyRate: Decimal
+  hourlyRate: Decimal!
 
   """
   Identifies the invoice item
@@ -298,10 +298,6 @@ type Organization implements ModifyInterface {
   identifies the organization
   """
   id: ID!
-
-  """
-  List of invoices associated with the organization
-  """
   invoices: [Invoice!]!
   isArchived: Boolean!
 

@@ -66,8 +66,7 @@ model Organization {
 
   organizationMemberships OrganizationMembership[]
   projects                Project[]
-
-  Invoice Invoice[]
+  invoices                Invoice[]
 }
 
 model OrganizationMembership {

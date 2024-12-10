@@ -11,7 +11,7 @@ export const Invoice = builder.prismaObject('Invoice', {
     customerAddress: t.exposeString('customerAddress', { nullable: true }),
     customerName: t.exposeString('customerName'),
     organization: t.relation('organization'),
-    items: t.relation('InvoiceItems', {
+    invoiceItems: t.relation('InvoiceItems', {
       description: 'Items associated with the invoice',
       resolve: (query, invoice) => {
         return prisma.invoiceItem.findMany({ ...query, where: { invoiceId: invoice.id }, orderBy: { start: 'asc' } })
