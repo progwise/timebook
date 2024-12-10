@@ -65,7 +65,7 @@ const AccessTokensPage = (): JSX.Element => {
       {error && <span>{error.message}</span>}
       {accessTokensLoading && <span className="loading loading-spinner" />}
       {data && (
-        <div className=" rounded-box border border-base-content/50 shadow-lg">
+        <div className="rounded-box border border-base-content/50 shadow-lg">
           <table className="table min-w-full">
             <thead className="text-xl text-base-content">
               <tr>
