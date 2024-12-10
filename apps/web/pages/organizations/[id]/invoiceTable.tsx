@@ -5,7 +5,7 @@ export const InvoiceTableItemFragment = graphql(`
     id
     invoiceDate
     customerName
-    items {
+    invoiceItems {
       id
       duration
       hourlyRate
@@ -17,8 +17,8 @@ interface InvoiceTableProps {
   invoices: FragmentType<typeof InvoiceTableItemFragment>[]
 }
 
-export const InvoiceTable = (props: InvoiceTableProps): JSX.Element => {
-  const invoices = useFragment(InvoiceTableItemFragment, props.invoices)
+export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
+  const invoicesData = useFragment(InvoiceTableItemFragment, invoices)
 
   return (
     <div>
@@ -32,17 +32,16 @@ export const InvoiceTable = (props: InvoiceTableProps): JSX.Element => {
           </tr>
         </thead>
         <tbody className="text-base">
-          {invoices.map((invoice) => (
+          {invoicesData.map((invoice) => (
             <tr key={invoice.id}>
               <td>{invoice.invoiceDate}</td>
               <td>{invoice.customerName}</td>
-              <td>{invoice.items.reduce((sum, item) => sum + item.duration, 0)}</td>
+              <td>{invoice.invoiceItems.reduce((sum, invoiceItem) => sum + invoiceItem.duration, 0)}</td>
               <td>
-                {invoice.items.some(
-                  (item) => item.hourlyRate === null || item.hourlyRate === undefined || item.hourlyRate === 0,
-                )
-                  ? '-'
-                  : invoice.items.reduce((sum, item) => sum + item.duration * item.hourlyRate!, 0)}
+                {invoice.invoiceItems.reduce(
+                  (sum, invoiceItem) => sum + invoiceItem.duration * invoiceItem.hourlyRate,
+                  0,
+                )}
               </td>
             </tr>
           ))}
