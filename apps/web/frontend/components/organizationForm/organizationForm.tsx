@@ -48,7 +48,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   const isOrganizationFormReadOnly = !!organization && !organization.canModify
 
   return (
-    <div className="mt-4 flex flex-wrap items-start gap-2">
+    <div className="flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
         {organization ? (
           <PageHeading>

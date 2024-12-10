@@ -121,7 +121,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const isProjectFormReadOnly = !project?.canModify && !!project
 
   return (
-    <div className="mt-4 flex flex-wrap items-start gap-2">
+    <div className="flex flex-wrap items-start gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="project-form">
         {project ? <PageHeading>Project {project.title}</PageHeading> : <PageHeading>Create new project</PageHeading>}
         <InputField

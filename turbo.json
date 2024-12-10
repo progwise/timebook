@@ -37,7 +37,7 @@
       "cache": false
     },
     "graphql:generate": {
-      "inputs": ["**/*.tsx", "../../packages/backend/**/schema.graphql"],
+      "inputs": ["**/*.tsx", "../../packages/backend/**/schema.graphql", "codegen.ts"],
       "outputs": ["**/generated/gql/*.ts", "**/mocks.generated.ts"]
     },
     "typecheck": {

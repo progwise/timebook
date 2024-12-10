@@ -19,6 +19,7 @@ export type Scalars = {
   Date: string
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: string
+  Decimal: number
 }
 
 export type AccessToken = {
@@ -49,7 +50,7 @@ export type InvoiceItem = {
   duration: Scalars['Int']
   end?: Maybe<Scalars['DateTime']>
   /** Hourly rate for the invoice item */
-  hourlyRate?: Maybe<Scalars['Float']>
+  hourlyRate?: Maybe<Scalars['Decimal']>
   /** Identifies the invoice item */
   id: Scalars['ID']
   /** Invoice to which the invoice item belongs */
@@ -270,6 +271,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -369,6 +371,8 @@ export type Query = {
   /** List of tokens of the signed in user */
   accessTokens: Array<AccessToken>
   currentTracking?: Maybe<Tracking>
+  /** Returns all members from projects where the user is an admin */
+  myProjectsMembers: Array<User>
   /** Returns a single Organization */
   organization: Organization
   /** Returns all organizations of the signed in user that are active */
@@ -409,6 +413,7 @@ export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -507,11 +512,13 @@ export type Task = ModifyInterface & {
 
 export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -952,6 +959,7 @@ export type ReportUserFragment = {
   __typename?: 'User'
   id: string
   name?: string | null
+  image?: string | null
   durationWorkedOnProject: number
 }
 
@@ -966,7 +974,13 @@ export type ReportUsersQuery = {
   project: {
     __typename?: 'Project'
     id: string
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; durationWorkedOnProject: number }>
+    members: Array<{
+      __typename?: 'User'
+      id: string
+      name?: string | null
+      image?: string | null
+      durationWorkedOnProject: number
+    }>
   }
 }
 
@@ -1068,6 +1082,16 @@ export type TrackingCancelMutation = {
   trackingCancel?: { __typename?: 'Tracking'; start: string; task: { __typename?: 'Task'; id: string } } | null
 }
 
+export type ProjectMemberFragment = { __typename?: 'User'; id: string; name?: string | null; image?: string | null }
+
+export type MyProjectsMembersQueryVariables = Exact<{ [key: string]: never }>
+
+export type MyProjectsMembersQuery = {
+  __typename?: 'Query'
+  myProjectsMembers: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  user: { __typename?: 'User'; id: string }
+}
+
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
@@ -1144,6 +1168,7 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1416,6 +1441,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -1942,8 +1968,26 @@ export const mockTrackingCancelMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockMyProjectsMembersQuery((req, res, ctx) => {
+ *   return res(
+ *     ctx.data({ myProjectsMembers, user })
+ *   )
+ * })
+ */
+export const mockMyProjectsMembersQuery = (
+  resolver: ResponseResolver<
+    GraphQLRequest<MyProjectsMembersQueryVariables>,
+    GraphQLContext<MyProjectsMembersQuery>,
+    any
+  >,
+) => graphql.query<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>('MyProjectsMembers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { data, date, taskId } = req.variables;
+ *   const { data, date, taskId, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )
@@ -2262,7 +2306,7 @@ export const mockOrganizationsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to } = req.variables;
+ *   const { from, to, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )

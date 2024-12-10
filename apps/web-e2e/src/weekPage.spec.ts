@@ -15,7 +15,7 @@ test.describe('week page', () => {
     const currentMonthString = format(new Date(), 'MMMM')
 
     await page.getByRole('link', { name: 'Week' }).click()
-    const header = await page.getByRole('heading', { name: currentMonthString })
+    const header = page.getByRole('heading', { name: currentMonthString })
     await expect(header).toBeVisible()
   })
 
@@ -27,7 +27,7 @@ test.describe('week page', () => {
 
     await page.getByRole('button', { name: 'Previous week' }).click()
 
-    await expect(page).toHaveURL('/week')
+    await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
 
   test('it should be possible to enter work hours', async ({ page, projectsPage }) => {
@@ -36,7 +36,7 @@ test.describe('week page', () => {
 
     await page.getByRole('link', { name: 'Week' }).click()
 
-    const taskRow = await page.getByRole('row', { name: `Test Task` })
+    const taskRow = page.getByRole('row', { name: `Test Task` })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
@@ -62,7 +62,7 @@ test.describe('week page', () => {
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
 
-    const indicator = await page.getByTitle('1 comment')
+    const indicator = page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
   })
 })
