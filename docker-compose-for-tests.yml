@@ -1,0 +1,14 @@
+services:
+  database:
+    image: 'postgres' # use latest official postgres version
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=timebookdbuser
+      - POSTGRES_PASSWORD=Test123
+      - POSTGRES_DB=timebookdb
+      - max_connections=1000 # Allow many connections, so that all tests can run in parallel
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
