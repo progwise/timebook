@@ -152,6 +152,8 @@ const documents = {
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
+  '\n  query invoice($invoiceId: ID!) {\n    invoice(invoiceId: $invoiceId) {\n      id\n      #   ...InvoiceRow\n    }\n  }\n':
+    types.InvoiceDocument,
   '\n  query myOrganizations($filter: OrganizationFilter) {\n    organizations(filter: $filter) {\n      ...OrganizationTableItem\n    }\n  }\n':
     types.MyOrganizationsDocument,
   '\n  query organizationCounts {\n    allCounts: organizationsCount(filter: ALL)\n    activeCounts: organizationsCount(filter: ACTIVE)\n    archivedCounts: organizationsCount(filter: ARCHIVED)\n  }\n':
@@ -621,6 +623,12 @@ export function graphql(
 export function graphql(
   source: '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  query invoice($invoiceId: ID!) {\n    invoice(invoiceId: $invoiceId) {\n      id\n      #   ...InvoiceRow\n    }\n  }\n',
+): (typeof documents)['\n  query invoice($invoiceId: ID!) {\n    invoice(invoiceId: $invoiceId) {\n      id\n      #   ...InvoiceRow\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
