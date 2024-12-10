@@ -81,7 +81,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           isDirty={isDirty}
         />
       </form>
-      <div className="mb-8 flex w-full gap-2">
+      <div className="mb-6 flex w-full gap-2">
         <button className="btn btn-secondary btn-sm" disabled={isSubmitting} onClick={onCancel} type="button">
           Cancel
         </button>
