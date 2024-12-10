@@ -33,6 +33,9 @@ COPY --from=builder /app/out/full/ .
 RUN pnpm exec turbo run build --filter=@progwise/timebook-web
  
 FROM base AS runner
+RUN apk add --no-cache openssl
+RUN apk update
+
 WORKDIR /app
  
 # Don't run production as root

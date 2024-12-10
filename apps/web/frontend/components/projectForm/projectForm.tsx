@@ -146,7 +146,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               rules={{ validate: (value) => !value || isValidDateString(value) }}
               name="start"
               render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center ">
+                <div className="flex items-center">
                   <InputMask
                     disabled={isSubmitting}
                     mask="9999-99-99"
