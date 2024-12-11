@@ -39,11 +39,11 @@ const OrganizationUpdateMutationDocument = graphql(`
 
 const OrganizationDetails = (): JSX.Element => {
   const router = useRouter()
-  const { id } = router.query
+  const { organizationId } = router.query
   const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
-    variables: { organizationId: id?.toString() ?? '' },
+    variables: { organizationId: organizationId as string },
     context,
     pause: !router.isReady,
   })
@@ -73,7 +73,7 @@ const OrganizationDetails = (): JSX.Element => {
   }
 
   if (!selectedOrganization) {
-    return <div>Organization {id} not found</div>
+    return <div>Organization {organizationId} not found</div>
   }
 
   return (
