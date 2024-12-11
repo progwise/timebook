@@ -27,12 +27,8 @@ export default function Home(): JSX.Element {
         <section>
           <PageHeading>What is timebook?</PageHeading>
           <p>
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
-            dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-            clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-            consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-            sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no
-            sea takimata sanctus est Lorem ipsum dolor sit amet.
+            Timebook is a tool for tracking your work on multiple teams. It allows you to log your work hours, and to
+            keep track of your tasks and projects.
           </p>
         </section>
       </TimebookPage>

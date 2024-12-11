@@ -10,9 +10,7 @@ import { OrganizationFragment, ProjectForm, ProjectFormFragment } from './projec
 jest.mock('next/router', () => ({
   useRouter: () => ({
     isReady: true,
-    query: {
-      teamSlug: 'progwise',
-    },
+    push: jest.fn(),
   }),
 }))
 const client = new Client({ url: '/api/graphql', exchanges: [cacheExchange, fetchExchange] })

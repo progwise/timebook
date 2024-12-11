@@ -3,6 +3,7 @@ import { setupServer } from 'msw/node'
 import { accessTokenHandlers } from './accessTokenHandlers'
 import { organizationHandlers } from './organizationHandlers'
 import { projectHandlers } from './projectHandlers'
+import { reportHandlers } from './reportHandlers'
 import { taskHandlers } from './taskHandlers'
 import { workhourHandlers } from './workhourHandlers'
 
@@ -12,6 +13,7 @@ const allHandlers = [
   ...taskHandlers,
   ...accessTokenHandlers,
   ...organizationHandlers,
+  ...reportHandlers,
 ]
 export const mockServer = setupServer(...allHandlers)
 
