@@ -94,7 +94,7 @@ export const TaskList = (props: TaskListProps): JSX.Element => {
               </td>
               <td>
                 <button
-                  className="rounded bg-green-500 px-2 py-1 font-bold text-white hover:bg-green-700"
+                  className="btn btn-success btn-sm"
                   type="submit"
                   disabled={isSubmitting}
                   form="form-create-task"
