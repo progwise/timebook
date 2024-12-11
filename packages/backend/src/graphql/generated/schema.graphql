@@ -36,7 +36,7 @@ type Invoice implements ModifyInterface {
   """
   Items associated with the invoice
   """
-  items: [InvoiceItem!]!
+  invoiceItems: [InvoiceItem!]!
   organization: Organization!
 }
 
@@ -50,7 +50,7 @@ type InvoiceItem {
   """
   Hourly rate for the invoice item
   """
-  hourlyRate: Decimal
+  hourlyRate: Decimal!
 
   """
   Identifies the invoice item
@@ -274,7 +274,16 @@ type Mutation {
   """
   Updates a work hour entry or creates if work hour does not exist
   """
-  workHourUpdate(data: WorkHourInput!, date: Date!, taskId: ID!): WorkHour!
+  workHourUpdate(
+    data: WorkHourInput!
+    date: Date!
+
+    """
+    ID of the project member whose work hours are being updated. If not provided, the signed-in user's work hours are updated.
+    """
+    projectMemberUserId: ID
+    taskId: ID!
+  ): WorkHour!
 }
 
 type Organization implements ModifyInterface {
@@ -289,10 +298,6 @@ type Organization implements ModifyInterface {
   identifies the organization
   """
   id: ID!
-
-  """
-  List of invoices associated with the organization
-  """
   invoices: [Invoice!]!
   isArchived: Boolean!
 
@@ -626,7 +631,15 @@ type Task implements ModifyInterface {
     projectMemberUserId: ID
     to: Date
   ): [WorkHourOfDay!]!
-  workHours(from: Date!, to: Date): [WorkHour!]!
+  workHours(
+    from: Date!
+
+    """
+    Filter work hours where the given user is a project member. If not given, the work hours of the signed-in user are returned
+    """
+    projectMemberUserId: ID
+    to: Date
+  ): [WorkHour!]!
 }
 
 input TaskInput {

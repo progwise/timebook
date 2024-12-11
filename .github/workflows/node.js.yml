@@ -35,7 +35,7 @@ jobs:
         with:
           version: 9.14.0
           run_install: true
-      - run: docker compose -f ./docker-compose.yml up -d
+      - run: docker compose -f ./docker-compose-for-tests.yml up -d
       - run: pnpm run test
 
   eslint:
@@ -105,7 +105,7 @@ jobs:
         working-directory: ./apps/web-e2e
         run: pnpm exec playwright install --with-deps
       - name: Start postgres docker image
-        run: docker compose -f ./docker-compose.yml up -d
+        run: docker compose -f ./docker-compose-for-tests.yml up -d
       - name: Migrate database
         run: pnpm run migrate-db
       - name: Run Playwright tests

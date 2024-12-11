@@ -40,7 +40,7 @@ export type Invoice = ModifyInterface & {
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
   /** Items associated with the invoice */
-  items: Array<InvoiceItem>
+  invoiceItems: Array<InvoiceItem>
   organization: Organization
 }
 
@@ -50,7 +50,7 @@ export type InvoiceItem = {
   duration: Scalars['Int']
   end?: Maybe<Scalars['DateTime']>
   /** Hourly rate for the invoice item */
-  hourlyRate?: Maybe<Scalars['Decimal']>
+  hourlyRate: Scalars['Decimal']
   /** Identifies the invoice item */
   id: Scalars['ID']
   /** Invoice to which the invoice item belongs */
@@ -271,6 +271,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -281,7 +282,6 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
-  /** List of invoices associated with the organization */
   invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
@@ -524,6 +524,7 @@ export type TaskWorkHourOfDaysArgs = {
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1173,6 +1174,7 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1272,9 +1274,9 @@ export type OrganizationQuery = {
   organization: {
     __typename?: 'Organization'
     id: string
+    canModify: boolean
     title: string
     address?: string | null
-    canModify: boolean
     subscriptionStatus?: SubscriptionStatus | null
     isArchived: boolean
     projects: Array<{
@@ -1284,6 +1286,13 @@ export type OrganizationQuery = {
       startDate?: string | null
       endDate?: string | null
       members: Array<{ __typename?: 'User'; id: string; image?: string | null; name?: string | null }>
+    }>
+    invoices: Array<{
+      __typename?: 'Invoice'
+      id: string
+      invoiceDate: string
+      customerName: string
+      invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
     }>
     members: Array<{
       __typename?: 'User'
@@ -1303,6 +1312,14 @@ export type OrganizationUpdateMutationVariables = Exact<{
 export type OrganizationUpdateMutation = {
   __typename?: 'Mutation'
   organizationUpdate: { __typename?: 'Organization'; id: string }
+}
+
+export type InvoiceTableItemFragment = {
+  __typename?: 'Invoice'
+  id: string
+  invoiceDate: string
+  customerName: string
+  invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -1982,7 +1999,7 @@ export const mockMyProjectsMembersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { data, date, taskId } = req.variables;
+ *   const { data, date, taskId, projectMemberUserId } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )

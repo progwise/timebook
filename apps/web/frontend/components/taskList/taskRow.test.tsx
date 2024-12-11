@@ -25,7 +25,6 @@ const testTask = makeFragmentData(
 jest.mock('next/router', () => ({
   useRouter() {
     return {
-      query: { teamSlug: 'slug', id: 'cl8vo1og70652rsesjielo9t6' },
       isReady: true,
       push: jest.fn(),
     }

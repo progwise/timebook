@@ -1,5 +1,4 @@
 import { endOfWeek, format, isThisWeek, parseISO, startOfWeek } from 'date-fns'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
@@ -8,6 +7,7 @@ import { Listbox } from '@progwise/timebook-ui'
 
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { useProjectMembers } from '../../frontend/components/useProjectMembers'
+import { UserLabel } from '../../frontend/components/userLabel'
 import { WeekGrid } from '../../frontend/components/weekGrid/weekGrid'
 import { WeekSelector } from '../../frontend/components/weekSelector'
 import { graphql } from '../../frontend/generated/gql'
@@ -54,24 +54,7 @@ const WeekPage = () => {
         {myProjectsMembersData.length > 0 && (
           <Listbox
             value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? myProjectsMembersData[0]}
-            getLabel={(user) => (
-              <div className="flex items-center gap-2">
-                {user?.image ? (
-                  <Image
-                    src={user.image}
-                    alt={user.name ?? 'User avatar'}
-                    width={24}
-                    height={24}
-                    className="rounded-full"
-                  />
-                ) : (
-                  <div className="flex size-6 items-center justify-center rounded-full bg-neutral text-neutral-content">
-                    <span className="text-xl">{user?.name?.charAt(0)}</span>
-                  </div>
-                )}
-                <span>{user?.name}</span>
-              </div>
-            )}
+            getLabel={(user) => <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} />}
             getKey={(user) => user.id}
             onChange={(user) => handleUserChange(user.id)}
             options={myProjectsMembersData}

@@ -38,7 +38,7 @@ export type Invoice = ModifyInterface & {
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
   /** Items associated with the invoice */
-  items: Array<InvoiceItem>
+  invoiceItems: Array<InvoiceItem>
   organization: Organization
 }
 
@@ -48,7 +48,7 @@ export type InvoiceItem = {
   duration: Scalars['Int']
   end?: Maybe<Scalars['DateTime']>
   /** Hourly rate for the invoice item */
-  hourlyRate?: Maybe<Scalars['Decimal']>
+  hourlyRate: Scalars['Decimal']
   /** Identifies the invoice item */
   id: Scalars['ID']
   /** Invoice to which the invoice item belongs */
@@ -269,6 +269,7 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -279,7 +280,6 @@ export type Organization = ModifyInterface & {
   canModify: Scalars['Boolean']
   /** identifies the organization */
   id: Scalars['ID']
-  /** List of invoices associated with the organization */
   invoices: Array<Invoice>
   isArchived: Scalars['Boolean']
   /** List of users that are member of the organization */
@@ -522,6 +522,7 @@ export type TaskWorkHourOfDaysArgs = {
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
 }
 
@@ -1167,6 +1168,7 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
+  projectMemberUserId?: InputMaybe<Scalars['ID']>
 }>
 
 export type WorkHourUpdateMutation = {
@@ -1274,8 +1276,14 @@ export type OrganizationQuery = {
   organization: {
     __typename?: 'Organization'
     id: string
+    canModify: boolean
     projects: Array<
       { __typename?: 'Project' } & { ' $fragmentRefs'?: { ProjectTableItemFragment: ProjectTableItemFragment } }
+    >
+    invoices: Array<
+      { __typename?: 'Invoice'; id: string } & {
+        ' $fragmentRefs'?: { InvoiceTableItemFragment: InvoiceTableItemFragment }
+      }
     >
   } & {
     ' $fragmentRefs'?: {
@@ -1294,6 +1302,14 @@ export type OrganizationUpdateMutation = {
   __typename?: 'Mutation'
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
+
+export type InvoiceTableItemFragment = {
+  __typename?: 'Invoice'
+  id: string
+  invoiceDate: string
+  customerName: string
+  invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
+} & { ' $fragmentName'?: 'InvoiceTableItemFragment' }
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
@@ -3351,6 +3367,36 @@ export const WeekGridProjectFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WeekGridProjectFragment, unknown>
+export const InvoiceTableItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceTableItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoiceItems' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InvoiceTableItemFragment, unknown>
 export const AccessTokenDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -4919,6 +4965,11 @@ export const WorkHourUpdateDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -4941,6 +4992,11 @@ export const WorkHourUpdateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'taskId' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'projectMemberUserId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
               },
             ],
             selectionSet: {
@@ -5209,6 +5265,7 @@ export const OrganizationDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationForm' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'OrganizationMemberListOrganization' } },
                 {
@@ -5217,6 +5274,17 @@ export const OrganizationDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'ProjectTableItem' } }],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'invoices' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceTableItem' } },
+                    ],
                   },
                 },
               ],
@@ -5385,6 +5453,31 @@ export const OrganizationDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'image' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceTableItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoiceItems' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
               ],
             },
           },
