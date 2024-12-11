@@ -16,7 +16,7 @@
     "eslint-plugin-unicorn": "^51.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.4"
   },
   "publishConfig": {
     "access": "public"
