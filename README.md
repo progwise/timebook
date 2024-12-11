@@ -54,8 +54,16 @@ Make sure the app runs on the right port your SSO is configured for, usually por
 The database server has to be started prior to make the backend work.
 
 ```bash
+docker-compose up -d database
+```
+
+If you like to start the docker-build for the web-app as well you could also start both services
+
+```bash
 docker-compose up -d
 ```
+
+Be careful, this will block port 3000 and run the nextjs web in production mode inside the docker container created with the <projectroot>/Dockerfile .
 
 This app is developed using prisma.io. You can start the prisma studio to view/modify data by using:
 
