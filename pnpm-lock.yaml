@@ -70,7 +70,7 @@ importers:
         specifier: ^2.6.2
         version: 2.8.1
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
 
   apps/web:
@@ -327,7 +327,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
 
   packages/backend:
@@ -418,7 +418,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
 
   packages/eslint-config-custom:
@@ -455,7 +455,7 @@ importers:
         version: 51.0.1(eslint@8.56.0)
     devDependencies:
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
 
   packages/pulumi:
@@ -564,7 +564,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
       vite:
         specifier: ^4.0.4
@@ -580,7 +580,7 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       typescript:
-        specifier: ^5.5.4
+        specifier: 5.5.4
         version: 5.5.4
 
 packages:
