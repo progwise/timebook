@@ -1,50 +1,44 @@
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
 import { ProtectedPage } from '../../../../../frontend/components/protectedPage'
 import { graphql } from '../../../../../frontend/generated/gql'
+import { InvoiceDetails } from './components/invoiceDetails'
 
 const InvoiceQueryDocument = graphql(`
-  query invoice($invoiceId: ID!) {
-    invoice(invoiceId: $invoiceId) {
-      id
-      #   ...InvoiceRow
+  query invoice($invoiceId: ID!, $organizationId: ID!) {
+    invoice(invoiceId: $invoiceId, organizationId: $organizationId) {
+      ...InvoiceFragment
+      invoiceItems {
+        ...InvoiceItemsFragment
+      }
     }
   }
 `)
 
-const InvoiceDetails = (): JSX.Element => {
+const InvoiceDetailsPage = (): JSX.Element => {
+  const context = useMemo(() => ({ additionalTypenames: ['Organization'] }), [])
   const router = useRouter()
-  const { id } = router.query
-  //   const context = useMemo(() => ({ additionalTypenames: ['Invoice', 'User', 'Organization', 'WorkHour'] }), [])
-  const [{ data, error, fetching }] = useQuery({
+  const { invoiceId, organizationId } = router.query
+  const [{ data: invoiceDetailData, error, fetching }] = useQuery({
     query: InvoiceQueryDocument,
-    variables: { invoiceId: id?.toString() ?? '' },
-    // context,
+    context,
+    variables: { invoiceId: invoiceId?.toString() ?? '', organizationId: organizationId?.toString() ?? '' },
     pause: !router.isReady,
   })
+
   return (
     <ProtectedPage>
-      {/* <PageHeading>Invoice #{data?.invoice.id}</PageHeading>
       {error && <span>{error.message}</span>}
       {fetching && <span className="loading loading-spinner" />}
-      {data && (
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  Number
-                </th>
-              </tr>
-            </thead>
-          </table>
+      {invoiceDetailData && (
+        <div className="flex flex-col gap-4">
+          <InvoiceDetails invoice={invoiceDetailData.invoice} invoiceItems={invoiceDetailData.invoice.invoiceItems} />
         </div>
-      )} */}
-      <div>Invoice form here</div>
-      <div>Invoice items table here</div>
+      )}
     </ProtectedPage>
   )
 }
 
-export default InvoiceDetails
+export default InvoiceDetailsPage

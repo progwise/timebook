@@ -12,12 +12,13 @@ export const InvoiceItem = builder.prismaObject('InvoiceItem', {
       type: DecimalScalar,
       description: 'Hourly rate for the invoice item',
     }),
+    task: t.relation('task', { description: 'Task for which the invoice item was booked' }),
+
     invoice: t.relation('invoice', {
       description: 'Invoice to which the invoice item belongs',
       resolve: async (query, invoiceItem) => {
         return await prisma.invoice.findUniqueOrThrow({ ...query, where: { id: invoiceItem.invoiceId } })
       },
     }),
-    task: t.relation('task', { description: 'Task for which the invoice item was booked' }),
   }),
 })

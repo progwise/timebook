@@ -109,7 +109,7 @@ const Projects = (): JSX.Element => {
           (data.projects.length === 0 ? (
             <div>No projects found</div>
           ) : (
-            <div className="w-full rounded-box border border-base-content/50 shadow-lg">
+            <div className="mt-2 w-full rounded-box border border-base-content/50 shadow-lg">
               <ProjectTable projects={data.projects} />
             </div>
           ))}

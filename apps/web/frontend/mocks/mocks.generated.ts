@@ -373,6 +373,8 @@ export type Query = {
   currentTracking?: Maybe<Tracking>
   /** Returns a single invoice */
   invoice: Invoice
+  /** Returns a list of invoice items for a given invoice */
+  invoiceItems: Array<InvoiceItem>
   /** Returns all members from projects where the user is an admin */
   myProjectsMembers: Array<User>
   /** Returns a single Organization */
@@ -396,6 +398,11 @@ export type Query = {
 }
 
 export type QueryInvoiceArgs = {
+  invoiceId: Scalars['ID']
+  organizationId: Scalars['ID']
+}
+
+export type QueryInvoiceItemsArgs = {
   invoiceId: Scalars['ID']
 }
 
@@ -1265,6 +1272,14 @@ export type OrganizationDetailsQuery = {
   organization: { __typename?: 'Organization'; id: string; title: string }
 }
 
+export type InvoiceFragment = {
+  __typename?: 'Invoice'
+  id: string
+  invoiceDate: string
+  customerName: string
+  invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
+}
+
 export type OrganizationQueryVariables = Exact<{
   organizationId: Scalars['ID']
 }>
@@ -1314,19 +1329,44 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
-export type InvoiceTableItemFragment = {
+export type InvoiceFragmentFragment = {
   __typename?: 'Invoice'
   id: string
   invoiceDate: string
   customerName: string
-  invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
+  customerAddress?: string | null
+}
+
+export type InvoiceItemsFragmentFragment = {
+  __typename?: 'InvoiceItem'
+  id: string
+  duration: number
+  hourlyRate: number
+  task: { __typename?: 'Task'; title: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
+  organizationId: Scalars['ID']
 }>
 
-export type InvoiceQuery = { __typename?: 'Query'; invoice: { __typename?: 'Invoice'; id: string } }
+export type InvoiceQuery = {
+  __typename?: 'Query'
+  invoice: {
+    __typename?: 'Invoice'
+    id: string
+    invoiceDate: string
+    customerName: string
+    customerAddress?: string | null
+    invoiceItems: Array<{
+      __typename?: 'InvoiceItem'
+      id: string
+      duration: number
+      hourlyRate: number
+      task: { __typename?: 'Task'; title: string }
+    }>
+  }
+}
 
 export type MyOrganizationsQueryVariables = Exact<{
   filter?: InputMaybe<OrganizationFilter>
@@ -2146,7 +2186,7 @@ export const mockOrganizationUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockInvoiceQuery((req, res, ctx) => {
- *   const { invoiceId } = req.variables;
+ *   const { invoiceId, organizationId } = req.variables;
  *   return res(
  *     ctx.data({ invoice })
  *   )

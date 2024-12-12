@@ -1,7 +1,10 @@
-import { FragmentType, graphql, useFragment } from '../../../frontend/generated/gql'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-export const InvoiceTableItemFragment = graphql(`
-  fragment InvoiceTableItem on Invoice {
+import { FragmentType, graphql, useFragment } from '../../../../frontend/generated/gql'
+
+export const InvoiceFragment = graphql(`
+  fragment Invoice on Invoice {
     id
     invoiceDate
     customerName
@@ -14,11 +17,12 @@ export const InvoiceTableItemFragment = graphql(`
 `)
 
 interface InvoiceTableProps {
-  invoices: FragmentType<typeof InvoiceTableItemFragment>[]
+  invoices: FragmentType<typeof InvoiceFragment>[]
 }
 
 export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
-  const invoicesData = useFragment(InvoiceTableItemFragment, invoices)
+  const router = useRouter()
+  const invoicesData = useFragment(InvoiceFragment, invoices)
 
   return (
     <div>
@@ -29,6 +33,7 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
             <th>Customer</th>
             <th>Hours</th>
             <th>Total amount</th>
+            <th />
           </tr>
         </thead>
         <tbody className="text-base">
@@ -42,6 +47,14 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
                   (sum, invoiceItem) => sum + invoiceItem.duration * invoiceItem.hourlyRate,
                   0,
                 )}
+              </td>
+              <td className="text-right">
+                <Link
+                  className="btn btn-outline btn-secondary btn-sm"
+                  href={`/organizations/${router.query.organizationId}/invoices/${invoice.id}`}
+                >
+                  Details
+                </Link>
               </td>
             </tr>
           ))}

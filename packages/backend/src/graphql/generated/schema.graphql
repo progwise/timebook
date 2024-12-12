@@ -422,7 +422,22 @@ type Query {
     Identifier for the invoice
     """
     invoiceId: ID!
+
+    """
+    Identifier for the Organization
+    """
+    organizationId: ID!
   ): Invoice!
+
+  """
+  Returns a list of invoice items for a given invoice
+  """
+  invoiceItems(
+    """
+    Identifier for the invoice
+    """
+    invoiceId: ID!
+  ): [InvoiceItem!]!
 
   """
   Returns all members from projects where the user is an admin

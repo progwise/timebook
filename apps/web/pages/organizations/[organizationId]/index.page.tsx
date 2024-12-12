@@ -8,10 +8,10 @@ import { ProjectTable } from '../../../frontend/components/projectTable'
 import { ProtectedPage } from '../../../frontend/components/protectedPage'
 import { graphql } from '../../../frontend/generated/gql'
 import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
-import { InvoiceTable } from './invoiceTable'
-import { SubscriptionStatusOrganizationLink } from './subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
+import { InvoiceTable } from './components/invoiceTable'
+import { SubscriptionStatusOrganizationLink } from './components/subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
 
-const OrganizationQueryDocument = graphql(`
+export const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
     organization(organizationId: $organizationId) {
       id
@@ -22,8 +22,7 @@ const OrganizationQueryDocument = graphql(`
         ...ProjectTableItem
       }
       invoices {
-        id
-        ...InvoiceTableItem
+        ...Invoice
       }
     }
   }
@@ -43,7 +42,7 @@ const OrganizationDetails = (): JSX.Element => {
   const context = useMemo(() => ({ additionalTypenames: ['User', 'Project'] }), [])
   const [{ data, fetching }] = useQuery({
     query: OrganizationQueryDocument,
-    variables: { organizationId: organizationId as string },
+    variables: { organizationId: organizationId?.toString() ?? '' },
     context,
     pause: !router.isReady,
   })
