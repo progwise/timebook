@@ -247,7 +247,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
           </label>
         </div>
       </form>
-      <div className="mb-8 flex w-full gap-2">
+      <div className="flex w-full gap-2">
         <button
           className="btn btn-secondary btn-sm"
           disabled={isSubmitting}

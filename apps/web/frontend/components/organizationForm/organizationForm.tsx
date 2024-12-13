@@ -48,7 +48,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   const isOrganizationFormReadOnly = !!organization && !organization.canModify
 
   return (
-    <div className="flex flex-wrap items-start gap-2">
+    <div className="flex flex-col gap-2">
       <form onSubmit={handleSubmit(handleSubmitHelper)} className="contents" id="organization-form">
         {organization ? (
           <PageHeading>
@@ -81,7 +81,7 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           isDirty={isDirty}
         />
       </form>
-      <div className="mb-6 flex w-full gap-2">
+      <div className="flex flex-row gap-2">
         <button className="btn btn-secondary btn-sm" disabled={isSubmitting} onClick={onCancel} type="button">
           Cancel
         </button>
@@ -94,10 +94,12 @@ export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
           </button>
         )}
         {hasError && <span className="display: inline-block pt-5 text-red-600">Unable to save organization.</span>}
+        <div className="w-full text-right">
+          {organization?.canModify && (
+            <SubscribeOrUnsubscribeOrganizationButton organization={organization} disabled={isSubmitting} />
+          )}
+        </div>
       </div>
-      {organization?.canModify && (
-        <SubscribeOrUnsubscribeOrganizationButton organization={organization} disabled={isSubmitting} />
-      )}
     </div>
   )
 }

@@ -17,5 +17,17 @@ export const Invoice = builder.prismaObject('Invoice', {
         return prisma.invoiceItem.findMany({ ...query, where: { invoiceId: invoice.id }, orderBy: { start: 'asc' } })
       },
     }),
+    canModify: t.withAuth({ isLoggedIn: true }).boolean({
+      description: 'Can the user modify the entity',
+      select: { organizationId: true },
+      resolve: async (invoice, _arguments, context) => {
+        const organizationMembership = await prisma.organizationMembership.findUnique({
+          select: { organizationRole: true },
+          where: { userId_organizationId: { organizationId: invoice.organizationId, userId: context.session.user.id } },
+        })
+
+        return organizationMembership?.organizationRole === 'ADMIN'
+      },
+    }),
   }),
 })

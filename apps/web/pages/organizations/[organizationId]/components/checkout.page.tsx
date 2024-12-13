@@ -8,9 +8,9 @@ import { addMonths, format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from 'urql'
 
-import { PageHeading } from '../../../frontend/components/pageHeading'
-import { ProtectedPage } from '../../../frontend/components/protectedPage'
-import { graphql } from '../../../frontend/generated/gql'
+import { PageHeading } from '../../../../frontend/components/pageHeading'
+import { ProtectedPage } from '../../../../frontend/components/protectedPage'
+import { graphql } from '../../../../frontend/generated/gql'
 
 const organizationPaypalSubscriptionIdCreateMutationDocument = graphql(`
   mutation organizationPaypalSubscriptionIdCreate($organizationId: ID!, $returnUrl: String!, $cancelUrl: String!) {

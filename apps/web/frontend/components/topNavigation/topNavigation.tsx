@@ -47,7 +47,7 @@ export const TopNavigation = (): JSX.Element => {
   }
 
   return (
-    <header className="navbar fixed top-0 z-50 gap-2 bg-base-100 shadow-lg">
+    <header className="navbar fixed top-0 z-50 gap-2 bg-base-100 shadow-lg print:hidden">
       <h1 className="navbar-start max-md:w-full max-md:justify-between">
         <div className="drawer z-10 w-min md:hidden">
           <input id="drawer" type="checkbox" className="drawer-toggle" ref={drawerCheckboxReference} />
