@@ -86,34 +86,32 @@ const Projects = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <article>
-        <PageHeading>Projects</PageHeading>
-        <div className="flex items-center justify-between gap-4">
-          <button className="btn btn-primary btn-sm" onClick={handleAddProject}>
-            New project
-          </button>
-          <Listbox
-            value={selectedProjectFilter}
-            getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
-            getKey={(projectFilter) => projectFilter}
-            onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
-            options={Object.values(ProjectFilter).filter(
-              (filter): filter is DisplayedProjectFilter => filter !== ProjectFilter.ActiveOrArchived,
-            )}
-          />
-        </div>
+      <PageHeading>Projects</PageHeading>
+      <div className="flex items-center justify-between">
+        <button className="btn btn-primary btn-sm" onClick={handleAddProject}>
+          New project
+        </button>
+        <Listbox
+          value={selectedProjectFilter}
+          getLabel={(projectFilter) => projectFilterKeyToLabel[projectFilter]}
+          getKey={(projectFilter) => projectFilter}
+          onChange={(projectFilter) => setSelectedProjectFilter(projectFilter)}
+          options={Object.values(ProjectFilter).filter(
+            (filter): filter is DisplayedProjectFilter => filter !== ProjectFilter.ActiveOrArchived,
+          )}
+        />
+      </div>
 
-        {error && <span>{error.message}</span>}
-        {projectsLoading && <span className="loading loading-spinner" />}
-        {data &&
-          (data.projects.length === 0 ? (
-            <div>No projects found</div>
-          ) : (
-            <div className="mt-2 w-full rounded-box border border-base-content/50 shadow-lg">
-              <ProjectTable projects={data.projects} />
-            </div>
-          ))}
-      </article>
+      {error && <span>{error.message}</span>}
+      {projectsLoading && <span className="loading loading-spinner" />}
+      {data &&
+        (data.projects.length === 0 ? (
+          <div>No projects found</div>
+        ) : (
+          <div className="w-full rounded-box border border-base-content/50 shadow-lg">
+            <ProjectTable projects={data.projects} />
+          </div>
+        ))}
     </ProtectedPage>
   )
 }

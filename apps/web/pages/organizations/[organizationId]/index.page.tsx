@@ -11,7 +11,7 @@ import { OrganizationInput } from '../../../frontend/generated/gql/graphql'
 import { InvoiceTable } from './components/invoiceTable'
 import { SubscriptionStatusOrganizationLink } from './components/subscriptionStatusOrganizationLink/subscriptionStatusOrganizationLink'
 
-export const OrganizationQueryDocument = graphql(`
+const OrganizationQueryDocument = graphql(`
   query organization($organizationId: ID!) {
     organization(organizationId: $organizationId) {
       id

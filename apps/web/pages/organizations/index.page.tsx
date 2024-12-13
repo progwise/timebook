@@ -66,30 +66,28 @@ const Organizations = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <article>
-        <PageHeading>Organizations</PageHeading>
-        <div className="flex items-center justify-between py-2">
-          <Link className="btn btn-primary btn-sm" href="/organizations/new">
-            New organization
-          </Link>
-          <Listbox
-            value={selectedOrganizationFilter}
-            getLabel={(organizationFilter) => organizationFilterKeyToLabel[organizationFilter]}
-            getKey={(organizationFilter) => organizationFilter}
-            onChange={(organizationFilter) => setSelectedOrganizationFilter(organizationFilter)}
-            options={Object.values(OrganizationFilter)}
-          />
-        </div>
+      <PageHeading>Organizations</PageHeading>
+      <div className="flex items-center justify-between">
+        <Link className="btn btn-primary btn-sm" href="/organizations/new">
+          New organization
+        </Link>
+        <Listbox
+          value={selectedOrganizationFilter}
+          getLabel={(organizationFilter) => organizationFilterKeyToLabel[organizationFilter]}
+          getKey={(organizationFilter) => organizationFilter}
+          onChange={(organizationFilter) => setSelectedOrganizationFilter(organizationFilter)}
+          options={Object.values(OrganizationFilter)}
+        />
+      </div>
 
-        {error && <span>{error.message}</span>}
-        {organizationsLoading && <span className="loading loading-spinner" />}
-        {data &&
-          (data.organizations.length === 0 ? (
-            <div>No organizations found</div>
-          ) : (
-            <OrganizationTable organizations={data.organizations} />
-          ))}
-      </article>
+      {error && <span>{error.message}</span>}
+      {organizationsLoading && <span className="loading loading-spinner" />}
+      {data &&
+        (data.organizations.length === 0 ? (
+          <div>No organizations found</div>
+        ) : (
+          <OrganizationTable organizations={data.organizations} />
+        ))}
     </ProtectedPage>
   )
 }

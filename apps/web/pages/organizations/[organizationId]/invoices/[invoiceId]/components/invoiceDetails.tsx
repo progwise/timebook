@@ -11,6 +11,7 @@ const InvoiceFragment = graphql(`
     customerAddress
   }
 `)
+
 const InvoiceItemsFragment = graphql(`
   fragment InvoiceItemsFragment on InvoiceItem {
     id
@@ -34,13 +35,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
     <div className="rounded-lg p-6 shadow-md print:mt-16">
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <Image
-            // Change to a static image src like in progwise.net
-            src="https://avatars.githubusercontent.com/u/16672451?s=200&v=4"
-            alt="Progwise logo"
-            width={60}
-            height={60}
-          />
+          <Image src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
           <p className="mt-2 text-lg font-bold">Progwise</p>
           <p className="text-sm">Greifswald</p>
         </div>
