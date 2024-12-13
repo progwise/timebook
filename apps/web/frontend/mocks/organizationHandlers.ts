@@ -3,6 +3,7 @@ import {
   mockOrganizationMembershipDeleteMutation,
   mockOrganizationMembershipUpdateMutation,
   mockOrganizationQuery,
+  mockInvoiceQuery,
   OrganizationMemberListOrganizationFragment,
   Role,
 } from './mocks.generated'
@@ -90,6 +91,32 @@ export const organizationHandlers = [
       context.data({
         __typename: 'Query',
         organizations: [testOrganization1, testOrganization2],
+      }),
+    )
+    return result
+  }),
+  mockInvoiceQuery((_request, response, context) => {
+    const result = response(
+      context.data({
+        invoice: {
+          id: '1',
+          invoiceDate: '2024-12-12',
+          customerName: 'Herr Test',
+          customerAddress: 'Frankfurt',
+          invoiceItems: [
+            {
+              id: '1',
+              duration: 5,
+              hourlyRate: 20,
+              task: {
+                title: 'Task',
+                __typename: 'Task',
+              },
+              __typename: 'InvoiceItem',
+            },
+          ],
+          __typename: 'Invoice',
+        },
       }),
     )
     return result
