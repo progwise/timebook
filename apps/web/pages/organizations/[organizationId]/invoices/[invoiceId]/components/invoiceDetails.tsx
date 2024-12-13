@@ -32,31 +32,36 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
   const invoiceData = useFragment(InvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
   return (
-    <div className="rounded-lg p-6 shadow-md print:mt-16">
-      <div className="mb-6 flex items-end justify-between">
-        <div>
-          <Image src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
-          <p className="mt-2 text-lg font-bold">Progwise</p>
-          <p className="text-sm">Greifswald</p>
+    <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-4">
+          <div>
+            <Image className="m-auto" src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
+            <p className="text-lg font-bold">Progwise</p>
+            <p className="text-sm">Greifswald</p>
+          </div>
+          <div>
+            <h2 className="text-lg font-bold">Billed to:</h2>
+            <p className="text-sm">{invoiceData.customerName}</p>
+            <p className="text-sm">{invoiceData.customerAddress}</p>
+          </div>
         </div>
-        <div className="text-right">
-          <button className="btn btn-primary btn-sm print:hidden" onClick={() => print()}>
-            <FaPrint />
-            Print
-          </button>
-          <h1 className="text-2xl font-bold">INVOICE</h1>
-          <p className="mt-2 text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
+        <div className="flex flex-col justify-between gap-4">
+          <div className="text-right">
+            <button className="btn btn-primary btn-sm print:hidden" onClick={() => print()}>
+              <FaPrint />
+              Print
+            </button>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">INVOICE</h1>
+            <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
+            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
+          </div>
         </div>
       </div>
-      <div className="mb-6 grid w-full grid-cols-2">
-        <div>
-          <h2 className="text-lg font-bold">Billed to:</h2>
-          <p className="text-sm">{invoiceData.customerName}</p>
-          <p className="text-sm">{invoiceData.customerAddress}</p>
-        </div>
-        <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
-      </div>
-      <table className="mb-6 size-full border-collapse border border-gray-200">
+
+      <table className="size-full border-collapse border border-gray-200">
         <thead className="bg-gray-200 text-left text-sm">
           <tr>
             <th className="border border-gray-300 px-4 py-2">Item</th>
@@ -83,13 +88,11 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           </tr>
         </tbody>
       </table>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-bold">
-            Payment method: <span className="font-normal">Bank Transfer/ PayPal</span>
-          </p>
-          <p className="text-sm">Thank you for your business!</p>
-        </div>
+      <div className="flex flex-col">
+        <p className="text-sm font-bold">
+          Payment method: <span className="font-normal">Bank Transfer/ PayPal</span>
+        </p>
+        <p className="text-sm">Thank you for your business!</p>
       </div>
     </div>
   )

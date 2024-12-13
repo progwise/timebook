@@ -35,7 +35,7 @@ const TimebookApp = ({ Component, session, pageProps }: TimebookProps): JSX.Elem
           <Component {...pageProps} />
         </main>
       </div>
-      <footer className="footer justify-items-center bg-base-300 p-2">
+      <footer className="footer justify-items-center bg-base-300 p-2 print:hidden">
         <Link href="/impress" className="link-hover link">
           Impress
         </Link>
