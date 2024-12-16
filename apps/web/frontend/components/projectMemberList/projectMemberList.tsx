@@ -1,10 +1,10 @@
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { RoleButton } from '../roleButton'
+import { UserLabel } from '../userLabel'
 import { ProjectRoleLabel } from './projectRoleLabel'
 import { RemoveUserFromProjectButton } from './removeUserFromProjectButton'
 
@@ -53,23 +53,8 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
       <tbody>
         {project.members.map((user) => (
           <tr key={user.id}>
-            <td className="flex w-full items-center gap-2">
-              {user.image ? (
-                <div className="avatar">
-                  <Image
-                    className="rounded-box"
-                    width={64}
-                    height={64}
-                    src={user.image}
-                    alt={user.name ?? 'image of the user'}
-                  />
-                </div>
-              ) : (
-                <div className="avatar placeholder">
-                  <div className="size-16 rounded-box bg-neutral text-neutral-content" />
-                </div>
-              )}
-              {user.name}
+            <td className="flex items-center gap-2">
+              <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />
               <ProjectRoleLabel role={user.projectRole} />
             </td>
             <td className="w-px">
