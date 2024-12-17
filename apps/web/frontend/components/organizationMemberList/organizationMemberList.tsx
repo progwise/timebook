@@ -4,8 +4,8 @@ import { useMutation } from 'urql'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { RoleButton } from '../roleButton'
+import { RoleLabel } from '../roleLabel'
 import { UserLabel } from '../userLabel'
-import { OrganizationRoleLabel } from './organizationRoleLabel'
 import { RemoveUserFromOrganizationButton } from './removeUserFromOrganizationButton'
 
 export const OrganizationMemberListOrganizationFragment = graphql(`
@@ -58,8 +58,10 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
         {organization.members.map((user) => (
           <tr key={user.id}>
             <td className="flex w-full items-center gap-2">
-              <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />{' '}
-              <OrganizationRoleLabel role={user.organizationRole} />
+              <div className="min-w-52">
+                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />{' '}
+              </div>
+              <RoleLabel role={user.organizationRole} context="Organization" />
             </td>
             <td className="w-px">
               {user.id !== session.data?.user.id && organization.canModify && (
