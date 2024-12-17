@@ -42,6 +42,8 @@ export type Invoice = ModifyInterface & {
   /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
   organization: Organization
+  payDate?: Maybe<Scalars['Date']>
+  sendDate?: Maybe<Scalars['Date']>
 }
 
 export type InvoiceItem = {

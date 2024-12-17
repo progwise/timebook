@@ -38,6 +38,8 @@ type Invoice implements ModifyInterface {
   """
   invoiceItems: [InvoiceItem!]!
   organization: Organization!
+  payDate: Date
+  sendDate: Date
 }
 
 type InvoiceItem {
