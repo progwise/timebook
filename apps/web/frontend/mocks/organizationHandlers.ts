@@ -6,6 +6,7 @@ import {
   mockInvoiceQuery,
   OrganizationMemberListOrganizationFragment,
   Role,
+  InvoiceStatus,
 } from './mocks.generated'
 
 const testOrganization1 = {
@@ -103,6 +104,7 @@ export const organizationHandlers = [
           invoiceDate: '2024-12-12',
           customerName: 'Herr Test',
           customerAddress: 'Frankfurt',
+          invoiceStatus: InvoiceStatus.Draft,
           invoiceItems: [
             {
               id: '1',

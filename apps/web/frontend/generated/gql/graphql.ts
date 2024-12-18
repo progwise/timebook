@@ -39,7 +39,11 @@ export type Invoice = ModifyInterface & {
   invoiceDate: Scalars['Date']
   /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
+  /** Status of the invoice */
+  invoiceStatus: InvoiceStatus
   organization: Organization
+  payDate?: Maybe<Scalars['Date']>
+  sendDate?: Maybe<Scalars['Date']>
 }
 
 export type InvoiceItem = {
@@ -56,6 +60,13 @@ export type InvoiceItem = {
   start?: Maybe<Scalars['DateTime']>
   /** Task for which the invoice item was booked */
   task: Task
+}
+
+/** Status of the invoice */
+export enum InvoiceStatus {
+  Draft = 'DRAFT',
+  Paid = 'PAID',
+  Sent = 'SENT',
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -1320,6 +1331,9 @@ export type InvoiceFragmentFragment = {
   invoiceDate: string
   customerName: string
   customerAddress?: string | null
+  payDate?: string | null
+  sendDate?: string | null
+  invoiceStatus: InvoiceStatus
 } & { ' $fragmentName'?: 'InvoiceFragmentFragment' }
 
 export type InvoiceItemsFragmentFragment = {
@@ -3441,6 +3455,9 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
         ],
       },
     },
@@ -5674,6 +5691,9 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
         ],
       },
     },
