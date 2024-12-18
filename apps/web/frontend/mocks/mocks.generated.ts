@@ -41,6 +41,8 @@ export type Invoice = ModifyInterface & {
   invoiceDate: Scalars['Date']
   /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
+  /** Status of the invoice */
+  invoiceStatus: InvoiceStatus
   organization: Organization
   payDate?: Maybe<Scalars['Date']>
   sendDate?: Maybe<Scalars['Date']>
@@ -60,6 +62,13 @@ export type InvoiceItem = {
   start?: Maybe<Scalars['DateTime']>
   /** Task for which the invoice item was booked */
   task: Task
+}
+
+/** Status of the invoice */
+export enum InvoiceStatus {
+  Draft = 'DRAFT',
+  Paid = 'PAID',
+  Sent = 'SENT',
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -1337,6 +1346,9 @@ export type InvoiceFragmentFragment = {
   invoiceDate: string
   customerName: string
   customerAddress?: string | null
+  payDate?: string | null
+  sendDate?: string | null
+  invoiceStatus: InvoiceStatus
 }
 
 export type InvoiceItemsFragmentFragment = {
@@ -1360,6 +1372,9 @@ export type InvoiceQuery = {
     invoiceDate: string
     customerName: string
     customerAddress?: string | null
+    payDate?: string | null
+    sendDate?: string | null
+    invoiceStatus: InvoiceStatus
     invoiceItems: Array<{
       __typename?: 'InvoiceItem'
       id: string
