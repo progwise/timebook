@@ -53,6 +53,7 @@ export type InvoiceInput = {
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']
   organizationId: Scalars['ID']
+  sendDate?: InputMaybe<Scalars['Date']>
 }
 
 export type InvoiceItem = {
