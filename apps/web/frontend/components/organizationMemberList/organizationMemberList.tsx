@@ -59,7 +59,7 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
           <tr key={user.id}>
             <td className="flex w-full items-center gap-2">
               <div className="min-w-52">
-                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />{' '}
+                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />
               </div>
               <RoleLabel role={user.organizationRole} context="Organization" />
             </td>

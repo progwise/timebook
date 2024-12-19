@@ -26,6 +26,7 @@ export const UserLabel = ({
   const minutes = ((duration ?? 0) % 60).toString().padStart(2, '0')
   const numberOfMembersToBeDisplayed =
     maxNumberOfAvatars === members?.length ? maxNumberOfAvatars : maxNumberOfAvatars - 1
+  const styleImage = { width: imageSize, height: imageSize }
 
   return (
     <div className="flex items-center gap-1">
@@ -35,16 +36,13 @@ export const UserLabel = ({
             {members.slice(0, numberOfMembersToBeDisplayed).map((member) =>
               member.image ? (
                 <div key={member.id} className="avatar border-transparent">
-                  <div style={{ width: imageSize, height: imageSize }}>
+                  <div style={styleImage}>
                     <Image width={imageSize} height={imageSize} src={member.image} alt={member.name ?? 'User avatar'} />
                   </div>
                 </div>
               ) : (
                 <div key={member.id} className="avatar placeholder border-transparent">
-                  <div
-                    className="rounded-full bg-neutral text-neutral-content"
-                    style={{ width: imageSize, height: imageSize }}
-                  >
+                  <div className="rounded-full bg-neutral text-neutral-content" style={styleImage}>
                     <span className="text-xl">{member.name?.charAt(0)}</span>
                   </div>
                 </div>
@@ -52,10 +50,7 @@ export const UserLabel = ({
             )}
             {members.length > numberOfMembersToBeDisplayed && (
               <div className="avatar placeholder border-transparent">
-                <div
-                  className="rounded-full bg-neutral text-neutral-content"
-                  style={{ width: imageSize, height: imageSize }}
-                >
+                <div className="rounded-full bg-neutral text-neutral-content" style={styleImage}>
                   <span>+{members.length - numberOfMembersToBeDisplayed}</span>
                 </div>
               </div>
@@ -78,7 +73,7 @@ export const UserLabel = ({
           ) : (
             <div
               className="flex items-center justify-center rounded-full bg-neutral text-neutral-content"
-              style={{ width: imageSize, height: imageSize }}
+              style={styleImage}
             >
               <span className="text-xl">{name?.charAt(0)}</span>
             </div>
