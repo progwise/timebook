@@ -60,9 +60,12 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
             <button className="btn btn-primary btn-sm print:hidden">Send</button>
           </div>
           <div>
-            <h1 className="text-2xl font-bold">INVOICE</h1>
-            <p>Invoice No: #{invoiceData.id}</p>
-            <p className="text-right">Invoice Date: {invoiceData.invoiceDate}</p>
+            <div className="flex items-center gap-2">
+              <div className="text-2xl font-bold">Invoice</div>
+              <span className="badge badge-neutral badge-lg">{invoiceData.invoiceStatus}</span>
+            </div>
+            <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
+            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
           </div>
         </div>
       </div>
@@ -94,16 +97,11 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           </tr>
         </tbody>
       </table>
-      <div className="flex">
-        <div className="flex flex-col">
-          <p className="text-sm font-bold">
-            Payment method: <span className="font-normal">Bank Transfer/ PayPal</span>
-          </p>
-          <p className="text-sm">Thank you for your business!</p>
-        </div>
-        <div className="w-full text-right font-bold">
-          Invoice status: <span className="font-normal">{invoiceData.invoiceStatus}</span>
-        </div>
+      <div className="text-sm">
+        <p className="font-bold">
+          Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
+        </p>
+        <p>Thank you for your business!</p>
       </div>
     </div>
   )

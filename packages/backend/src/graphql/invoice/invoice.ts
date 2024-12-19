@@ -19,6 +19,9 @@ export const Invoice = builder.prismaObject('Invoice', {
       select: { invoiceStatus: true, payDate: true, sendDate: true },
       resolve: (invoice) => {
         const now = new Date()
+        if (invoice.payDate && invoice.sendDate && invoice.payDate < invoice.sendDate) {
+          throw new Error('Pay date cannot be before send date')
+        }
         if (invoice.payDate && invoice.payDate < now) {
           return InvoiceStatus.PAID
         }
