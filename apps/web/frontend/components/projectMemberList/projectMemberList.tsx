@@ -55,7 +55,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
           <tr key={user.id}>
             <td className="flex items-center gap-2">
               <div className="min-w-52">
-                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />{' '}
+                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />
               </div>
               <RoleLabel role={user.projectRole} context="Project" />
             </td>
