@@ -27,7 +27,8 @@ jest.mock('next/router', () => ({
 it('should render invoice details', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
-  await screen.findByText('INVOICE')
+  const invoiceElements = await screen.findAllByText('INVOICE', { exact: false })
+  expect(invoiceElements).toHaveLength(3)
   expect(screen.getByText('Progwise')).toBeInTheDocument()
   expect(screen.getByText('Greifswald')).toBeInTheDocument()
   expect(screen.getByText('Invoice No: #1')).toBeInTheDocument()
