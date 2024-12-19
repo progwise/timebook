@@ -1,5 +1,4 @@
 import { formatDistanceToNow } from 'date-fns'
-import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { BiCopyAlt } from 'react-icons/bi'
 import { FaXmark } from 'react-icons/fa6'
@@ -8,6 +7,7 @@ import { useMutation } from 'urql'
 import { InputField, toastSuccess } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
+import { UserLabel } from './userLabel'
 
 const ProjectMembershipInvitationMutation = graphql(`
   mutation projectMembershipInvitationCreate($projectId: ID!) {
@@ -116,22 +116,7 @@ export const ProjectInvitationButton = (props: ProjectInvitationButtonProps) => 
                         return (
                           <tr key={user.id}>
                             <td className="flex w-full items-center gap-2 pl-0">
-                              {user.image ? (
-                                <div className="avatar">
-                                  <Image
-                                    className="rounded-box"
-                                    width={32}
-                                    height={32}
-                                    src={user.image}
-                                    alt={user.name ?? 'image of the user'}
-                                  />
-                                </div>
-                              ) : (
-                                <div className="avatar placeholder">
-                                  <div className="size-8 rounded-box bg-neutral text-neutral-content" />
-                                </div>
-                              )}
-                              {user.name}
+                              <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />
                             </td>
                             <td className="w-0 pr-0">
                               <button

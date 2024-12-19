@@ -1,11 +1,11 @@
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
 import { RoleButton } from '../roleButton'
-import { OrganizationRoleLabel } from './organizationRoleLabel'
+import { RoleLabel } from '../roleLabel'
+import { UserLabel } from '../userLabel'
 import { RemoveUserFromOrganizationButton } from './removeUserFromOrganizationButton'
 
 export const OrganizationMemberListOrganizationFragment = graphql(`
@@ -58,23 +58,10 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
         {organization.members.map((user) => (
           <tr key={user.id}>
             <td className="flex w-full items-center gap-2">
-              {user.image ? (
-                <div className="avatar">
-                  <Image
-                    className="rounded-box"
-                    width={64}
-                    height={64}
-                    src={user.image}
-                    alt={user.name ?? 'image of the user'}
-                  />
-                </div>
-              ) : (
-                <div className="avatar placeholder">
-                  <div className="size-16 rounded-box bg-neutral text-neutral-content" />
-                </div>
-              )}
-              {user.name}
-              <OrganizationRoleLabel role={user.organizationRole} />
+              <div className="min-w-52">
+                <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} imageSize={28} />{' '}
+              </div>
+              <RoleLabel role={user.organizationRole} context="Organization" />
             </td>
             <td className="w-px">
               {user.id !== session.data?.user.id && organization.canModify && (

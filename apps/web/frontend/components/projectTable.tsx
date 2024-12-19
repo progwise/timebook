@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../generated/gql'
+import { UserLabel } from './userLabel'
 
 export const ProjectTableItemFragment = graphql(`
   fragment ProjectTableItem on Project {
@@ -21,8 +21,6 @@ interface ProjectTableProps {
   projects: FragmentType<typeof ProjectTableItemFragment>[]
 }
 
-const MAX_NUMBER_OF_AVATARS = 5
-
 export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   const projects = useFragment(ProjectTableItemFragment, props.projects)
 
@@ -37,8 +35,6 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
       </thead>
       <tbody className="text-base">
         {projects.map((project) => {
-          const numberOfMembersToBeDisplayed =
-            MAX_NUMBER_OF_AVATARS === project.members.length ? MAX_NUMBER_OF_AVATARS : MAX_NUMBER_OF_AVATARS - 1
           return (
             <tr key={project.id}>
               <td>
@@ -47,36 +43,16 @@ export const ProjectTable = (props: ProjectTableProps): JSX.Element => {
                 </Link>
               </td>
               <td>
-                <div className="avatar-group -space-x-3">
-                  {project.members.slice(0, numberOfMembersToBeDisplayed).map((member) =>
-                    member.image ? (
-                      <div key={member.id} className="avatar">
-                        <div className="size-9">
-                          <Image
-                            key={member.id}
-                            width={36}
-                            height={36}
-                            src={member.image}
-                            alt={member.name ?? 'image of the user'}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div key={member.id} className="avatar placeholder">
-                        <div className="size-9 rounded-full bg-neutral text-neutral-content">
-                          <span className="text-2xl">{member.name?.at(0)}</span>
-                        </div>
-                      </div>
-                    ),
-                  )}
-                  {project.members.length > numberOfMembersToBeDisplayed && (
-                    <div className="avatar placeholder">
-                      <div className="w-9 rounded-full bg-neutral text-neutral-content">
-                        <span>+{project.members.length - numberOfMembersToBeDisplayed}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <UserLabel
+                  members={project.members.map((member) => ({
+                    id: member.id,
+                    name: member.name ?? undefined,
+                    image: member.image ?? undefined,
+                  }))}
+                  imageSize={36}
+                  showDuration={false}
+                  maxNumberOfAvatars={5}
+                />
               </td>
               <td>
                 {project.startDate} - {project.endDate}
