@@ -33,20 +33,20 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
   return (
     <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
-      <div className="flex justify-between">
+      <div className="flex justify-between text-sm">
         <div className="flex flex-col gap-4">
           <div>
             <Image className="m-auto" src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
             <p className="text-lg font-bold">Progwise</p>
-            <p className="text-sm">Greifswald</p>
+            <p>Greifswald</p>
           </div>
           <div>
             <h2 className="text-lg font-bold">Billed to:</h2>
-            <p className="text-sm">{invoiceData.customerName}</p>
-            <p className="text-sm">{invoiceData.customerAddress}</p>
+            <p>{invoiceData.customerName}</p>
+            <p>{invoiceData.customerAddress}</p>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-4">
+        <div className="flex flex-col justify-between">
           <div className="text-right">
             <button className="btn btn-primary btn-sm print:hidden" onClick={() => print()}>
               <FaPrint />
@@ -55,44 +55,44 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           </div>
           <div>
             <h1 className="text-2xl font-bold">INVOICE</h1>
-            <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
-            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
+            <p>Invoice No: #{invoiceData.id}</p>
+            <p className="text-right">Invoice Date: {invoiceData.invoiceDate}</p>
           </div>
         </div>
       </div>
 
-      <table className="size-full border-collapse border border-gray-200">
-        <thead className="bg-gray-200 text-left text-sm">
+      <table className="table size-full border-collapse border border-neutral">
+        <thead className="bg-neutral text-sm text-neutral-content">
           <tr>
-            <th className="border border-gray-300 px-4 py-2">Item</th>
-            <th className="border border-gray-300 px-4 py-2">Duration</th>
-            <th className="border border-gray-300 px-4 py-2">Hourly Rate</th>
-            <th className="border border-gray-300 px-4 py-2">Amount</th>
+            <th>Item</th>
+            <th>Duration</th>
+            <th>Hourly Rate</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
           {invoiceItemsData.map((invoiceItem) => (
             <tr key={invoiceItem.id}>
-              <td className="border border-gray-200 px-4 py-2">{invoiceItem.task.title}</td>
-              <td className="border border-gray-200 px-4 py-2">{invoiceItem.duration}</td>
-              <td className="border border-gray-200 px-4 py-2">{invoiceItem.hourlyRate}</td>
-              <td className="border border-gray-200 px-4 py-2">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
+              <td className="border border-neutral">{invoiceItem.task.title}</td>
+              <td className="border border-neutral">{invoiceItem.duration}</td>
+              <td className="border border-neutral">{invoiceItem.hourlyRate}</td>
+              <td className="border border-neutral">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
             </tr>
           ))}
-          <tr>
-            <td className="border border-gray-200 px-4 py-2" colSpan={2} />
-            <td className="border border-gray-200 px-4 py-2 font-bold">Total</td>
-            <td className="border border-gray-200 px-4 py-2 font-bold">
+          <tr className="font-bold">
+            <td colSpan={2} className="border border-neutral" />
+            <td className="border border-neutral">Total</td>
+            <td className="border border-neutral">
               €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
             </td>
           </tr>
         </tbody>
       </table>
-      <div className="flex flex-col">
-        <p className="text-sm font-bold">
-          Payment method: <span className="font-normal">Bank Transfer/ PayPal</span>
+      <div className="flex flex-col text-sm">
+        <p className="font-bold">
+          Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
         </p>
-        <p className="text-sm">Thank you for your business!</p>
+        <p>Thank you for your business!</p>
       </div>
     </div>
   )

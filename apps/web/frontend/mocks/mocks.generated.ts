@@ -34,6 +34,7 @@ export type Invoice = ModifyInterface & {
   __typename?: 'Invoice'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
+  createdByUser: User
   customerAddress?: Maybe<Scalars['String']>
   customerName: Scalars['String']
   /** identifies the invoice */
@@ -42,6 +43,14 @@ export type Invoice = ModifyInterface & {
   /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
   organization: Organization
+}
+
+export type InvoiceInput = {
+  createdByUserId: Scalars['ID']
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName: Scalars['String']
+  invoiceDate: Scalars['Date']
+  organizationId: Scalars['ID']
 }
 
 export type InvoiceItem = {
@@ -77,6 +86,8 @@ export type Mutation = {
   accessTokenCreate: Scalars['String']
   /** Delete an access token for the signed in user */
   accessTokenDelete: AccessToken
+  /** Create a new invoice */
+  invoiceCreate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -143,6 +154,10 @@ export type MutationAccessTokenCreateArgs = {
 
 export type MutationAccessTokenDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationInvoiceCreateArgs = {
+  data: InvoiceInput
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1368,6 +1383,12 @@ export type InvoiceQuery = {
   }
 }
 
+export type InvoiceCreateMutationVariables = Exact<{
+  data: InvoiceInput
+}>
+
+export type InvoiceCreateMutation = { __typename?: 'Mutation'; invoiceCreate: { __typename?: 'Invoice'; id: string } }
+
 export type MyOrganizationsQueryVariables = Exact<{
   filter?: InputMaybe<OrganizationFilter>
 }>
@@ -2195,6 +2216,25 @@ export const mockOrganizationUpdateMutation = (
 export const mockInvoiceQuery = (
   resolver: ResponseResolver<GraphQLRequest<InvoiceQueryVariables>, GraphQLContext<InvoiceQuery>, any>,
 ) => graphql.query<InvoiceQuery, InvoiceQueryVariables>('invoice', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceCreate })
+ *   )
+ * })
+ */
+export const mockInvoiceCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceCreateMutationVariables>,
+    GraphQLContext<InvoiceCreateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceCreateMutation, InvoiceCreateMutationVariables>('invoiceCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

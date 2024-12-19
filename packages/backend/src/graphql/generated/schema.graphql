@@ -24,6 +24,7 @@ type Invoice implements ModifyInterface {
   Can the user modify the entity
   """
   canModify: Boolean!
+  createdByUser: User!
   customerAddress: String
   customerName: String!
 
@@ -38,6 +39,14 @@ type Invoice implements ModifyInterface {
   """
   invoiceItems: [InvoiceItem!]!
   organization: Organization!
+}
+
+input InvoiceInput {
+  createdByUserId: ID!
+  customerAddress: String
+  customerName: String!
+  invoiceDate: Date!
+  organizationId: ID!
 }
 
 type InvoiceItem {
@@ -94,6 +103,11 @@ type Mutation {
   Delete an access token for the signed in user
   """
   accessTokenDelete(id: ID!): AccessToken!
+
+  """
+  Create a new invoice
+  """
+  invoiceCreate(data: InvoiceInput!): Invoice!
 
   """
   Archive an organization

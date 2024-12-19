@@ -10,13 +10,7 @@ export const Invoice = builder.prismaObject('Invoice', {
     invoiceDate: t.expose('invoiceDate', { type: 'Date' }),
     customerAddress: t.exposeString('customerAddress', { nullable: true }),
     customerName: t.exposeString('customerName'),
-    organization: t.relation('organization'),
-    invoiceItems: t.relation('InvoiceItems', {
-      description: 'Items associated with the invoice',
-      resolve: (query, invoice) => {
-        return prisma.invoiceItem.findMany({ ...query, where: { invoiceId: invoice.id }, orderBy: { start: 'asc' } })
-      },
-    }),
+
     canModify: t.withAuth({ isLoggedIn: true }).boolean({
       description: 'Can the user modify the entity',
       select: { organizationId: true },
@@ -29,5 +23,14 @@ export const Invoice = builder.prismaObject('Invoice', {
         return organizationMembership?.organizationRole === 'ADMIN'
       },
     }),
+
+    organization: t.relation('organization'),
+    invoiceItems: t.relation('InvoiceItems', {
+      description: 'Items associated with the invoice',
+      resolve: (query, invoice) => {
+        return prisma.invoiceItem.findMany({ ...query, where: { invoiceId: invoice.id }, orderBy: { start: 'asc' } })
+      },
+    }),
+    createdByUser: t.relation('createdByUser'),
   }),
 })
