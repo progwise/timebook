@@ -24,7 +24,6 @@ type Invoice implements ModifyInterface {
   Can the user modify the entity
   """
   canModify: Boolean!
-  createdByUser: User!
   customerAddress: String
   customerName: String!
 
@@ -42,7 +41,6 @@ type Invoice implements ModifyInterface {
 }
 
 input InvoiceInput {
-  createdByUserId: ID!
   customerAddress: String
   customerName: String!
   invoiceDate: Date!

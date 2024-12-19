@@ -32,7 +32,6 @@ export type Invoice = ModifyInterface & {
   __typename?: 'Invoice'
   /** Can the user modify the entity */
   canModify: Scalars['Boolean']
-  createdByUser: User
   customerAddress?: Maybe<Scalars['String']>
   customerName: Scalars['String']
   /** identifies the invoice */
@@ -44,7 +43,6 @@ export type Invoice = ModifyInterface & {
 }
 
 export type InvoiceInput = {
-  createdByUserId: Scalars['ID']
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']

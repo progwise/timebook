@@ -31,6 +31,5 @@ export const Invoice = builder.prismaObject('Invoice', {
         return prisma.invoiceItem.findMany({ ...query, where: { invoiceId: invoice.id }, orderBy: { start: 'asc' } })
       },
     }),
-    createdByUser: t.relation('createdByUser'),
   }),
 })

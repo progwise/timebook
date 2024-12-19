@@ -6,6 +6,5 @@ export const InvoiceInput = builder.inputType('InvoiceInput', {
     customerName: t.string(),
     invoiceDate: t.field({ type: 'Date' }),
     organizationId: t.id(),
-    createdByUserId: t.id(),
   }),
 })
