@@ -47,6 +47,13 @@ type Invoice implements ModifyInterface {
   sendDate: Date
 }
 
+input InvoiceInput {
+  customerAddress: String
+  customerName: String!
+  invoiceDate: Date!
+  organizationId: ID!
+}
+
 type InvoiceItem {
   """
   Duration of the invoice item in minutes
@@ -110,6 +117,11 @@ type Mutation {
   Delete an access token for the signed in user
   """
   accessTokenDelete(id: ID!): AccessToken!
+
+  """
+  Create a new invoice
+  """
+  invoiceCreate(data: InvoiceInput!): Invoice!
 
   """
   Archive an organization
