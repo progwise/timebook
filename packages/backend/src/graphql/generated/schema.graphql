@@ -37,7 +37,22 @@ type Invoice implements ModifyInterface {
   Items associated with the invoice
   """
   invoiceItems: [InvoiceItem!]!
+
+  """
+  Status of the invoice
+  """
+  invoiceStatus: InvoiceStatus!
   organization: Organization!
+  payDate: Date
+  sendDate: Date
+}
+
+input InvoiceInput {
+  customerAddress: String
+  customerName: String!
+  invoiceDate: Date!
+  organizationId: ID!
+  sendDate: Date
 }
 
 type InvoiceItem {
@@ -70,6 +85,15 @@ type InvoiceItem {
 }
 
 """
+Status of the invoice
+"""
+enum InvoiceStatus {
+  DRAFT
+  PAID
+  SENT
+}
+
+"""
 Adds the information whether the user can edit the entity
 """
 interface ModifyInterface {
@@ -94,6 +118,11 @@ type Mutation {
   Delete an access token for the signed in user
   """
   accessTokenDelete(id: ID!): AccessToken!
+
+  """
+  Create a new invoice
+  """
+  invoiceCreate(data: InvoiceInput!): Invoice!
 
   """
   Archive an organization
