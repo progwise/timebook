@@ -16,17 +16,12 @@ describe('accessTokenCreateMutationField', () => {
   beforeEach(async () => {
     await prisma.user.deleteMany()
 
-    await prisma.user.createMany({
-      data: [
-        {
-          id: '1',
-          name: 'Test user',
-        },
-      ],
+    await prisma.user.create({
+      data: { id: '1', name: 'Test user' },
     })
   })
 
-  it('should throw error when unauthorized', async () => {
+  it('should throw an error when user is unauthenticated', async () => {
     const testServer = getTestServer({ noSession: true })
     const response = await testServer.executeOperation({
       query: accessTokenCreateMutation,

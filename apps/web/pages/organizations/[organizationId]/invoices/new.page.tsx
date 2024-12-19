@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { FaCircleXmark } from 'react-icons/fa6'
@@ -23,7 +24,7 @@ const NewInvoicePage = (): JSX.Element => {
   const router = useRouter()
 
   const { organizationId } = router.query
-  const invoiceDate = new Date().toString()
+  const invoiceDate = format(new Date(), 'yyyy-MM-dd').toString()
 
   const { register, handleSubmit, formState } = useForm<InvoiceInput>({
     defaultValues: {

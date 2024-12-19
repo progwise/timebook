@@ -20,8 +20,8 @@ beforeEach(async () => {
   await prisma.user.deleteMany()
   await prisma.organization.deleteMany()
 
-  await prisma.user.createMany({
-    data: [{ id: '1', name: 'User with role admin' }],
+  await prisma.user.create({
+    data: { id: '1', name: 'User with role admin' },
   })
 })
 
