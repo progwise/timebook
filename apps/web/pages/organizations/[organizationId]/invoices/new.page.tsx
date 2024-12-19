@@ -37,7 +37,6 @@ const NewInvoicePage = (): JSX.Element => {
   const handleCreateInvoice = async (data: InvoiceInput) => {
     try {
       const result = await invoiceCreate({ data })
-      console.log(data)
       if (result.error) {
         throw new Error('graphql error')
       }
