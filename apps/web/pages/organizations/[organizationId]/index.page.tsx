@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
@@ -104,7 +105,16 @@ const OrganizationDetails = (): JSX.Element => {
               {selectedOrganization.invoices.length > 0 ? (
                 <InvoiceTable invoices={selectedOrganization.invoices} />
               ) : (
-                <div>There are currently no invoices in this organization</div>
+                <div>
+                  There are currently no invoices in this organization, click{' '}
+                  <Link
+                    href={`/organizations/${router.query.organizationId}/invoices/new`}
+                    className="link link-primary"
+                  >
+                    here
+                  </Link>{' '}
+                  to create one.
+                </div>
               )}
             </div>
           </>
