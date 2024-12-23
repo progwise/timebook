@@ -42,6 +42,13 @@ export type Invoice = ModifyInterface & {
   organization: Organization
 }
 
+export type InvoiceInput = {
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName: Scalars['String']
+  invoiceDate: Scalars['Date']
+  organizationId: Scalars['ID']
+}
+
 export type InvoiceItem = {
   __typename?: 'InvoiceItem'
   /** Duration of the invoice item in minutes */
@@ -75,6 +82,8 @@ export type Mutation = {
   accessTokenCreate: Scalars['String']
   /** Delete an access token for the signed in user */
   accessTokenDelete: AccessToken
+  /** Create a new invoice */
+  invoiceCreate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -141,6 +150,10 @@ export type MutationAccessTokenCreateArgs = {
 
 export type MutationAccessTokenDeleteArgs = {
   id: Scalars['ID']
+}
+
+export type MutationInvoiceCreateArgs = {
+  data: InvoiceInput
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1346,6 +1359,12 @@ export type InvoiceQuery = {
     >
   } & { ' $fragmentRefs'?: { InvoiceFragmentFragment: InvoiceFragmentFragment } }
 }
+
+export type InvoiceCreateMutationVariables = Exact<{
+  data: InvoiceInput
+}>
+
+export type InvoiceCreateMutation = { __typename?: 'Mutation'; invoiceCreate: { __typename?: 'Invoice'; id: string } }
 
 export type MyOrganizationsQueryVariables = Exact<{
   filter?: InputMaybe<OrganizationFilter>
@@ -5700,6 +5719,43 @@ export const InvoiceDocument = {
     },
   ],
 } as unknown as DocumentNode<InvoiceQuery, InvoiceQueryVariables>
+export const InvoiceCreateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'invoiceCreate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceInput' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoiceCreate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InvoiceCreateMutation, InvoiceCreateMutationVariables>
 export const MyOrganizationsDocument = {
   kind: 'Document',
   definitions: [
