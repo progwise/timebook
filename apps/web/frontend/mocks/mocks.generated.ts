@@ -1290,7 +1290,6 @@ export type InvoiceFragment = {
   id: string
   invoiceDate: string
   customerName: string
-  organization: { __typename?: 'Organization'; id: string }
   invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
 }
 
@@ -1321,7 +1320,6 @@ export type OrganizationQuery = {
       id: string
       invoiceDate: string
       customerName: string
-      organization: { __typename?: 'Organization'; id: string }
       invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
     }>
     members: Array<{

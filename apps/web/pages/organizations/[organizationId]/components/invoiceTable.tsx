@@ -7,9 +7,6 @@ export const InvoiceFragment = graphql(`
     id
     invoiceDate
     customerName
-    organization {
-      id
-    }
     invoiceItems {
       id
       duration
@@ -20,9 +17,10 @@ export const InvoiceFragment = graphql(`
 
 interface InvoiceTableProps {
   invoices: FragmentType<typeof InvoiceFragment>[]
+  organizationId: string
 }
 
-export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
+export const InvoiceTable = ({ invoices, organizationId }: InvoiceTableProps): JSX.Element => {
   const invoicesData = useFragment(InvoiceFragment, invoices)
 
   return (
@@ -52,7 +50,7 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
               <td className="text-right">
                 <Link
                   className="btn btn-outline btn-secondary btn-sm"
-                  href={`/organizations/${invoice.organization.id}/invoices/${invoice.id}`}
+                  href={`/organizations/${organizationId}/invoices/${invoice.id}`}
                 >
                   Details
                 </Link>
@@ -64,10 +62,7 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
           <tr>
             <td colSpan={4} />
             <td>
-              <Link
-                className="btn btn-primary no-animation"
-                href={`/organizations/${invoicesData[0].organization.id}/invoices/new`}
-              >
+              <Link className="btn btn-primary no-animation" href={`/organizations/${organizationId}/invoices/new`}>
                 Create a new invoice
               </Link>
             </td>
