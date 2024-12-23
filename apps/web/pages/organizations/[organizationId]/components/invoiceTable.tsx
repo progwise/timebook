@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 import { FragmentType, graphql, useFragment } from '../../../../frontend/generated/gql'
 
@@ -8,6 +7,9 @@ export const InvoiceFragment = graphql(`
     id
     invoiceDate
     customerName
+    organization {
+      id
+    }
     invoiceItems {
       id
       duration
@@ -21,9 +23,7 @@ interface InvoiceTableProps {
 }
 
 export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
-  const router = useRouter()
   const invoicesData = useFragment(InvoiceFragment, invoices)
-  const { organizationId } = router.query
 
   return (
     <div>
@@ -52,7 +52,7 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
               <td className="text-right">
                 <Link
                   className="btn btn-outline btn-secondary btn-sm"
-                  href={`/organizations/${router.query.organizationId}/invoices/${invoice.id}`}
+                  href={`/organizations/${invoice.organization.id}/invoices/${invoice.id}`}
                 >
                   Details
                 </Link>
@@ -64,7 +64,10 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
           <tr>
             <td colSpan={4} />
             <td>
-              <Link className="btn btn-primary no-animation" href={`/organizations/${organizationId}/invoices/new`}>
+              <Link
+                className="btn btn-primary no-animation"
+                href={`/organizations/${invoicesData[0].organization.id}/invoices/new`}
+              >
                 Create a new invoice
               </Link>
             </td>

@@ -148,7 +148,7 @@ const documents = {
     types.OrganizationPaypalSubscriptionIdCreateDocument,
   '\n  query organizationDetails($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      title\n    }\n  }\n':
     types.OrganizationDetailsDocument,
-  '\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n':
+  '\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    organization {\n      id\n    }\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n':
     types.InvoiceFragmentDoc,
   '\n  query organization($organizationId: ID!) {\n    organization(organizationId: $organizationId) {\n      id\n      canModify\n      ...OrganizationForm\n      ...OrganizationMemberListOrganization\n      projects {\n        ...ProjectTableItem\n      }\n      invoices {\n        ...Invoice\n      }\n    }\n  }\n':
     types.OrganizationDocument,
@@ -623,8 +623,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n',
-): (typeof documents)['\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n']
+  source: '\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    organization {\n      id\n    }\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n',
+): (typeof documents)['\n  fragment Invoice on Invoice {\n    id\n    invoiceDate\n    customerName\n    organization {\n      id\n    }\n    invoiceItems {\n      id\n      duration\n      hourlyRate\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

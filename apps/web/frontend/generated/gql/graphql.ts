@@ -1292,6 +1292,7 @@ export type InvoiceFragment = {
   id: string
   invoiceDate: string
   customerName: string
+  organization: { __typename?: 'Organization'; id: string }
   invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string; duration: number; hourlyRate: number }>
 } & { ' $fragmentName'?: 'InvoiceFragment' }
 
@@ -3431,6 +3432,14 @@ export const InvoiceFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'invoiceItems' },
             selectionSet: {
               kind: 'SelectionSet',
@@ -5560,6 +5569,14 @@ export const OrganizationDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'invoiceItems' },
