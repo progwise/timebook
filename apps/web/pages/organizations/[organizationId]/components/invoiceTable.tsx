@@ -23,6 +23,7 @@ interface InvoiceTableProps {
 export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
   const router = useRouter()
   const invoicesData = useFragment(InvoiceFragment, invoices)
+  const { organizationId } = router.query
 
   return (
     <div>
@@ -33,7 +34,7 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
             <th>Customer</th>
             <th>Hours</th>
             <th>Total amount</th>
-            <th />
+            <th className="w-px" />
           </tr>
         </thead>
         <tbody className="text-base">
@@ -59,6 +60,16 @@ export const InvoiceTable = ({ invoices }: InvoiceTableProps): JSX.Element => {
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4} />
+            <td>
+              <Link className="btn btn-primary no-animation" href={`/organizations/${organizationId}/invoices/new`}>
+                Create a new invoice
+              </Link>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   )

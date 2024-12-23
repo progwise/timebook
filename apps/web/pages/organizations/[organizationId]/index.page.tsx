@@ -103,15 +103,7 @@ const OrganizationDetails = (): JSX.Element => {
             <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
             <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
               {selectedOrganization.invoices.length > 0 ? (
-                <>
-                  <InvoiceTable invoices={selectedOrganization.invoices} />
-                  <Link
-                    className="btn btn-neutral no-animation btn-block"
-                    href={`/organizations/${organizationId}/invoices/new`}
-                  >
-                    Create a new invoice
-                  </Link>
-                </>
+                <InvoiceTable invoices={selectedOrganization.invoices} />
               ) : (
                 <div>
                   There are currently no invoices in this organization, click{' '}
