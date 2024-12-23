@@ -54,9 +54,7 @@ export const TaskRow = ({ task: taskFragment }: TaskRowProps) => {
   const handleTitleSubmit = async (taskData: Pick<TaskUpdateInput, 'title'>) => {
     const result = await updateTaskTitle({
       id: task.id,
-      data: {
-        title: taskData.title,
-      },
+      data: taskData,
     })
 
     if (result.error) setError('title', { message: 'Network error' })
