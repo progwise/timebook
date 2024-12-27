@@ -52,7 +52,6 @@ input InvoiceInput {
   customerName: String!
   invoiceDate: Date!
   organizationId: ID!
-  sendDate: Date
 }
 
 type InvoiceItem {
