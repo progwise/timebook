@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useMutation, useQuery } from 'urql'
@@ -102,9 +103,18 @@ const OrganizationDetails = (): JSX.Element => {
             <input type="radio" name="tab" role="tab" className="tab" aria-label="Invoices" />
             <div role="tabpanel" className="tab-content rounded-box border-base-300 bg-base-100 p-6">
               {selectedOrganization.invoices.length > 0 ? (
-                <InvoiceTable invoices={selectedOrganization.invoices} />
+                <InvoiceTable invoices={selectedOrganization.invoices} organizationId={selectedOrganization.id} />
               ) : (
-                <div>There are currently no invoices in this organization</div>
+                <div>
+                  There are currently no invoices in this organization, click{' '}
+                  <Link
+                    href={`/organizations/${router.query.organizationId}/invoices/new`}
+                    className="link link-primary"
+                  >
+                    here
+                  </Link>{' '}
+                  to create one.
+                </div>
               )}
             </div>
           </>

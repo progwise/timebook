@@ -56,9 +56,6 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
               Print
             </button>
           </div>
-          <div className="flex self-end">
-            <button className="btn btn-primary btn-sm print:hidden">Send</button>
-          </div>
           <div>
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">Invoice</div>

@@ -1,3 +1,5 @@
+import { invoiceInputValidations } from '@progwise/timebook-validations'
+
 import { builder } from '../builder'
 
 export const InvoiceInput = builder.inputType('InvoiceInput', {
