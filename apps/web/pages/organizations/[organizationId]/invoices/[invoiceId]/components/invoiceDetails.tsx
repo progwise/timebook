@@ -9,6 +9,9 @@ const InvoiceFragment = graphql(`
     invoiceDate
     customerName
     customerAddress
+    payDate
+    sendDate
+    invoiceStatus
   }
 `)
 
@@ -54,9 +57,12 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
             </button>
           </div>
           <div>
-            <h1 className="text-2xl font-bold">INVOICE</h1>
-            <p>Invoice No: #{invoiceData.id}</p>
-            <p className="text-right">Invoice Date: {invoiceData.invoiceDate}</p>
+            <div className="flex items-center gap-2">
+              <div className="text-2xl font-bold">Invoice</div>
+              <span className="badge badge-neutral badge-lg">{invoiceData.invoiceStatus}</span>
+            </div>
+            <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
+            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
           </div>
         </div>
       </div>
@@ -88,7 +94,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           </tr>
         </tbody>
       </table>
-      <div className="flex flex-col text-sm">
+      <div className="text-sm">
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
         </p>

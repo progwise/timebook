@@ -24,7 +24,7 @@ const NewInvoicePage = (): JSX.Element => {
   const router = useRouter()
 
   const { organizationId } = router.query
-  const invoiceDate = format(new Date(), 'yyyy-MM-dd').toString()
+  const invoiceDate = format(new Date(), 'yyyy-MM-dd')
 
   const { register, handleSubmit, formState } = useForm<InvoiceInput>({
     defaultValues: {
