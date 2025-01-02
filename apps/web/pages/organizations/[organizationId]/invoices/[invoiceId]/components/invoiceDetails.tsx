@@ -166,7 +166,7 @@ export const InvoiceDetails = ({
         </div>
       </div>
 
-      <table className="table size-full border-collapse">
+      <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr>
             <th className="w-2/3 border border-neutral">Item</th>
