@@ -37,7 +37,14 @@ type Invoice implements ModifyInterface {
   Items associated with the invoice
   """
   invoiceItems: [InvoiceItem!]!
+
+  """
+  Status of the invoice
+  """
+  invoiceStatus: InvoiceStatus!
   organization: Organization!
+  payDate: Date
+  sendDate: Date
 }
 
 input InvoiceInput {
@@ -74,6 +81,15 @@ type InvoiceItem {
   Task for which the invoice item was booked
   """
   task: Task!
+}
+
+"""
+Status of the invoice
+"""
+enum InvoiceStatus {
+  DRAFT
+  PAID
+  SENT
 }
 
 input InvoiceUpdateInput {
