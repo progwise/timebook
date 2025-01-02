@@ -87,11 +87,11 @@ export const InvoiceDetails = ({
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
-      <div className="flex justify-between text-sm">
-        <div className="flex flex-col gap-4">
+    <div className="rounded-lg p-4 shadow-md">
+      <div className="flex justify-between pb-4 text-sm">
+        <div className="flex flex-col items-start gap-4">
           <div>
-            <Image src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
+            <Image className="m-auto" src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
             <p className="text-lg font-bold">Progwise</p>
             <p>Greifswald</p>
           </div>
@@ -160,13 +160,13 @@ export const InvoiceDetails = ({
         </div>
       </div>
 
-      <table className="table size-full border-collapse border border-neutral">
+      <table className="table size-full border-collapse">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr>
-            <th>Item</th>
-            <th>Duration</th>
-            <th>Hourly Rate</th>
-            <th>Amount</th>
+            <th className="w-2/3 border border-neutral">Item</th>
+            <th className="border border-neutral">Duration</th>
+            <th className="border border-neutral">Hourly Rate</th>
+            <th className="border border-neutral text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -175,14 +175,14 @@ export const InvoiceDetails = ({
               <td className="border border-neutral">{invoiceItem.task.title}</td>
               <td className="border border-neutral">{invoiceItem.duration}</td>
               <td className="border border-neutral">{invoiceItem.hourlyRate}</td>
-              <td className="border border-neutral">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
+              <td className="border border-neutral text-right">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
             </tr>
           ))}
           <tr className="font-bold">
-            <td colSpan={2} className="border border-neutral" />
-            <td className="border border-neutral">Total</td>
-            <td className="border border-neutral">
-              €{invoiceItems.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
+            <td colSpan={2} />
+            <td className="text-right">Total</td>
+            <td className="text-right">
+              € {invoiceItems.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
             </td>
           </tr>
         </tbody>
