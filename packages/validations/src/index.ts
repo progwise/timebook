@@ -1,5 +1,6 @@
 export * from './accessTokenInputValidations'
 export * from './invoiceInputValidations'
+export * from './invoiceItemInputValidations'
 export * from './organizationInputValidations'
 export * from './projectInputValidations'
 export * from './taskInputValidations'

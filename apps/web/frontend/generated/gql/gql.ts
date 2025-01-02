@@ -156,7 +156,7 @@ const documents = {
     types.OrganizationUpdateDocument,
   '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    payDate\n    sendDate\n    invoiceStatus\n  }\n':
     types.InvoiceFragmentFragmentDoc,
-  '\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      title\n    }\n  }\n':
+  '\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      id\n      title\n    }\n  }\n':
     types.InvoiceItemsFragmentFragmentDoc,
   '\n  query invoice($invoiceId: ID!, $organizationId: ID!) {\n    invoice(invoiceId: $invoiceId, organizationId: $organizationId) {\n      ...InvoiceFragment\n      invoiceItems {\n        ...InvoiceItemsFragment\n      }\n    }\n  }\n':
     types.InvoiceDocument,
@@ -647,8 +647,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      title\n    }\n  }\n',
-): (typeof documents)['\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      title\n    }\n  }\n']
+  source: '\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      id\n      title\n    }\n  }\n',
+): (typeof documents)['\n  fragment InvoiceItemsFragment on InvoiceItem {\n    id\n    duration\n    hourlyRate\n    task {\n      id\n      title\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

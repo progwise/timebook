@@ -1,7 +1,11 @@
 import Image from 'next/image'
+import { useForm } from 'react-hook-form'
 import { FaPrint } from 'react-icons/fa6'
 
+import { InputField } from '@progwise/timebook-ui'
+
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
+import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
 
 const InvoiceFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -21,6 +25,7 @@ const InvoiceItemsFragment = graphql(`
     duration
     hourlyRate
     task {
+      id
       title
     }
   }
@@ -34,6 +39,12 @@ interface InvoiceDetailsProps {
 export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) => {
   const invoiceData = useFragment(InvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
+  const tasks = invoiceItemsData.map((item) => item.task)
+  const {
+    register,
+    formState: { isSubmitting, dirtyFields },
+  } = useForm<InvoiceItemInput>()
+
   return (
     <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
       <div className="flex justify-between text-sm">
@@ -85,14 +96,42 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
               <td className="border border-neutral">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
             </tr>
           ))}
-          <tr className="font-bold">
+        </tbody>
+        <tfoot className="text-sm text-base-content">
+          <tr className="font-normal">
+            <td>
+              <select
+                className={`select select-bordered w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
+                {...register('taskId', { disabled: isSubmitting })}
+              >
+                <option value="">Choose the task</option>
+                {tasks.map((task) => (
+                  <option key={task.id} value={task.id}>
+                    {task.title}
+                  </option>
+                ))}
+              </select>
+            </td>
+            <td>
+              <form>
+                <InputField placeholder="duration input field" />
+              </form>
+            </td>
+            <td>
+              <form>
+                <InputField placeholder="hourly rate input field" />
+              </form>
+            </td>
+            <td>amount (autocalculated)</td>
+          </tr>
+          <tr>
             <td colSpan={2} className="border border-neutral" />
             <td className="border border-neutral">Total</td>
             <td className="border border-neutral">
               €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
             </td>
           </tr>
-        </tbody>
+        </tfoot>
       </table>
       <div className="text-sm">
         <p className="font-bold">
