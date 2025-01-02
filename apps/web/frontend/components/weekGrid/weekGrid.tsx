@@ -10,12 +10,19 @@ export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
     tasks {
+      id
+      ...WeekGridTaskRowGroup
       workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
         ...WeekGridFooter
         workHour {
           duration
         }
       }
+    }
+    members {
+      id
+      name
+      image
     }
     ...WeekGridProjectRowGroup
   }
@@ -26,37 +33,45 @@ export interface WeekGridProps {
   startDate: Date
   endDate: Date
   isDataOutdated?: boolean
+  projectMembers: Array<{ id: string; name: string; image?: string }>
 }
 
-export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDate, isDataOutdated = false }) => {
+export const WeekGrid: React.FC<WeekGridProps> = ({
+  tableData,
+  startDate,
+  endDate,
+  isDataOutdated = false,
+  projectMembers,
+}) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
   const allTasks = projects.flatMap((project) => project.tasks)
+  const allProjectMembers = projects.flatMap((project) => project.members)
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
-      : 1 + projects.length + allTasks.length + 1 // header row + project rows + task rows + footer row
+      : 2 + projects.length + allTasks.length + allProjectMembers.length + 1 // header row + project rows + task rows + project members list + footer row
 
   return (
     <div
       role="table"
       className="relative grid items-center [&_div]:border-base-content"
       style={{
-        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 2}, min-content)`,
+        gridTemplateColumns: `min-content minmax(min-content, 1fr) repeat(${numberOfDays + 3}, min-content)`,
         gridTemplateRows: `repeat(${numberOfRows}, min-content)`,
       }}
     >
       {/* adds a border around week day headers, all hour inputs and week day footers */}
-      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-3] size-full rounded-box border opacity-50" />
+      <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-4] size-full rounded-box border opacity-50" />
 
-      {/* adds a border around project row groups and task rows */}
-      <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] size-full rounded-box border opacity-50" />
+      {/* adds a border around project row groups, task row groups and project members */}
+      <div className="pointer-events-none absolute col-start-1 col-end-[-2] row-start-2 row-end-[-2] size-full rounded-box border opacity-50" />
 
       {/* adds a background color to the header row and the footer row*/}
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 size-full rounded-t-box bg-base-200" />
-      <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-[-2] size-full rounded-b-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-4] row-span-1 row-start-1 size-full rounded-t-box bg-base-200" />
+      <div className="absolute col-start-3 col-end-[-4] row-span-1 row-start-[-2] size-full rounded-b-box bg-base-200" />
 
       {/* adds a highlight for a current day of the week */}
       {isWithinInterval(new Date(), interval) && (
@@ -73,6 +88,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
           project={project}
           key={project.id}
           isDataOutdated={isDataOutdated}
+          projectMembers={projectMembers}
         />
       ))}
       {projects.length === 0 && (
