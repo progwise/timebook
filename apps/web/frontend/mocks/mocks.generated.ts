@@ -78,6 +78,13 @@ export enum InvoiceStatus {
   Sent = 'SENT',
 }
 
+export type InvoiceUpdateInput = {
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName?: InputMaybe<Scalars['String']>
+  invoiceDate?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['ID']>
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -97,6 +104,8 @@ export type Mutation = {
   accessTokenDelete: AccessToken
   /** Create a new invoice */
   invoiceCreate: Invoice
+  /** Update an invoice */
+  invoiceUpdate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -167,6 +176,11 @@ export type MutationAccessTokenDeleteArgs = {
 
 export type MutationInvoiceCreateArgs = {
   data: InvoiceInput
+}
+
+export type MutationInvoiceUpdateArgs = {
+  data: InvoiceUpdateInput
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1372,6 +1386,13 @@ export type InvoiceItemsFragmentFragment = {
   task: { __typename?: 'Task'; title: string }
 }
 
+export type InvoiceUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: InvoiceUpdateInput
+}>
+
+export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
+
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
   organizationId: Scalars['ID']
@@ -2216,6 +2237,25 @@ export const mockOrganizationUpdateMutation = (
     any
   >,
 ) => graphql.mutation<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>('organizationUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceUpdate })
+ *   )
+ * })
+ */
+export const mockInvoiceUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceUpdateMutationVariables>,
+    GraphQLContext<InvoiceUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceUpdateMutation, InvoiceUpdateMutationVariables>('invoiceUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

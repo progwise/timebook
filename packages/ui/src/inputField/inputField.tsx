@@ -20,6 +20,7 @@ export interface InputFieldProps {
   hideLabel?: boolean
   onFocus?: React.FocusEventHandler<HTMLInputElement>
   isDirty?: boolean
+  defaultValue?: string
 }
 
 export const InputField = React.forwardRef(
@@ -44,6 +45,7 @@ export const InputField = React.forwardRef(
       onFocus,
       isDirty = false,
       className,
+      defaultValue,
     }: InputFieldProps,
     reference: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
@@ -76,6 +78,7 @@ export const InputField = React.forwardRef(
             size={size}
             form={form}
             onFocus={onFocus}
+            defaultValue={defaultValue}
           />
           {loading && (
             <span className="absolute inset-y-0 right-2 flex">

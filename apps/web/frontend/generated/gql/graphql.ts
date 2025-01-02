@@ -76,6 +76,13 @@ export enum InvoiceStatus {
   Sent = 'SENT',
 }
 
+export type InvoiceUpdateInput = {
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName?: InputMaybe<Scalars['String']>
+  invoiceDate?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['ID']>
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -95,6 +102,8 @@ export type Mutation = {
   accessTokenDelete: AccessToken
   /** Create a new invoice */
   invoiceCreate: Invoice
+  /** Update an invoice */
+  invoiceUpdate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -165,6 +174,11 @@ export type MutationAccessTokenDeleteArgs = {
 
 export type MutationInvoiceCreateArgs = {
   data: InvoiceInput
+}
+
+export type MutationInvoiceUpdateArgs = {
+  data: InvoiceUpdateInput
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1356,6 +1370,13 @@ export type InvoiceItemsFragmentFragment = {
   hourlyRate: number
   task: { __typename?: 'Task'; title: string }
 } & { ' $fragmentName'?: 'InvoiceItemsFragmentFragment' }
+
+export type InvoiceUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: InvoiceUpdateInput
+}>
+
+export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
@@ -5644,6 +5665,56 @@ export const OrganizationUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>
+export const InvoiceUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'invoiceUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceUpdateInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoiceUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InvoiceUpdateMutation, InvoiceUpdateMutationVariables>
 export const InvoiceDocument = {
   kind: 'Document',
   definitions: [
