@@ -30,14 +30,16 @@ interface OrganizationFormProps {
 export const OrganizationForm = (props: OrganizationFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const organization = useFragment(OrganizationFormFragment, props.organization)
-  const { register, handleSubmit, formState } = useForm<OrganizationInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<OrganizationInput>({
     defaultValues: {
       title: organization?.title,
       address: organization?.address,
     },
   })
-
-  const { isSubmitting, errors, isDirty } = formState
 
   const handleSubmitHelper = (data: OrganizationInput) => {
     return onSubmit({

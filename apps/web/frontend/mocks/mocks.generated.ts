@@ -71,6 +71,15 @@ export type InvoiceItem = {
   task: Task
 }
 
+export type InvoiceItemInput = {
+  /** Invoice item duration in minutes */
+  duration: Scalars['Int']
+  /** Invoice item hourly rate in euro */
+  hourlyRate: Scalars['Int']
+  invoiceId: Scalars['ID']
+  taskId: Scalars['ID']
+}
+
 /** Status of the invoice */
 export enum InvoiceStatus {
   Draft = 'DRAFT',
@@ -97,6 +106,8 @@ export type Mutation = {
   accessTokenDelete: AccessToken
   /** Create a new invoice */
   invoiceCreate: Invoice
+  /** Create a new invoice item */
+  invoiceItemCreate: InvoiceItem
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -167,6 +178,10 @@ export type MutationAccessTokenDeleteArgs = {
 
 export type MutationInvoiceCreateArgs = {
   data: InvoiceInput
+}
+
+export type MutationInvoiceItemCreateArgs = {
+  data: InvoiceItemInput
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1369,7 +1384,7 @@ export type InvoiceItemsFragmentFragment = {
   id: string
   duration: number
   hourlyRate: number
-  task: { __typename?: 'Task'; title: string }
+  task: { __typename?: 'Task'; id: string; title: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -1393,7 +1408,7 @@ export type InvoiceQuery = {
       id: string
       duration: number
       hourlyRate: number
-      task: { __typename?: 'Task'; title: string }
+      task: { __typename?: 'Task'; id: string; title: string }
     }>
   }
 }
