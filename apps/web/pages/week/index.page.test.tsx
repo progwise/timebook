@@ -41,8 +41,8 @@ describe('The week page...', () => {
     testRouterQuery.day = '2023-02-27'
     render(<WeekPage />, { wrapper })
 
-    const task1Row = await screen.findByRole('row', { name: /task 1/i })
-    const hourInputs = within(task1Row).queryAllByRole('textbox')
+    const user1Row = await screen.findByRole('row', { name: /user 1/i })
+    const hourInputs = within(user1Row).queryAllByRole('textbox')
     expect(hourInputs).toHaveLength(7)
 
     // expect first two to be disabled, because these inputs are from February (27th & 28th)
