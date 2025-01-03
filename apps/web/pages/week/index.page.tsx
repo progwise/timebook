@@ -21,6 +21,14 @@ const weekGridQueryDocument = graphql(`
       includeProjectsWhereUserBookedWorkHours: true
     ) {
       ...WeekGridProject
+      members {
+        id
+        name
+        image
+      }
+      tasks {
+        ...WeekGridTaskRowGroup
+      }
     }
   }
 `)
@@ -48,6 +56,15 @@ const WeekPage = () => {
     router.push(path)
   }
 
+  const projectMembers =
+    weekGridData?.projects?.flatMap((project) =>
+      project.members.map((member) => ({
+        ...member,
+        name: member.name ?? 'Unknown',
+        image: member.image ?? undefined,
+      })),
+    ) ?? []
+
   return (
     <ProtectedPage>
       <div className="mb-4 flex items-end justify-between">
@@ -71,6 +88,7 @@ const WeekPage = () => {
           startDate={startDate}
           endDate={endDate}
           isDataOutdated={isDataOutdated}
+          projectMembers={projectMembers}
         />
       )}
     </ProtectedPage>

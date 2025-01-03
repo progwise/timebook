@@ -11,8 +11,18 @@ import {
   mockWeekGridQuery,
 } from './mocks.generated'
 
-const testProject1 = { id: 'project1', title: 'Project 1', isArchived: false, members: [{ id: '1', image: undefined }] }
-const testProject2 = { id: 'project2', title: 'Project 2', isArchived: false, members: [{ id: '2', image: undefined }] }
+const testProject1 = {
+  id: 'project1',
+  title: 'Project 1',
+  isArchived: false,
+  members: [{ id: '1', name: 'User 1', image: undefined }],
+}
+const testProject2 = {
+  id: 'project2',
+  title: 'Project 2',
+  isArchived: false,
+  members: [{ id: '2', name: 'User 2', image: undefined }],
+}
 
 let members: ProjectMemberListProjectFragment['members'] = [
   {
@@ -119,7 +129,13 @@ export const projectHandlers = [
                   date: date.toISOString(),
                   isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
                 })),
-                project: { id: testProject1.id, isProjectMember: true, isArchived: false },
+                project: {
+                  id: testProject1.id,
+                  isProjectMember: true,
+                  isArchived: false,
+                  members: testProject1.members,
+                },
+                archived: false,
                 isLocked: false,
                 isLockedByAdmin: false,
               },

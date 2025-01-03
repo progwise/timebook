@@ -6,51 +6,51 @@ import { FaAngleRight } from 'react-icons/fa6'
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { WeekGridTaskRowGroup } from './weekGridTaskRowGroup'
+import { WeekGridTaskRow } from './weekGridTaskRow'
 
-export const WeekGridProjectRowGroupFragment = graphql(`
-  fragment WeekGridProjectRowGroup on Project {
+export const WeekGridTaskRowGroupFragment = graphql(`
+  fragment WeekGridTaskRowGroup on Task {
     id
     title
-    isArchived
-    tasks {
-      id
-      title
-      ...WeekGridTaskRowGroup
-      workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
-        workHour {
-          duration
-        }
+    archived
+    project {
+      members {
+        id
+        name
+        image
       }
     }
+    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+      workHour {
+        duration
+      }
+    }
+    ...WeekGridTaskRow
   }
 `)
 
-interface WeekGridProjectRowGroupProps {
+interface WeekGridTaskRowGroupProps {
   interval: { start: Date; end: Date }
-  project: FragmentType<typeof WeekGridProjectRowGroupFragment>
+  task: FragmentType<typeof WeekGridTaskRowGroupFragment>
   isDataOutdated?: boolean
   projectMembers: Array<{ id: string; name: string; image?: string }>
 }
 
-export const WeekGridProjectRowGroup = ({
+export const WeekGridTaskRowGroup = ({
   interval,
-  project: projectFragment,
+  task: taskFragment,
   isDataOutdated = false,
   projectMembers,
-}: WeekGridProjectRowGroupProps) => {
-  const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
+}: WeekGridTaskRowGroupProps) => {
+  const task = useFragment(WeekGridTaskRowGroupFragment, taskFragment)
 
-  const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
+  const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${task.id}`, {
     defaultValue: false,
     initializeWithValue: false,
   })
 
-  const workHours = project.tasks.flatMap((task) => task.workHourOfDays)
-  const projectDuration = workHours.reduce(
-    (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
-    0,
-  )
+  const workHours = task.workHourOfDays
+  const taskDuration = workHours.reduce((accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0), 0)
 
   return (
     <>
@@ -60,8 +60,8 @@ export const WeekGridProjectRowGroup = ({
           role="cell"
         >
           <FaAngleRight className={`${isCollapsed ? '' : 'rotate-90'} transition`} />
-          <Link href={`projects/${project.id}`} className="link-hover link flex items-center gap-1">
-            {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
+          <Link href={`tasks/${task.id}`} className="link-hover link flex items-center gap-1">
+            {task.archived ? <span title="This task was archived">🗄️ {task.title}</span> : task.title}
           </Link>
         </div>
 
@@ -75,17 +75,17 @@ export const WeekGridProjectRowGroup = ({
           {isDataOutdated ? (
             <div className="skeleton h-8 w-9" />
           ) : (
-            <FormattedDuration title="" minutes={projectDuration} />
+            <FormattedDuration title="" minutes={taskDuration} />
           )}
         </div>
       </div>
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
+      <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
-        {project.tasks.map((task) => (
-          <WeekGridTaskRowGroup
-            interval={interval}
+        {task.project.members.map((member) => (
+          <WeekGridTaskRow
             task={task}
-            key={task.id}
+            key={member.id}
             isDataOutdated={isDataOutdated}
             projectMembers={projectMembers}
           />
