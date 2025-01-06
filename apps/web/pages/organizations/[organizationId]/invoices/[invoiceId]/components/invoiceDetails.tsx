@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaPlus, FaPrint } from 'react-icons/fa6'
 import { useMutation } from 'urql'
@@ -69,21 +70,23 @@ interface InvoiceDetailsProps {
 export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) => {
   const invoiceData = useFragment(InvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
-  const tasks = invoiceData.organization.projects.flatMap((project) => project.tasks)
-  const availableTasks = tasks.filter(
-    (task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id),
-  )
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { isSubmitting, errors, isDirty, dirtyFields },
   } = useForm<InvoiceItemFormData>({
     resolver: zodResolver(invoiceItemInputSchema),
     defaultValues: { duration: 0, hourlyRate: 0 },
   })
-
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
+  const [amount, setAmount] = useState<number>(0)
+
+  const tasks = invoiceData.organization.projects.flatMap((project) => project.tasks)
+  const availableTasks = tasks.filter(
+    (task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id),
+  )
 
   const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
     try {
@@ -96,8 +99,16 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
       }
+
+      setAmount(0)
       reset()
     } catch {}
+  }
+
+  const handleBlur = () => {
+    const { duration, hourlyRate } = getValues()
+    const amount = duration * hourlyRate || 0
+    setAmount(amount)
   }
 
   return (
@@ -153,8 +164,8 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
-          <tr className="font-normal">
-            <td>
+          <tr className="font-normal print:hidden">
+            <td className="border border-neutral">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <select
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
@@ -175,7 +186,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                 </select>
               </form>
             </td>
-            <td>
+            <td className="border border-neutral">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
                   className="input-sm"
@@ -184,10 +195,11 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                   {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
                   errorMessage={errors.duration?.message}
                   isDirty={isDirty && dirtyFields.duration}
+                  onBlur={handleBlur}
                 />
               </form>
             </td>
-            <td>
+            <td className="border border-neutral">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
                   className="input-sm"
@@ -196,12 +208,17 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                   {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
                   errorMessage={errors.hourlyRate?.message}
                   isDirty={isDirty && dirtyFields.hourlyRate}
+                  onBlur={handleBlur}
                 />
               </form>
             </td>
-            <td className="">
+            <td className="border border-neutral text-right">{amount}</td>
+          </tr>
+          <tr className="print:hidden">
+            <td colSpan={3} />
+            <td>
               <button
-                className="btn btn-success btn-sm min-w-20"
+                className="btn btn-success btn-sm mx-[-10px] min-w-16"
                 type="submit"
                 disabled={isSubmitting}
                 form="form-create-invoice-item"
