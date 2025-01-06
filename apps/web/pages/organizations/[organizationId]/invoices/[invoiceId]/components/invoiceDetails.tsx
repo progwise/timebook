@@ -1,8 +1,12 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
-import { FaPrint } from 'react-icons/fa6'
+import { FaPlus, FaPrint } from 'react-icons/fa6'
+import { useMutation } from 'urql'
+import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
+import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
@@ -16,6 +20,16 @@ const InvoiceFragment = graphql(`
     payDate
     sendDate
     invoiceStatus
+    organization {
+      id
+      projects {
+        id
+        tasks {
+          id
+          title
+        }
+      }
+    }
   }
 `)
 
@@ -31,6 +45,22 @@ const InvoiceItemsFragment = graphql(`
   }
 `)
 
+const InvoiceItemCreateMutationDocument = graphql(`
+  mutation invoiceItemCreate($data: InvoiceItemInput!) {
+    invoiceItemCreate(data: $data) {
+      id
+    }
+  }
+`)
+
+export type InvoiceItemFormData = Pick<InvoiceItemInput, 'taskId' | 'duration' | 'hourlyRate'>
+
+export const invoiceItemInputSchema: z.ZodSchema<InvoiceItemFormData> = invoiceItemInputValidations.pick({
+  taskId: true,
+  duration: true,
+  hourlyRate: true,
+})
+
 interface InvoiceDetailsProps {
   invoice: FragmentType<typeof InvoiceFragment>
   invoiceItems: FragmentType<typeof InvoiceItemsFragment>[]
@@ -39,11 +69,36 @@ interface InvoiceDetailsProps {
 export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) => {
   const invoiceData = useFragment(InvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
-  const tasks = invoiceItemsData.map((item) => item.task)
+  const tasks = invoiceData.organization.projects.flatMap((project) => project.tasks)
+  const availableTasks = tasks.filter(
+    (task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id),
+  )
   const {
     register,
-    formState: { isSubmitting, dirtyFields },
-  } = useForm<InvoiceItemInput>()
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, errors, isDirty, dirtyFields },
+  } = useForm<InvoiceItemFormData>({
+    resolver: zodResolver(invoiceItemInputSchema),
+    defaultValues: { duration: 0, hourlyRate: 0 },
+  })
+
+  const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
+
+  const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
+    try {
+      const result = await invoiceItemCreate({
+        data: {
+          invoiceId: invoiceData.id,
+          ...invoiceItemData,
+        },
+      })
+      if (result.error) {
+        throw new Error(`GraphQL Error ${result.error}`)
+      }
+      reset()
+    } catch {}
+  }
 
   return (
     <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
@@ -78,13 +133,13 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
         </div>
       </div>
 
-      <table className="table size-full border-collapse border border-neutral">
+      <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr>
-            <th>Item</th>
-            <th>Duration</th>
-            <th>Hourly Rate</th>
-            <th>Amount</th>
+            <th className="w-2/3 border border-neutral">Item</th>
+            <th className="border border-neutral">Duration</th>
+            <th className="border border-neutral">Hourly Rate</th>
+            <th className="border border-neutral text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -93,41 +148,72 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
               <td className="border border-neutral">{invoiceItem.task.title}</td>
               <td className="border border-neutral">{invoiceItem.duration}</td>
               <td className="border border-neutral">{invoiceItem.hourlyRate}</td>
-              <td className="border border-neutral">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
+              <td className="border border-neutral text-right">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
             </tr>
           ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal">
             <td>
-              <select
-                className={`select select-bordered w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
-                {...register('taskId', { disabled: isSubmitting })}
+              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
+                <select
+                  className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
+                  {...register('taskId', { disabled: isSubmitting })}
+                >
+                  {availableTasks.length === 0 ? (
+                    <option value="">No tasks available</option>
+                  ) : (
+                    <>
+                      <option value="">Choose the task</option>
+                      {availableTasks.map((task) => (
+                        <option key={task.id} value={task.id}>
+                          {task.title}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+              </form>
+            </td>
+            <td>
+              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
+                <InputField
+                  className="input-sm"
+                  type="number"
+                  placeholder="Enter a duration"
+                  {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
+                  errorMessage={errors.duration?.message}
+                  isDirty={isDirty && dirtyFields.duration}
+                />
+              </form>
+            </td>
+            <td>
+              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
+                <InputField
+                  className="input-sm"
+                  type="number"
+                  placeholder="Enter an hourly rate"
+                  {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
+                  errorMessage={errors.hourlyRate?.message}
+                  isDirty={isDirty && dirtyFields.hourlyRate}
+                />
+              </form>
+            </td>
+            <td className="">
+              <button
+                className="btn btn-success btn-sm min-w-20"
+                type="submit"
+                disabled={isSubmitting}
+                form="form-create-invoice-item"
               >
-                <option value="">Choose the task</option>
-                {tasks.map((task) => (
-                  <option key={task.id} value={task.id}>
-                    {task.title}
-                  </option>
-                ))}
-              </select>
+                <FaPlus /> Add
+              </button>
             </td>
-            <td>
-              <form>
-                <InputField placeholder="duration input field" />
-              </form>
-            </td>
-            <td>
-              <form>
-                <InputField placeholder="hourly rate input field" />
-              </form>
-            </td>
-            <td>amount (autocalculated)</td>
           </tr>
           <tr>
-            <td colSpan={2} className="border border-neutral" />
-            <td className="border border-neutral">Total</td>
-            <td className="border border-neutral">
+            <td colSpan={2} />
+            <td className="text-right">Total</td>
+            <td className="text-right">
               €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
             </td>
           </tr>

@@ -1377,6 +1377,15 @@ export type InvoiceFragmentFragment = {
   payDate?: string | null
   sendDate?: string | null
   invoiceStatus: InvoiceStatus
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+    }>
+  }
 }
 
 export type InvoiceItemsFragmentFragment = {
@@ -1385,6 +1394,15 @@ export type InvoiceItemsFragmentFragment = {
   duration: number
   hourlyRate: number
   task: { __typename?: 'Task'; id: string; title: string }
+}
+
+export type InvoiceItemCreateMutationVariables = Exact<{
+  data: InvoiceItemInput
+}>
+
+export type InvoiceItemCreateMutation = {
+  __typename?: 'Mutation'
+  invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -1410,6 +1428,15 @@ export type InvoiceQuery = {
       hourlyRate: number
       task: { __typename?: 'Task'; id: string; title: string }
     }>
+    organization: {
+      __typename?: 'Organization'
+      id: string
+      projects: Array<{
+        __typename?: 'Project'
+        id: string
+        tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+      }>
+    }
   }
 }
 
@@ -2231,6 +2258,25 @@ export const mockOrganizationUpdateMutation = (
     any
   >,
 ) => graphql.mutation<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>('organizationUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceItemCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceItemCreate })
+ *   )
+ * })
+ */
+export const mockInvoiceItemCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceItemCreateMutationVariables>,
+    GraphQLContext<InvoiceItemCreateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceItemCreateMutation, InvoiceItemCreateMutationVariables>('invoiceItemCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
