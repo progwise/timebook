@@ -21,14 +21,6 @@ const weekGridQueryDocument = graphql(`
       includeProjectsWhereUserBookedWorkHours: true
     ) {
       ...WeekGridProject
-      members {
-        id
-        name
-        image
-      }
-      tasks {
-        ...WeekGridTaskRow
-      }
     }
   }
 `)

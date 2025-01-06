@@ -15,7 +15,6 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     isArchived
     tasks {
       id
-      title
       ...WeekGridTaskRow
       workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
         workHour {
@@ -64,7 +63,6 @@ export const WeekGridProjectRowGroup = ({
             {project.isArchived ? <span title="This project was archived">🗄️ {project.title}</span> : project.title}
           </Link>
         </div>
-
         {eachDayOfInterval(interval).map((day) => (
           <div key={day.toDateString()} className="self-stretch bg-base-200" role="cell" />
         ))}

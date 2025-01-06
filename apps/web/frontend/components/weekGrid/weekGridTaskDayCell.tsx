@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-// import { useRouter } from 'next/router'
 import { useMutation } from 'urql'
 
 import { graphql } from '../../generated/gql'
@@ -19,7 +18,7 @@ interface WeekGridTaskDayCellProps {
   day: Date
   disabled: boolean
   isDataOutdated?: boolean
-  projectMemberUserId?: string
+  currentUserId: string
 }
 
 export const WeekGridTaskDayCell = ({
@@ -28,10 +27,9 @@ export const WeekGridTaskDayCell = ({
   day,
   disabled,
   isDataOutdated = false,
-  projectMemberUserId,
+  currentUserId,
 }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
-  // const router = useRouter()
 
   return (
     <div key={day.toDateString()} className="z-20 justify-self-center px-4" role="cell">
@@ -49,7 +47,7 @@ export const WeekGridTaskDayCell = ({
                 },
                 date: format(day, 'yyyy-MM-dd'),
                 taskId,
-                projectMemberUserId,
+                projectMemberUserId: currentUserId,
               })
             }}
             duration={duration}

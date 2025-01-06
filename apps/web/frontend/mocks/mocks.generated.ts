@@ -1516,7 +1516,6 @@ export type WeekGridQuery = {
     id: string
     title: string
     isArchived: boolean
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     tasks: Array<{
       __typename?: 'Task'
       id: string
