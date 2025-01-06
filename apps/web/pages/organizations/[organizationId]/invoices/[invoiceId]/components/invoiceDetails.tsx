@@ -165,7 +165,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden">
-            <td className="border border-neutral">
+            <td className="border border-neutral p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <select
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
@@ -186,7 +186,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                 </select>
               </form>
             </td>
-            <td className="border border-neutral">
+            <td className="border border-neutral p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
                   className="input-sm"
@@ -199,7 +199,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                 />
               </form>
             </td>
-            <td className="border border-neutral">
+            <td className="border border-neutral p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
                   className="input-sm"
