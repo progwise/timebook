@@ -9,7 +9,7 @@ import { InputField } from '@progwise/timebook-ui'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 
-const InvoiceFragment = graphql(`
+const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
     id
     invoiceDate
@@ -18,16 +18,13 @@ const InvoiceFragment = graphql(`
     payDate
     sendDate
     invoiceStatus
-  }
-`)
-
-const InvoiceItemsFragment = graphql(`
-  fragment InvoiceItemsFragment on InvoiceItem {
-    id
-    duration
-    hourlyRate
-    task {
-      title
+    invoiceItems {
+      id
+      duration
+      hourlyRate
+      task {
+        title
+      }
     }
   }
 `)
@@ -41,51 +38,40 @@ const InvoiceUpdateMutationDocument = graphql(`
 `)
 
 interface InvoiceDetailsProps {
-  invoice: FragmentType<typeof InvoiceFragment>
-  invoiceItems: FragmentType<typeof InvoiceItemsFragment>[]
+  invoice: FragmentType<typeof InvoiceDetailsFragment>
 }
 
-export const InvoiceDetails = ({
-  invoice: invoiceFragment,
-  invoiceItems: invoiceItemsFragment,
-}: InvoiceDetailsProps) => {
-  const invoice = useFragment(InvoiceFragment, invoiceFragment)
-  const invoiceItems = useFragment(InvoiceItemsFragment, invoiceItemsFragment)
+export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps) => {
+  const invoice = useFragment(InvoiceDetailsFragment, invoiceFragment)
   const {
     setError,
     handleSubmit,
     formState: { errors },
     register,
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
-  const [{ fetching: fetchingName }, updateInvoiceName] = useMutation(InvoiceUpdateMutationDocument)
-  const [{ fetching: fetchingAddress }, updateInvoiceAddress] = useMutation(InvoiceUpdateMutationDocument)
+  const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
 
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [isEditingAddress, setIsEditingAddress] = useState(false)
+  const [isEditing, setIsEditing] = useState<{ field: 'customerName' | 'customerAddress' | null }>({ field: null })
 
-  const handleNameSubmit = async (invoiceData: Pick<InvoiceUpdateInput, 'customerName'>) => {
-    const result = await updateInvoiceName({
+  const handleSubmitHelper = async (invoiceData: Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>) => {
+    const result = await updateInvoice({
       id: invoice.id,
       data: invoiceData,
     })
 
-    if (result.error) setError('customerName', { message: 'Network error' })
-  }
-
-  const handleAddressSubmit = async (invoiceData: Pick<InvoiceUpdateInput, 'customerAddress'>) => {
-    const result = await updateInvoiceAddress({
-      id: invoice.id,
-      data: invoiceData,
-    })
-
-    if (result.error) setError('customerAddress', { message: 'Network error' })
+    if (result.error) {
+      if (invoiceData.customerName) setError('customerName', { message: 'Network error' })
+      if (invoiceData.customerAddress) setError('customerAddress', { message: 'Network error' })
+    } else {
+      setIsEditing({ field: null })
+    }
   }
 
   const handleBlur = (field: 'customerName' | 'customerAddress') => {
     if (field === 'customerName') {
-      setIsEditingName(false)
+      setIsEditing({ field: null })
     } else if (field === 'customerAddress') {
-      setIsEditingAddress(false)
+      setIsEditing({ field: null })
     }
   }
 
@@ -100,14 +86,14 @@ export const InvoiceDetails = ({
           </div>
           <div>
             <h2 className="text-lg font-bold">Billed to:</h2>
-            {isEditingName ? (
+            {isEditing.field === 'customerName' ? (
               <InputField
                 {...register('customerName', { required: true })}
                 onBlur={() => {
-                  handleSubmit(handleNameSubmit)()
+                  handleSubmit(handleSubmitHelper)()
                   handleBlur('customerName')
                 }}
-                loading={fetchingName}
+                loading={fetching}
                 errorMessage={errors.customerName?.message}
                 defaultValue={invoice.customerName}
                 className="input-sm"
@@ -117,20 +103,20 @@ export const InvoiceDetails = ({
                 {invoice.customerName}
                 <button
                   className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
-                  onClick={() => setIsEditingName(true)}
+                  onClick={() => setIsEditing({ field: 'customerName' })}
                 >
                   <FaPen />
                 </button>
               </p>
             )}
-            {isEditingAddress ? (
+            {isEditing.field === 'customerAddress' ? (
               <InputField
                 {...register('customerAddress')}
                 onBlur={() => {
-                  handleSubmit(handleAddressSubmit)()
+                  handleSubmit(handleSubmitHelper)()
                   handleBlur('customerAddress')
                 }}
-                loading={fetchingAddress}
+                loading={fetching}
                 errorMessage={errors.customerAddress?.message}
                 defaultValue={invoice.customerAddress ?? ''}
                 className="input-sm"
@@ -140,7 +126,7 @@ export const InvoiceDetails = ({
                 {invoice.customerAddress}
                 <button
                   className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
-                  onClick={() => setIsEditingAddress(true)}
+                  onClick={() => setIsEditing({ field: 'customerAddress' })}
                 >
                   <FaPen />
                 </button>
@@ -176,7 +162,7 @@ export const InvoiceDetails = ({
           </tr>
         </thead>
         <tbody>
-          {invoiceItems.map((invoiceItem) => (
+          {invoice.invoiceItems.map((invoiceItem) => (
             <tr key={invoiceItem.id}>
               <td className="border border-neutral">{invoiceItem.task.title}</td>
               <td className="border border-neutral">{invoiceItem.duration}</td>
@@ -188,7 +174,7 @@ export const InvoiceDetails = ({
             <td colSpan={2} />
             <td className="text-right">Total</td>
             <td className="text-right">
-              € {invoiceItems.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
+              € {invoice.invoiceItems.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
             </td>
           </tr>
         </tbody>

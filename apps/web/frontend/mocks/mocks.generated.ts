@@ -1376,14 +1376,13 @@ export type InvoiceFragmentFragment = {
   payDate?: string | null
   sendDate?: string | null
   invoiceStatus: InvoiceStatus
-}
-
-export type InvoiceItemsFragmentFragment = {
-  __typename?: 'InvoiceItem'
-  id: string
-  duration: number
-  hourlyRate: number
-  task: { __typename?: 'Task'; title: string }
+  invoiceItems: Array<{
+    __typename?: 'InvoiceItem'
+    id: string
+    duration: number
+    hourlyRate: number
+    task: { __typename?: 'Task'; title: string }
+  }>
 }
 
 export type InvoiceUpdateMutationVariables = Exact<{
