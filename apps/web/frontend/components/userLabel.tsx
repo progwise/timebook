@@ -26,7 +26,7 @@ export const UserLabel = ({
   const minutes = ((duration ?? 0) % 60).toString().padStart(2, '0')
   const numberOfMembersToBeDisplayed =
     maxNumberOfAvatars === members?.length ? maxNumberOfAvatars : maxNumberOfAvatars - 1
-  const styleImage = { width: imageSize, height: imageSize }
+  const styleImage = { width: imageSize, height: imageSize, minWidth: imageSize, minHeight: imageSize }
 
   return (
     <div className="flex items-center gap-1">

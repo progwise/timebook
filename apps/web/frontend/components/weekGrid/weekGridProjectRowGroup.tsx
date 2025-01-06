@@ -6,7 +6,7 @@ import { FaAngleRight } from 'react-icons/fa6'
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { WeekGridTaskRowGroup } from './weekGridTaskRowGroup'
+import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
   fragment WeekGridProjectRowGroup on Project {
@@ -16,7 +16,7 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     tasks {
       id
       title
-      ...WeekGridTaskRowGroup
+      ...WeekGridTaskRow
       workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
         workHour {
           duration
@@ -30,14 +30,14 @@ interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
   isDataOutdated?: boolean
-  projectMembers: Array<{ id: string; name: string; image?: string }>
+  currentUserId: string
 }
 
 export const WeekGridProjectRowGroup = ({
   interval,
   project: projectFragment,
   isDataOutdated = false,
-  projectMembers,
+  currentUserId,
 }: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
 
@@ -82,13 +82,7 @@ export const WeekGridProjectRowGroup = ({
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRowGroup
-            interval={interval}
-            task={task}
-            key={task.id}
-            isDataOutdated={isDataOutdated}
-            projectMembers={projectMembers}
-          />
+          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} currentUserId={currentUserId} />
         ))}
       </div>
     </>

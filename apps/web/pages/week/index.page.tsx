@@ -27,7 +27,7 @@ const weekGridQueryDocument = graphql(`
         image
       }
       tasks {
-        ...WeekGridTaskRowGroup
+        ...WeekGridTaskRow
       }
     }
   }
@@ -40,6 +40,7 @@ const WeekPage = () => {
   const startDate = startOfWeek(day, { weekStartsOn: 1 })
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
   const { selectedUserId, handleUserChange, myProjectsMembersData } = useProjectMembers()
+  const currentUserId = selectedUserId ?? ''
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
   const projectMemberUserId = router.query.userId?.toString()
@@ -55,15 +56,6 @@ const WeekPage = () => {
     const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${projectMemberUserId ? `?userId=${projectMemberUserId}` : ''}`
     router.push(path)
   }
-
-  const projectMembers =
-    weekGridData?.projects?.flatMap((project) =>
-      project.members.map((member) => ({
-        ...member,
-        name: member.name ?? 'Unknown',
-        image: member.image ?? undefined,
-      })),
-    ) ?? []
 
   return (
     <ProtectedPage>
@@ -88,7 +80,7 @@ const WeekPage = () => {
           startDate={startDate}
           endDate={endDate}
           isDataOutdated={isDataOutdated}
-          projectMembers={projectMembers}
+          currentUserId={currentUserId}
         />
       )}
     </ProtectedPage>

@@ -1127,7 +1127,6 @@ export type WeekGridProjectFragment = {
     __typename?: 'Task'
     id: string
     title: string
-    archived: boolean
     isLockedByAdmin: boolean
     isLocked: boolean
     workHourOfDays: Array<{
@@ -1138,10 +1137,7 @@ export type WeekGridProjectFragment = {
     }>
     project: {
       __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
       id: string
-      isProjectMember: boolean
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
@@ -1151,7 +1147,6 @@ export type WeekGridProjectFragment = {
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
   }>
-  members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
 }
 
 export type WeekGridFooterFragment = {
@@ -1169,7 +1164,6 @@ export type WeekGridProjectRowGroupFragment = {
     __typename?: 'Task'
     id: string
     title: string
-    archived: boolean
     isLockedByAdmin: boolean
     isLocked: boolean
     workHourOfDays: Array<{
@@ -1180,10 +1174,7 @@ export type WeekGridProjectRowGroupFragment = {
     }>
     project: {
       __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
       id: string
-      isProjectMember: boolean
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
@@ -1215,39 +1206,7 @@ export type WeekGridTaskRowFragment = {
   isLocked: boolean
   project: {
     __typename?: 'Project'
-    startDate?: string | null
-    endDate?: string | null
     id: string
-    isProjectMember: boolean
-    isArchived: boolean
-    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
-  }
-  workHourOfDays: Array<{
-    __typename?: 'WorkHourOfDay'
-    date: string
-    isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
-  }>
-  tracking?: {
-    __typename?: 'Tracking'
-    start: string
-    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
-  } | null
-}
-
-export type WeekGridTaskRowGroupFragment = {
-  __typename?: 'Task'
-  id: string
-  title: string
-  archived: boolean
-  isLockedByAdmin: boolean
-  isLocked: boolean
-  project: {
-    __typename?: 'Project'
-    startDate?: string | null
-    endDate?: string | null
-    id: string
-    isProjectMember: boolean
     isArchived: boolean
     members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
@@ -1562,7 +1521,6 @@ export type WeekGridQuery = {
       __typename?: 'Task'
       id: string
       title: string
-      archived: boolean
       isLockedByAdmin: boolean
       isLocked: boolean
       workHourOfDays: Array<{
@@ -1573,10 +1531,7 @@ export type WeekGridQuery = {
       }>
       project: {
         __typename?: 'Project'
-        startDate?: string | null
-        endDate?: string | null
         id: string
-        isProjectMember: boolean
         isArchived: boolean
         members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
       }
