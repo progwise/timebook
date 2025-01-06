@@ -51,7 +51,9 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
 
-  const [isEditing, setIsEditing] = useState<{ field: 'customerName' | 'customerAddress' | null }>({ field: null })
+  const [isEditing, setIsEditing] = useState<{ field: 'customerName' | 'customerAddress' | undefined }>({
+    field: undefined,
+  })
 
   const handleSubmitHelper = async (invoiceData: Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>) => {
     const result = await updateInvoice({
@@ -63,15 +65,15 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       if (invoiceData.customerName) setError('customerName', { message: 'Network error' })
       if (invoiceData.customerAddress) setError('customerAddress', { message: 'Network error' })
     } else {
-      setIsEditing({ field: null })
+      setIsEditing({ field: undefined })
     }
   }
 
   const handleBlur = (field: 'customerName' | 'customerAddress') => {
     if (field === 'customerName') {
-      setIsEditing({ field: null })
+      setIsEditing({ field: undefined })
     } else if (field === 'customerAddress') {
-      setIsEditing({ field: null })
+      setIsEditing({ field: undefined })
     }
   }
 
