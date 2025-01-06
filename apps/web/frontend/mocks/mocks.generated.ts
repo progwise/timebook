@@ -1383,6 +1383,7 @@ export type InvoiceFragmentFragment = {
     projects: Array<{
       __typename?: 'Project'
       id: string
+      title: string
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1434,6 +1435,7 @@ export type InvoiceQuery = {
       projects: Array<{
         __typename?: 'Project'
         id: string
+        title: string
         tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
       }>
     }

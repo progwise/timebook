@@ -25,6 +25,7 @@ const InvoiceFragment = graphql(`
       id
       projects {
         id
+        title
         tasks {
           id
           title
@@ -83,11 +84,6 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
   const [amount, setAmount] = useState<number>(0)
 
-  const tasks = invoiceData.organization.projects.flatMap((project) => project.tasks)
-  const availableTasks = tasks.filter(
-    (task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id),
-  )
-
   const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
     try {
       const result = await invoiceItemCreate({
@@ -111,9 +107,18 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
     setAmount(amount)
   }
 
+  const availableTasksByProject = invoiceData.organization.projects.map((project) =>
+    project.tasks.filter((task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id)),
+  )
+
+  const filteredProjectsWithTasks = availableTasksByProject
+    // eslint-disable-next-line unicorn/no-null
+    .map((tasks, index) => (tasks.length > 0 ? index : null))
+    .filter((index) => index !== null)
+
   return (
-    <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
-      <div className="flex justify-between text-sm">
+    <div className="flex flex-col gap-4 rounded-lg p-4 text-sm shadow-md">
+      <div className="flex justify-between">
         <div className="flex flex-col gap-4">
           <div>
             <Image className="m-auto" src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
@@ -136,10 +141,10 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
           <div>
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">Invoice</div>
-              <span className="badge badge-neutral badge-lg">{invoiceData.invoiceStatus}</span>
+              <span className="badge badge-neutral badge-lg print:hidden">{invoiceData.invoiceStatus}</span>
             </div>
-            <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
-            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
+            <p>Invoice No: #{invoiceData.id}</p>
+            <p className="text-right">Invoice Date: {invoiceData.invoiceDate}</p>
           </div>
         </div>
       </div>
@@ -147,10 +152,10 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
       <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr>
-            <th className="w-2/3 border border-neutral">Item</th>
-            <th className="border border-neutral">Duration</th>
-            <th className="border border-neutral">Hourly Rate</th>
-            <th className="border border-neutral text-right">Amount</th>
+            <th className="border border-neutral">Item</th>
+            <th className="w-1/12 border border-neutral">Duration</th>
+            <th className="w-1/12 border border-neutral">Hourly Rate</th>
+            <th className="w-1/12 border border-neutral text-right">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -171,15 +176,22 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                   {...register('taskId', { disabled: isSubmitting })}
                 >
-                  {availableTasks.length === 0 ? (
+                  {availableTasksByProject.length === 0 ? (
                     <option value="">No tasks available</option>
                   ) : (
                     <>
-                      <option value="">Choose the task</option>
-                      {availableTasks.map((task) => (
-                        <option key={task.id} value={task.id}>
-                          {task.title}
-                        </option>
+                      <option value="">Select a task</option>
+                      {filteredProjectsWithTasks.map((index) => (
+                        <optgroup
+                          key={invoiceData.organization.projects[index].id}
+                          label={invoiceData.organization.projects[index].title}
+                        >
+                          {availableTasksByProject[index].map((task) => (
+                            <option key={task.id} value={task.id}>
+                              {task.title}
+                            </option>
+                          ))}
+                        </optgroup>
                       ))}
                     </>
                   )}
@@ -214,29 +226,22 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
             </td>
             <td className="border border-neutral text-right">{amount}</td>
           </tr>
-          <tr className="print:hidden">
-            <td colSpan={3} />
-            <td>
-              <button
-                className="btn btn-success btn-sm mx-[-10px] min-w-16"
-                type="submit"
-                disabled={isSubmitting}
-                form="form-create-invoice-item"
-              >
-                <FaPlus /> Add
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} />
-            <td className="text-right">Total</td>
-            <td className="text-right">
-              €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
-            </td>
-          </tr>
         </tfoot>
       </table>
-      <div className="text-sm">
+      <div className="text-end">
+        <button
+          className="btn btn-success btn-sm print:hidden"
+          type="submit"
+          disabled={isSubmitting}
+          form="form-create-invoice-item"
+        >
+          <FaPlus /> Add
+        </button>
+        <div className="pt-2 font-bold">
+          Total €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
+        </div>
+      </div>
+      <div>
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
         </p>

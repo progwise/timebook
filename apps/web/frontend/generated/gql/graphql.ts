@@ -1368,6 +1368,7 @@ export type InvoiceFragmentFragment = {
     projects: Array<{
       __typename?: 'Project'
       id: string
+      title: string
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -3524,6 +3525,7 @@ export const InvoiceFragmentFragmentDoc = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -5831,6 +5833,7 @@ export const InvoiceDocument = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
