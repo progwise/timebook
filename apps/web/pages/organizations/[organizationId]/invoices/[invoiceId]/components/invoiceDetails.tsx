@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import Image from 'next/image'
 import { FaPrint } from 'react-icons/fa6'
 
@@ -12,6 +13,8 @@ const InvoiceFragment = graphql(`
     payDate
     sendDate
     invoiceStatus
+    invoiceWorkFrom
+    invoiceWorkUntil
   }
 `)
 
@@ -34,6 +37,9 @@ interface InvoiceDetailsProps {
 export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) => {
   const invoiceData = useFragment(InvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsFragment, invoiceItems)
+
+  const formattedInvoiceDate = format(new Date(invoiceData.invoiceDate ?? ''), 'd MMMM yyyy')
+
   return (
     <div className="flex flex-col gap-4 rounded-lg p-4 shadow-md">
       <div className="flex justify-between text-sm">
@@ -62,7 +68,10 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
               <span className="badge badge-neutral badge-lg">{invoiceData.invoiceStatus}</span>
             </div>
             <p className="text-sm text-gray-600">Invoice No: #{invoiceData.id}</p>
-            <p className="text-right text-sm text-gray-600">Invoice Date: {invoiceData.invoiceDate}</p>
+            <p className="text-right text-sm">
+              {invoiceData.invoiceWorkFrom} - {invoiceData.invoiceWorkUntil}
+            </p>
+            <p className="text-right text-sm text-gray-600">Created on: {formattedInvoiceDate}</p>
           </div>
         </div>
       </div>

@@ -11,6 +11,8 @@ export const Invoice = builder.prismaObject('Invoice', {
     invoiceDate: t.expose('invoiceDate', { type: 'Date' }),
     customerAddress: t.exposeString('customerAddress', { nullable: true }),
     customerName: t.exposeString('customerName'),
+    invoiceWorkFrom: t.expose('invoiceWorkFrom', { type: 'Date', nullable: true }),
+    invoiceWorkUntil: t.expose('invoiceWorkUntil', { type: 'Date', nullable: true }),
     payDate: t.expose('payDate', { type: 'Date', nullable: true }),
     sendDate: t.expose('sendDate', { type: 'Date', nullable: true }),
     invoiceStatus: t.field({

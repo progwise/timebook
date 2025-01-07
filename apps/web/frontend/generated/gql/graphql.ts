@@ -41,6 +41,8 @@ export type Invoice = ModifyInterface & {
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
+  invoiceWorkFrom?: Maybe<Scalars['Date']>
+  invoiceWorkUntil?: Maybe<Scalars['Date']>
   organization: Organization
   payDate?: Maybe<Scalars['Date']>
   sendDate?: Maybe<Scalars['Date']>
@@ -50,6 +52,8 @@ export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']
+  invoiceWorkFrom?: InputMaybe<Scalars['Date']>
+  invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId: Scalars['ID']
 }
 
@@ -1347,6 +1351,8 @@ export type InvoiceFragmentFragment = {
   payDate?: string | null
   sendDate?: string | null
   invoiceStatus: InvoiceStatus
+  invoiceWorkFrom?: string | null
+  invoiceWorkUntil?: string | null
 } & { ' $fragmentName'?: 'InvoiceFragmentFragment' }
 
 export type InvoiceItemsFragmentFragment = {
@@ -3477,6 +3483,8 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
         ],
       },
     },
@@ -5713,6 +5721,8 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
         ],
       },
     },
