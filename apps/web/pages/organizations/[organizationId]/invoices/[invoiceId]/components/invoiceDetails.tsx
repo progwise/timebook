@@ -176,7 +176,7 @@ export const InvoiceDetails = ({ invoice, invoiceItems }: InvoiceDetailsProps) =
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                   {...register('taskId', { disabled: isSubmitting })}
                 >
-                  {availableTasksByProject.length === 0 ? (
+                  {filteredProjectsWithTasks.length === 0 ? (
                     <option value="">No tasks available</option>
                   ) : (
                     <>
