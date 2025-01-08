@@ -51,31 +51,47 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
 
-  const [isEditing, setIsEditing] = useState<{ field: 'customerName' | 'customerAddress' | undefined }>({
-    field: undefined,
+  const [isEditing, setIsEditing] = useState<{ customerName: boolean; customerAddress: boolean }>({
+    customerName: false,
+    customerAddress: false,
   })
 
-  const handleSubmitHelper = async (invoiceData: Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>) => {
-    const result = await updateInvoice({
-      id: invoice.id,
-      data: invoiceData,
-    })
-
-    if (result.error) {
-      if (invoiceData.customerName) setError('customerName', { message: 'Network error' })
-      if (invoiceData.customerAddress) setError('customerAddress', { message: 'Network error' })
-    } else {
-      setIsEditing({ field: undefined })
-    }
+  const handleSubmitHelper = async (
+    field: 'customerName' | 'customerAddress',
+    data: Pick<InvoiceUpdateInput, typeof field>,
+  ) => {
+    const result = await updateInvoice({ id: invoice.id, data })
+    if (result.error) setError(field, { message: 'Network error' })
   }
 
   const handleBlur = (field: 'customerName' | 'customerAddress') => {
-    if (field === 'customerName') {
-      setIsEditing({ field: undefined })
-    } else if (field === 'customerAddress') {
-      setIsEditing({ field: undefined })
-    }
+    setIsEditing((previous) => ({ ...previous, [field]: false }))
   }
+
+  const renderEditableField = (field: 'customerName' | 'customerAddress') =>
+    isEditing[field] ? (
+      <InputField
+        {...register(field, { required: field === 'customerName' })}
+        onBlur={() => {
+          handleSubmit((data) => handleSubmitHelper(field, { [field]: data[field] }))()
+          handleBlur(field)
+        }}
+        loading={fetching}
+        errorMessage={errors[field]?.message}
+        defaultValue={invoice[field] ?? ''}
+        className="input-sm"
+      />
+    ) : (
+      <p className="h-8">
+        {invoice[field]}
+        <button
+          className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
+          onClick={() => setIsEditing((previous) => ({ ...previous, [field]: true }))}
+        >
+          <FaPen />
+        </button>
+      </p>
+    )
 
   return (
     <div className="rounded-lg p-4 shadow-md">
@@ -88,52 +104,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </div>
           <div>
             <h2 className="text-lg font-bold">Billed to:</h2>
-            {isEditing.field === 'customerName' ? (
-              <InputField
-                {...register('customerName', { required: true })}
-                onBlur={() => {
-                  handleSubmit(handleSubmitHelper)()
-                  handleBlur('customerName')
-                }}
-                loading={fetching}
-                errorMessage={errors.customerName?.message}
-                defaultValue={invoice.customerName}
-                className="input-sm"
-              />
-            ) : (
-              <p className="h-8">
-                {invoice.customerName}
-                <button
-                  className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
-                  onClick={() => setIsEditing({ field: 'customerName' })}
-                >
-                  <FaPen />
-                </button>
-              </p>
-            )}
-            {isEditing.field === 'customerAddress' ? (
-              <InputField
-                {...register('customerAddress')}
-                onBlur={() => {
-                  handleSubmit(handleSubmitHelper)()
-                  handleBlur('customerAddress')
-                }}
-                loading={fetching}
-                errorMessage={errors.customerAddress?.message}
-                defaultValue={invoice.customerAddress ?? ''}
-                className="input-sm"
-              />
-            ) : (
-              <p className="h-8">
-                {invoice.customerAddress}
-                <button
-                  className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
-                  onClick={() => setIsEditing({ field: 'customerAddress' })}
-                >
-                  <FaPen />
-                </button>
-              </p>
-            )}
+            {renderEditableField('customerName')}
+            {renderEditableField('customerAddress')}
           </div>
         </div>
         <div className="flex flex-col justify-between">
