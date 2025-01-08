@@ -1374,9 +1374,14 @@ export type InvoiceFragmentFragment = {
   invoiceDate: string
   customerName: string
   customerAddress?: string | null
-  payDate?: string | null
-  sendDate?: string | null
   invoiceStatus: InvoiceStatus
+  invoiceItems: Array<{
+    __typename?: 'InvoiceItem'
+    id: string
+    duration: number
+    hourlyRate: number
+    task: { __typename?: 'Task'; id: string; title: string }
+  }>
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1389,7 +1394,22 @@ export type InvoiceFragmentFragment = {
   }
 }
 
-export type InvoiceItemsFragmentFragment = {
+export type InvoiceListInvoiceFragment = {
+  __typename?: 'Invoice'
+  id: string
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+    }>
+  }
+}
+
+export type InvoiceItemsListInvoiceFragment = {
   __typename?: 'InvoiceItem'
   id: string
   duration: number
@@ -1419,8 +1439,6 @@ export type InvoiceQuery = {
     invoiceDate: string
     customerName: string
     customerAddress?: string | null
-    payDate?: string | null
-    sendDate?: string | null
     invoiceStatus: InvoiceStatus
     invoiceItems: Array<{
       __typename?: 'InvoiceItem'
