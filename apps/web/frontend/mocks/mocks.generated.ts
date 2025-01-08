@@ -91,6 +91,13 @@ export enum InvoiceStatus {
   Sent = 'SENT',
 }
 
+export type InvoiceUpdateInput = {
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName?: InputMaybe<Scalars['String']>
+  invoiceDate?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['ID']>
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -112,6 +119,8 @@ export type Mutation = {
   invoiceCreate: Invoice
   /** Create a new invoice item */
   invoiceItemCreate: InvoiceItem
+  /** Update an invoice */
+  invoiceUpdate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -186,6 +195,11 @@ export type MutationInvoiceCreateArgs = {
 
 export type MutationInvoiceItemCreateArgs = {
   data: InvoiceItemInput
+}
+
+export type MutationInvoiceUpdateArgs = {
+  data: InvoiceUpdateInput
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1400,6 +1414,13 @@ export type InvoiceFragmentFragment = {
   }
 }
 
+export type InvoiceUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: InvoiceUpdateInput
+}>
+
+export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
+
 export type InvoiceListInvoiceFragment = {
   __typename?: 'Invoice'
   id: string
@@ -2286,6 +2307,25 @@ export const mockOrganizationUpdateMutation = (
     any
   >,
 ) => graphql.mutation<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>('organizationUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceUpdate })
+ *   )
+ * })
+ */
+export const mockInvoiceUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceUpdateMutationVariables>,
+    GraphQLContext<InvoiceUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceUpdateMutation, InvoiceUpdateMutationVariables>('invoiceUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
