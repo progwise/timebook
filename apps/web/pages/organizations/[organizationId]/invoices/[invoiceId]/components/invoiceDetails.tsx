@@ -51,42 +51,39 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
 
-  const [isEditing, setIsEditing] = useState<{ customerName: boolean; customerAddress: boolean }>({
-    customerName: false,
-    customerAddress: false,
-  })
+  const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
 
   const handleSubmitHelper = async (
-    field: 'customerName' | 'customerAddress',
-    data: Pick<InvoiceUpdateInput, typeof field>,
+    handleSubmitHelperField: 'customerName' | 'customerAddress',
+    data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
   ) => {
     const result = await updateInvoice({ id: invoice.id, data })
-    if (result.error) setError(field, { message: 'Network error' })
+    if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
   }
 
-  const handleBlur = (field: 'customerName' | 'customerAddress') => {
-    setIsEditing((previous) => ({ ...previous, [field]: false }))
+  const handleBlur = (handleBlurField: 'customerName' | 'customerAddress') => {
+    setIsEditing((previous) => ({ ...previous, [handleBlurField]: false }))
   }
 
-  const renderEditableField = (field: 'customerName' | 'customerAddress') =>
-    isEditing[field] ? (
+  const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
+    isEditing[editableField] ? (
       <InputField
-        {...register(field, { required: field === 'customerName' })}
+        {...register(editableField, { required: editableField === 'customerName' })}
         onBlur={() => {
-          handleSubmit((data) => handleSubmitHelper(field, { [field]: data[field] }))()
-          handleBlur(field)
+          handleSubmit((data) => handleSubmitHelper(editableField, { [editableField]: data[editableField] }))()
+          handleBlur(editableField)
         }}
         loading={fetching}
-        errorMessage={errors[field]?.message}
-        defaultValue={invoice[field] ?? ''}
+        errorMessage={errors[editableField]?.message}
+        defaultValue={invoice[editableField] ?? ''}
         className="input-sm"
       />
     ) : (
       <p className="h-8">
-        {invoice[field]}
+        {invoice[editableField]}
         <button
           className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
-          onClick={() => setIsEditing((previous) => ({ ...previous, [field]: true }))}
+          onClick={() => setIsEditing((previous) => ({ ...previous, [editableField]: true }))}
         >
           <FaPen />
         </button>
