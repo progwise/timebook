@@ -540,12 +540,14 @@ export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
   projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
   projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskInput = {
@@ -1503,13 +1505,14 @@ export type OrganizationsQuery = {
   organizations: Array<{ __typename?: 'Organization'; id: string; title: string; isArchived: boolean }>
 }
 
-export type WeekGridQueryVariables = Exact<{
+export type ProjectsQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
   projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>
 }>
 
-export type WeekGridQuery = {
+export type ProjectsQuery = {
   __typename?: 'Query'
   projects: Array<{
     __typename?: 'Project'
@@ -1522,6 +1525,12 @@ export type WeekGridQuery = {
       title: string
       isLockedByAdmin: boolean
       isLocked: boolean
+      workHours: Array<{
+        __typename?: 'WorkHour'
+        id: string
+        duration: number
+        user: { __typename?: 'User'; name?: string | null }
+      }>
       workHourOfDays: Array<{
         __typename?: 'WorkHourOfDay'
         date: string
@@ -2402,13 +2411,13 @@ export const mockOrganizationsQuery = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to, projectMemberUserId } = req.variables;
+ * mockProjectsQuery((req, res, ctx) => {
+ *   const { from, to, projectMemberUserId, userIds } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )
  * })
  */
-export const mockWeekGridQuery = (
-  resolver: ResponseResolver<GraphQLRequest<WeekGridQueryVariables>, GraphQLContext<WeekGridQuery>, any>,
-) => graphql.query<WeekGridQuery, WeekGridQueryVariables>('weekGrid', resolver)
+export const mockProjectsQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
+) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('Projects', resolver)

@@ -538,12 +538,14 @@ export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
   projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
   projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskInput = {
@@ -1156,6 +1158,10 @@ export type WeekGridProjectFragment = ({
         ' $fragmentRefs'?: { WeekGridFooterFragment: WeekGridFooterFragment }
       }
     >
+    project: {
+      __typename?: 'Project'
+      members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+    }
   }>
 } & { ' $fragmentRefs'?: { WeekGridProjectRowGroupFragment: WeekGridProjectRowGroupFragment } }) & {
   ' $fragmentName'?: 'WeekGridProjectFragment'
@@ -1470,16 +1476,32 @@ export type OrganizationsQuery = {
   >
 }
 
-export type WeekGridQueryVariables = Exact<{
+export type ProjectsQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
   projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>
 }>
 
-export type WeekGridQuery = {
+export type ProjectsQuery = {
   __typename?: 'Query'
   projects: Array<
-    { __typename?: 'Project' } & { ' $fragmentRefs'?: { WeekGridProjectFragment: WeekGridProjectFragment } }
+    {
+      __typename?: 'Project'
+      tasks: Array<{
+        __typename?: 'Task'
+        workHours: Array<{
+          __typename?: 'WorkHour'
+          id: string
+          duration: number
+          user: { __typename?: 'User'; name?: string | null }
+        }>
+        workHourOfDays: Array<{
+          __typename?: 'WorkHourOfDay'
+          workHour?: { __typename?: 'WorkHour'; duration: number } | null
+        }>
+      }>
+    } & { ' $fragmentRefs'?: { WeekGridProjectFragment: WeekGridProjectFragment } }
   >
 }
 
@@ -3151,6 +3173,27 @@ export const WeekGridProjectFragmentDoc = {
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'members' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                          ],
                         },
                       },
                     ],
@@ -6578,13 +6621,13 @@ export const OrganizationsDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationsQuery, OrganizationsQueryVariables>
-export const WeekGridDocument = {
+export const ProjectsDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'weekGrid' },
+      name: { kind: 'Name', value: 'Projects' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -6600,6 +6643,14 @@ export const WeekGridDocument = {
           kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+          },
         },
       ],
       selectionSet: {
@@ -6632,7 +6683,88 @@ export const WeekGridDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridProject' } }],
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tasks' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'workHours' },
+                        arguments: [
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'from' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                          },
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'to' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                          },
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'userIds' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'user' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'name' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'workHourOfDays' },
+                        arguments: [
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'from' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                          },
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'to' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                          },
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'projectMemberUserId' },
+                            value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                          },
+                        ],
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'workHour' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridProject' } },
+              ],
             },
           },
         ],
@@ -6936,6 +7068,27 @@ export const WeekGridDocument = {
                     ],
                   },
                 },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'members' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -6944,4 +7097,4 @@ export const WeekGridDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekGridQuery, WeekGridQueryVariables>
+} as unknown as DocumentNode<ProjectsQuery, ProjectsQueryVariables>

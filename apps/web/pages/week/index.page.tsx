@@ -13,13 +13,27 @@ import { WeekSelector } from '../../frontend/components/weekSelector'
 import { graphql } from '../../frontend/generated/gql'
 
 const weekGridQueryDocument = graphql(`
-  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID) {
+  query Projects($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {
     projects(
       from: $from
       to: $to
       projectMemberUserId: $projectMemberUserId
       includeProjectsWhereUserBookedWorkHours: true
     ) {
+      tasks {
+        workHours(from: $from, to: $to, userIds: $userIds) {
+          id
+          duration
+          user {
+            name
+          }
+        }
+        workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+          workHour {
+            duration
+          }
+        }
+      }
       ...WeekGridProject
     }
   }
@@ -32,20 +46,28 @@ const WeekPage = () => {
   const startDate = startOfWeek(day, { weekStartsOn: 1 })
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
   const { selectedUserId, handleUserChange, myProjectsMembersData } = useProjectMembers()
-  const currentUserId = selectedUserId ?? ''
+  const currentUserId = selectedUserId ?? 'all'
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const projectMemberUserId = router.query.userId?.toString()
+  const projectMemberUserId = currentUserId === 'all' ? undefined : currentUserId
   const [{ data: weekGridData, fetching }] = useQuery({
     query: weekGridQueryDocument,
-    variables: { from: format(startDate, 'yyyy-MM-dd'), to: format(endDate, 'yyyy-MM-dd'), projectMemberUserId },
+    variables: {
+      from: format(startDate, 'yyyy-MM-dd'),
+      to: format(endDate, 'yyyy-MM-dd'),
+      projectMemberUserId,
+      userIds: selectedUserId ? [selectedUserId] : undefined,
+    },
     context: weekGridContext,
   })
 
   const isDataOutdated = !!weekGridData && fetching
 
   const handleWeekChange = (newDate: Date) => {
-    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${projectMemberUserId ? `?userId=${projectMemberUserId}` : ''}`
+    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${
+      // eslint-disable-next-line unicorn/no-nested-ternary
+      projectMemberUserId ? `?userId=${projectMemberUserId}` : currentUserId === 'all' ? '?userId=all' : ''
+    }`
     router.push(path)
   }
 
@@ -54,11 +76,11 @@ const WeekPage = () => {
       <div className="mb-4 flex items-end justify-between">
         {myProjectsMembersData.length > 0 && (
           <Listbox
-            value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? myProjectsMembersData[0]}
+            value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? { id: 'all', name: 'All Users' }}
             getLabel={(user) => <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} />}
             getKey={(user) => user.id}
             onChange={(user) => handleUserChange(user.id)}
-            options={myProjectsMembersData}
+            options={[{ id: 'all', name: 'All Users' }, ...myProjectsMembersData]}
           />
         )}
         <div className="flex grow justify-center">
@@ -73,6 +95,7 @@ const WeekPage = () => {
           endDate={endDate}
           isDataOutdated={isDataOutdated}
           currentUserId={currentUserId}
+          showAllUsers={currentUserId === 'all'}
         />
       )}
     </ProtectedPage>

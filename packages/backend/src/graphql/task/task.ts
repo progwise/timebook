@@ -31,10 +31,15 @@ export const Task = builder.prismaObject('Task', {
           description:
             'Filter work hours where the given user is a project member. If not given, the work hours of the signed-in user are returned',
         }),
+        userIds: t.arg.idList({
+          required: false,
+          description: 'List of user ids. If not provided only the work hours of the current users are returned.',
+        }),
       },
-      query: ({ from, to, projectMemberUserId }, context) => ({
+      query: ({ from, to, projectMemberUserId, userIds }, context) => ({
         where: {
-          userId: projectMemberUserId?.toString() ?? context.session.user.id,
+          userId:
+            projectMemberUserId?.toString() ?? userIds?.map((id) => id.toString()).join(',') ?? context.session.user.id,
           date: {
             gte: from,
             lte: to ?? from,
@@ -54,6 +59,10 @@ export const Task = builder.prismaObject('Task', {
           description:
             'Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned',
         }),
+        userIds: t.arg.idList({
+          required: false,
+          description: 'List of user ids. If not provided only the work hours of the current users are returned.',
+        }),
       },
 
       // when signed in user requests work hours for another user, the signed in user must be an admin
@@ -62,12 +71,13 @@ export const Task = builder.prismaObject('Task', {
         return showWorkHoursForOtherUser ? { isAdminByTask: task.id } : { isLoggedIn: true }
       },
 
-      resolve: async (task, { from, to, projectMemberUserId }, context) => {
+      resolve: async (task, { from, to, projectMemberUserId, userIds }, context) => {
         const interval = { start: from, end: to ?? from }
-        return eachDayOfInterval(interval).map(async (date) => ({
+        return eachDayOfInterval(interval).map((date) => ({
           date: subMinutes(date, date.getTimezoneOffset()),
           taskId: task.id,
-          userId: projectMemberUserId?.toString() ?? context.session.user.id,
+          userId:
+            projectMemberUserId?.toString() ?? userIds?.map((id) => id.toString()).join(',') ?? context.session.user.id,
         }))
       },
     }),

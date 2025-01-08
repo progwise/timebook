@@ -57,7 +57,7 @@ export const WeekGridTaskRow = ({
     <>
       {task.project.members.map(
         (member) =>
-          member.id === currentUserId && ( // Only show for the member that is currently logged in
+          (currentUserId === 'all' || member.id === currentUserId) && ( // Show for all members or the selected member
             <div key={member.id} className="contents" role="row">
               <div className="pl-3" role="cell">
                 {!task.isLockedByAdmin && !task.project.isArchived && (
@@ -65,9 +65,11 @@ export const WeekGridTaskRow = ({
                 )}
               </div>
               <div className="flex items-center gap-2 px-3">
-                <span role="cell">{task.title}</span>
+                <span role="cell">{task.title} </span>
                 <div className="pr-4">
-                  <UserLabel name={member.name ?? member.id} image={member.image ?? undefined} />
+                  {currentUserId === 'all' && (
+                    <UserLabel name={member.name ?? member.id} image={member.image ?? undefined} />
+                  )}
                 </div>
               </div>
               {task.workHourOfDays.map((workHourOfDay) => (
@@ -78,7 +80,7 @@ export const WeekGridTaskRow = ({
                   duration={workHourOfDay.workHour?.duration ?? 0}
                   key={workHourOfDay.date}
                   isDataOutdated={isDataOutdated}
-                  currentUserId={currentUserId}
+                  currentUserId={currentUserId === 'all' ? member.id : currentUserId}
                 />
               ))}
               <div className="px-2 text-right" role="cell">
