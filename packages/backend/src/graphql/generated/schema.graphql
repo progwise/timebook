@@ -92,6 +92,13 @@ enum InvoiceStatus {
   SENT
 }
 
+input InvoiceUpdateInput {
+  customerAddress: String
+  customerName: String
+  invoiceDate: Date
+  organizationId: ID
+}
+
 """
 Adds the information whether the user can edit the entity
 """
@@ -122,6 +129,18 @@ type Mutation {
   Create a new invoice
   """
   invoiceCreate(data: InvoiceInput!): Invoice!
+
+  """
+  Update an invoice
+  """
+  invoiceUpdate(
+    data: InvoiceUpdateInput!
+
+    """
+    id of the invoice
+    """
+    id: ID!
+  ): Invoice!
 
   """
   Archive an organization

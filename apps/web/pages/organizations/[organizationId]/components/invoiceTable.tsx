@@ -62,7 +62,10 @@ export const InvoiceTable = ({ invoices, organizationId }: InvoiceTableProps): J
           <tr>
             <td colSpan={4} />
             <td>
-              <Link className="btn btn-primary no-animation" href={`/organizations/${organizationId}/invoices/new`}>
+              <Link
+                className="btn btn-primary no-animation btn-sm"
+                href={`/organizations/${organizationId}/invoices/new`}
+              >
                 Create a new invoice
               </Link>
             </td>

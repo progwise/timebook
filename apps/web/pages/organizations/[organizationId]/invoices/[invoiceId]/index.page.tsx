@@ -10,9 +10,6 @@ const InvoiceQueryDocument = graphql(`
   query invoice($invoiceId: ID!, $organizationId: ID!) {
     invoice(invoiceId: $invoiceId, organizationId: $organizationId) {
       ...InvoiceFragment
-      invoiceItems {
-        ...InvoiceItemsFragment
-      }
     }
   }
 `)
@@ -34,7 +31,7 @@ const InvoiceDetailsPage = (): JSX.Element => {
       {fetching && <span className="loading loading-spinner" />}
       {invoiceDetailData && (
         <div className="flex flex-col gap-4">
-          <InvoiceDetails invoice={invoiceDetailData.invoice} invoiceItems={invoiceDetailData.invoice.invoiceItems} />
+          <InvoiceDetails invoice={invoiceDetailData.invoice} />
         </div>
       )}
     </ProtectedPage>

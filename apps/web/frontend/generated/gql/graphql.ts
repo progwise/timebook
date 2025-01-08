@@ -76,6 +76,13 @@ export enum InvoiceStatus {
   Sent = 'SENT',
 }
 
+export type InvoiceUpdateInput = {
+  customerAddress?: InputMaybe<Scalars['String']>
+  customerName?: InputMaybe<Scalars['String']>
+  invoiceDate?: InputMaybe<Scalars['Date']>
+  organizationId?: InputMaybe<Scalars['ID']>
+}
+
 /** Adds the information whether the user can edit the entity */
 export type ModifyInterface = {
   /** Can the user modify the entity */
@@ -95,6 +102,8 @@ export type Mutation = {
   accessTokenDelete: AccessToken
   /** Create a new invoice */
   invoiceCreate: Invoice
+  /** Update an invoice */
+  invoiceUpdate: Invoice
   /** Archive an organization */
   organizationArchive: Organization
   /** Create a new organization */
@@ -165,6 +174,11 @@ export type MutationAccessTokenDeleteArgs = {
 
 export type MutationInvoiceCreateArgs = {
   data: InvoiceInput
+}
+
+export type MutationInvoiceUpdateArgs = {
+  data: InvoiceUpdateInput
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1347,15 +1361,21 @@ export type InvoiceFragmentFragment = {
   payDate?: string | null
   sendDate?: string | null
   invoiceStatus: InvoiceStatus
+  invoiceItems: Array<{
+    __typename?: 'InvoiceItem'
+    id: string
+    duration: number
+    hourlyRate: number
+    task: { __typename?: 'Task'; title: string }
+  }>
 } & { ' $fragmentName'?: 'InvoiceFragmentFragment' }
 
-export type InvoiceItemsFragmentFragment = {
-  __typename?: 'InvoiceItem'
-  id: string
-  duration: number
-  hourlyRate: number
-  task: { __typename?: 'Task'; title: string }
-} & { ' $fragmentName'?: 'InvoiceItemsFragmentFragment' }
+export type InvoiceUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: InvoiceUpdateInput
+}>
+
+export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
@@ -1364,14 +1384,7 @@ export type InvoiceQueryVariables = Exact<{
 
 export type InvoiceQuery = {
   __typename?: 'Query'
-  invoice: {
-    __typename?: 'Invoice'
-    invoiceItems: Array<
-      { __typename?: 'InvoiceItem' } & {
-        ' $fragmentRefs'?: { InvoiceItemsFragmentFragment: InvoiceItemsFragmentFragment }
-      }
-    >
-  } & { ' $fragmentRefs'?: { InvoiceFragmentFragment: InvoiceFragmentFragment } }
+  invoice: { __typename?: 'Invoice' } & { ' $fragmentRefs'?: { InvoiceFragmentFragment: InvoiceFragmentFragment } }
 }
 
 export type InvoiceCreateMutationVariables = Exact<{
@@ -3477,37 +3490,31 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<InvoiceFragmentFragment, unknown>
-export const InvoiceItemsFragmentFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InvoiceItemsFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'task' },
+            name: { kind: 'Name', value: 'invoiceItems' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
             },
           },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<InvoiceItemsFragmentFragment, unknown>
+} as unknown as DocumentNode<InvoiceFragmentFragment, unknown>
 export const AccessTokenDeleteDocument = {
   kind: 'Document',
   definitions: [
@@ -5644,6 +5651,56 @@ export const OrganizationUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>
+export const InvoiceUpdateDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'invoiceUpdate' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceUpdateInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoiceUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InvoiceUpdateMutation, InvoiceUpdateMutationVariables>
 export const InvoiceDocument = {
   kind: 'Document',
   definitions: [
@@ -5683,17 +5740,7 @@ export const InvoiceDocument = {
             ],
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceFragment' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'invoiceItems' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemsFragment' } }],
-                  },
-                },
-              ],
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceFragment' } }],
             },
           },
         ],
@@ -5713,25 +5760,24 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InvoiceItemsFragment' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'task' },
+            name: { kind: 'Name', value: 'invoiceItems' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'hourlyRate' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'task' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
             },
           },
         ],
