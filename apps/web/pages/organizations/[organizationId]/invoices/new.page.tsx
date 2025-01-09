@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
