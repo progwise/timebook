@@ -112,8 +112,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               <div className="text-2xl font-bold">Invoice</div>
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>
             </div>
-            <p className="text-sm">Invoice No: #{invoice.id}</p>
-            <p className="text-right text-sm">Invoice Date: {invoice.invoiceDate}</p>
+            <p>Invoice No: #{invoice.id}</p>
+            <p className="text-right">Invoice Date: {invoice.invoiceDate}</p>
           </div>
         </div>
       </div>
