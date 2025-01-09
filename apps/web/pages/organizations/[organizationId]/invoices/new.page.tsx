@@ -26,14 +26,16 @@ const NewInvoicePage = (): JSX.Element => {
   const { organizationId } = router.query
   const invoiceDate = format(new Date(), 'yyyy-MM-dd')
 
-  const { register, handleSubmit, formState } = useForm<InvoiceInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<InvoiceInput>({
     defaultValues: {
       organizationId: organizationId?.toString() ?? '',
       invoiceDate,
     },
   })
-
-  const { isSubmitting, errors, isDirty } = formState
 
   const handleCreateInvoice = async (data: InvoiceInput) => {
     try {

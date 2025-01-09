@@ -15,7 +15,7 @@ const InvoiceQueryDocument = graphql(`
 `)
 
 const InvoiceDetailsPage = (): JSX.Element => {
-  const context = useMemo(() => ({ additionalTypenames: ['Organization'] }), [])
+  const context = useMemo(() => ({ additionalTypenames: ['Organization', 'InvoiceItem'] }), [])
   const router = useRouter()
   const { invoiceId, organizationId } = router.query
   const [{ data: invoiceDetailData, error, fetching }] = useQuery({

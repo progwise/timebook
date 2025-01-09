@@ -1,12 +1,12 @@
 import {
+  InvoiceStatus,
+  mockInvoiceQuery,
   mockMyOrganizationsQuery,
   mockOrganizationMembershipDeleteMutation,
   mockOrganizationMembershipUpdateMutation,
   mockOrganizationQuery,
-  mockInvoiceQuery,
   OrganizationMemberListOrganizationFragment,
   Role,
-  InvoiceStatus,
 } from './mocks.generated'
 
 const testOrganization1 = {
@@ -101,6 +101,10 @@ export const organizationHandlers = [
       context.data({
         invoice: {
           id: '1',
+          organization: {
+            id: '1',
+            projects: [],
+          },
           invoiceDate: '2024-12-12',
           customerName: 'Herr Test',
           customerAddress: 'Frankfurt',
@@ -111,6 +115,7 @@ export const organizationHandlers = [
               duration: 5,
               hourlyRate: 20,
               task: {
+                id: '1',
                 title: 'Task',
                 __typename: 'Task',
               },

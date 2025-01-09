@@ -97,7 +97,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const project = useFragment(ProjectFormFragment, props.project)
   const organizations = useFragment(OrganizationFragment, props.organizations)
-  const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, dirtyFields },
+    setValue,
+    control,
+  } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
@@ -106,8 +112,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     },
     resolver: zodResolver(projectInputSchema),
   })
-
-  const { isSubmitting, errors, dirtyFields } = formState
 
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({

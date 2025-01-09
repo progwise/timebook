@@ -71,6 +71,15 @@ export type InvoiceItem = {
   task: Task
 }
 
+export type InvoiceItemInput = {
+  /** Invoice item duration in minutes */
+  duration: Scalars['Int']
+  /** Invoice item hourly rate in euro */
+  hourlyRate: Scalars['Int']
+  invoiceId: Scalars['ID']
+  taskId: Scalars['ID']
+}
+
 /** Status of the invoice */
 export enum InvoiceStatus {
   Draft = 'DRAFT',
@@ -104,6 +113,8 @@ export type Mutation = {
   accessTokenDelete: AccessToken
   /** Create a new invoice */
   invoiceCreate: Invoice
+  /** Create a new invoice item */
+  invoiceItemCreate: InvoiceItem
   /** Update an invoice */
   invoiceUpdate: Invoice
   /** Archive an organization */
@@ -176,6 +187,10 @@ export type MutationAccessTokenDeleteArgs = {
 
 export type MutationInvoiceCreateArgs = {
   data: InvoiceInput
+}
+
+export type MutationInvoiceItemCreateArgs = {
+  data: InvoiceItemInput
 }
 
 export type MutationInvoiceUpdateArgs = {
@@ -1373,16 +1388,24 @@ export type InvoiceFragmentFragment = {
   invoiceDate: string
   customerName: string
   customerAddress?: string | null
-  payDate?: string | null
-  sendDate?: string | null
   invoiceStatus: InvoiceStatus
   invoiceItems: Array<{
     __typename?: 'InvoiceItem'
     id: string
     duration: number
     hourlyRate: number
-    task: { __typename?: 'Task'; title: string }
+    task: { __typename?: 'Task'; id: string; title: string }
   }>
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+    }>
+  }
 }
 
 export type InvoiceUpdateMutationVariables = Exact<{
@@ -1391,6 +1414,38 @@ export type InvoiceUpdateMutationVariables = Exact<{
 }>
 
 export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
+
+export type InvoiceListInvoiceFragment = {
+  __typename?: 'Invoice'
+  id: string
+  organization: {
+    __typename?: 'Organization'
+    id: string
+    projects: Array<{
+      __typename?: 'Project'
+      id: string
+      title: string
+      tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+    }>
+  }
+}
+
+export type InvoiceItemsListInvoiceFragment = {
+  __typename?: 'InvoiceItem'
+  id: string
+  duration: number
+  hourlyRate: number
+  task: { __typename?: 'Task'; id: string; title: string }
+}
+
+export type InvoiceItemCreateMutationVariables = Exact<{
+  data: InvoiceItemInput
+}>
+
+export type InvoiceItemCreateMutation = {
+  __typename?: 'Mutation'
+  invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
+}
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
@@ -1405,16 +1460,24 @@ export type InvoiceQuery = {
     invoiceDate: string
     customerName: string
     customerAddress?: string | null
-    payDate?: string | null
-    sendDate?: string | null
     invoiceStatus: InvoiceStatus
     invoiceItems: Array<{
       __typename?: 'InvoiceItem'
       id: string
       duration: number
       hourlyRate: number
-      task: { __typename?: 'Task'; title: string }
+      task: { __typename?: 'Task'; id: string; title: string }
     }>
+    organization: {
+      __typename?: 'Organization'
+      id: string
+      projects: Array<{
+        __typename?: 'Project'
+        id: string
+        title: string
+        tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
+      }>
+    }
   }
 }
 
@@ -2255,6 +2318,25 @@ export const mockInvoiceUpdateMutation = (
     any
   >,
 ) => graphql.mutation<InvoiceUpdateMutation, InvoiceUpdateMutationVariables>('invoiceUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceItemCreateMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceItemCreate })
+ *   )
+ * })
+ */
+export const mockInvoiceItemCreateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceItemCreateMutationVariables>,
+    GraphQLContext<InvoiceItemCreateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceItemCreateMutation, InvoiceItemCreateMutationVariables>('invoiceItemCreate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

@@ -8,6 +8,7 @@ import { InputField } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { InvoiceItemList } from './invoiceItemList'
 
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -15,16 +16,11 @@ const InvoiceDetailsFragment = graphql(`
     invoiceDate
     customerName
     customerAddress
-    payDate
-    sendDate
     invoiceStatus
+    ...InvoiceListInvoice
     invoiceItems {
       id
-      duration
-      hourlyRate
-      task {
-        title
-      }
+      ...InvoiceItemsListInvoice
     }
   }
 `)
@@ -50,7 +46,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     register,
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
-
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
 
   const handleSubmitHelper = async (
@@ -91,8 +86,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     )
 
   return (
-    <div className="rounded-lg p-4 shadow-md">
-      <div className="flex justify-between pb-4 text-sm">
+    <div className="rounded-lg p-4 text-sm shadow-md">
+      <div className="flex justify-between pb-4">
         <div className="flex flex-col items-start gap-4">
           <div>
             <Image className="m-auto" src="/logo-progwise.svg" alt="Progwise logo" width={60} height={60} />
@@ -122,35 +117,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </div>
         </div>
       </div>
-
-      <table className="table">
-        <thead className="bg-neutral text-sm text-neutral-content">
-          <tr>
-            <th className="w-2/3 border border-neutral">Item</th>
-            <th className="border border-neutral">Duration</th>
-            <th className="border border-neutral">Hourly Rate</th>
-            <th className="border border-neutral text-right">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {invoice.invoiceItems.map((invoiceItem) => (
-            <tr key={invoiceItem.id}>
-              <td className="border border-neutral">{invoiceItem.task.title}</td>
-              <td className="border border-neutral">{invoiceItem.duration}</td>
-              <td className="border border-neutral">{invoiceItem.hourlyRate}</td>
-              <td className="border border-neutral text-right">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
-            </tr>
-          ))}
-          <tr className="font-bold">
-            <td colSpan={2} />
-            <td className="text-right">Total</td>
-            <td className="text-right">
-              € {invoice.invoiceItems.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div className="text-sm">
+      <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
+      <div>
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
         </p>

@@ -34,12 +34,15 @@ const AccessTokensPage = (): JSX.Element => {
     query: AccessTokensQueryDocument,
     context,
   })
-  const { register, handleSubmit, formState, reset } = useForm<{ name: string }>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, isDirty, dirtyFields },
+    reset,
+  } = useForm<{ name: string }>({
     resolver: zodResolver(accessTokenInputValidations),
   })
   const dialogReference = useRef<HTMLDialogElement>(null)
-
-  const { isSubmitting, errors, isDirty, dirtyFields } = formState
 
   const [{ data: tokenCreateData, fetching }, accessTokenCreate] = useMutation(AccessTokenCreateMutationDocument)
 
