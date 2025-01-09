@@ -95,6 +95,8 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
+  invoiceWorkFrom?: InputMaybe<Scalars['Date']>
+  invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
 }
 

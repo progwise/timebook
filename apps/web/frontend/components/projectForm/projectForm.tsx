@@ -150,7 +150,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               rules={{ validate: (value) => !value || isValidDateString(value) }}
               name="start"
               render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center">
+                <div className="flex gap-1">
                   <InputMask
                     disabled={isSubmitting}
                     mask="9999-99-99"
@@ -161,11 +161,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="start"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1"
+                    className="input input-bordered"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}
-                    className="shrink-0 pl-1"
+                    className="btn-md"
                     date={getDate(value)}
                     hideLabel={true}
                     onDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
@@ -194,7 +194,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               rules={{ validate: (value) => !value || isValidDateString(value) }}
               name="end"
               render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center">
+                <div className="flex gap-1">
                   <InputMask
                     mask="9999-99-99"
                     disabled={isSubmitting}
@@ -205,11 +205,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="end"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1"
+                    className="input input-bordered"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}
-                    className="shrink-0 pl-1"
+                    className="btn-md"
                     date={getDate(value)}
                     hideLabel={true}
                     onDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}

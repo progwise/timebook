@@ -116,30 +116,30 @@ const NewInvoicePage = (): JSX.Element => {
 
   return (
     <ProtectedPage>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-start gap-2">
         <form className="contents" id="invoice-form" onSubmit={handleSubmit(handleSubmitHelper)}>
           <PageHeading>Create a new invoice</PageHeading>
+          <InputField
+            label="Name"
+            type="text"
+            disabled={isSubmitting}
+            {...register('customerName')}
+            placeholder="Enter a name"
+            size={30}
+            errorMessage={errors.customerName?.message}
+            isDirty={isDirty}
+          />
+          <InputField
+            label="Address"
+            type="text"
+            disabled={isSubmitting}
+            {...register('customerAddress')}
+            placeholder="Enter an address"
+            size={30}
+            errorMessage={errors.customerAddress?.message}
+            isDirty={isDirty}
+          />
           <div>
-            <InputField
-              label="Name"
-              type="text"
-              disabled={isSubmitting}
-              {...register('customerName')}
-              placeholder="Enter a name"
-              size={30}
-              errorMessage={errors.customerName?.message}
-              isDirty={isDirty}
-            />
-            <InputField
-              label="Address"
-              type="text"
-              disabled={isSubmitting}
-              {...register('customerAddress')}
-              placeholder="Enter an address"
-              size={30}
-              errorMessage={errors.customerAddress?.message}
-              isDirty={isDirty}
-            />
             <div className="form-control">
               <div className="label">
                 <label htmlFor="start" className="label-text">
@@ -151,7 +151,7 @@ const NewInvoicePage = (): JSX.Element => {
                 rules={{ validate: (value) => !value || isValidDateString(value) }}
                 name="invoiceWorkFrom"
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <div className="flex items-center">
+                  <div className="flex gap-1">
                     <InputMask
                       disabled={isSubmitting}
                       mask="9999-99-99"
@@ -161,11 +161,11 @@ const NewInvoicePage = (): JSX.Element => {
                       id="invoiceWorkFrom"
                       type="text"
                       size={10}
-                      className="input input-bordered py-1"
+                      className="input input-bordered"
                     />
                     <CalendarSelector
                       disabled={isSubmitting}
-                      className="shrink-0 pl-1"
+                      className="btn-md"
                       date={getDate(value)}
                       hideLabel={true}
                       onDateChange={(newDate) => setValue('invoiceWorkFrom', format(newDate, 'yyyy-MM-dd'))}
@@ -181,6 +181,8 @@ const NewInvoicePage = (): JSX.Element => {
                 />
               </div>
             </div>
+          </div>
+          <div>
             <div className="form-control">
               <div className="label">
                 <label htmlFor="start" className="label-text">
@@ -192,7 +194,7 @@ const NewInvoicePage = (): JSX.Element => {
                 rules={{ validate: (value) => !value || isValidDateString(value) }}
                 name="invoiceWorkUntil"
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <div className="flex items-center">
+                  <div className="flex gap-1">
                     <InputMask
                       mask="9999-99-99"
                       disabled={isSubmitting}
@@ -202,11 +204,11 @@ const NewInvoicePage = (): JSX.Element => {
                       id="invoiceWorkUntil"
                       type="text"
                       size={10}
-                      className="input input-bordered py-1"
+                      className="input input-bordered"
                     />
                     <CalendarSelector
                       disabled={isSubmitting}
-                      className="shrink-0 pl-1"
+                      className="btn-md"
                       date={getDate(value)}
                       hideLabel={true}
                       onDateChange={(newDate) => setValue('invoiceWorkUntil', format(newDate, 'yyyy-MM-dd'))}
@@ -224,8 +226,7 @@ const NewInvoicePage = (): JSX.Element => {
             </div>
           </div>
         </form>
-
-        <div className="flex justify-start gap-2">
+        <div className="flex w-full gap-2">
           <button className="btn btn-secondary btn-sm" disabled={isSubmitting} onClick={handleCancel} type="button">
             Cancel
           </button>
