@@ -54,8 +54,6 @@ export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']
-  invoiceWorkFrom?: InputMaybe<Scalars['Date']>
-  invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId: Scalars['ID']
 }
 

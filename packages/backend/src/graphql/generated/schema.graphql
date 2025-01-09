@@ -42,8 +42,6 @@ type Invoice implements ModifyInterface {
   Status of the invoice
   """
   invoiceStatus: InvoiceStatus!
-  invoiceWorkFrom: Date
-  invoiceWorkUntil: Date
   organization: Organization!
   payDate: Date
   sendDate: Date
