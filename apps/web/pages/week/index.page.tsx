@@ -18,22 +18,9 @@ const weekGridQueryDocument = graphql(`
       from: $from
       to: $to
       projectMemberUserId: $projectMemberUserId
+      userIds: $userIds
       includeProjectsWhereUserBookedWorkHours: true
     ) {
-      tasks {
-        workHours(from: $from, to: $to, userIds: $userIds) {
-          id
-          duration
-          user {
-            name
-          }
-        }
-        workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
-          workHour {
-            duration
-          }
-        }
-      }
       ...WeekGridProject
     }
   }
@@ -50,13 +37,22 @@ const WeekPage = () => {
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
   const projectMemberUserId = currentUserId === 'all' ? undefined : currentUserId
+  const userIds =
+    selectedUserId === 'all'
+      ? myProjectsMembersData.map((user) => user.id)
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+        selectedUserId
+        ? [selectedUserId]
+        : []
   const [{ data: weekGridData, fetching }] = useQuery({
     query: weekGridQueryDocument,
     variables: {
       from: format(startDate, 'yyyy-MM-dd'),
       to: format(endDate, 'yyyy-MM-dd'),
+      //This variable queries projects with tasks that the member has booked hours.
       projectMemberUserId,
-      userIds: selectedUserId ? [selectedUserId] : undefined,
+      //This variable queries the workHours field for the given user in the cells.
+      userIds,
     },
     context: weekGridContext,
   })

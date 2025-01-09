@@ -499,6 +499,11 @@ type Query {
     """
     projectMemberUserId: ID
     to: Date
+
+    """
+    List of user ids. If not provided only the projects of the current users are returned.
+    """
+    userIds: [ID!]
   ): [Project!]!
   projectsCount(filter: ProjectFilter!, from: Date!, to: Date): Int!
 

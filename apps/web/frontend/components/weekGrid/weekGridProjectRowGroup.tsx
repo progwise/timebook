@@ -16,7 +16,8 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     tasks {
       id
       ...WeekGridTaskRow
-      workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.
+      workHourOfDays1: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
         workHour {
           duration
         }
@@ -45,7 +46,7 @@ export const WeekGridProjectRowGroup = ({
     initializeWithValue: false,
   })
 
-  const workHours = project.tasks.flatMap((task) => task.workHourOfDays)
+  const workHours = project.tasks.flatMap((task) => task.workHourOfDays1)
   const projectDuration = workHours.reduce(
     (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
     0,

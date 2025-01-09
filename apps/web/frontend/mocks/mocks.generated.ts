@@ -441,6 +441,7 @@ export type QueryProjectsArgs = {
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
   projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type QueryProjectsCountArgs = {
@@ -1131,11 +1132,10 @@ export type WeekGridProjectFragment = {
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    workHourOfDays: Array<{
+    workHourOfDays4: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
-      isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
     }>
     project: {
       __typename?: 'Project'
@@ -1143,11 +1143,27 @@ export type WeekGridProjectFragment = {
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
+    workHourOfDays1: Array<{
+      __typename?: 'WorkHourOfDay'
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
+    workHourOfDays2: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+    }>
   }>
 }
 
@@ -1168,11 +1184,9 @@ export type WeekGridProjectRowGroupFragment = {
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    workHourOfDays: Array<{
+    workHourOfDays1: Array<{
       __typename?: 'WorkHourOfDay'
-      date: string
-      isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
     }>
     project: {
       __typename?: 'Project'
@@ -1180,11 +1194,23 @@ export type WeekGridProjectRowGroupFragment = {
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
+    workHourOfDays2: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+    }>
   }>
 }
 
@@ -1212,17 +1238,23 @@ export type WeekGridTaskRowFragment = {
     isArchived: boolean
     members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
-  workHourOfDays: Array<{
+  workHourOfDays2: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
 }
 
 export type WorkHourCommentFragmentFragment = {
@@ -1525,17 +1557,10 @@ export type ProjectsQuery = {
       title: string
       isLockedByAdmin: boolean
       isLocked: boolean
-      workHours: Array<{
-        __typename?: 'WorkHour'
-        id: string
-        duration: number
-        user: { __typename?: 'User'; name?: string | null }
-      }>
-      workHourOfDays: Array<{
+      workHourOfDays4: Array<{
         __typename?: 'WorkHourOfDay'
         date: string
-        isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
       }>
       project: {
         __typename?: 'Project'
@@ -1543,11 +1568,27 @@ export type ProjectsQuery = {
         isArchived: boolean
         members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
       }
+      workHourOfDays1: Array<{
+        __typename?: 'WorkHourOfDay'
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      }>
+      workHourOfDays2: Array<{
+        __typename?: 'WorkHourOfDay'
+        date: string
+        isLocked: boolean
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      }>
       tracking?: {
         __typename?: 'Tracking'
         start: string
         task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
       } | null
+      workHourOfDays: Array<{
+        __typename?: 'WorkHourOfDay'
+        date: string
+        isLocked: boolean
+        workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+      }>
     }>
   }>
 }
@@ -2020,7 +2061,7 @@ export const mockTrackingStopMutation = (
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
+ * @see httpswjs.io/docs/basics/response-resolver
  * @example
  * mockTrackingCancelMutation((req, res, ctx) => {
  *   return res(
@@ -2421,3 +2462,18 @@ export const mockOrganizationsQuery = (
 export const mockProjectsQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
 ) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('Projects', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWeekGridQuery((req, res, ctx) => {
+ *   const { from, to, projectMemberUserId, userIds } = req.variables;
+ *   return res(
+ *     ctx.data({ projects })
+ *   )
+ * })
+ */
+export const mockWeekGridQuery = (
+  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
+) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('weekGrid', resolver)

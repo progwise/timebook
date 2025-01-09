@@ -23,14 +23,19 @@ builder.queryField('projects', (t) =>
         description:
           'Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.',
       }),
+      userIds: t.arg.idList({
+        required: false,
+        description: 'List of user ids. If not provided only the projects of the current users are returned.',
+      }),
     },
     resolve: (
       query,
       _source,
-      { from, to, filter, includeProjectsWhereUserBookedWorkHours, projectMemberUserId },
+      { from, to, filter, includeProjectsWhereUserBookedWorkHours, projectMemberUserId, userIds },
       context,
     ) => {
       const showProjectsForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
+      const userIdFilter = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 
       return prisma.project.findMany({
         ...query,
@@ -48,7 +53,7 @@ builder.queryField('projects', (t) =>
                       showProjectsForOtherUser,
                     ),
                     // check if the given user is allowed to see the project
-                    showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
+                    showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId?.toString() ?? '') : {},
                   ],
                 },
                 // or get projects where user booked work hours
@@ -58,7 +63,7 @@ builder.queryField('projects', (t) =>
                     some: {
                       workHours: {
                         some: {
-                          userId: projectMemberUserId?.toString() ?? context.session.user.id,
+                          userId: { in: userIdFilter },
                           AND: [{ date: { gte: from } }, { date: { lte: to ?? from } }],
                           OR: [
                             { duration: { gt: 0 } },
@@ -87,7 +92,7 @@ builder.queryField('projects', (t) =>
                   showProjectsForOtherUser,
                 ),
                 // check if the given user is allowed to see the project
-                showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
+                showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId?.toString() ?? '') : {},
               ],
             },
         orderBy: { title: 'asc' },

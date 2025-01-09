@@ -38,8 +38,9 @@ export const Task = builder.prismaObject('Task', {
       },
       query: ({ from, to, projectMemberUserId, userIds }, context) => ({
         where: {
-          userId:
-            projectMemberUserId?.toString() ?? userIds?.map((id) => id.toString()).join(',') ?? context.session.user.id,
+          userId: userIds?.length
+            ? { in: userIds.map((id) => id.toString()) }
+            : (projectMemberUserId?.toString() ?? context.session.user.id),
           date: {
             gte: from,
             lte: to ?? from,
@@ -73,12 +74,16 @@ export const Task = builder.prismaObject('Task', {
 
       resolve: async (task, { from, to, projectMemberUserId, userIds }, context) => {
         const interval = { start: from, end: to ?? from }
-        return eachDayOfInterval(interval).map((date) => ({
-          date: subMinutes(date, date.getTimezoneOffset()),
-          taskId: task.id,
-          userId:
-            projectMemberUserId?.toString() ?? userIds?.map((id) => id.toString()).join(',') ?? context.session.user.id,
-        }))
+        const userIdFilter = userIds?.length
+          ? userIds.map((id) => id.toString())
+          : [projectMemberUserId?.toString() ?? context.session.user.id]
+        return eachDayOfInterval(interval).flatMap((date) =>
+          userIdFilter.map((userId) => ({
+            date: subMinutes(date, date.getTimezoneOffset()),
+            taskId: task.id,
+            userId: userId,
+          })),
+        )
       },
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({

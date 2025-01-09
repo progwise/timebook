@@ -21,7 +21,8 @@ const WeekGridTaskRowFragment = graphql(`
         image
       }
     }
-    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.
+    workHourOfDays2: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
       date
       workHour {
         duration
@@ -49,7 +50,7 @@ export const WeekGridTaskRow = ({
   currentUserId,
 }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const taskDurations = task.workHourOfDays
+  const taskDurations = task.workHourOfDays2
     .map((workHour) => workHour.workHour?.duration ?? 0)
     .reduce((previous, current) => previous + current, 0)
 
@@ -72,7 +73,7 @@ export const WeekGridTaskRow = ({
                   )}
                 </div>
               </div>
-              {task.workHourOfDays.map((workHourOfDay) => (
+              {task.workHourOfDays2.map((workHourOfDay) => (
                 <WeekGridTaskDayCell
                   day={parseISO(workHourOfDay.date)}
                   disabled={workHourOfDay.isLocked}
@@ -83,7 +84,7 @@ export const WeekGridTaskRow = ({
                   currentUserId={currentUserId === 'all' ? member.id : currentUserId}
                 />
               ))}
-              <div className="px-2 text-right" role="cell">
+              <div className="bg-slate-200 px-2 text-right" role="cell">
                 {isDataOutdated ? (
                   <div className="skeleton h-8 w-9" />
                 ) : (
