@@ -5,6 +5,4 @@ export const invoiceInputValidations = z.object({
   customerName: z.string().trim().min(1, 'name is required').max(50, 'name is too long'),
   invoiceDate: z.date(),
   organizationId: z.string(),
-  invoiceWorkFrom: z.date().nullish(),
-  invoiceWorkUntil: z.date().nullish(),
 })

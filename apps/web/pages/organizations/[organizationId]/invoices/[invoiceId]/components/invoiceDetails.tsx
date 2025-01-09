@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -18,8 +17,6 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
-    invoiceWorkFrom
-    invoiceWorkUntil
     ...InvoiceListInvoice
     invoiceItems {
       id
@@ -88,8 +85,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       </p>
     )
 
-  const formattedInvoiceDate = format(new Date(invoice.invoiceDate ?? ''), 'd MMMM yyyy')
-
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
       <div className="flex justify-between pb-4">
@@ -117,11 +112,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               <div className="text-2xl font-bold">Invoice</div>
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>
             </div>
-            <p className="text-sm text-gray-600">Invoice No: #{invoice.id}</p>
-            <p className="text-right text-sm">
-              {invoice.invoiceWorkFrom} - {invoice.invoiceWorkUntil}
-            </p>
-            <p className="text-right text-sm text-gray-600">Created on: {formattedInvoiceDate}</p>
+            <p className="text-sm">Invoice No: #{invoice.id}</p>
+            <p className="text-right text-sm">Invoice Date: {invoice.invoiceDate}</p>
           </div>
         </div>
       </div>

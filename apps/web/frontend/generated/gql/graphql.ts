@@ -1378,8 +1378,6 @@ export type InvoiceFragmentFragment = ({
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
-  invoiceWorkFrom?: string | null
-  invoiceWorkUntil?: string | null
   invoiceItems: Array<
     { __typename?: 'InvoiceItem'; id: string } & {
       ' $fragmentRefs'?: { InvoiceItemsListInvoiceFragment: InvoiceItemsListInvoiceFragment }
@@ -3616,8 +3614,6 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
           {
             kind: 'Field',
@@ -6049,8 +6045,6 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
           {
             kind: 'Field',

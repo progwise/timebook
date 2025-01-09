@@ -1393,8 +1393,6 @@ export type InvoiceFragmentFragment = {
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
-  invoiceWorkFrom?: string | null
-  invoiceWorkUntil?: string | null
   invoiceItems: Array<{
     __typename?: 'InvoiceItem'
     id: string
@@ -1467,8 +1465,6 @@ export type InvoiceQuery = {
     customerName: string
     customerAddress?: string | null
     invoiceStatus: InvoiceStatus
-    invoiceWorkFrom?: string | null
-    invoiceWorkUntil?: string | null
     invoiceItems: Array<{
       __typename?: 'InvoiceItem'
       id: string
