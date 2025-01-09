@@ -45,12 +45,16 @@ export interface TaskListProps {
 export const TaskList = (props: TaskListProps): JSX.Element => {
   const { className } = props
   const project = useFragment(TaskListProjectFragment, props.project)
-  const { register, handleSubmit, reset, formState, setFocus } = useForm<TaskFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, errors, isDirty, dirtyFields },
+    setFocus,
+  } = useForm<TaskFormData>({
     resolver: zodResolver(taskInputSchema),
     defaultValues: { title: '' },
   })
-
-  const { isSubmitting, errors, isDirty, dirtyFields } = formState
 
   const [, taskCreate] = useMutation(TaskCreateMutationDocument)
 

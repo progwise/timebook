@@ -87,6 +87,20 @@ type InvoiceItem {
   task: Task!
 }
 
+input InvoiceItemInput {
+  """
+  Invoice item duration in minutes
+  """
+  duration: Int!
+
+  """
+  Invoice item hourly rate in euro
+  """
+  hourlyRate: Int!
+  invoiceId: ID!
+  taskId: ID!
+}
+
 """
 Status of the invoice
 """
@@ -94,6 +108,13 @@ enum InvoiceStatus {
   DRAFT
   PAID
   SENT
+}
+
+input InvoiceUpdateInput {
+  customerAddress: String
+  customerName: String
+  invoiceDate: Date
+  organizationId: ID
 }
 
 """
@@ -126,6 +147,23 @@ type Mutation {
   Create a new invoice
   """
   invoiceCreate(data: InvoiceInput!): Invoice!
+
+  """
+  Create a new invoice item
+  """
+  invoiceItemCreate(data: InvoiceItemInput!): InvoiceItem!
+
+  """
+  Update an invoice
+  """
+  invoiceUpdate(
+    data: InvoiceUpdateInput!
+
+    """
+    id of the invoice
+    """
+    id: ID!
+  ): Invoice!
 
   """
   Archive an organization
