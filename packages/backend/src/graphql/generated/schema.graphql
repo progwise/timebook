@@ -53,8 +53,6 @@ input InvoiceInput {
   customerAddress: String
   customerName: String!
   invoiceDate: Date!
-  invoiceWorkFrom: Date
-  invoiceWorkUntil: Date
   organizationId: ID!
 }
 
