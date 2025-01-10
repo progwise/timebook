@@ -133,7 +133,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
                 value={value ?? invoice[editableDateField] ?? ''}
                 id={editableDateField}
                 type="text"
-                size={6}
+                size={9}
                 className="input input-xs input-bordered"
               />
               <CalendarSelector

@@ -98,12 +98,12 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
   const currentMonth = format(currentDate, 'MMMM yyyy')
 
   return (
-    <section className={`${props.className} p-0`}>
+    <section>
       <Popover>
         <Popover.Button
           ref={refs.setReference}
           aria-label="select date"
-          className={`btn ${props.selectLabel ? '' : 'btn-square'} ${props.className}`}
+          className={`btn ${!props.selectLabel && 'btn-square'} ${props.className}`}
           disabled={props.disabled}
         >
           {!props.hideLabel && <span title="Display value">{props.date?.toLocaleDateString()}</span>}
