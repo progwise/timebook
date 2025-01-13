@@ -62,18 +62,10 @@ const NewInvoicePage = (): JSX.Element => {
     await router.push(`/organizations/${organizationId}`)
   }
 
-  const handleSubmitHelper = (data: InvoiceInput) => {
-    return handleCreateInvoice({
-      ...data,
-      invoiceWorkUntil: data.invoiceWorkUntil?.length ? data.invoiceWorkUntil : null,
-      invoiceWorkFrom: data.invoiceWorkFrom?.length ? data.invoiceWorkFrom : null,
-    })
-  }
-
   return (
     <ProtectedPage>
       <div className="flex flex-wrap items-start gap-2">
-        <form className="contents" id="invoice-form" onSubmit={handleSubmit(handleSubmitHelper)}>
+        <form className="contents" id="invoice-form" onSubmit={handleSubmit(handleCreateInvoice)}>
           <PageHeading>Create a new invoice</PageHeading>
           <InputField
             label="Name"
