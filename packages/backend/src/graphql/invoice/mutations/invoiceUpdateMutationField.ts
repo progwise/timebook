@@ -32,7 +32,7 @@ builder.mutationField('invoiceUpdate', (t) =>
       return prisma.invoice.update({
         ...query,
         data: {
-          customerAddress,
+          customerAddress: customerAddress ?? undefined,
           customerName: customerName ?? undefined,
           invoiceDate: invoiceDate ?? undefined,
           organizationId: organizationId?.toString(),

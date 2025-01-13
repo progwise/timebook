@@ -11,13 +11,11 @@ export const invoiceInputSchema: z.ZodSchema<InvoiceInput> = invoiceInputValidat
   .extend({
     invoiceWorkFrom: z
       .string()
-      .nullish()
-      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => value !== '____-__-__', 'enter a date')
       .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
     invoiceWorkUntil: z
       .string()
-      .nullish()
-      .transform((value) => (value === '____-__-__' ? null : value))
+      .refine((value) => value !== '____-__-__', 'enter a date')
       .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
     invoiceDate: z.string(),
   })

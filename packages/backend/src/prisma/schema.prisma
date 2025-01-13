@@ -42,8 +42,8 @@ model Invoice {
   customerAddress  String?
   organizationId   String
   customerName     String
-  invoiceWorkFrom  DateTime?
-  invoiceWorkUntil DateTime?
+  invoiceWorkFrom  DateTime
+  invoiceWorkUntil DateTime
 
   sendDate      DateTime?
   payDate       DateTime?
