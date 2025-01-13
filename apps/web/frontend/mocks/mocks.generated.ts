@@ -2061,7 +2061,7 @@ export const mockTrackingStopMutation = (
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see httpswjs.io/docs/basics/response-resolver
+ * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockTrackingCancelMutation((req, res, ctx) => {
  *   return res(
@@ -2462,18 +2462,3 @@ export const mockOrganizationsQuery = (
 export const mockProjectsQuery = (
   resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
 ) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('Projects', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to, projectMemberUserId, userIds } = req.variables;
- *   return res(
- *     ctx.data({ projects })
- *   )
- * })
- */
-export const mockWeekGridQuery = (
-  resolver: ResponseResolver<GraphQLRequest<ProjectsQueryVariables>, GraphQLContext<ProjectsQuery>, any>,
-) => graphql.query<ProjectsQuery, ProjectsQueryVariables>('weekGrid', resolver)
