@@ -1,66 +1,22 @@
 /* eslint-disable unicorn/no-null */
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format, isValid, parse, parseISO } from 'date-fns'
+import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { Controller, useForm } from 'react-hook-form'
 import { FaCircleXmark } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
 import { useMutation } from 'urql'
-import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
-import { invoiceInputValidations } from '@progwise/timebook-validations'
 
 import { CalendarSelector } from '../../../../frontend/components/calendarSelector'
+import { dateStringValidation, getDate } from '../../../../frontend/components/dateStringValidation'
 import { PageHeading } from '../../../../frontend/components/pageHeading'
 import { ProtectedPage } from '../../../../frontend/components/protectedPage'
 import { graphql } from '../../../../frontend/generated/gql'
 import { InvoiceInput } from '../../../../frontend/generated/gql/graphql'
-
-const getDate = (dateString: string | undefined | null): Date | undefined => {
-  if (!dateString) {
-    return undefined
-  }
-  const usedFormat = acceptedDateFormats.find((format) => isValid(parse(dateString, format, new Date())))
-  if (!usedFormat) {
-    return undefined
-  }
-  return parse(dateString, usedFormat, new Date().getDate())
-}
-
-const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
-const isValidDateString = (dateString: string): boolean =>
-  acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
-
-const invoiceInputSchema: z.ZodSchema<InvoiceInput> = invoiceInputValidations
-  .extend({
-    invoiceWorkFrom: z
-      .string()
-      .nullish()
-      .transform((value) => (value === '____-__-__' ? null : value))
-      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
-    invoiceWorkUntil: z
-      .string()
-      .nullish()
-      .transform((value) => (value === '____-__-__' ? null : value))
-      .refine((value) => !value || isValid(parseISO(value)), 'invalid date'),
-    invoiceDate: z.string(),
-  })
-  .superRefine((arguments_, context) => {
-    if (!arguments_.invoiceWorkUntil) {
-      return
-    }
-    const isStartBeforeEnd = (getDate(arguments_.invoiceWorkFrom) || 0) <= (getDate(arguments_.invoiceWorkUntil) || 1)
-
-    if (!isStartBeforeEnd) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['end'],
-        message: 'The end date must be after start date',
-      })
-    }
-  })
+import { invoiceInputSchema } from './invoiceInputSchema'
 
 const InvoiceCreateMutationDocument = graphql(`
   mutation invoiceCreate($data: InvoiceInput!) {
@@ -148,7 +104,7 @@ const NewInvoicePage = (): JSX.Element => {
               </div>
               <Controller
                 control={control}
-                rules={{ validate: (value) => !value || isValidDateString(value) }}
+                rules={{ validate: (value) => !value || dateStringValidation(value) }}
                 name="invoiceWorkFrom"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <div className="flex gap-1">
@@ -191,7 +147,7 @@ const NewInvoicePage = (): JSX.Element => {
               </div>
               <Controller
                 control={control}
-                rules={{ validate: (value) => !value || isValidDateString(value) }}
+                rules={{ validate: (value) => !value || dateStringValidation(value) }}
                 name="invoiceWorkUntil"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <div className="flex gap-1">

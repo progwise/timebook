@@ -1,5 +1,7 @@
+/* eslint-disable unicorn/no-null */
 import { ErrorMessage } from '@hookform/error-message'
-import { format, isValid, parse } from 'date-fns'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -10,8 +12,10 @@ import { useMutation } from 'urql'
 import { InputField } from '@progwise/timebook-ui'
 
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
+import { dateStringValidation, getDate } from '../../../../../../frontend/components/dateStringValidation'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { invoiceInputSchema } from '../../invoiceInputSchema'
 import { InvoiceItemList } from './invoiceItemList'
 
 const InvoiceDetailsFragment = graphql(`
@@ -30,21 +34,6 @@ const InvoiceDetailsFragment = graphql(`
     }
   }
 `)
-
-const getDate = (dateString: string | undefined | null): Date | undefined => {
-  if (!dateString) {
-    return undefined
-  }
-  const usedFormat = acceptedDateFormats.find((format) => isValid(parse(dateString, format, new Date())))
-  if (!usedFormat) {
-    return undefined
-  }
-  return parse(dateString, usedFormat, new Date().getDate())
-}
-
-const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
-const isValidDateString = (dateString: string): boolean =>
-  acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
 const InvoiceUpdateMutationDocument = graphql(`
   mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {
@@ -67,7 +56,9 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     setValue,
     register,
     control,
-  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({})
+  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
+    resolver: zodResolver(invoiceInputSchema),
+  })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
 
@@ -115,7 +106,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       <>
         <Controller
           control={control}
-          rules={{ validate: (value) => !value || isValidDateString(value) }}
+          rules={{ validate: (value) => !value || dateStringValidation(value) }}
           name={editableDateField}
           render={({ field: { onChange, onBlur, value } }) => (
             <div className="flex gap-1">
