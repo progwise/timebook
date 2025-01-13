@@ -1,6 +1,7 @@
 import { invoiceUpdateInputValidations } from '@progwise/timebook-validations'
 
 import { builder } from '../builder'
+import { InvoiceStatus } from './invoiceStatusEnum'
 
 export const InvoiceUpdateInput = builder.inputType('InvoiceUpdateInput', {
   validate: { schema: invoiceUpdateInputValidations },
@@ -9,5 +10,6 @@ export const InvoiceUpdateInput = builder.inputType('InvoiceUpdateInput', {
     customerName: t.string({ required: false }),
     invoiceDate: t.field({ type: 'Date', required: false }),
     organizationId: t.id({ required: false }),
+    invoiceStatus: t.field({ type: InvoiceStatus, required: false }),
   }),
 })

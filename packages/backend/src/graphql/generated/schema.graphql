@@ -110,6 +110,7 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
+  invoiceStatus: InvoiceStatus!
   organizationId: ID
 }
 
