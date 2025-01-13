@@ -109,6 +109,8 @@ export const organizationHandlers = [
           customerName: 'Herr Test',
           customerAddress: 'Frankfurt',
           invoiceStatus: InvoiceStatus.Draft,
+          invoiceWorkFrom: '2024-12-12',
+          invoiceWorkUntil: '2024-12-12',
           invoiceItems: [
             {
               id: '1',
