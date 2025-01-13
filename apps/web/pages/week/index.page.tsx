@@ -13,7 +13,7 @@ import { WeekSelector } from '../../frontend/components/weekSelector'
 import { graphql } from '../../frontend/generated/gql'
 
 const weekGridQueryDocument = graphql(`
-  query Projects($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {
+  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {
     projects(
       from: $from
       to: $to
@@ -91,7 +91,6 @@ const WeekPage = () => {
           endDate={endDate}
           isDataOutdated={isDataOutdated}
           currentUserId={currentUserId}
-          showAllUsers={currentUserId === 'all'}
         />
       )}
     </ProtectedPage>

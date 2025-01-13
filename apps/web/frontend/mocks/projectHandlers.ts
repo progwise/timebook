@@ -124,20 +124,31 @@ export const projectHandlers = [
               {
                 id: 'task1',
                 title: 'Task 1',
+                project: { id: testProject1.id, isArchived: false, members: [] },
+                isLocked: false,
+                isLockedByAdmin: false,
+                tracking: undefined,
+                projectTotal: [],
+                footerTotal: [],
+                taskTotal: [],
                 workHourOfDays: eachDayOfInterval({
                   start: new Date(request.variables.from),
                   end: new Date(request.variables.to ?? request.variables.from),
                 }).map((date) => ({
+                  __typename: 'WorkHourOfDay',
                   date: date.toISOString(),
                   isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
+                  user: {
+                    __typename: 'User',
+                    id: '1',
+                    name: 'User 1',
+                    image: undefined,
+                  },
+                  workHour: {
+                    __typename: 'WorkHour',
+                    duration: 0,
+                  },
                 })),
-                project: { id: testProject1.id, isArchived: false, members: testProject1.members },
-                isLocked: false,
-                isLockedByAdmin: false,
-                __typename: 'Task',
-                workHourOfDays4: [],
-                workHourOfDays1: [],
-                workHourOfDays2: [],
               },
             ],
           },

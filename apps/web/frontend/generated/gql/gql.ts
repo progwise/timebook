@@ -126,17 +126,17 @@ const documents = {
   '\n  fragment ProjectMember on User {\n    id\n    name\n    image\n  }\n': types.ProjectMemberFragmentDoc,
   '\n  query MyProjectsMembers {\n    myProjectsMembers {\n      ...ProjectMember\n    }\n    user {\n      id\n    }\n  }\n':
     types.MyProjectsMembersDocument,
-  '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      workHourOfDays4: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n':
+  '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        ...WeekGridFooter\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n':
     types.WeekGridProjectFragmentDoc,
   '\n  fragment WeekGridFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n':
     types.WeekGridFooterFragmentDoc,
-  '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      workHourOfDays1: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n':
+  '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n':
     types.WeekGridProjectRowGroupFragmentDoc,
   '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
-  '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    workHourOfDays2: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
+  '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
-  '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n':
+  '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n':
     types.WorkHourCommentFragmentFragmentDoc,
   '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n':
     types.CommentUpdateDocument,
@@ -181,8 +181,8 @@ const documents = {
   '\n  mutation projectCreate($data: ProjectInput!) {\n    projectCreate(data: $data) {\n      id\n    }\n  }\n':
     types.ProjectCreateDocument,
   '\n  query organizations {\n    organizations {\n      ...Organization\n    }\n  }\n': types.OrganizationsDocument,
-  '\n  query Projects($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n':
-    types.ProjectsDocument,
+  '\n  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n':
+    types.WeekGridDocument,
 }
 
 /**
@@ -557,8 +557,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      workHourOfDays4: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n',
-): (typeof documents)['\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      workHourOfDays4: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n']
+  source: '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        ...WeekGridFooter\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n',
+): (typeof documents)['\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        ...WeekGridFooter\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        members {\n          id\n          name\n          image\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -569,8 +569,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      workHourOfDays1: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n',
-): (typeof documents)['\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      workHourOfDays1: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n']
+  source: '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n',
+): (typeof documents)['\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.\n      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -581,14 +581,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    workHourOfDays2: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n',
-): (typeof documents)['\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    workHourOfDays2: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n']
+  source: '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n',
+): (typeof documents)['\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n',
-): (typeof documents)['\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n']
+  source: '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n',
+): (typeof documents)['\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -725,8 +725,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  query Projects($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n',
-): (typeof documents)['\n  query Projects($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n']
+  source: '\n  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n',
+): (typeof documents)['\n  query weekGrid($from: Date!, $to: Date, $projectMemberUserId: ID, $userIds: [ID!]) {\n    projects(\n      from: $from\n      to: $to\n      projectMemberUserId: $projectMemberUserId\n      userIds: $userIds\n      includeProjectsWhereUserBookedWorkHours: true\n    ) {\n      ...WeekGridProject\n    }\n  }\n']
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {}

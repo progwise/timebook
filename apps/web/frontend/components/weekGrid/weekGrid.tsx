@@ -11,8 +11,13 @@ export const WeekGridProjectFragment = graphql(`
     id
     tasks {
       #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.
-      workHourOfDays4: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
+      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {
         ...WeekGridFooter
+        user {
+          id
+          name
+          image
+        }
         workHour {
           duration
         }
@@ -35,7 +40,6 @@ export interface WeekGridProps {
   endDate: Date
   isDataOutdated?: boolean
   currentUserId: string
-  showAllUsers?: boolean
 }
 
 export const WeekGrid: React.FC<WeekGridProps> = ({
@@ -44,18 +48,16 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   endDate,
   isDataOutdated = false,
   currentUserId,
-  showAllUsers = false,
 }) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays4))
-  const allProjectMembers = projects.flatMap((project) => project.tasks.flatMap((task) => task.project.members))
+  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.footerTotal))
   const allTasks = projects.flatMap((project) => project.tasks)
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
-      : 1 + projects.length + allTasks.length + (showAllUsers ? allProjectMembers.length : 0) + 1 // header row + project rows + task-user rows + footer row
+      : 1 + projects.length + allTasks.length + 1 // header row + project rows + task rows + footer row
 
   return (
     <div
@@ -70,10 +72,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
       <div className="pointer-events-none absolute z-30 col-start-3 col-end-[-3] size-full rounded-box border opacity-50" />
 
       {/* adds a border around project row groups and task rows */}
-      <div
-        className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 size-full rounded-box border opacity-50"
-        style={{ gridRowEnd: showAllUsers ? `span ${allProjectMembers.length + 2}` : '-2' }}
-      />
+      <div className="pointer-events-none absolute col-start-1 col-end-[-1] row-start-2 row-end-[-2] size-full rounded-box border opacity-50" />
 
       {/* adds a background color to the header row and the footer row*/}
       <div className="absolute col-start-3 col-end-[-3] row-span-1 row-start-1 size-full rounded-t-box bg-base-200" />

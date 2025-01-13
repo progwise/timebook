@@ -44,6 +44,14 @@ export const WorkHourOfDayAndTask = builder.objectType('WorkHourOfDay', {
         return isProjectLocked({ projectId: task.project.id, date: workHour.date })
       },
     }),
+    user: t.prismaField({
+      type: 'User',
+      resolve: (query, workHour) =>
+        prisma.user.findUniqueOrThrow({
+          ...query,
+          where: { id: workHour.userId },
+        }),
+    }),
     workHour: t.prismaField({
       type: 'WorkHour',
       nullable: true,

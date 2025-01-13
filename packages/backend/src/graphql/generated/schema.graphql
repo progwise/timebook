@@ -760,5 +760,6 @@ input WorkHourInput {
 type WorkHourOfDay {
   date: Date!
   isLocked: Boolean!
+  user: User!
   workHour: WorkHour
 }
