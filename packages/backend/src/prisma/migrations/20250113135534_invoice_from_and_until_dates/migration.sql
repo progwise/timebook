@@ -1,10 +1,4 @@
-/*
-  Warnings:
-
-  - Added the required column `invoiceWorkFrom` to the `Invoice` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `invoiceWorkUntil` to the `Invoice` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- AlterTable
-ALTER TABLE "Invoice" ADD COLUMN     "invoiceWorkFrom" TIMESTAMP(3) NOT NULL,
-ADD COLUMN     "invoiceWorkUntil" TIMESTAMP(3) NOT NULL;
+ALTER TABLE "Invoice" ADD COLUMN "invoiceWorkFrom" TIMESTAMP(3), ADD COLUMN "invoiceWorkUntil" TIMESTAMP(3);
+UPDATE "Invoice" SET "invoiceWorkFrom" = "invoiceDate", "invoiceWorkUntil" = "invoiceDate" WHERE "invoiceWorkFrom" IS NULL;
+ALTER TABLE "Invoice" ALTER COLUMN "invoiceWorkFrom" SET NOT NULL, ALTER COLUMN "invoiceWorkUntil" SET NOT NULL;
