@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'

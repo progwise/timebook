@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 import { isValid, parseISO } from 'date-fns'
 import { z } from 'zod'
 
