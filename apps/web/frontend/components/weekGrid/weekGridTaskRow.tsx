@@ -21,8 +21,7 @@ const WeekGridTaskRowFragment = graphql(`
         image
       }
     }
-    #The userIds parameter queries the workHourOfDays field with the given user IDs. In the row of the task.
-    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {
+    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
       user {
         id
         name
@@ -43,6 +42,19 @@ const WeekGridTaskRowFragment = graphql(`
   }
 `)
 
+interface WorkHour {
+  date: string
+  isLocked: boolean
+  user: {
+    id: string
+    name?: string | null
+    image?: string | null
+  }
+  workHour?: {
+    duration: number
+  } | null
+}
+
 interface WeekGridTaskRowProps {
   task: FragmentType<typeof WeekGridTaskRowFragment>
   isDataOutdated?: boolean
@@ -55,53 +67,97 @@ export const WeekGridTaskRow = ({
   currentUserId,
 }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const taskDurations = task.taskTotal
-    .map((workHour) => workHour.workHour?.duration ?? 0)
-    .reduce((previous, current) => previous + current, 0)
+  const daysOfWeek = [1, 2, 3, 4, 5, 6, 0] // Monday to Sunday
 
-  return (
-    <>
-      {task.project.members.map(
-        (member) =>
-          (currentUserId === 'all' || member.id === currentUserId) && ( // Show for all members or the selected member
-            <div key={member.id} className="contents" role="row">
-              <div className="pl-3" role="cell">
-                {!task.isLockedByAdmin && !task.project.isArchived && (
-                  <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
-                )}
-              </div>
-              <div className="flex items-center gap-2 px-3">
-                <span role="cell">{task.title} </span>
-                <div className="pr-4">
-                  {currentUserId === 'all' && (
-                    <UserLabel name={member.name ?? member.id} image={member.image ?? undefined} />
-                  )}
-                </div>
-              </div>
-              {task.taskTotal.map((workHourOfDay) => (
-                <WeekGridTaskDayCell
-                  day={parseISO(workHourOfDay.date)}
-                  disabled={workHourOfDay.isLocked}
-                  taskId={task.id}
-                  duration={workHourOfDay.workHour?.duration ?? 0}
-                  key={workHourOfDay.date}
-                  isDataOutdated={isDataOutdated}
-                  currentUserId={currentUserId === 'all' ? member.id : currentUserId}
-                />
-              ))}
-              <div className="bg-slate-200 px-2 text-right" role="cell">
-                {isDataOutdated ? (
-                  <div className="skeleton h-8 w-9" />
-                ) : (
-                  <FormattedDuration minutes={taskDurations} title="" />
-                )}
-              </div>
-              <div className="px-2" role="cell">
-                <WorkHourCommentButton task={task} />
-              </div>
-            </div>
-          ),
-      )}
-    </>
+  const calculateMemberDuration = (userId: string) =>
+    task.taskTotal
+      .filter((workHour) => workHour.user.id === userId)
+      .reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
+
+  const renderDayCell = (
+    workHour: WorkHour | undefined,
+    taskId: string,
+    isDataOutdated: boolean,
+    currentUserId: string,
+  ) => (
+    <WeekGridTaskDayCell
+      day={parseISO(workHour?.date ?? new Date().toISOString())}
+      disabled={workHour?.isLocked ?? false}
+      taskId={taskId}
+      duration={workHour?.workHour?.duration ?? 0}
+      key={workHour?.date}
+      isDataOutdated={isDataOutdated}
+      currentUserId={currentUserId}
+    />
   )
+
+  // Member row rendering
+  const renderMemberRows = () =>
+    task.project.members.map((member) => {
+      const memberTaskDurations = calculateMemberDuration(member.id)
+
+      return (
+        <div key={member.id} className="contents" role="row">
+          <div className="pl-3" role="cell">
+            {!task.isLockedByAdmin && !task.project.isArchived && (
+              <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
+            )}
+          </div>
+          <div className="flex items-center gap-2 px-3">
+            <span role="cell">{task.title}</span>
+            <div className="pr-4">
+              <UserLabel name={member.name ?? member.id} image={member.image ?? undefined} />
+            </div>
+          </div>
+          {daysOfWeek.map((dayIndex) => {
+            const workHour = task.taskTotal.find(
+              (hour) => new Date(hour.date).getDay() === dayIndex && hour.user.id === member.id,
+            )
+            return renderDayCell(workHour, task.id, isDataOutdated, member.id)
+          })}
+          <div className="px-2 text-right" role="cell">
+            {isDataOutdated ? (
+              <div className="skeleton h-8 w-9" />
+            ) : (
+              <FormattedDuration minutes={memberTaskDurations} title="" />
+            )}
+          </div>
+          <div className="px-2" role="cell">
+            <WorkHourCommentButton task={task} />
+          </div>
+        </div>
+      )
+    })
+
+  // Single-row rendering
+  const renderSingleRow = () => {
+    const taskDurations = task.taskTotal.reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
+
+    return (
+      <div className="contents" role="row">
+        <div className="pl-3" role="cell">
+          {!task.isLockedByAdmin && !task.project.isArchived && (
+            <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
+          )}
+        </div>
+        <div className="flex items-center gap-2 px-3">
+          <span role="cell">{task.title}</span>
+        </div>
+        {task.taskTotal.map((workHour) => renderDayCell(workHour, task.id, isDataOutdated, workHour.user.id))}
+        <div className="px-2 text-right" role="cell">
+          {isDataOutdated ? (
+            <div className="skeleton h-8 w-9" />
+          ) : (
+            <FormattedDuration minutes={taskDurations} title="" />
+          )}
+        </div>
+        <div className="px-2" role="cell">
+          <WorkHourCommentButton task={task} />
+        </div>
+      </div>
+    )
+  }
+
+  // Conditional rendering based on current user
+  return currentUserId === 'all' ? renderMemberRows() : renderSingleRow()
 }

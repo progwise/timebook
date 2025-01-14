@@ -10,8 +10,7 @@ export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
     tasks {
-      #The userIds parameter queries the workHourOfDays field with the given user IDs. Total for the day on the footer.
-      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {
+      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
         ...WeekGridFooter
         user {
           id
@@ -54,10 +53,17 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const numberOfDays = differenceInDays(endDate, startDate) + 1
   const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.footerTotal))
   const allTasks = projects.flatMap((project) => project.tasks)
+
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
-      : 1 + projects.length + allTasks.length + 1 // header row + project rows + task rows + footer row
+      : 1 +
+        projects.length +
+        allTasks.reduce(
+          (accumulator, task) => accumulator + (currentUserId === 'all' ? task.project.members.length : 1),
+          0,
+        ) +
+        1 // header row + project rows + task rows + footer row
 
   return (
     <div

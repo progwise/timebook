@@ -16,8 +16,7 @@ export const WeekGridProjectRowGroupFragment = graphql(`
     tasks {
       id
       ...WeekGridTaskRow
-      #The userIds parameter queries the total workHourOfDays field with the given user IDs. Total for the project.
-      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds, projectMemberUserId: $projectMemberUserId) {
+      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
         user {
           id
           name
@@ -45,7 +44,6 @@ export const WeekGridProjectRowGroup = ({
   currentUserId,
 }: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
-
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
     defaultValue: false,
     initializeWithValue: false,

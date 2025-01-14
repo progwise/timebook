@@ -18,23 +18,13 @@ builder.queryField('projects', (t) =>
         description:
           'If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.',
       }),
-      projectMemberUserId: t.arg.id({
-        required: false,
-        description:
-          'Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.',
-      }),
       userIds: t.arg.idList({
         required: false,
         description: 'List of user ids. If not provided only the projects of the current users are returned.',
       }),
     },
-    resolve: (
-      query,
-      _source,
-      { from, to, filter, includeProjectsWhereUserBookedWorkHours, projectMemberUserId, userIds },
-      context,
-    ) => {
-      const showProjectsForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
+    resolve: (query, _source, { from, to, filter, includeProjectsWhereUserBookedWorkHours, userIds }, context) => {
+      const showProjectsForOtherUser = !!(userIds?.length && !userIds.includes(context.session.user.id))
       const userIdFilter = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 
       return prisma.project.findMany({
@@ -53,7 +43,7 @@ builder.queryField('projects', (t) =>
                       showProjectsForOtherUser,
                     ),
                     // check if the given user is allowed to see the project
-                    showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId?.toString() ?? '') : {},
+                    showProjectsForOtherUser ? getWhereUserIsMember(userIds?.[0]?.toString() ?? '') : {},
                   ],
                 },
                 // or get projects where user booked work hours
@@ -92,7 +82,7 @@ builder.queryField('projects', (t) =>
                   showProjectsForOtherUser,
                 ),
                 // check if the given user is allowed to see the project
-                showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId?.toString() ?? '') : {},
+                showProjectsForOtherUser ? getWhereUserIsMember(userIds?.[0]?.toString() ?? '') : {},
               ],
             },
         orderBy: { title: 'asc' },

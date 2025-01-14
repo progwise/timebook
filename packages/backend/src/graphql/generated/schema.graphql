@@ -493,11 +493,6 @@ type Query {
     If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.
     """
     includeProjectsWhereUserBookedWorkHours: Boolean! = false
-
-    """
-    Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.
-    """
-    projectMemberUserId: ID
     to: Date
 
     """
@@ -656,11 +651,6 @@ type Task implements ModifyInterface {
   """
   workHourOfDays(
     from: Date!
-
-    """
-    Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned
-    """
-    projectMemberUserId: ID
     to: Date
 
     """
@@ -670,11 +660,6 @@ type Task implements ModifyInterface {
   ): [WorkHourOfDay!]!
   workHours(
     from: Date!
-
-    """
-    Filter work hours where the given user is a project member. If not given, the work hours of the signed-in user are returned
-    """
-    projectMemberUserId: ID
     to: Date
 
     """
