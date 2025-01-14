@@ -71,9 +71,6 @@ builder.mutationField('invoiceUpdate', (t) =>
                 taskId: {
                   notIn: [...existingTaskIds],
                 },
-                duration: {
-                  not: 0,
-                },
               },
             ],
           },
