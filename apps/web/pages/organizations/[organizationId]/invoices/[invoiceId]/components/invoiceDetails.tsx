@@ -50,10 +50,10 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const invoice = useFragment(InvoiceDetailsFragment, invoiceFragment)
   const {
     setError,
-    handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
     register,
+    getValues,
     control,
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
     resolver: zodResolver(invoiceInputSchema),
@@ -67,10 +67,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   ) => {
     const result = await updateInvoice({ id: invoice.id, data })
     if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
-  }
-
-  const handleBlur = (handleBlurField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil') => {
-    setIsEditing((previous) => ({ ...previous, [handleBlurField]: false }))
+    setIsEditing((previous) => ({ ...previous, [handleSubmitHelperField]: false }))
   }
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
@@ -80,8 +77,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           required: editableField === 'customerName',
         })}
         onBlur={() => {
-          handleSubmit((data) => handleSubmitHelper(editableField, { [editableField]: data[editableField] }))()
-          handleBlur(editableField)
+          handleSubmitHelper(editableField, { [editableField]: getValues(editableField) })
         }}
         loading={fetching}
         errorMessage={errors[editableField]?.message}
@@ -107,17 +103,13 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           control={control}
           rules={{ validate: (value) => !value || dateStringValidation(value) }}
           name={editableDateField}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, value } }) => (
             <div className="flex gap-1">
               <InputMask
                 disabled={isSubmitting}
                 mask="9999-99-99"
                 onBlur={() => {
-                  onBlur()
-                  handleSubmit((data) =>
-                    handleSubmitHelper(editableDateField, { [editableDateField]: data[editableDateField] }),
-                  )()
-                  handleBlur(editableDateField)
+                  handleSubmitHelper(editableDateField, { [editableDateField]: getValues(editableDateField) })
                 }}
                 onChange={onChange}
                 value={value ?? invoice[editableDateField] ?? ''}
@@ -131,7 +123,10 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
                 className="btn-xs"
                 date={getDate(value)}
                 hideLabel={true}
-                onDateChange={(newDate) => setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => {
+                  setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))
+                  handleSubmitHelper(editableDateField, { [editableDateField]: getValues(editableDateField) })
+                }}
               />
             </div>
           )}
