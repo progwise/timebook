@@ -37,7 +37,7 @@ export const WeekSelector = ({ value, onChange }: WeekSelectorProps) => {
           <FaCalendarCheck />
           Today
         </button>
-        <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel />
+        <CalendarSelector hideLabel onDateChange={handleWeekSelect} selectLabel className="btn-sm" />
         <button
           className="btn btn-outline btn-neutral btn-sm"
           aria-label="Next week"

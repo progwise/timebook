@@ -42,6 +42,8 @@ type Invoice implements ModifyInterface {
   Status of the invoice
   """
   invoiceStatus: InvoiceStatus!
+  invoiceWorkFrom: Date!
+  invoiceWorkUntil: Date!
   organization: Organization!
   payDate: Date
   sendDate: Date
@@ -51,6 +53,8 @@ input InvoiceInput {
   customerAddress: String
   customerName: String!
   invoiceDate: Date!
+  invoiceWorkFrom: Date!
+  invoiceWorkUntil: Date!
   organizationId: ID!
 }
 
@@ -110,6 +114,8 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
+  invoiceWorkFrom: Date
+  invoiceWorkUntil: Date
   organizationId: ID
 }
 

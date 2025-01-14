@@ -43,6 +43,8 @@ export type Invoice = ModifyInterface & {
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
+  invoiceWorkFrom: Scalars['Date']
+  invoiceWorkUntil: Scalars['Date']
   organization: Organization
   payDate?: Maybe<Scalars['Date']>
   sendDate?: Maybe<Scalars['Date']>
@@ -52,6 +54,8 @@ export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']
+  invoiceWorkFrom: Scalars['Date']
+  invoiceWorkUntil: Scalars['Date']
   organizationId: Scalars['ID']
 }
 
@@ -91,6 +95,8 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
+  invoiceWorkFrom?: InputMaybe<Scalars['Date']>
+  invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
 }
 
@@ -1389,6 +1395,8 @@ export type InvoiceFragmentFragment = {
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
+  invoiceWorkFrom: string
+  invoiceWorkUntil: string
   invoiceItems: Array<{
     __typename?: 'InvoiceItem'
     id: string
@@ -1461,6 +1469,8 @@ export type InvoiceQuery = {
     customerName: string
     customerAddress?: string | null
     invoiceStatus: InvoiceStatus
+    invoiceWorkFrom: string
+    invoiceWorkUntil: string
     invoiceItems: Array<{
       __typename?: 'InvoiceItem'
       id: string

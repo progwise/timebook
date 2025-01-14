@@ -1,13 +1,20 @@
+import { ErrorMessage } from '@hookform/error-message'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 import Image from 'next/image'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { FaPen, FaPrint } from 'react-icons/fa6'
+import InputMask from 'react-input-mask'
 import { useMutation } from 'urql'
 
 import { InputField } from '@progwise/timebook-ui'
 
+import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
+import { dateStringValidation, getDate } from '../../../../../../frontend/components/dateStringValidation'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { invoiceInputSchema } from '../../invoiceInputSchema'
 import { InvoiceItemList } from './invoiceItemList'
 
 const InvoiceDetailsFragment = graphql(`
@@ -17,6 +24,8 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
+    invoiceWorkFrom
+    invoiceWorkUntil
     ...InvoiceListInvoice
     invoiceItems {
       id
@@ -42,28 +51,34 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const {
     setError,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
+    setValue,
     register,
-  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
+    control,
+  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
+    resolver: zodResolver(invoiceInputSchema),
+  })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
 
   const handleSubmitHelper = async (
-    handleSubmitHelperField: 'customerName' | 'customerAddress',
+    handleSubmitHelperField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil',
     data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
   ) => {
     const result = await updateInvoice({ id: invoice.id, data })
     if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
   }
 
-  const handleBlur = (handleBlurField: 'customerName' | 'customerAddress') => {
+  const handleBlur = (handleBlurField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil') => {
     setIsEditing((previous) => ({ ...previous, [handleBlurField]: false }))
   }
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
     isEditing[editableField] ? (
       <InputField
-        {...register(editableField, { required: editableField === 'customerName' })}
+        {...register(editableField, {
+          required: editableField === 'customerName',
+        })}
         onBlur={() => {
           handleSubmit((data) => handleSubmitHelper(editableField, { [editableField]: data[editableField] }))()
           handleBlur(editableField)
@@ -71,10 +86,10 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         loading={fetching}
         errorMessage={errors[editableField]?.message}
         defaultValue={invoice[editableField] ?? ''}
-        className="input-sm"
+        className="input-xs"
       />
     ) : (
-      <p className="h-8">
+      <p className="flex h-6 items-center">
         {invoice[editableField]}
         <button
           className="btn btn-square btn-ghost btn-xs ml-1 print:hidden"
@@ -84,6 +99,64 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
+
+  const renderEditableDateField = (editableDateField: 'invoiceWorkFrom' | 'invoiceWorkUntil') =>
+    isEditing[editableDateField] ? (
+      <>
+        <Controller
+          control={control}
+          rules={{ validate: (value) => !value || dateStringValidation(value) }}
+          name={editableDateField}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <div className="flex gap-1">
+              <InputMask
+                disabled={isSubmitting}
+                mask="9999-99-99"
+                onBlur={() => {
+                  onBlur()
+                  handleSubmit((data) =>
+                    handleSubmitHelper(editableDateField, { [editableDateField]: data[editableDateField] }),
+                  )()
+                  handleBlur(editableDateField)
+                }}
+                onChange={onChange}
+                value={value ?? invoice[editableDateField] ?? ''}
+                id={editableDateField}
+                type="text"
+                size={9}
+                className="input input-xs input-bordered"
+              />
+              <CalendarSelector
+                disabled={isSubmitting}
+                className="btn-xs"
+                date={getDate(value)}
+                hideLabel={true}
+                onDateChange={(newDate) => setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))}
+              />
+            </div>
+          )}
+        />
+        {errors[editableDateField] && (
+          <ErrorMessage
+            name={editableDateField}
+            errors={errors}
+            as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
+          />
+        )}
+      </>
+    ) : (
+      <div className="flex items-center">
+        <p>{invoice[editableDateField]}</p>
+        <button
+          className="btn btn-square btn-ghost btn-xs print:hidden"
+          onClick={() => setIsEditing((previous) => ({ ...previous, [editableDateField]: true }))}
+        >
+          <FaPen />
+        </button>
+      </div>
+    )
+
+  const formattedInvoiceDate = format(new Date(invoice.invoiceDate ?? ''), 'd MMMM yyyy')
 
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
@@ -113,7 +186,10 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>
             </div>
             <p>Invoice No: #{invoice.id}</p>
-            <p className="text-right">Invoice Date: {invoice.invoiceDate}</p>
+            <div className="flex items-center justify-end gap-1">
+              {renderEditableDateField('invoiceWorkFrom')} - {renderEditableDateField('invoiceWorkUntil')}
+            </div>
+            <p className="text-right">Created on: {formattedInvoiceDate}</p>
           </div>
         </div>
       </div>

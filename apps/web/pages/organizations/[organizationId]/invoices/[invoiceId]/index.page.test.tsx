@@ -28,7 +28,7 @@ it('should render invoice details', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
   const invoiceElements = await screen.findAllByText('INVOICE', { exact: false })
-  expect(invoiceElements).toHaveLength(3)
+  expect(invoiceElements).toHaveLength(2)
   expect(screen.getByText('Progwise')).toBeInTheDocument()
   expect(screen.getByText('Greifswald')).toBeInTheDocument()
   expect(screen.getByText('Invoice No: #1')).toBeInTheDocument()
