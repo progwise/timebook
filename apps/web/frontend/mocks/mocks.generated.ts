@@ -121,6 +121,8 @@ export type Mutation = {
   invoiceCreate: Invoice
   /** Create a new invoice item */
   invoiceItemCreate: InvoiceItem
+  /** Update an invoice item */
+  invoiceItemUpdate: InvoiceItem
   /** Update an invoice */
   invoiceUpdate: Invoice
   /** Archive an organization */
@@ -197,6 +199,11 @@ export type MutationInvoiceCreateArgs = {
 
 export type MutationInvoiceItemCreateArgs = {
   data: InvoiceItemInput
+}
+
+export type MutationInvoiceItemUpdateArgs = {
+  data: InvoiceItemInput
+  id: Scalars['ID']
 }
 
 export type MutationInvoiceUpdateArgs = {
@@ -1402,7 +1409,12 @@ export type InvoiceFragmentFragment = {
     id: string
     duration: number
     hourlyRate: number
-    task: { __typename?: 'Task'; id: string; title: string }
+    task: {
+      __typename?: 'Task'
+      id: string
+      title: string
+      project: { __typename?: 'Project'; id: string; title: string }
+    }
   }>
   organization: {
     __typename?: 'Organization'
@@ -1443,7 +1455,12 @@ export type InvoiceItemsListInvoiceFragment = {
   id: string
   duration: number
   hourlyRate: number
-  task: { __typename?: 'Task'; id: string; title: string }
+  task: {
+    __typename?: 'Task'
+    id: string
+    title: string
+    project: { __typename?: 'Project'; id: string; title: string }
+  }
 }
 
 export type InvoiceItemCreateMutationVariables = Exact<{
@@ -1453,6 +1470,16 @@ export type InvoiceItemCreateMutationVariables = Exact<{
 export type InvoiceItemCreateMutation = {
   __typename?: 'Mutation'
   invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
+}
+
+export type InvoiceItemUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  data: InvoiceItemInput
+}>
+
+export type InvoiceItemUpdateMutation = {
+  __typename?: 'Mutation'
+  invoiceItemUpdate: { __typename?: 'InvoiceItem'; id: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -1476,7 +1503,12 @@ export type InvoiceQuery = {
       id: string
       duration: number
       hourlyRate: number
-      task: { __typename?: 'Task'; id: string; title: string }
+      task: {
+        __typename?: 'Task'
+        id: string
+        title: string
+        project: { __typename?: 'Project'; id: string; title: string }
+      }
     }>
     organization: {
       __typename?: 'Organization'
@@ -2347,6 +2379,25 @@ export const mockInvoiceItemCreateMutation = (
     any
   >,
 ) => graphql.mutation<InvoiceItemCreateMutation, InvoiceItemCreateMutationVariables>('invoiceItemCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockInvoiceItemUpdateMutation((req, res, ctx) => {
+ *   const { id, data } = req.variables;
+ *   return res(
+ *     ctx.data({ invoiceItemUpdate })
+ *   )
+ * })
+ */
+export const mockInvoiceItemUpdateMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<InvoiceItemUpdateMutationVariables>,
+    GraphQLContext<InvoiceItemUpdateMutation>,
+    any
+  >,
+) => graphql.mutation<InvoiceItemUpdateMutation, InvoiceItemUpdateMutationVariables>('invoiceItemUpdate', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

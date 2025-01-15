@@ -36,6 +36,10 @@ const InvoiceItemsListInvoiceFragment = graphql(`
     task {
       id
       title
+      project {
+        id
+        title
+      }
     }
   }
 `)
@@ -43,6 +47,14 @@ const InvoiceItemsListInvoiceFragment = graphql(`
 const InvoiceItemCreateMutationDocument = graphql(`
   mutation invoiceItemCreate($data: InvoiceItemInput!) {
     invoiceItemCreate(data: $data) {
+      id
+    }
+  }
+`)
+
+const InvoiceItemUpdateMutationDocument = graphql(`
+  mutation invoiceItemUpdate($id: ID!, $data: InvoiceItemInput!) {
+    invoiceItemUpdate(id: $id, data: $data) {
       id
     }
   }
@@ -75,6 +87,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     defaultValues: { duration: 0, hourlyRate: 0 },
   })
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
+  const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
   const [amount, setAmount] = useState<number>(0)
 
   const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
@@ -111,24 +124,69 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
 
   return (
     <>
-      <table className="table">
+      <table className="table text-right">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr className="[&_th]:border [&_th]:border-neutral">
-            <th>Item</th>
+            <th />
             <th className="w-1/12">Duration</th>
             <th className="w-1/12">Hourly Rate</th>
-            <th className="w-1/12 text-right">Amount</th>
+            <th className="w-1/12">Amount</th>
           </tr>
         </thead>
         <tbody>
-          {invoiceItemsData.map((invoiceItem) => (
-            <tr key={invoiceItem.id} className="[&_td]:border [&_td]:border-neutral">
-              <td>{invoiceItem.task.title}</td>
-              <td>{invoiceItem.duration}</td>
-              <td>{invoiceItem.hourlyRate}</td>
-              <td className="text-right">{invoiceItem.duration * invoiceItem.hourlyRate}</td>
-            </tr>
-          ))}
+          {[...invoiceItemsData]
+            .sort((a, b) => {
+              const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
+              return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
+            })
+            .map((invoiceItem) => (
+              <tr key={invoiceItem.id} className="[&_td]:border [&_td]:border-neutral">
+                <td className="text-left">
+                  <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
+                </td>
+                <td className="p-1">
+                  <InputField
+                    className="input-sm input-ghost text-right"
+                    type="number"
+                    defaultValue={invoiceItem.hourlyRate.toString()}
+                    disabled={isSubmitting}
+                    onBlur={(event) => {
+                      const newDuration = Number(event.target.value)
+                      invoiceItemUpdate({
+                        data: {
+                          duration: newDuration,
+                          taskId: invoiceItem.task.id,
+                          hourlyRate: Number(invoiceItem.hourlyRate),
+                          invoiceId: invoiceData.id,
+                        },
+                        id: invoiceItem.id,
+                      })
+                    }}
+                  />
+                </td>
+                <td className="p-1">
+                  <InputField
+                    className="input-sm input-ghost text-right"
+                    type="number"
+                    defaultValue={invoiceItem.hourlyRate.toString()}
+                    disabled={isSubmitting}
+                    onBlur={(event) => {
+                      const newHourlyRate = Number(event.target.value)
+                      invoiceItemUpdate({
+                        data: {
+                          duration: invoiceItem.duration,
+                          taskId: invoiceItem.task.id,
+                          hourlyRate: newHourlyRate,
+                          invoiceId: invoiceData.id,
+                        },
+                        id: invoiceItem.id,
+                      })
+                    }}
+                  />
+                </td>
+                <td>€ {(invoiceItem.duration * invoiceItem.hourlyRate) / 60}</td>
+              </tr>
+            ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
@@ -163,7 +221,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
-                  className="input-sm"
+                  className="input-sm text-right"
                   type="number"
                   placeholder="Enter a duration"
                   {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
@@ -176,7 +234,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
-                  className="input-sm"
+                  className="input-sm text-right"
                   type="number"
                   placeholder="Enter an hourly rate"
                   {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
@@ -186,7 +244,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 />
               </form>
             </td>
-            <td className="text-right">{amount}</td>
+            <td>{amount}</td>
           </tr>
         </tfoot>
       </table>
@@ -200,7 +258,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
           <FaPlus /> Add
         </button>
         <div className="pt-2 font-bold">
-          Total: €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
+          Total: € {invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
         </div>
       </div>
     </>

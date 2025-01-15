@@ -1,1 +1,2 @@
 import './invoiceItemCreateMutationField'
+import './invoiceItemUpdateMutationField'
