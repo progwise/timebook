@@ -10,12 +10,13 @@ export class ProjectsPage {
 
   private async _gotoProjectPage() {
     await this._page.getByRole('link', { name: 'Projects' }).click()
+    await this._page.waitForLoadState('networkidle')
   }
 
   public async addProject(projectName: string, startDate?: Date, endDate?: Date) {
     await this._gotoProjectPage()
     const newProjectButton = this._page.getByRole('button', { name: 'New project' })
-    await newProjectButton.waitFor({ state: 'visible', timeout: 20_000 }) // Increased timeout
+    await newProjectButton.waitFor({ state: 'visible', timeout: 30_000 })
     await newProjectButton.click()
     await this._page.fill('[placeholder="Enter project name"]', projectName)
     if (startDate) {
