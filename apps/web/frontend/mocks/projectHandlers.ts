@@ -11,21 +11,6 @@ import {
   mockWeekGridQuery,
 } from './mocks.generated'
 
-const testProject1 = {
-  id: 'project1',
-  title: 'Project 1',
-  canModify: true,
-  isArchived: false,
-  members: [{ id: '1', name: 'User 1', image: undefined }],
-}
-const testProject2 = {
-  id: 'project2',
-  title: 'Project 2',
-  canModify: false,
-  isArchived: false,
-  members: [{ id: '1', name: 'User 2', image: undefined }],
-}
-
 let members: ProjectMemberListProjectFragment['members'] = [
   {
     id: '1',
@@ -42,6 +27,21 @@ let members: ProjectMemberListProjectFragment['members'] = [
     __typename: 'User',
   },
 ]
+
+const testProject1 = {
+  id: 'project1',
+  title: 'Project 1',
+  canModify: true,
+  isArchived: false,
+  members,
+}
+const testProject2 = {
+  id: 'project2',
+  title: 'Project 2',
+  canModify: false,
+  isArchived: false,
+  members,
+}
 
 export const projectHandlers = [
   mockProjectQuery((_request, response, context) => {
@@ -124,13 +124,22 @@ export const projectHandlers = [
               {
                 id: 'task1',
                 title: 'Task 1',
-                project: { id: testProject1.id, isArchived: false, members: [] },
+                project: { id: testProject1.id, isArchived: false, members },
                 isLocked: false,
                 isLockedByAdmin: false,
                 tracking: undefined,
                 projectTotal: [],
                 footerTotal: [],
-                taskTotal: [],
+                taskTotal: eachDayOfInterval({
+                  start: new Date(request.variables.from),
+                  end: new Date(request.variables.to ?? request.variables.from),
+                }).map((date) => ({
+                  __typename: 'WorkHourOfDay',
+                  date: date.toISOString(),
+                  isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
+                  user: members[0],
+                  workHour: { __typename: 'WorkHour', duration: 0 },
+                })),
                 workHourOfDays: eachDayOfInterval({
                   start: new Date(request.variables.from),
                   end: new Date(request.variables.to ?? request.variables.from),
@@ -138,16 +147,8 @@ export const projectHandlers = [
                   __typename: 'WorkHourOfDay',
                   date: date.toISOString(),
                   isLocked: isSameMonth(date, new Date('2023-02-01')), // lock all days in February 2023
-                  user: {
-                    __typename: 'User',
-                    id: '1',
-                    name: 'User 1',
-                    image: undefined,
-                  },
-                  workHour: {
-                    __typename: 'WorkHour',
-                    duration: 0,
-                  },
+                  user: members[0],
+                  workHour: { __typename: 'WorkHour', duration: 0 },
                 })),
               },
             ],

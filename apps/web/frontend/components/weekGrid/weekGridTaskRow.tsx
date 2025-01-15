@@ -74,20 +74,15 @@ export const WeekGridTaskRow = ({
       .filter((workHour) => workHour.user.id === userId)
       .reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
-  const renderDayCell = (
-    workHour: WorkHour | undefined,
-    taskId: string,
-    isDataOutdated: boolean,
-    currentUserId: string,
-  ) => {
-    const key = `${taskId}-${workHour?.date}-${workHour?.user.id}`
+  const renderDayCell = (workHour: WorkHour, taskId: string, isDataOutdated: boolean, currentUserId: string) => {
+    const key = `${taskId}-${workHour.date}-${workHour.user.id}`
 
     return (
       <WeekGridTaskDayCell
-        day={parseISO(workHour?.date ?? new Date().toISOString())}
-        disabled={workHour?.isLocked ?? false}
+        day={parseISO(workHour.date)}
+        disabled={workHour.isLocked}
         taskId={taskId}
-        duration={workHour?.workHour?.duration ?? 0}
+        duration={workHour.workHour?.duration ?? 0}
         key={key}
         isDataOutdated={isDataOutdated}
         currentUserId={currentUserId}
@@ -101,7 +96,7 @@ export const WeekGridTaskRow = ({
       const memberTaskDurations = calculateMemberDuration(member.id)
 
       return (
-        <div key={member.id} className="contents" role="row">
+        <div key={`${task.id}-${member.id}`} className="contents" role="row">
           <div className="pl-3" role="cell">
             {!task.isLockedByAdmin && !task.project.isArchived && (
               <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
@@ -117,7 +112,7 @@ export const WeekGridTaskRow = ({
             const workHour = task.taskTotal.find(
               (hour) => new Date(hour.date).getDay() === dayIndex && hour.user.id === member.id,
             )
-            return renderDayCell(workHour, task.id, isDataOutdated, member.id)
+            return workHour ? renderDayCell(workHour, `${task.id}-${member.id}`, isDataOutdated, member.id) : undefined
           })}
           <div className="px-2 text-right" role="cell">
             {isDataOutdated ? (
@@ -138,7 +133,7 @@ export const WeekGridTaskRow = ({
     const taskDurations = task.taskTotal.reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
     return (
-      <div className="contents" role="row">
+      <div key={task.id} className="contents" role="row">
         <div className="pl-3" role="cell">
           {!task.isLockedByAdmin && !task.project.isArchived && (
             <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
