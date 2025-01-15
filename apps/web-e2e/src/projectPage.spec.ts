@@ -25,7 +25,9 @@ test.describe('project page', () => {
 
     const today = new Date()
     await projectsPage.addProject('Test Project', today, addYears(today, 1))
-    await page.getByRole('tab', { name: 'Members', exact: true }).click()
+    const membersTab = page.getByRole('tab', { name: 'Members', exact: true })
+    await membersTab.waitFor({ state: 'visible' })
+    await membersTab.click()
     await expect(page.getByText('Admin')).toBeVisible()
   })
 })

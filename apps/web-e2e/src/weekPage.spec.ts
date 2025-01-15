@@ -14,13 +14,17 @@ test.describe('week page', () => {
   test('it should display the current month', async ({ page }) => {
     const currentMonthString = format(new Date(), 'MMMM')
 
-    await page.getByRole('link', { name: 'Week' }).click()
+    const weekLink = page.getByRole('link', { name: 'Week' })
+    await weekLink.waitFor({ state: 'visible' })
+    await weekLink.click()
     const header = page.getByRole('heading', { name: currentMonthString })
     await expect(header).toBeVisible()
   })
 
   test('it should be possible to change the week', async ({ page }) => {
-    await page.getByRole('link', { name: 'Week' }).click()
+    const weekLink = page.getByRole('link', { name: 'Week' })
+    await weekLink.waitFor({ state: 'visible' })
+    await weekLink.click()
     await page.getByRole('button', { name: 'Next week' }).click()
 
     await expect(page).not.toHaveURL('/week')

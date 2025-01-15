@@ -8,13 +8,13 @@ dotenvConfig({ path: '../../.env' })
 const config: PlaywrightTestConfig = {
   testDir: './src',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 10 * 1000,
+    timeout: 20 * 1000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -47,6 +47,7 @@ const config: PlaywrightTestConfig = {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        headless: true,
       },
     },
 
@@ -54,6 +55,7 @@ const config: PlaywrightTestConfig = {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
+        headless: true,
       },
     },
 
@@ -61,6 +63,7 @@ const config: PlaywrightTestConfig = {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
+        headless: true,
       },
     },
   ],

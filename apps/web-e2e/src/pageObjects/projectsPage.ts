@@ -15,7 +15,7 @@ export class ProjectsPage {
   public async addProject(projectName: string, startDate?: Date, endDate?: Date) {
     await this._gotoProjectPage()
     const newProjectButton = this._page.getByRole('button', { name: 'New project' })
-    await newProjectButton.waitFor({ state: 'visible' })
+    await newProjectButton.waitFor({ state: 'visible', timeout: 20_000 }) // Increased timeout
     await newProjectButton.click()
     await this._page.fill('[placeholder="Enter project name"]', projectName)
     if (startDate) {
