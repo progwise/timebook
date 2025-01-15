@@ -93,7 +93,7 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
             {task.workHourOfDays.map((workHourOfDay) => {
               const date = parseISO(workHourOfDay.date)
               return (
-                <div key={workHourOfDay.date} className="flex flex-col gap-2">
+                <div key={`${workHourOfDay.date}-${workHourOfDay.user.id}`} className="flex flex-col gap-2">
                   <div className="flex rounded-box py-1">{format(date, 'EEEE, MMMM do')}</div>
                   <textarea
                     title="comment"

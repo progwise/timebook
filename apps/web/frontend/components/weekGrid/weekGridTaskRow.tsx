@@ -79,17 +79,21 @@ export const WeekGridTaskRow = ({
     taskId: string,
     isDataOutdated: boolean,
     currentUserId: string,
-  ) => (
-    <WeekGridTaskDayCell
-      day={parseISO(workHour?.date ?? new Date().toISOString())}
-      disabled={workHour?.isLocked ?? false}
-      taskId={taskId}
-      duration={workHour?.workHour?.duration ?? 0}
-      key={workHour?.date}
-      isDataOutdated={isDataOutdated}
-      currentUserId={currentUserId}
-    />
-  )
+  ) => {
+    const key = `${taskId}-${workHour?.date}-${workHour?.user.id}`
+
+    return (
+      <WeekGridTaskDayCell
+        day={parseISO(workHour?.date ?? new Date().toISOString())}
+        disabled={workHour?.isLocked ?? false}
+        taskId={taskId}
+        duration={workHour?.workHour?.duration ?? 0}
+        key={key}
+        isDataOutdated={isDataOutdated}
+        currentUserId={currentUserId}
+      />
+    )
+  }
 
   // Member row rendering
   const renderMemberRows = () =>

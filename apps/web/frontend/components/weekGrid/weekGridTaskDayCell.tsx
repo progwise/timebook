@@ -30,9 +30,10 @@ export const WeekGridTaskDayCell = ({
   currentUserId,
 }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
+  const key = `${taskId}-${day.toDateString()}-${currentUserId}`
 
   return (
-    <div key={day.toDateString()} className="z-20 justify-self-center px-4" role="cell">
+    <div key={key} className="z-20 justify-self-center px-4" role="cell">
       <div className="relative py-1">
         {isDataOutdated ? (
           <div className="skeleton h-8 w-16" />
