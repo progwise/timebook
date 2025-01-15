@@ -37,13 +37,24 @@ type Invoice implements ModifyInterface {
   Items associated with the invoice
   """
   invoiceItems: [InvoiceItem!]!
+
+  """
+  Status of the invoice
+  """
+  invoiceStatus: InvoiceStatus!
+  invoiceWorkFrom: Date!
+  invoiceWorkUntil: Date!
   organization: Organization!
+  payDate: Date
+  sendDate: Date
 }
 
 input InvoiceInput {
   customerAddress: String
   customerName: String!
   invoiceDate: Date!
+  invoiceWorkFrom: Date!
+  invoiceWorkUntil: Date!
   organizationId: ID!
 }
 
@@ -76,6 +87,38 @@ type InvoiceItem {
   task: Task!
 }
 
+input InvoiceItemInput {
+  """
+  Invoice item duration in minutes
+  """
+  duration: Int!
+
+  """
+  Invoice item hourly rate in euro
+  """
+  hourlyRate: Int!
+  invoiceId: ID!
+  taskId: ID!
+}
+
+"""
+Status of the invoice
+"""
+enum InvoiceStatus {
+  DRAFT
+  PAID
+  SENT
+}
+
+input InvoiceUpdateInput {
+  customerAddress: String
+  customerName: String
+  invoiceDate: Date
+  invoiceWorkFrom: Date
+  invoiceWorkUntil: Date
+  organizationId: ID
+}
+
 """
 Adds the information whether the user can edit the entity
 """
@@ -106,6 +149,23 @@ type Mutation {
   Create a new invoice
   """
   invoiceCreate(data: InvoiceInput!): Invoice!
+
+  """
+  Create a new invoice item
+  """
+  invoiceItemCreate(data: InvoiceItemInput!): InvoiceItem!
+
+  """
+  Update an invoice
+  """
+  invoiceUpdate(
+    data: InvoiceUpdateInput!
+
+    """
+    id of the invoice
+    """
+    id: ID!
+  ): Invoice!
 
   """
   Archive an organization

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-null */
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format, isValid, parse, parseISO } from 'date-fns'
+import { format, isValid, parseISO } from 'date-fns'
 import { Controller, useForm } from 'react-hook-form'
 import InputMask from 'react-input-mask'
 import { z } from 'zod'
@@ -12,24 +12,10 @@ import { projectInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { ProjectInput } from '../../generated/gql/graphql'
 import { CalendarSelector } from '../calendarSelector'
+import { dateStringValidation, getDate } from '../dateStringValidation'
 import { PageHeading } from '../pageHeading'
 import { ProjectInvitationButton } from '../projectInvitationButton'
 import { DeleteOrArchiveProjectButton } from './deleteOrArchiveProjectButton'
-
-const getDate = (dateString: string | undefined | null): Date | undefined => {
-  if (!dateString) {
-    return undefined
-  }
-  const usedFormat = acceptedDateFormats.find((format) => isValid(parse(dateString, format, new Date())))
-  if (!usedFormat) {
-    return undefined
-  }
-  return parse(dateString, usedFormat, new Date().getDate())
-}
-
-const acceptedDateFormats = ['yyyy-MM-dd', 'dd.MM.yyyy', 'MM/dd/yyyy']
-const isValidDateString = (dateString: string): boolean =>
-  acceptedDateFormats.some((format) => parse(dateString, format, new Date()).getDate())
 
 const projectInputSchema: z.ZodSchema<ProjectInput> = projectInputValidations
   .extend({
@@ -97,7 +83,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
   const { onSubmit, onCancel, hasError } = props
   const project = useFragment(ProjectFormFragment, props.project)
   const organizations = useFragment(OrganizationFragment, props.organizations)
-  const { register, handleSubmit, formState, setValue, control } = useForm<ProjectInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors, dirtyFields },
+    setValue,
+    control,
+  } = useForm<ProjectInput>({
     defaultValues: {
       title: project?.title,
       start: project?.startDate ? format(new Date(project.startDate), 'yyyy-MM-dd') : null,
@@ -106,8 +98,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     },
     resolver: zodResolver(projectInputSchema),
   })
-
-  const { isSubmitting, errors, dirtyFields } = formState
 
   const handleSubmitHelper = (data: ProjectInput) => {
     return onSubmit({
@@ -143,10 +133,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
             <Controller
               control={control}
-              rules={{ validate: (value) => !value || isValidDateString(value) }}
+              rules={{ validate: (value) => !value || dateStringValidation(value) }}
               name="start"
               render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center">
+                <div className="flex gap-1">
                   <InputMask
                     disabled={isSubmitting}
                     mask="9999-99-99"
@@ -157,11 +147,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="start"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1"
+                    className="input input-bordered"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}
-                    className="shrink-0 pl-1"
+                    className="btn-md"
                     date={getDate(value)}
                     hideLabel={true}
                     onDateChange={(newDate) => setValue('start', format(newDate, 'yyyy-MM-dd'))}
@@ -187,10 +177,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
             </div>
             <Controller
               control={control}
-              rules={{ validate: (value) => !value || isValidDateString(value) }}
+              rules={{ validate: (value) => !value || dateStringValidation(value) }}
               name="end"
               render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center">
+                <div className="flex gap-1">
                   <InputMask
                     mask="9999-99-99"
                     disabled={isSubmitting}
@@ -201,11 +191,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
                     id="end"
                     type="text"
                     size={10}
-                    className="input input-bordered py-1"
+                    className="input input-bordered"
                   />
                   <CalendarSelector
                     disabled={isSubmitting || isProjectFormReadOnly}
-                    className="shrink-0 pl-1"
+                    className="btn-md"
                     date={getDate(value)}
                     hideLabel={true}
                     onDateChange={(newDate) => setValue('end', format(newDate, 'yyyy-MM-dd'))}

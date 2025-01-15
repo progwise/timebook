@@ -18,14 +18,36 @@ generator pothos {
   output   = "../../node_modules/.pothos/plugin-prisma/generated.ts"
 }
 
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+}
+
 model Invoice {
   id          String   @id @default(cuid())
   invoiceDate DateTime @default(now())
 
-  createdByUserId String
-  customerAddress String?
-  organizationId  String
-  customerName    String
+  createdByUserId  String
+  customerAddress  String?
+  organizationId   String
+  customerName     String
+  invoiceWorkFrom  DateTime
+  invoiceWorkUntil DateTime
+
+  sendDate      DateTime?
+  payDate       DateTime?
+  invoiceStatus InvoiceStatus @default(DRAFT)
 
   createdByUser User          @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
   organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -44,11 +66,6 @@ model InvoiceItem {
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   task    Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELLED
 }
 
 model Organization {
@@ -99,11 +116,6 @@ model Project {
   reports            LockedMonth[]
   invitations        ProjectInvitation[]
   organization       Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-}
-
-enum Role {
-  ADMIN
-  MEMBER
 }
 
 model ProjectMembership {
