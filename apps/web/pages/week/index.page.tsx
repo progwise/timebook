@@ -30,7 +30,6 @@ const WeekPage = () => {
   const currentUserId = selectedUserId ?? 'all'
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
-  const projectMemberUserId = currentUserId === 'all' ? undefined : currentUserId
   const userIds =
     // eslint-disable-next-line unicorn/no-nested-ternary
     selectedUserId === 'all' ? myProjectsMembersData.map((user) => user.id) : selectedUserId ? [selectedUserId] : []
@@ -47,10 +46,8 @@ const WeekPage = () => {
   const isDataOutdated = !!weekGridData && fetching
 
   const handleWeekChange = (newDate: Date) => {
-    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${
-      // eslint-disable-next-line unicorn/no-nested-ternary
-      projectMemberUserId ? `?userId=${projectMemberUserId}` : currentUserId === 'all' ? '?userId=all' : ''
-    }`
+    const userId = selectedUserId ? `?userId=${selectedUserId}` : ''
+    const path = `/week${isThisWeek(newDate) ? '' : `/${format(newDate, 'yyyy-MM-dd')}`}${userId}`
     router.push(path)
   }
 
