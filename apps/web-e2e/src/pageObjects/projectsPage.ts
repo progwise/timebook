@@ -10,7 +10,7 @@ export class ProjectsPage {
 
   private async _gotoProjectPage() {
     await this._page.getByRole('link', { name: 'Projects' }).click()
-    await this._page.waitForLoadState('networkidle')
+    await this._page.waitForLoadState('load')
   }
 
   public async addProject(projectName: string, startDate?: Date, endDate?: Date) {
@@ -36,10 +36,10 @@ export class ProjectsPage {
     await this._gotoProjectPage()
     await this._page.getByRole('link', { name: projectName }).click()
 
-    const projectTitleInput = this._page.getByPlaceholder('Enter a new task name')
-    await projectTitleInput.fill(taskName)
+    const taskTitleInput = this._page.getByPlaceholder('Enter a new task name')
+    await taskTitleInput.fill(taskName)
     await this._page.getByRole('button', { name: 'Add', exact: true }).click()
 
-    await expect(projectTitleInput).toHaveValue('')
+    await expect(taskTitleInput).toHaveValue('')
   }
 }
