@@ -3,10 +3,11 @@ import { useMutation } from 'urql'
 
 import { graphql } from '../../generated/gql'
 import { HourInput } from '../hourInput/hourInput'
+import { useProjectMembers } from '../useProjectMembers'
 
 const WorkHourUpdateMutationDocument = graphql(`
-  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {
-    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {
+  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {
       id
     }
   }
@@ -30,6 +31,7 @@ export const WeekGridTaskDayCell = ({
   currentUserId,
 }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
+  const { myProjectsMembersData } = useProjectMembers()
   const key = `${taskId}-${day.toDateString()}-${currentUserId}`
 
   return (
@@ -40,6 +42,7 @@ export const WeekGridTaskDayCell = ({
         ) : (
           <HourInput
             onBlur={(newDuration: number) => {
+              const userIds = currentUserId === 'all' ? myProjectsMembersData.map((user) => user.id) : [currentUserId]
               workHourUpdate({
                 data: {
                   date: format(day, 'yyyy-MM-dd'),
@@ -48,7 +51,7 @@ export const WeekGridTaskDayCell = ({
                 },
                 date: format(day, 'yyyy-MM-dd'),
                 taskId,
-                projectMemberUserId: currentUserId,
+                userIds,
               })
             }}
             duration={duration}

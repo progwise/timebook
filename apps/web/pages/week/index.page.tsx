@@ -67,7 +67,11 @@ const WeekPage = () => {
           <WeekSelector value={day} onChange={handleWeekChange} />
         </div>
       </div>
-      {!weekGridData && fetching && <div className="loading loading-spinner" />}
+      {!weekGridData && fetching && (
+        <div className="flex h-full items-center justify-center">
+          <div className="loading loading-spinner size-10" />
+        </div>
+      )}
       {weekGridData?.projects && (
         <WeekGrid
           tableData={weekGridData.projects}

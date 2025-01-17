@@ -42,7 +42,7 @@ const WeekGridTaskRowFragment = graphql(`
   }
 `)
 
-interface WorkHour {
+interface WorkHourProps {
   date: string
   isLocked: boolean
   user: {
@@ -74,7 +74,7 @@ export const WeekGridTaskRow = ({
       .filter((workHour) => workHour.user.id === userId)
       .reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
-  const renderDayCell = (workHour: WorkHour, taskId: string, isDataOutdated: boolean, currentUserId: string) => {
+  const renderDayCell = (workHour: WorkHourProps, taskId: string, isDataOutdated: boolean, currentUserId: string) => {
     const key = `${taskId}-${workHour.date}-${workHour.user.id}`
 
     return (
@@ -108,11 +108,17 @@ export const WeekGridTaskRow = ({
               <UserLabel name={member.name ?? member.id} image={member.image ?? undefined} />
             </div>
           </div>
-          {daysOfWeek.map((dayIndex) => {
+          {daysOfWeek.map((day) => {
             const workHour = task.taskTotal.find(
-              (hour) => new Date(hour.date).getDay() === dayIndex && hour.user.id === member.id,
+              (hour) => new Date(hour.date).getDay() === day && hour.user.id === member.id,
             )
-            return workHour ? renderDayCell(workHour, `${task.id}-${member.id}`, isDataOutdated, member.id) : undefined
+            return workHour ? (
+              renderDayCell(workHour, task.id, isDataOutdated, member.id)
+            ) : (
+              <div key={`${task.id}-${member.id}-${day}`} className="flex items-center justify-center py-1" role="cell">
+                <div className="skeleton h-8 w-16" />
+              </div>
+            )
           })}
           <div className="px-2 text-right" role="cell">
             {isDataOutdated ? (
@@ -142,7 +148,16 @@ export const WeekGridTaskRow = ({
         <div className="flex items-center gap-2 px-3">
           <span role="cell">{task.title}</span>
         </div>
-        {task.taskTotal.map((workHour) => renderDayCell(workHour, task.id, isDataOutdated, workHour.user.id))}
+        {daysOfWeek.map((day) => {
+          const workHour = task.taskTotal.find(
+            (hour) => new Date(hour.date).getDay() === day && hour.user.id === currentUserId,
+          )
+          return workHour ? (
+            renderDayCell(workHour, task.id, isDataOutdated, currentUserId)
+          ) : (
+            <div key={`${task.id}-${currentUserId}-${day}`} />
+          )
+        })}
         <div className="px-2 text-right" role="cell">
           {isDataOutdated ? (
             <div className="skeleton h-8 w-9" />

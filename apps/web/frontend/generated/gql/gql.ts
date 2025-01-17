@@ -132,7 +132,7 @@ const documents = {
     types.WeekGridFooterFragmentDoc,
   '\n  fragment WeekGridProjectRowGroup on Project {\n    id\n    title\n    isArchived\n    tasks {\n      id\n      ...WeekGridTaskRow\n      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        user {\n          id\n          name\n          image\n        }\n        workHour {\n          duration\n        }\n      }\n    }\n  }\n':
     types.WeekGridProjectRowGroupFragmentDoc,
-  '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {\n      id\n    }\n  }\n':
+  '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
   '\n  fragment WeekGridTaskRow on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n        name\n        image\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
@@ -581,8 +581,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {\n      id\n    }\n  }\n']
+  source: '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

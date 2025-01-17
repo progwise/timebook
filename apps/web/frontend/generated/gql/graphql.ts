@@ -178,7 +178,7 @@ export type Mutation = {
   /** Delete a work hour entry */
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
-  workHourUpdate: WorkHour
+  workHourUpdate: Array<WorkHour>
 }
 
 export type MutationAccessTokenCreateArgs = {
@@ -328,8 +328,8 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Organization = ModifyInterface & {
@@ -1242,12 +1242,12 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds: Array<Scalars['ID']> | Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; id: string }
+  workHourUpdate: Array<{ __typename?: 'WorkHour'; id: string }>
 }
 
 export type WeekGridTaskRowFragment = ({
@@ -5429,8 +5429,14 @@ export const WorkHourUpdateDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
         },
       ],
       selectionSet: {
@@ -5457,8 +5463,8 @@ export const WorkHourUpdateDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {

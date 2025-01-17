@@ -6,27 +6,29 @@ import { isProjectLocked } from './isProjectLocked'
 
 builder.mutationField('workHourUpdate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
-    type: 'WorkHour',
+    type: ['WorkHour'],
     description: 'Updates a work hour entry or creates if work hour does not exist',
     args: {
       data: t.arg({ type: WorkHourInput }),
       date: t.arg({ type: DateScalar }),
       taskId: t.arg.id(),
-      projectMemberUserId: t.arg.id({
+      userIds: t.arg.idList({
         required: false,
         description:
-          "ID of the project member whose work hours are being updated. If not provided, the signed-in user's work hours are updated.",
+          "List of IDs of the project members whose work hours are being updated. If not provided, the signed-in user's work hours are updated.",
       }),
     },
-    authScopes: async (_source, { data, date, taskId, projectMemberUserId }, context) => {
+    authScopes: async (_source, { data, date, taskId, userIds }, context) => {
       if (!context.session) return false
 
-      const userId = projectMemberUserId?.toString() ?? context.session.user.id
+      const userIdList = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 
-      const workHour = await prisma.workHour.findUnique({
+      const workHours = await prisma.workHour.findMany({
         select: { task: { select: { projectId: true } } },
         where: {
-          date_userId_taskId: { date: date, taskId: taskId.toString(), userId },
+          date: date,
+          taskId: taskId.toString(),
+          userId: { in: userIdList },
         },
       })
 
@@ -37,28 +39,32 @@ builder.mutationField('workHourUpdate', (t) =>
 
       const newProjectId = newAssignedTask.projectId
 
-      if (!workHour) {
+      if (workHours.length === 0) {
         return { isMemberByProject: newProjectId }
       }
 
-      const oldProjectId = workHour.task.projectId
-      return { isMemberByProjects: [oldProjectId, newProjectId] }
+      const oldProjectIds = workHours.map((workHour) => workHour.task.projectId)
+      return { isMemberByProjects: [...oldProjectIds, newProjectId] }
     },
-    resolve: async (query, _source, { data, date, taskId, projectMemberUserId }, context) => {
-      const userId = projectMemberUserId?.toString() ?? context.session.user.id
+    resolve: async (query, _source, { data, date, taskId, userIds }, context) => {
+      const userIdList = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 
-      const previousTask = await prisma.task.findUnique({
+      const previousTasks = await prisma.task.findMany({
         select: { projectId: true, isLocked: true },
-        where: { id: taskId.toString() },
+        where: { id: { in: [taskId.toString(), data.taskId.toString()] } },
       })
 
-      if (previousTask?.isLocked) {
-        throw new Error('task is locked')
-      }
+      await Promise.all(
+        previousTasks.map(async (previousTask) => {
+          if (previousTask.isLocked) {
+            throw new Error('task is locked')
+          }
 
-      if (previousTask && (await isProjectLocked({ date, projectId: previousTask.projectId }))) {
-        throw new Error('project is locked for the given month')
-      }
+          if (await isProjectLocked({ date, projectId: previousTask.projectId })) {
+            throw new Error('project is locked for the given month')
+          }
+        }),
+      )
 
       const newAssignedTask = await prisma.task.findUniqueOrThrow({
         select: { projectId: true, isLocked: true, project: { select: { archivedAt: true } } },
@@ -77,14 +83,23 @@ builder.mutationField('workHourUpdate', (t) =>
         throw new Error('project is locked for the given month')
       }
 
-      return prisma.workHour.upsert({
-        ...query,
-        where: {
-          date_userId_taskId: { date: date, taskId: taskId.toString(), userId },
-        },
-        create: { ...data, taskId: data.taskId.toString(), userId },
-        update: { ...data, taskId: data.taskId.toString(), userId },
-      })
+      const results = await Promise.all(
+        userIdList.map((userId) =>
+          prisma.workHour.upsert({
+            ...query,
+            where: {
+              date_userId_taskId: {
+                date: date,
+                userId: userId,
+                taskId: data.taskId.toString(),
+              },
+            },
+            create: { ...data, taskId: data.taskId.toString(), userId },
+            update: { ...data, taskId: data.taskId.toString(), userId },
+          }),
+        ),
+      )
+      return results
     },
   }),
 )

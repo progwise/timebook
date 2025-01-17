@@ -349,13 +349,13 @@ type Mutation {
   workHourUpdate(
     data: WorkHourInput!
     date: Date!
+    taskId: ID!
 
     """
-    ID of the project member whose work hours are being updated. If not provided, the signed-in user's work hours are updated.
+    List of IDs of the project members whose work hours are being updated. If not provided, the signed-in user's work hours are updated.
     """
-    projectMemberUserId: ID
-    taskId: ID!
-  ): WorkHour!
+    userIds: [ID!]
+  ): [WorkHour!]!
 }
 
 type Organization implements ModifyInterface {

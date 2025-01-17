@@ -180,7 +180,7 @@ export type Mutation = {
   /** Delete a work hour entry */
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
-  workHourUpdate: WorkHour
+  workHourUpdate: Array<WorkHour>
 }
 
 export type MutationAccessTokenCreateArgs = {
@@ -330,8 +330,8 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Organization = ModifyInterface & {
@@ -1269,12 +1269,12 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds: Array<Scalars['ID']> | Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; id: string }
+  workHourUpdate: Array<{ __typename?: 'WorkHour'; id: string }>
 }
 
 export type WeekGridTaskRowFragment = {
@@ -2221,7 +2221,7 @@ export const mockMyProjectsMembersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { data, date, taskId, projectMemberUserId } = req.variables;
+ *   const { data, date, taskId, userIds } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )
