@@ -27,7 +27,6 @@ const WeekPage = () => {
   const startDate = startOfWeek(day, { weekStartsOn: 1 })
   const endDate = endOfWeek(day, { weekStartsOn: 1 })
   const { selectedUserId, handleUserChange, myProjectsMembersData } = useProjectMembers()
-  const currentUserId = selectedUserId ?? 'all'
 
   const weekGridContext = useMemo(() => ({ additionalTypenames: ['Project', 'Task', 'WorkHour'] }), [])
   const userIds =
@@ -78,7 +77,7 @@ const WeekPage = () => {
           startDate={startDate}
           endDate={endDate}
           isDataOutdated={isDataOutdated}
-          currentUserId={currentUserId}
+          userIds={userIds}
         />
       )}
     </ProtectedPage>

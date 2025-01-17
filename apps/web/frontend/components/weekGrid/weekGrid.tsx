@@ -38,7 +38,7 @@ export interface WeekGridProps {
   startDate: Date
   endDate: Date
   isDataOutdated?: boolean
-  currentUserId: string
+  userIds: string[]
 }
 
 export const WeekGrid: React.FC<WeekGridProps> = ({
@@ -46,7 +46,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   startDate,
   endDate,
   isDataOutdated = false,
-  currentUserId,
+  userIds,
 }) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
@@ -60,7 +60,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
       : 1 +
         projects.length +
         allTasks.reduce(
-          (accumulator, task) => accumulator + (currentUserId === 'all' ? task.project.members.length : 1),
+          (accumulator, task) => accumulator + (userIds.length > 1 ? task.project.members.length : 1),
           0,
         ) +
         1 // header row + project rows + task rows + footer row
@@ -99,7 +99,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
           project={project}
           key={project.id}
           isDataOutdated={isDataOutdated}
-          currentUserId={currentUserId}
+          userIds={userIds}
         />
       ))}
       {projects.length === 0 && (

@@ -58,14 +58,10 @@ interface WorkHourProps {
 interface WeekGridTaskRowProps {
   task: FragmentType<typeof WeekGridTaskRowFragment>
   isDataOutdated?: boolean
-  currentUserId: string
+  userIds: string[]
 }
 
-export const WeekGridTaskRow = ({
-  task: taskFragment,
-  isDataOutdated = false,
-  currentUserId,
-}: WeekGridTaskRowProps) => {
+export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, userIds }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const daysOfWeek = [1, 2, 3, 4, 5, 6, 0] // Monday to Sunday
 
@@ -91,8 +87,11 @@ export const WeekGridTaskRow = ({
   }
 
   // Member row rendering
-  const renderMemberRows = () =>
+  const renderMemberRows = (userIds: string[]) =>
     task.project.members.map((member) => {
+      if (!userIds.includes(member.id)) {
+        return
+      }
       const memberTaskDurations = calculateMemberDuration(member.id)
 
       return (
@@ -135,7 +134,7 @@ export const WeekGridTaskRow = ({
     })
 
   // Single-row rendering
-  const renderSingleRow = () => {
+  const renderSingleRow = (userId: string) => {
     const taskDurations = task.taskTotal.reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
     return (
@@ -150,12 +149,12 @@ export const WeekGridTaskRow = ({
         </div>
         {daysOfWeek.map((day) => {
           const workHour = task.taskTotal.find(
-            (hour) => new Date(hour.date).getDay() === day && hour.user.id === currentUserId,
+            (hour) => new Date(hour.date).getDay() === day && hour.user.id === userId,
           )
           return workHour ? (
-            renderDayCell(workHour, task.id, isDataOutdated, currentUserId)
+            renderDayCell(workHour, task.id, isDataOutdated, userId)
           ) : (
-            <div key={`${task.id}-${currentUserId}-${day}`} />
+            <div key={`${task.id}-${userId}-${day}`} />
           )
         })}
         <div className="px-2 text-right" role="cell">
@@ -173,5 +172,5 @@ export const WeekGridTaskRow = ({
   }
 
   // Conditional rendering based on current user
-  return currentUserId === 'all' ? renderMemberRows() : renderSingleRow()
+  return userIds.length === 1 ? renderSingleRow(userIds[0]) : renderMemberRows(userIds)
 }

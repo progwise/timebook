@@ -34,14 +34,14 @@ interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
   isDataOutdated?: boolean
-  currentUserId: string
+  userIds: string[]
 }
 
 export const WeekGridProjectRowGroup = ({
   interval,
   project: projectFragment,
   isDataOutdated = false,
-  currentUserId,
+  userIds,
 }: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
@@ -84,7 +84,7 @@ export const WeekGridProjectRowGroup = ({
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} currentUserId={currentUserId} />
+          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} userIds={userIds} />
         ))}
       </div>
     </>
