@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
-import { Listbox } from '@progwise/timebook-ui'
+import { ListboxWithUnselect } from '@progwise/timebook-ui'
 
 import { ProtectedPage } from '../../frontend/components/protectedPage'
 import { useProjectMembers } from '../../frontend/components/useProjectMembers'
@@ -54,12 +54,13 @@ const WeekPage = () => {
     <ProtectedPage>
       <div className="mb-4 flex items-end justify-between">
         {myProjectsMembersData.length > 0 && (
-          <Listbox
-            value={myProjectsMembersData.find((user) => user.id === selectedUserId) ?? { id: 'all', name: 'All Users' }}
+          <ListboxWithUnselect
+            value={myProjectsMembersData.find((user) => user.id === selectedUserId)}
             getLabel={(user) => <UserLabel name={user.name ?? user.id} image={user.image ?? undefined} />}
             getKey={(user) => user.id}
-            onChange={(user) => handleUserChange(user.id)}
-            options={[{ id: 'all', name: 'All Users' }, ...myProjectsMembersData]}
+            onChange={(user) => handleUserChange(user ? user.id : 'all')}
+            options={myProjectsMembersData}
+            noOptionLabel={<UserLabel name="All Users" />}
           />
         )}
         <div className="flex grow justify-center">

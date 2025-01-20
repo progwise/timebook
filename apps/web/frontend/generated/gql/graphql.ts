@@ -1225,6 +1225,7 @@ export type WeekGridProjectRowGroupFragment = {
   id: string
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<
     {
       __typename?: 'Task'
@@ -3011,6 +3012,14 @@ export const WeekGridProjectRowGroupFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
             selectionSet: {
               kind: 'SelectionSet',
@@ -3588,6 +3597,14 @@ export const WeekGridProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -7381,6 +7398,14 @@ export const WeekGridDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },

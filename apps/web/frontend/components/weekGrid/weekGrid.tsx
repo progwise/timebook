@@ -51,7 +51,11 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.footerTotal))
+  const allWorkHours = projects.flatMap((project) =>
+    project.tasks.flatMap((task) =>
+      task.footerTotal.filter((workHour) => task.project.members.some((member) => member.id === workHour.user.id)),
+    ),
+  )
   const allTasks = projects.flatMap((project) => project.tasks)
 
   const numberOfRows =

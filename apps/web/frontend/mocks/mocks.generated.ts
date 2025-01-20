@@ -1213,6 +1213,7 @@ export type WeekGridProjectFragment = {
       workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
     }>
   }>
+  members: Array<{ __typename?: 'User'; id: string }>
 }
 
 export type WeekGridFooterFragment = {
@@ -1226,6 +1227,7 @@ export type WeekGridProjectRowGroupFragment = {
   id: string
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -1711,6 +1713,7 @@ export type WeekGridQuery = {
         workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
       }>
     }>
+    members: Array<{ __typename?: 'User'; id: string }>
   }>
 }
 

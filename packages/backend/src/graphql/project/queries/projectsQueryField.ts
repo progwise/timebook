@@ -3,7 +3,7 @@ import { prisma } from '../../prisma'
 import { DateScalar } from '../../scalars'
 import { ProjectFilter, ProjectFilterEnum } from '../projectsFilterEnum'
 import { getWhereFromProjectFilter } from './getWhereFormProjectFilter'
-import { getWhereUserIsMember } from './getWhereUserIsMember'
+import { getWhereUsersAreMembers } from './getWhereUserIsMember'
 
 builder.queryField('projects', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -36,19 +36,21 @@ builder.queryField('projects', (t) =>
                 {
                   AND: [
                     getWhereFromProjectFilter(filter, from, to ?? from),
-                    // check if the signed in user is allowed to see the project
-                    getWhereUserIsMember(
-                      context.session.user.id,
+                    // check if the signed in user is allowed to see the projects
+                    getWhereUsersAreMembers({
+                      userIds: [context.session.user.id],
                       // when signed in user requests projects for another user, the signed in user must be an admin
-                      showProjectsForOtherUser,
-                    ),
-                    // check if the given user is allowed to see the project
-                    showProjectsForOtherUser ? getWhereUserIsMember(userIds?.[0]?.toString() ?? '') : {},
+                      isAdmin: showProjectsForOtherUser,
+                    }),
+                    // check if the given user is allowed to see the projects
+                    showProjectsForOtherUser ? getWhereUsersAreMembers({ userIds: userIds.map(String) }) : {},
                   ],
                 },
                 // or get projects where user booked work hours
                 {
-                  ...(showProjectsForOtherUser ? getWhereUserIsMember(context.session.user.id, true) : {}),
+                  ...(showProjectsForOtherUser
+                    ? getWhereUsersAreMembers({ userIds: [context.session.user.id], isAdmin: true })
+                    : {}),
                   tasks: {
                     some: {
                       workHours: {
@@ -76,13 +78,13 @@ builder.queryField('projects', (t) =>
               AND: [
                 getWhereFromProjectFilter(filter, from, to ?? from),
                 // check if the signed in user is allowed to see the project
-                getWhereUserIsMember(
-                  context.session.user.id,
+                getWhereUsersAreMembers({
+                  userIds: [context.session.user.id],
                   // when signed in user requests projects for another user, the signed in user must be an admin
-                  showProjectsForOtherUser,
-                ),
-                // check if the given user is allowed to see the project
-                showProjectsForOtherUser ? getWhereUserIsMember(userIds?.[0]?.toString() ?? '') : {},
+                  isAdmin: showProjectsForOtherUser,
+                }),
+                // check if the given user is allowed to see the projects
+                showProjectsForOtherUser ? getWhereUsersAreMembers({ userIds: userIds.map(String) }) : {},
               ],
             },
         orderBy: { title: 'asc' },
