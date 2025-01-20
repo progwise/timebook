@@ -7,21 +7,18 @@ import { format } from 'date-fns'
 import { test } from './pageObjects/testFixtures'
 
 test.describe('week page', () => {
-  test.beforeEach(async ({ loginPage }) => {
+  test.beforeEach(async ({ loginPage, projectsPage }) => {
     await loginPage.login()
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
   })
 
-  test('it should display the current month', async ({ page }) => {
+  test('displays the current month and changes week', async ({ page }) => {
     const currentMonthString = format(new Date(), 'MMMM')
     await page.goto('http://localhost:3000/week')
-    const header = page.getByRole('heading', { name: currentMonthString })
+    const header = page.getByRole('heading', { name: currentMonthString }).nth(0)
     await expect(header).toBeVisible()
-  })
 
-  test('it should be possible to change the week', async ({ page }) => {
-    await page.goto('http://localhost:3000/week')
     await page.getByRole('button', { name: 'Next week' }).click()
-
     await expect(page).not.toHaveURL('/week')
 
     await page.getByRole('button', { name: 'Previous week' }).click()
@@ -29,9 +26,7 @@ test.describe('week page', () => {
     await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
 
-  test('it should be possible to enter work hours', async ({ page, projectsPage }) => {
-    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
-
+  test('enters work hours', async ({ page }) => {
     await page.goto('http://localhost:3000/week')
 
     const taskRow = page.getByRole('row', { name: 'Test Task' })
@@ -48,9 +43,7 @@ test.describe('week page', () => {
     }
   })
 
-  test('it should be possible to enter a comment', async ({ page, projectsPage }) => {
-    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
-
+  test('enters a comment', async ({ page }) => {
     await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Comments' }).click()
