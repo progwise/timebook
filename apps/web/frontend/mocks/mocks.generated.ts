@@ -1438,6 +1438,8 @@ export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { 
 export type InvoiceListInvoiceFragment = {
   __typename?: 'Invoice'
   id: string
+  invoiceWorkFrom: string
+  invoiceWorkUntil: string
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1480,6 +1482,17 @@ export type InvoiceItemUpdateMutationVariables = Exact<{
 export type InvoiceItemUpdateMutation = {
   __typename?: 'Mutation'
   invoiceItemUpdate: { __typename?: 'InvoiceItem'; id: string }
+}
+
+export type TaskWorkHoursQueryVariables = Exact<{
+  id: Scalars['ID']
+  from: Scalars['Date']
+  to: Scalars['Date']
+}>
+
+export type TaskWorkHoursQuery = {
+  __typename?: 'Query'
+  task: { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; id: string; duration: number }> }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -2398,6 +2411,21 @@ export const mockInvoiceItemUpdateMutation = (
     any
   >,
 ) => graphql.mutation<InvoiceItemUpdateMutation, InvoiceItemUpdateMutationVariables>('invoiceItemUpdate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockTaskWorkHoursQuery((req, res, ctx) => {
+ *   const { id, from, to } = req.variables;
+ *   return res(
+ *     ctx.data({ task })
+ *   )
+ * })
+ */
+export const mockTaskWorkHoursQuery = (
+  resolver: ResponseResolver<GraphQLRequest<TaskWorkHoursQueryVariables>, GraphQLContext<TaskWorkHoursQuery>, any>,
+) => graphql.query<TaskWorkHoursQuery, TaskWorkHoursQueryVariables>('TaskWorkHours', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

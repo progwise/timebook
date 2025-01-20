@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation } from 'urql'
+import { useMutation, useQuery } from 'urql'
 import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -13,6 +13,8 @@ import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graph
 const InvoiceListInvoiceFragment = graphql(`
   fragment InvoiceListInvoice on Invoice {
     id
+    invoiceWorkFrom
+    invoiceWorkUntil
     organization {
       id
       projects {
@@ -59,6 +61,18 @@ const InvoiceItemUpdateMutationDocument = graphql(`
   }
 `)
 
+const TaskWorkHoursQuery = graphql(`
+  query TaskWorkHours($id: ID!, $from: Date!, $to: Date!) {
+    task(taskId: $id) {
+      id
+      workHours(from: $from, to: $to) {
+        id
+        duration
+      }
+    }
+  }
+`)
+
 export type InvoiceItemFormData = Pick<InvoiceItemInput, 'taskId' | 'duration' | 'hourlyRate'>
 
 export const invoiceItemInputSchema: z.ZodSchema<InvoiceItemFormData> = invoiceItemInputValidations.pick({
@@ -85,6 +99,20 @@ const getFormattedDuration = (duration: number): string => {
 export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
+  const workHoursQueries = invoiceItemsData.map((item) => ({
+    taskId: item.task.id,
+    query: useQuery({
+      query: TaskWorkHoursQuery,
+      variables: {
+        id: item.task.id,
+        from: invoiceData.invoiceWorkFrom,
+        to: invoiceData.invoiceWorkUntil,
+      },
+    })[0],
+  }))
+
+  const workHoursMap = Object.fromEntries(workHoursQueries.map(({ taskId, query }) => [taskId, query.data]))
+
   const {
     register,
     handleSubmit,
@@ -119,7 +147,9 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
 
       setAmount(0)
       reset()
-    } catch {}
+    } catch (error) {
+      alert(error)
+    }
   }
 
   const handleBlur = () => {
@@ -166,8 +196,16 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
                     onBlur={(event) => {
-                      const newDuration = Number(event.target.value)
-                      event.target.value = newDuration.toFixed(2)
+                      let newDuration = Number(event.target.value)
+                      const taskWorkHours = workHoursMap[invoiceItem.task.id]?.task
+                      if (!newDuration && taskWorkHours) {
+                        const totalTaskDuration = taskWorkHours.workHours.reduce(
+                          (sum, workHour) => sum + workHour.duration,
+                          0,
+                        )
+                        newDuration = totalTaskDuration / 60
+                        event.target.value = getFormattedDuration(totalTaskDuration)
+                      }
                       invoiceItemUpdate({
                         data: {
                           duration: newDuration * 60,

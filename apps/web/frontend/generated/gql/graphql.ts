@@ -1408,6 +1408,8 @@ export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { 
 export type InvoiceListInvoiceFragment = {
   __typename?: 'Invoice'
   id: string
+  invoiceWorkFrom: string
+  invoiceWorkUntil: string
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1450,6 +1452,17 @@ export type InvoiceItemUpdateMutationVariables = Exact<{
 export type InvoiceItemUpdateMutation = {
   __typename?: 'Mutation'
   invoiceItemUpdate: { __typename?: 'InvoiceItem'; id: string }
+}
+
+export type TaskWorkHoursQueryVariables = Exact<{
+  id: Scalars['ID']
+  from: Scalars['Date']
+  to: Scalars['Date']
+}>
+
+export type TaskWorkHoursQuery = {
+  __typename?: 'Query'
+  task: { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; id: string; duration: number }> }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -3559,6 +3572,8 @@ export const InvoiceListInvoiceFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -3676,6 +3691,8 @@ export const InvoiceFragmentFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -6018,6 +6035,78 @@ export const InvoiceItemUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<InvoiceItemUpdateMutation, InvoiceItemUpdateMutationVariables>
+export const TaskWorkHoursDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'TaskWorkHours' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'Date' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'taskId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHours' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TaskWorkHoursQuery, TaskWorkHoursQueryVariables>
 export const InvoiceDocument = {
   kind: 'Document',
   definitions: [
@@ -6071,6 +6160,8 @@ export const InvoiceDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
