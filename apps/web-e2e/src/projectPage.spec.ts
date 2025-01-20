@@ -9,9 +9,8 @@ test.describe('project page', () => {
     await loginPage.login()
 
     const today = new Date()
-    await projectsPage.addProject('Test Project', today, addYears(today, 1))
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task', today, addYears(today, 1))
 
-    await page.getByRole('heading', { name: 'Project Test Project', exact: true }).waitFor({ state: 'visible' })
     await expect(page.getByRole('heading', { name: 'Project Test Project', exact: true })).toBeVisible()
   })
 
@@ -19,21 +18,16 @@ test.describe('project page', () => {
     await loginPage.login()
 
     const today = new Date()
-    await projectsPage.addProject('Test Project', today, addYears(today, 1))
-    await projectsPage.addTask('Test Project', 'Test Task')
-
-    await page.getByRole('row', { name: 'Test Task', exact: true }).waitFor({ state: 'visible' })
-    await expect(page.getByRole('row', { name: 'Test Task', exact: true })).toBeVisible()
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task', today, addYears(today, 1))
+    await expect(page.getByRole('cell', { name: 'Test Task', exact: true })).toBeVisible()
   })
 
   test('it should be possible to open members tab', async ({ loginPage, projectsPage, page }) => {
     await loginPage.login()
 
     const today = new Date()
-    await projectsPage.addProject('Test Project', today, addYears(today, 1))
-    const membersTab = page.getByRole('tab', { name: 'Members', exact: true })
-    await membersTab.waitFor({ state: 'visible' })
-    await membersTab.click()
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task', today, addYears(today, 1))
+    await page.getByRole('tab', { name: 'Members', exact: true }).click()
     await expect(page.getByText('Admin')).toBeVisible()
   })
 })

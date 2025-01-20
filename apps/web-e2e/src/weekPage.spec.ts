@@ -13,18 +13,13 @@ test.describe('week page', () => {
 
   test('it should display the current month', async ({ page }) => {
     const currentMonthString = format(new Date(), 'MMMM')
-
-    const weekLink = page.getByRole('link', { name: 'Week' })
-    await weekLink.waitFor({ state: 'visible' })
-    await weekLink.click()
+    await page.goto('http://localhost:3000/week')
     const header = page.getByRole('heading', { name: currentMonthString })
     await expect(header).toBeVisible()
   })
 
   test('it should be possible to change the week', async ({ page }) => {
-    const weekLink = page.getByRole('link', { name: 'Week' })
-    await weekLink.waitFor({ state: 'visible' })
-    await weekLink.click()
+    await page.goto('http://localhost:3000/week')
     await page.getByRole('button', { name: 'Next week' }).click()
 
     await expect(page).not.toHaveURL('/week')
@@ -35,12 +30,11 @@ test.describe('week page', () => {
   })
 
   test('it should be possible to enter work hours', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
 
-    await page.getByRole('link', { name: 'Week' }).click()
+    await page.goto('http://localhost:3000/week')
 
-    const taskRow = page.getByRole('row', { name: `Test Task` })
+    const taskRow = page.getByRole('row', { name: 'Test Task' })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
@@ -55,10 +49,9 @@ test.describe('week page', () => {
   })
 
   test('it should be possible to enter a comment', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
 
-    await page.getByRole('link', { name: 'Week' }).click()
+    await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Comments' }).click()
 
