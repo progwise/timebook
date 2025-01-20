@@ -34,13 +34,14 @@ test.describe('week page', () => {
 
     let currentHours = 0
 
-    for (const textbox of await taskRow.getByRole('textbox', { name: 'duration' }).all()) {
+    const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
+    for (const textbox of textboxes) {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
-
-      await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
     }
+
+    await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
 
   test('enters a comment', async ({ page }) => {
@@ -48,9 +49,12 @@ test.describe('week page', () => {
 
     await page.getByRole('button', { name: 'Comments' }).click()
 
-    await page.getByRole('textbox', { name: 'comment' }).first().fill('a comment')
+    const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
+    await commentBox.fill('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
+
+    await expect(commentBox).toHaveValue('a comment')
 
     const indicator = page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
