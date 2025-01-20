@@ -24,6 +24,7 @@ builder.queryField('projects', (t) =>
       }),
     },
     resolve: (query, _source, { from, to, filter, includeProjectsWhereUserBookedWorkHours, userIds }, context) => {
+      // session userId not included in order to additionally query the projects where the user is only a member
       const showProjectsForOtherUser = !!(userIds?.length && !userIds.includes(context.session.user.id))
       const userIdFilter = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 

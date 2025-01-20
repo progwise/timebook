@@ -19,7 +19,7 @@ interface WeekGridTaskDayCellProps {
   day: Date
   disabled: boolean
   isDataOutdated?: boolean
-  currentUserId: string
+  userIds: string[]
 }
 
 export const WeekGridTaskDayCell = ({
@@ -28,11 +28,11 @@ export const WeekGridTaskDayCell = ({
   day,
   disabled,
   isDataOutdated = false,
-  currentUserId,
+  userIds,
 }: WeekGridTaskDayCellProps) => {
   const [, workHourUpdate] = useMutation(WorkHourUpdateMutationDocument)
   const { myProjectsMembersData } = useProjectMembers()
-  const key = `${taskId}-${day.toDateString()}-${currentUserId}`
+  const key = `${taskId}-${day.toDateString()}-${userIds}`
 
   return (
     <div key={key} className="z-20 justify-self-center px-4" role="cell">
@@ -42,7 +42,10 @@ export const WeekGridTaskDayCell = ({
         ) : (
           <HourInput
             onBlur={(newDuration: number) => {
-              const userIds = currentUserId === 'all' ? myProjectsMembersData.map((user) => user.id) : [currentUserId]
+              const userIdList =
+                userIds.length > 1
+                  ? myProjectsMembersData.filter((member) => userIds.includes(member.id)).map((user) => user.id)
+                  : userIds
               workHourUpdate({
                 data: {
                   date: format(day, 'yyyy-MM-dd'),
@@ -51,7 +54,7 @@ export const WeekGridTaskDayCell = ({
                 },
                 date: format(day, 'yyyy-MM-dd'),
                 taskId,
-                userIds,
+                userIds: userIdList,
               })
             }}
             duration={duration}

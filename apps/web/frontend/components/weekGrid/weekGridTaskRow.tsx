@@ -70,7 +70,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, us
       .filter((workHour) => workHour.user.id === userId)
       .reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
-  const renderDayCell = (workHour: WorkHourProps, taskId: string, isDataOutdated: boolean, currentUserId: string) => {
+  const renderDayCell = (workHour: WorkHourProps, taskId: string, isDataOutdated: boolean) => {
     const key = `${taskId}-${workHour.date}-${workHour.user.id}`
 
     return (
@@ -81,7 +81,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, us
         duration={workHour.workHour?.duration ?? 0}
         key={key}
         isDataOutdated={isDataOutdated}
-        currentUserId={currentUserId}
+        userIds={userIds}
       />
     )
   }
@@ -112,7 +112,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, us
               (hour) => new Date(hour.date).getDay() === day && hour.user.id === member.id,
             )
             return workHour ? (
-              renderDayCell(workHour, task.id, isDataOutdated, member.id)
+              renderDayCell(workHour, task.id, isDataOutdated)
             ) : (
               <div key={`${task.id}-${member.id}-${day}`} className="flex items-center justify-center py-1" role="cell">
                 <div className="skeleton h-8 w-16" />
@@ -152,7 +152,7 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, us
             (hour) => new Date(hour.date).getDay() === day && hour.user.id === userId,
           )
           return workHour ? (
-            renderDayCell(workHour, task.id, isDataOutdated, userId)
+            renderDayCell(workHour, task.id, isDataOutdated)
           ) : (
             <div key={`${task.id}-${userId}-${day}`} />
           )
