@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { FaPlus } from 'react-icons/fa6'
 import { useMutation } from 'urql'
 import { z } from 'zod'
 
@@ -73,6 +72,16 @@ export interface InvoiceItemListProps {
   invoiceItems: FragmentType<typeof InvoiceItemsListInvoiceFragment>[]
 }
 
+const getFormattedDuration = (duration: number): string => {
+  if (duration === 0) {
+    return ''
+  }
+
+  const hours = Math.floor(duration / 60)
+  const minutes = (duration % 60) / 60
+  return (hours + minutes).toFixed(2)
+}
+
 export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
@@ -89,6 +98,12 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
   const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
   const [amount, setAmount] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0)
+
+  useEffect(() => {
+    const newTotal = invoiceItemsData.reduce((sum, item) => sum + (item.duration * item.hourlyRate) / 60, 0)
+    setTotal(newTotal)
+  }, [invoiceItemsData])
 
   const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
     try {
@@ -148,13 +163,14 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   <InputField
                     className="input-sm input-ghost text-right"
                     type="number"
-                    defaultValue={invoiceItem.hourlyRate.toString()}
+                    defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
                     onBlur={(event) => {
                       const newDuration = Number(event.target.value)
+                      event.target.value = newDuration.toFixed(2)
                       invoiceItemUpdate({
                         data: {
-                          duration: newDuration,
+                          duration: newDuration * 60,
                           taskId: invoiceItem.task.id,
                           hourlyRate: Number(invoiceItem.hourlyRate),
                           invoiceId: invoiceData.id,
@@ -162,29 +178,34 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                         id: invoiceItem.id,
                       })
                     }}
+                    onFocus={(event) => event.target.select()}
                   />
                 </td>
                 <td className="p-1">
-                  <InputField
-                    className="input-sm input-ghost text-right"
-                    type="number"
-                    defaultValue={invoiceItem.hourlyRate.toString()}
-                    disabled={isSubmitting}
-                    onBlur={(event) => {
-                      const newHourlyRate = Number(event.target.value)
-                      invoiceItemUpdate({
-                        data: {
-                          duration: invoiceItem.duration,
-                          taskId: invoiceItem.task.id,
-                          hourlyRate: newHourlyRate,
-                          invoiceId: invoiceData.id,
-                        },
-                        id: invoiceItem.id,
-                      })
-                    }}
-                  />
+                  <div className="relative">
+                    <span className="absolute left-2 top-1.5">€</span>
+                    <InputField
+                      className="input-sm input-ghost text-right"
+                      type="number"
+                      defaultValue={(invoiceItem.hourlyRate / 1).toFixed(2).toString()}
+                      disabled={isSubmitting}
+                      onBlur={(event) => {
+                        const newHourlyRate = Number(event.target.value)
+                        invoiceItemUpdate({
+                          data: {
+                            duration: invoiceItem.duration,
+                            taskId: invoiceItem.task.id,
+                            hourlyRate: newHourlyRate,
+                            invoiceId: invoiceData.id,
+                          },
+                          id: invoiceItem.id,
+                        })
+                      }}
+                      onFocus={(event) => event.target.select()}
+                    />
+                  </div>
                 </td>
-                <td>€ {(invoiceItem.duration * invoiceItem.hourlyRate) / 60}</td>
+                <td>€ {((invoiceItem.duration * invoiceItem.hourlyRate) / 60).toFixed(2)}</td>
               </tr>
             ))}
         </tbody>
@@ -195,6 +216,8 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <select
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                   {...register('taskId', { disabled: isSubmitting })}
+                  onBlur={handleSubmit(handleAddInvoiceItem)}
+                  disabled={isSubmitting}
                 >
                   {filteredProjectsWithTasks.length === 0 ? (
                     <option value="">No tasks available</option>
@@ -228,6 +251,8 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   errorMessage={errors.duration?.message}
                   isDirty={isDirty && dirtyFields.duration}
                   onBlur={handleBlur}
+                  disabled={isSubmitting}
+                  onFocus={(event) => event.target.select()}
                 />
               </form>
             </td>
@@ -241,6 +266,8 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   errorMessage={errors.hourlyRate?.message}
                   isDirty={isDirty && dirtyFields.hourlyRate}
                   onBlur={handleBlur}
+                  disabled={isSubmitting}
+                  onFocus={(event) => event.target.select()}
                 />
               </form>
             </td>
@@ -248,19 +275,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end">
-        <button
-          className="btn btn-success btn-sm print:hidden"
-          type="submit"
-          disabled={isSubmitting}
-          form="form-create-invoice-item"
-        >
-          <FaPlus /> Add
-        </button>
-        <div className="pt-2 font-bold">
-          Total: € {invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
-        </div>
-      </div>
+      <div className="pt-2 text-end font-bold">Total: € {total.toFixed(2)}</div>
     </>
   )
 }
