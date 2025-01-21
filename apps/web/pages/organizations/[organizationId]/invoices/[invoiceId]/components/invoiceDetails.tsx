@@ -6,6 +6,7 @@ import { useMutation } from 'urql'
 
 import { InputField } from '@progwise/timebook-ui'
 
+import { SendInvoiceButton } from '../../../../../../frontend/components/weekGrid/sendInvoiceButton'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { InvoiceItemList } from './invoiceItemList'
@@ -18,6 +19,7 @@ const InvoiceDetailsFragment = graphql(`
     customerAddress
     invoiceStatus
     ...InvoiceListInvoice
+    ...SendInvoiceButton
     invoiceItems {
       id
       ...InvoiceItemsListInvoice
@@ -118,6 +120,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </div>
       </div>
       <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
+      <SendInvoiceButton invoice={invoice} />
       <div>
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>

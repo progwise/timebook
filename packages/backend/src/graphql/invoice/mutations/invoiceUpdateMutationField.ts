@@ -31,18 +31,50 @@ builder.mutationField('invoiceUpdate', (t) =>
       _source,
       { id, data: { customerAddress, customerName, invoiceDate, organizationId, invoiceStatus } },
     ) => {
-      if (invoiceStatus === 'PAID') {
-        return prisma.invoice.update({
-          ...query,
-          data: {
-            customerAddress,
-            customerName: customerName ?? undefined,
-            invoiceDate: invoiceDate ?? undefined,
-            organizationId: organizationId?.toString(),
-            invoiceStatus: 'PAID',
-          },
-          where: { id: id.toString() },
-        })
+      const existingInvoice = await prisma.invoice.findUniqueOrThrow({
+        select: { invoiceStatus: true, sendDate: true, payDate: true },
+        where: { id: id.toString() },
+      })
+      if (existingInvoice.payDate && existingInvoice.sendDate && existingInvoice.payDate < existingInvoice.sendDate) {
+        throw new Error('Pay date cannot be before send date')
+      }
+      switch (invoiceStatus) {
+        case InvoiceStatus.SENT:
+          return prisma.invoice.update({
+            ...query,
+            data: {
+              customerAddress,
+              customerName: customerName ?? undefined,
+              invoiceDate: invoiceDate ?? undefined,
+              organizationId: organizationId?.toString(),
+              invoiceStatus: 'SENT',
+            },
+            where: { id: id.toString() },
+          })
+        case InvoiceStatus.PAID:
+          return prisma.invoice.update({
+            ...query,
+            data: {
+              customerAddress,
+              customerName: customerName ?? undefined,
+              invoiceDate: invoiceDate ?? undefined,
+              organizationId: organizationId?.toString(),
+              invoiceStatus: 'PAID',
+            },
+            where: { id: id.toString() },
+          })
+        default:
+          return prisma.invoice.update({
+            ...query,
+            data: {
+              customerAddress,
+              customerName: customerName ?? undefined,
+              invoiceDate: invoiceDate ?? undefined,
+              organizationId: organizationId?.toString(),
+              invoiceStatus: 'DRAFT',
+            },
+            where: { id: id.toString() },
+          })
       }
     },
   }),

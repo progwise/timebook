@@ -110,7 +110,7 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
-  invoiceStatus: InvoiceStatus!
+  invoiceStatus: InvoiceStatus
   organizationId: ID
 }
 
@@ -160,6 +160,7 @@ type Mutation {
     id of the invoice
     """
     id: ID!
+    invoiceStatus: InvoiceStatus! = DRAFT
   ): Invoice!
 
   """
@@ -265,6 +266,16 @@ type Mutation {
     """
     id: ID!
   ): Project!
+
+  """
+  Send an invoice
+  """
+  sendInvoice(
+    """
+    id of the invoice
+    """
+    id: ID!
+  ): Invoice!
 
   """
   Archive a task

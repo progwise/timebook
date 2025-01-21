@@ -91,6 +91,7 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
+  invoiceStatus?: InputMaybe<InvoiceStatus>
   organizationId?: InputMaybe<Scalars['ID']>
 }
 
@@ -153,6 +154,8 @@ export type Mutation = {
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
+  /** Send an invoice */
+  sendInvoice: Invoice
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
@@ -196,6 +199,7 @@ export type MutationInvoiceItemCreateArgs = {
 export type MutationInvoiceUpdateArgs = {
   data: InvoiceUpdateInput
   id: Scalars['ID']
+  invoiceStatus?: InvoiceStatus
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -283,6 +287,10 @@ export type MutationProjectUnlockArgs = {
 
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
+  id: Scalars['ID']
+}
+
+export type MutationSendInvoiceArgs = {
   id: Scalars['ID']
 }
 
@@ -1157,6 +1165,15 @@ export type MyProjectsMembersQuery = {
   myProjectsMembers: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   user: { __typename?: 'User'; id: string }
 }
+
+export type SendInvoiceButtonFragment = { __typename?: 'Invoice'; id: string }
+
+export type SendInvoiceMutationVariables = Exact<{
+  id: Scalars['ID']
+  sendDate: Scalars['DateTime']
+}>
+
+export type SendInvoiceMutation = { __typename?: 'Mutation'; sendInvoice: { __typename?: 'Invoice'; id: string } }
 
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
@@ -2152,6 +2169,21 @@ export const mockMyProjectsMembersQuery = (
     any
   >,
 ) => graphql.query<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>('MyProjectsMembers', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockSendInvoiceMutation((req, res, ctx) => {
+ *   const { id, sendDate } = req.variables;
+ *   return res(
+ *     ctx.data({ sendInvoice })
+ *   )
+ * })
+ */
+export const mockSendInvoiceMutation = (
+  resolver: ResponseResolver<GraphQLRequest<SendInvoiceMutationVariables>, GraphQLContext<SendInvoiceMutation>, any>,
+) => graphql.mutation<SendInvoiceMutation, SendInvoiceMutationVariables>('sendInvoice', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
