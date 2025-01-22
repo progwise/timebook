@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'urql'
 import { z } from 'zod'
@@ -88,17 +88,18 @@ export interface InvoiceItemListProps {
 
 const getFormattedDuration = (duration: number): string => {
   if (duration === 0) {
-    return ''
+    return '0,00'
   }
 
   const hours = Math.floor(duration / 60)
-  const minutes = (duration % 60) / 60
-  return (hours + minutes).toFixed(2)
+  const minutes = ((duration % 60) / 60).toFixed(2).split('.')[1]
+  return `${hours},${minutes}`
 }
 
 export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
+  const context = useMemo(() => ({ additionalTypenames: ['InvoiceItem', 'Invoice'] }), [])
   const workHoursQueries = invoiceItemsData.map((item) => ({
     taskId: item.task.id,
     query: useQuery({
@@ -108,6 +109,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         from: invoiceData.invoiceWorkFrom,
         to: invoiceData.invoiceWorkUntil,
       },
+      context,
     })[0],
   }))
 
@@ -152,11 +154,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     }
   }
 
-  const handleBlur = () => {
-    const { duration, hourlyRate } = getValues()
-    const amount = duration * hourlyRate || 0
-    setAmount(amount)
-  }
+  // const handleBlur = () => {
+  //   const { duration, hourlyRate } = getValues()
+  //   const amount = duration * hourlyRate || 0
+  //   setAmount(amount)
+  // }
 
   const availableTasksByProject = invoiceData.organization.projects.map((project) =>
     project.tasks.filter((task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id)),
@@ -192,7 +194,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <td className="p-1">
                   <InputField
                     className="input-sm input-ghost text-right"
-                    type="number"
+                    type="text"
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
                     onBlur={(event) => {
@@ -204,8 +206,8 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                           0,
                         )
                         newDuration = totalTaskDuration / 60
-                        event.target.value = getFormattedDuration(totalTaskDuration)
                       }
+                      event.target.value = getFormattedDuration(newDuration * 60)
                       invoiceItemUpdate({
                         data: {
                           duration: newDuration * 60,
@@ -224,8 +226,8 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     <span className="absolute left-2 top-1.5">€</span>
                     <InputField
                       className="input-sm input-ghost text-right"
-                      type="number"
-                      defaultValue={(invoiceItem.hourlyRate / 1).toFixed(2).toString()}
+                      type="text"
+                      defaultValue={Number(invoiceItem.hourlyRate).toFixed(2).toString()}
                       disabled={isSubmitting}
                       onBlur={(event) => {
                         const newHourlyRate = Number(event.target.value)
@@ -250,11 +252,15 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
             <td className="p-1">
-              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
+              <form
+                onSubmit={handleSubmit(handleAddInvoiceItem)}
+                id="form-create-invoice-item"
+                {...register('taskId', { disabled: isSubmitting })}
+                {...register('taskId', { disabled: isSubmitting })}
+              >
                 <select
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                   {...register('taskId', { disabled: isSubmitting })}
-                  onBlur={handleSubmit(handleAddInvoiceItem)}
                   disabled={isSubmitting}
                 >
                   {filteredProjectsWithTasks.length === 0 ? (
@@ -282,13 +288,25 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
-                  className="input-sm text-right"
+                  className="input-sm input-ghost text-right"
                   type="number"
-                  placeholder="Enter a duration"
+                  placeholder="Duration"
+                  defaultValue={getFormattedDuration(0)}
                   {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
                   errorMessage={errors.duration?.message}
                   isDirty={isDirty && dirtyFields.duration}
-                  onBlur={handleBlur}
+                  // onBlur={handleBlur}
+                  onBlur={(event) => {
+                    const relatedTarget = event.relatedTarget as HTMLElement
+                    const isInForm = relatedTarget?.closest('#form-create-invoice-item')
+
+                    if (!isInForm) {
+                      const { taskId, duration, hourlyRate } = getValues()
+                      if (taskId && duration && hourlyRate) {
+                        void handleSubmit(handleAddInvoiceItem)()
+                      }
+                    }
+                  }}
                   disabled={isSubmitting}
                   onFocus={(event) => event.target.select()}
                 />
@@ -296,20 +314,36 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             </td>
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
-                <InputField
-                  className="input-sm text-right"
-                  type="number"
-                  placeholder="Enter an hourly rate"
-                  {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
-                  errorMessage={errors.hourlyRate?.message}
-                  isDirty={isDirty && dirtyFields.hourlyRate}
-                  onBlur={handleBlur}
-                  disabled={isSubmitting}
-                  onFocus={(event) => event.target.select()}
-                />
+                <div className="relative">
+                  <span className="absolute left-2 top-1.5">€</span>
+                  <InputField
+                    className="input-sm input-ghost text-right"
+                    type="number"
+                    placeholder="Hourly rate"
+                    defaultValue={getFormattedDuration(0)}
+                    {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
+                    errorMessage={errors.hourlyRate?.message}
+                    isDirty={isDirty && dirtyFields.hourlyRate}
+                    // onBlur={handleBlur}
+                    onBlur={(event) => {
+                      const relatedTarget = event.relatedTarget as HTMLElement
+                      const isInForm = relatedTarget?.closest('#form-create-invoice-item')
+
+                      if (!isInForm) {
+                        const { taskId, duration, hourlyRate } = getValues()
+                        if (taskId && duration && hourlyRate) {
+                          void handleSubmit(handleAddInvoiceItem)()
+                        }
+                      }
+                    }}
+                    disabled={isSubmitting}
+                    onFocus={(event) => event.target.select()}
+                  />
+                </div>
               </form>
             </td>
-            <td>{amount}</td>
+
+            <td>€ {amount.toFixed(2)}</td>
           </tr>
         </tfoot>
       </table>

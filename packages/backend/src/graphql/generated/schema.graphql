@@ -514,16 +514,6 @@ type Query {
   ): Invoice!
 
   """
-  Returns a list of invoice items for a given invoice
-  """
-  invoiceItems(
-    """
-    Identifier for the invoice
-    """
-    invoiceId: ID!
-  ): [InvoiceItem!]!
-
-  """
   Returns all members from projects where the user is an admin
   """
   myProjectsMembers: [User!]!
@@ -555,7 +545,7 @@ type Query {
   ): Project!
 
   """
-  Returns all project of the signed in user that are active
+  Returns all projects of the signed in user that are active
   """
   projects(
     filter: ProjectFilter! = ACTIVE

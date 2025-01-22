@@ -439,8 +439,6 @@ export type Query = {
   currentTracking?: Maybe<Tracking>
   /** Returns a single invoice */
   invoice: Invoice
-  /** Returns a list of invoice items for a given invoice */
-  invoiceItems: Array<InvoiceItem>
   /** Returns all members from projects where the user is an admin */
   myProjectsMembers: Array<User>
   /** Returns a single Organization */
@@ -450,7 +448,7 @@ export type Query = {
   organizationsCount: Scalars['Int']
   /** Returns a single project */
   project: Project
-  /** Returns all project of the signed in user that are active */
+  /** Returns all projects of the signed in user that are active */
   projects: Array<Project>
   projectsCount: Scalars['Int']
   /** Returns a monthly project report */
@@ -466,10 +464,6 @@ export type Query = {
 export type QueryInvoiceArgs = {
   invoiceId: Scalars['ID']
   organizationId: Scalars['ID']
-}
-
-export type QueryInvoiceItemsArgs = {
-  invoiceId: Scalars['ID']
 }
 
 export type QueryOrganizationArgs = {
