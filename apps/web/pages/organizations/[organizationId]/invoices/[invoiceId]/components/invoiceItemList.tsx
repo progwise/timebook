@@ -158,11 +158,23 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     }
   }
 
-  // const handleBlur = () => {
-  //   const { duration, hourlyRate } = getValues()
-  //   const amount = duration * hourlyRate || 0
-  //   setAmount(amount)
-  // }
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    const relatedTarget = event.relatedTarget as HTMLElement
+    const isInForm = relatedTarget?.closest('#form-create-invoice-item')
+
+    if (!isInForm) {
+      const { taskId, duration, hourlyRate } = getValues()
+      if (taskId && duration && hourlyRate) {
+        const durationInMinutes = duration * 60
+        void handleSubmit((data) =>
+          handleAddInvoiceItem({
+            ...data,
+            duration: durationInMinutes,
+          }),
+        )()
+      }
+    }
+  }
 
   const availableTasksByProject = invoiceData.organization.projects.map((project) =>
     project.tasks.filter((task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id)),
@@ -299,18 +311,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
                   errorMessage={errors.duration?.message}
                   isDirty={isDirty && dirtyFields.duration}
-                  // onBlur={handleBlur}
-                  onBlur={(event) => {
-                    const relatedTarget = event.relatedTarget as HTMLElement
-                    const isInForm = relatedTarget?.closest('#form-create-invoice-item')
-
-                    if (!isInForm) {
-                      const { taskId, duration, hourlyRate } = getValues()
-                      if (taskId && duration && hourlyRate) {
-                        void handleSubmit(handleAddInvoiceItem)()
-                      }
-                    }
-                  }}
+                  onBlur={handleBlur}
                   disabled={isSubmitting}
                   onFocus={(event) => event.target.select()}
                 />
@@ -328,18 +329,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
                     errorMessage={errors.hourlyRate?.message}
                     isDirty={isDirty && dirtyFields.hourlyRate}
-                    // onBlur={handleBlur}
-                    onBlur={(event) => {
-                      const relatedTarget = event.relatedTarget as HTMLElement
-                      const isInForm = relatedTarget?.closest('#form-create-invoice-item')
-
-                      if (!isInForm) {
-                        const { taskId, duration, hourlyRate } = getValues()
-                        if (taskId && duration && hourlyRate) {
-                          void handleSubmit(handleAddInvoiceItem)()
-                        }
-                      }
-                    }}
+                    onBlur={handleBlur}
                     disabled={isSubmitting}
                     onFocus={(event) => event.target.select()}
                   />
