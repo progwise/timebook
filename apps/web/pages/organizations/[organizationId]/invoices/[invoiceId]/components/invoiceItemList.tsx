@@ -100,20 +100,10 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
   const context = useMemo(() => ({ additionalTypenames: ['InvoiceItem', 'Invoice'] }), [])
-  const workHoursQueries = invoiceItemsData.map((item) => ({
-    taskId: item.task.id,
-    query: useQuery({
-      query: TaskWorkHoursQuery,
-      variables: {
-        id: item.task.id,
-        from: invoiceData.invoiceWorkFrom,
-        to: invoiceData.invoiceWorkUntil,
-      },
-      context,
-    })[0],
-  }))
-
-  const workHoursMap = Object.fromEntries(workHoursQueries.map(({ taskId, query }) => [taskId, query.data]))
+  const [amount, setAmount] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0)
+  const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
+  const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
 
   const {
     register,
@@ -125,10 +115,24 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     resolver: zodResolver(invoiceItemInputSchema),
     defaultValues: { duration: 0, hourlyRate: 0 },
   })
-  const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
-  const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
-  const [amount, setAmount] = useState<number>(0)
-  const [total, setTotal] = useState<number>(0)
+
+  const [workHoursResult] = useQuery({
+    query: TaskWorkHoursQuery,
+    variables: {
+      id: invoiceItemsData[0]?.task.id || '',
+      from: invoiceData.invoiceWorkFrom,
+      to: invoiceData.invoiceWorkUntil,
+    },
+    context,
+    pause: invoiceItemsData.length === 0,
+  })
+
+  const workHoursQueries = invoiceItemsData.map((item) => ({
+    taskId: item.task.id,
+    query: workHoursResult,
+  }))
+
+  const workHoursMap = Object.fromEntries(workHoursQueries.map(({ taskId, query }) => [taskId, query.data]))
 
   useEffect(() => {
     const newTotal = invoiceItemsData.reduce((sum, item) => sum + (item.duration * item.hourlyRate) / 60, 0)
