@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { FaPen, FaPrint } from 'react-icons/fa6'
+import { FaArrowRotateRight, FaPen, FaPrint } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
 import { useMutation } from 'urql'
 
@@ -169,7 +169,23 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </div>
         </div>
         <div className="flex flex-col justify-between">
-          <div className="text-right">
+          <div className="flex justify-end">
+            <button
+              className="btn btn-primary btn-sm mr-2 print:hidden"
+              onClick={() =>
+                updateInvoice({
+                  id: invoice.id,
+                  data: {
+                    invoiceWorkFrom: invoice.invoiceWorkFrom,
+                    invoiceWorkUntil: invoice.invoiceWorkUntil,
+                  },
+                })
+              }
+              disabled={fetching}
+            >
+              <FaArrowRotateRight className={fetching ? 'animate-spin' : ''} />
+              Update
+            </button>
             <button className="btn btn-primary btn-sm print:hidden" onClick={() => print()}>
               <FaPrint />
               Print
