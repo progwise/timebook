@@ -240,7 +240,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 </td>
                 <td className="p-1">
                   <div className="relative">
-                    <span className="absolute left-2 top-1.5">€</span>
+                    <span className="absolute left-2 top-1.5 z-10">€</span>
                     <InputField
                       className="input-sm input-ghost text-right"
                       type="text"
@@ -322,7 +322,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <div className="relative">
-                  <span className="absolute left-2 top-1.5">€</span>
+                  <span className="absolute left-2 top-1.5 z-10">€</span>
                   <InputField
                     {...register('hourlyRate', { valueAsNumber: true })}
                     className="input-sm input-ghost text-right"
