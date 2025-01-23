@@ -100,7 +100,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
   const context = useMemo(() => ({ additionalTypenames: ['InvoiceItem', 'Invoice'] }), [])
-  const [amount, setAmount] = useState<number>(0)
+  // const [amount, setAmount] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
   const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
@@ -113,7 +113,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     formState: { isSubmitting, errors, isDirty, dirtyFields },
   } = useForm<InvoiceItemFormData>({
     resolver: zodResolver(invoiceItemInputSchema),
-    defaultValues: { duration: 0, hourlyRate: 0 },
+    // defaultValues: { duration: 0, hourlyRate: 0 },
   })
 
   const [workHoursResult] = useQuery({
@@ -151,7 +151,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         throw new Error(`GraphQL Error ${result.error}`)
       }
 
-      setAmount(0)
+      // setAmount(0)
       reset()
     } catch (error) {
       alert(error)
@@ -166,7 +166,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
       const { taskId, duration, hourlyRate } = getValues()
       if (taskId && duration && hourlyRate) {
         const durationInMinutes = duration * 60
-        void handleSubmit((data) =>
+        handleSubmit((data) =>
           handleAddInvoiceItem({
             ...data,
             duration: durationInMinutes,
@@ -213,6 +213,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     type="text"
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
+                    errorMessage={errors.duration?.message}
                     onBlur={(event) => {
                       let newDuration = Number(event.target.value)
                       const taskWorkHours = workHoursMap[invoiceItem.task.id]?.task
@@ -245,6 +246,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                       type="text"
                       defaultValue={Number(invoiceItem.hourlyRate).toFixed(2).toString()}
                       disabled={isSubmitting}
+                      errorMessage={errors.hourlyRate?.message}
                       onBlur={(event) => {
                         const newHourlyRate = Number(event.target.value)
                         invoiceItemUpdate({
@@ -304,15 +306,15 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
                 <InputField
+                  {...register('duration', { valueAsNumber: true })}
                   className="input-sm input-ghost text-right"
-                  type="number"
+                  type="text"
                   placeholder="Duration"
                   defaultValue={getFormattedDuration(0)}
-                  {...register('duration', { disabled: isSubmitting, valueAsNumber: true })}
-                  errorMessage={errors.duration?.message}
-                  isDirty={isDirty && dirtyFields.duration}
-                  onBlur={handleBlur}
                   disabled={isSubmitting}
+                  errorMessage={errors.duration?.message}
+                  onBlur={handleBlur}
+                  isDirty={isDirty && dirtyFields.duration}
                   onFocus={(event) => event.target.select()}
                 />
               </form>
@@ -322,22 +324,21 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <div className="relative">
                   <span className="absolute left-2 top-1.5">€</span>
                   <InputField
+                    {...register('hourlyRate', { valueAsNumber: true })}
                     className="input-sm input-ghost text-right"
-                    type="number"
+                    type="text"
                     placeholder="Hourly rate"
-                    defaultValue={getFormattedDuration(0)}
-                    {...register('hourlyRate', { disabled: isSubmitting, valueAsNumber: true })}
-                    errorMessage={errors.hourlyRate?.message}
-                    isDirty={isDirty && dirtyFields.hourlyRate}
-                    onBlur={handleBlur}
+                    defaultValue={Number(0).toFixed(2).toString()}
                     disabled={isSubmitting}
+                    errorMessage={errors.hourlyRate?.message}
+                    onBlur={handleBlur}
+                    isDirty={isDirty && dirtyFields.hourlyRate}
                     onFocus={(event) => event.target.select()}
                   />
                 </div>
               </form>
             </td>
-
-            <td>€ {amount.toFixed(2)}</td>
+            <td />
           </tr>
         </tfoot>
       </table>
