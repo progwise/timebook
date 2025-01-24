@@ -5,7 +5,6 @@ export const createOrganizationsPage = (page: Page) => {
   const gotoOrganizationPage = async () => {
     await page.getByRole('link', { name: 'Organization' }).click()
     await page.getByRole('link', { name: 'New organization' }).click()
-    await page.goto('http://localhost:3000/organizations/new')
   }
 
   const createOrganizationWithAddress = async (organizationTitle: string, organizationAddress: string) => {

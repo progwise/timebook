@@ -6,7 +6,6 @@ export const createProjectsPage = (page: Page) => {
   const gotoProjectPage = async () => {
     await page.getByRole('link', { name: 'Projects' }).click()
     await page.getByRole('button', { name: 'New Project' }).click()
-    await page.goto('http://localhost:3000/projects/new')
   }
 
   const createProjectWithTask = async (projectTitle: string, taskTitle: string, startDate?: Date, endDate?: Date) => {
