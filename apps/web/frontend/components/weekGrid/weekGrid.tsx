@@ -10,10 +10,18 @@ export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
     tasks {
-      workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
         ...WeekGridFooter
+        user {
+          id
+        }
         workHour {
           duration
+        }
+      }
+      project {
+        members {
+          id
         }
       }
     }
@@ -26,18 +34,36 @@ export interface WeekGridProps {
   startDate: Date
   endDate: Date
   isDataOutdated?: boolean
+  userIds: string[]
 }
 
-export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDate, isDataOutdated = false }) => {
+export const WeekGrid: React.FC<WeekGridProps> = ({
+  tableData,
+  startDate,
+  endDate,
+  isDataOutdated = false,
+  userIds,
+}) => {
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const allWorkHours = projects.flatMap((project) => project.tasks.flatMap((task) => task.workHourOfDays))
+  const allWorkHours = projects.flatMap((project) =>
+    project.tasks.flatMap((task) =>
+      task.footerTotal.filter((workHour) => task.project.members.some((member) => member.id === workHour.user.id)),
+    ),
+  )
   const allTasks = projects.flatMap((project) => project.tasks)
+
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
-      : 1 + projects.length + allTasks.length + 1 // header row + project rows + task rows + footer row
+      : 1 +
+        projects.length +
+        allTasks.reduce(
+          (accumulator, task) => accumulator + (userIds.length > 1 ? task.project.members.length : 1),
+          0,
+        ) +
+        1 // header row + project rows + task rows + footer row
 
   return (
     <div
@@ -73,6 +99,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({ tableData, startDate, endDat
           project={project}
           key={project.id}
           isDataOutdated={isDataOutdated}
+          userIds={userIds}
         />
       ))}
       {projects.length === 0 && (

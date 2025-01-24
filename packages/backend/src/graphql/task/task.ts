@@ -26,15 +26,14 @@ export const Task = builder.prismaObject('Task', {
       args: {
         from: t.arg({ type: DateScalar, required: true }),
         to: t.arg({ type: DateScalar, required: false }),
-        projectMemberUserId: t.arg.id({
+        userIds: t.arg.idList({
           required: false,
-          description:
-            'Filter work hours where the given user is a project member. If not given, the work hours of the signed-in user are returned',
+          description: 'List of user ids. If not provided only the work hours of the current users are returned.',
         }),
       },
-      query: ({ from, to, projectMemberUserId }, context) => ({
+      query: ({ from, to, userIds }, context) => ({
         where: {
-          userId: projectMemberUserId?.toString() ?? context.session.user.id,
+          userId: userIds?.length ? { in: userIds.map((id) => id.toString()) } : context.session.user.id,
           date: {
             gte: from,
             lte: to ?? from,
@@ -49,26 +48,28 @@ export const Task = builder.prismaObject('Task', {
       args: {
         from: t.arg({ type: DateScalar, required: true }),
         to: t.arg({ type: DateScalar, required: false }),
-        projectMemberUserId: t.arg.id({
+        userIds: t.arg.idList({
           required: false,
-          description:
-            'Filter work hours where the given user is a project member. If not given, the work hours of the signed in user are returned',
+          description: 'List of user ids. If not provided only the work hours of the current users are returned.',
         }),
       },
 
       // when signed in user requests work hours for another user, the signed in user must be an admin
-      authScopes: (task, { projectMemberUserId }, context) => {
-        const showWorkHoursForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
+      authScopes: (task, { userIds }, context) => {
+        const showWorkHoursForOtherUser = userIds?.length && !userIds.includes(context.session.user.id)
         return showWorkHoursForOtherUser ? { isAdminByTask: task.id } : { isLoggedIn: true }
       },
 
-      resolve: async (task, { from, to, projectMemberUserId }, context) => {
+      resolve: async (task, { from, to, userIds }, context) => {
         const interval = { start: from, end: to ?? from }
-        return eachDayOfInterval(interval).map(async (date) => ({
-          date: subMinutes(date, date.getTimezoneOffset()),
-          taskId: task.id,
-          userId: projectMemberUserId?.toString() ?? context.session.user.id,
-        }))
+        const userIdFilter = userIds?.length ? userIds.map((id) => id.toString()) : [context.session.user.id]
+        return eachDayOfInterval(interval).flatMap((date) =>
+          userIdFilter.map((userId) => ({
+            date: subMinutes(date, date.getTimezoneOffset()),
+            taskId: task.id,
+            userId: userId,
+          })),
+        )
       },
     }),
     canModify: t.withAuth({ isLoggedIn: true }).boolean({

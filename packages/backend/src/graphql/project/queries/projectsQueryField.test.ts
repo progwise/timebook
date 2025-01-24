@@ -14,13 +14,8 @@ const projectsQuery = gql`
     $from: Date!
     $includePastMembers: Boolean
     $includeProjectsWhereUserBookedWorkHours: Boolean! = false
-    $projectMemberUserId: ID
   ) {
-    projects(
-      from: $from
-      projectMemberUserId: $projectMemberUserId
-      includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours
-    ) {
+    projects(from: $from, includeProjectsWhereUserBookedWorkHours: $includeProjectsWhereUserBookedWorkHours) {
       id
       title
       startDate

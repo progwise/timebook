@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-useless-undefined */
 import { autoUpdate, flip, offset, useFloating } from '@floating-ui/react-dom'
 import { Listbox as HuListbox } from '@headlessui/react'
 
