@@ -1,6 +1,6 @@
 import { Prisma } from '@progwise/timebook-prisma'
 
-const generateMembership = (userId: string, isAdmin: boolean): Prisma.ProjectWhereInput => ({
+const createMembershipFilter = (userId: string, isAdmin: boolean): Prisma.ProjectWhereInput => ({
   OR: [
     {
       projectMemberships: {
@@ -24,7 +24,7 @@ const generateMembership = (userId: string, isAdmin: boolean): Prisma.ProjectWhe
 })
 
 export const getWhereUserIsMember = (userId: string, isAdmin = false): Prisma.ProjectWhereInput =>
-  generateMembership(userId, isAdmin)
+  createMembershipFilter(userId, isAdmin)
 
 interface GetWhereUsersAreMembersProps {
   userIds: string[]
@@ -35,5 +35,5 @@ export const getWhereUsersAreMembers = ({
   userIds,
   isAdmin = false,
 }: GetWhereUsersAreMembersProps): Prisma.ProjectWhereInput => ({
-  OR: userIds.map((userId) => generateMembership(userId, isAdmin)),
+  OR: userIds.map((userId) => createMembershipFilter(userId, isAdmin)),
 })

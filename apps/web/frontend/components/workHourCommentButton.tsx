@@ -14,8 +14,6 @@ export const WorkHourCommentFragment = graphql(`
     workHourOfDays(from: $from, to: $to, userIds: $userIds) {
       user {
         id
-        name
-        image
       }
       date
       workHour {

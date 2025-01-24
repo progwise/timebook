@@ -14,8 +14,6 @@ export const WeekGridProjectFragment = graphql(`
         ...WeekGridFooter
         user {
           id
-          name
-          image
         }
         workHour {
           duration
@@ -24,8 +22,6 @@ export const WeekGridProjectFragment = graphql(`
       project {
         members {
           id
-          name
-          image
         }
       }
     }
