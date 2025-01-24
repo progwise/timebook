@@ -120,6 +120,11 @@ export const organizationHandlers = [
                 id: '1',
                 title: 'Task',
                 __typename: 'Task',
+                project: {
+                  id: '1',
+                  title: 'Project',
+                  __typename: 'Project',
+                },
               },
               __typename: 'InvoiceItem',
             },
