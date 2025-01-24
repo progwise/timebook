@@ -11,7 +11,7 @@ test.describe('organization page', () => {
 
   test('creates a new organization with address and then archive the organization', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Organization Test Organization' })).toBeVisible()
-    // Check PayPal badge
+    // Check Subscription badge
     await expect(page.getByText('Free')).toBeVisible()
     await expect(page.getByPlaceholder('Enter an organization address')).toHaveValue('Test Address')
     await page.getByRole('button', { name: 'Archive', exact: true }).nth(0).click()

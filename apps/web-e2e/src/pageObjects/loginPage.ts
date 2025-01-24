@@ -27,7 +27,7 @@ export const createLoginPage = (page: Page) => {
     })
 
     await page.goto(signInUrl)
-    await page.waitForURL('http://localhost:3000/week')
+    await page.waitForURL('http://localhost:3000')
   }
 
   const deleteAccount = async () => {
