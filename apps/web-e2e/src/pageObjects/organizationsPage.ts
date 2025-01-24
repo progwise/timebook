@@ -3,8 +3,8 @@ import { Page, expect } from '@playwright/test'
 
 export const createOrganizationsPage = (page: Page) => {
   const gotoOrganizationPage = async () => {
-    await page.getByRole('link', { name: 'Organizations' }).click()
-    await page.getByRole('button', { name: 'New Organization' }).click()
+    await page.getByRole('link', { name: 'Organization' }).click()
+    await page.getByRole('link', { name: 'New organization' }).click()
     await page.goto('http://localhost:3000/organizations/new')
   }
 
