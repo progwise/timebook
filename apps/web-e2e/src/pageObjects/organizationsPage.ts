@@ -4,6 +4,7 @@ import { Page, expect } from '@playwright/test'
 export const createOrganizationsPage = (page: Page) => {
   const gotoOrganizationPage = async () => {
     await page.getByRole('link', { name: 'Organization' }).click()
+    await expect(page).toHaveURL('/organizations')
     await page.getByRole('link', { name: 'New organization' }).click()
   }
 
