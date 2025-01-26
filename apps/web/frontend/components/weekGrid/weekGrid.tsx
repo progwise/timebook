@@ -1,4 +1,5 @@
 import { differenceInDays, isWithinInterval } from 'date-fns'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
@@ -20,6 +21,7 @@ export const WeekGridProjectFragment = graphql(`
         }
       }
       project {
+        canModify
         members {
           id
         }
@@ -53,16 +55,22 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
     ),
   )
   const allTasks = projects.flatMap((project) => project.tasks)
-
+  const sessionUser = useSession()
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
       : 1 +
         projects.length +
-        allTasks.reduce(
-          (accumulator, task) => accumulator + (userIds.length > 1 ? task.project.members.length : 1),
-          0,
-        ) +
+        // eslint-disable-next-line unicorn/no-array-reduce
+        allTasks.reduce((accumulator, task) => {
+          const isSessionUserAdminOfProject = task.project.members.some(
+            (member) => member.id === sessionUser.data?.user?.id && task.project.canModify,
+          )
+          const projectMembers = isSessionUserAdminOfProject
+            ? task.project.members.filter((member) => userIds.includes(member.id))
+            : task.project.members.filter((member) => member.id === sessionUser.data?.user?.id)
+          return accumulator + (userIds.length > 1 ? projectMembers.length : 1)
+        }, 0) +
         1 // header row + project rows + task rows + footer row
 
   return (
