@@ -35,11 +35,13 @@ test.describe('week page', () => {
     let currentHours = 0
 
     const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
-    for (const textbox of textboxes) {
-      await textbox.fill('1:00')
-      await page.keyboard.press('Tab')
-      currentHours++
-    }
+    await Promise.all(
+      textboxes.map(async (textbox) => {
+        await textbox.fill('1:00')
+        await page.keyboard.press('Tab')
+        currentHours++
+      }),
+    )
 
     await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
