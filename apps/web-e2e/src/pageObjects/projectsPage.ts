@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 
 export const createProjectsPage = (page: Page) => {
   const gotoProjectPage = async () => {
-    await page.getByRole('link', { name: 'Projects' }).click()
+    await page.goto('http://localhost:3000/projects')
     await page.getByRole('button', { name: 'New Project' }).click()
   }
 
