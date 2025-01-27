@@ -87,21 +87,35 @@ export interface InvoiceItemListProps {
 }
 
 const getFormattedDuration = (duration: number): string => {
-  if (duration === 0) {
-    return '0,00'
-  }
+  const hours = duration / 60
+  return hours.toLocaleString(navigator.languages, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
 
-  const hours = Math.floor(duration / 60)
-  const minutes = ((duration % 60) / 60).toFixed(2).split('.')[1]
-  return `${hours},${minutes}`
+const getFormattedHourlyRate = (hourlyRate: number): string => {
+  return hourlyRate.toLocaleString(navigator.languages, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+const getFormattedAmount = (amount: number): string => {
+  return amount.toLocaleString(navigator.languages, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    style: 'currency',
+    currency: 'EUR',
+  })
 }
 
 export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
   const context = useMemo(() => ({ additionalTypenames: ['InvoiceItem', 'Invoice'] }), [])
-  // const [amount, setAmount] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
+  const [footerAmount, setFooterAmount] = useState<number>(0)
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
   const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
 
@@ -110,10 +124,10 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     handleSubmit,
     reset,
     getValues,
+    watch,
     formState: { isSubmitting, errors, isDirty, dirtyFields },
   } = useForm<InvoiceItemFormData>({
     resolver: zodResolver(invoiceItemInputSchema),
-    // defaultValues: { duration: 0, hourlyRate: 0 },
   })
 
   const [workHoursResult] = useQuery({
@@ -139,6 +153,14 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     setTotal(newTotal)
   }, [invoiceItemsData])
 
+  useEffect(() => {
+    const { duration = 0, hourlyRate = 0 } = getValues()
+    const validDuration = Number.isNaN(duration) ? 0 : duration
+    const validHourlyRate = Number.isNaN(hourlyRate) ? 0 : hourlyRate
+    const newFooterAmount = validDuration * validHourlyRate
+    setFooterAmount(newFooterAmount)
+  }, [getValues, watch('duration'), watch('hourlyRate')])
+
   const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
     try {
       const result = await invoiceItemCreate({
@@ -151,8 +173,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         throw new Error(`GraphQL Error ${result.error}`)
       }
 
-      // setAmount(0)
-      reset()
+      reset({
+        duration: 0,
+        hourlyRate: 0,
+      })
+      setFooterAmount(0)
     } catch (error) {
       alert(error)
     }
@@ -174,7 +199,6 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         )()
       }
     }
-    return Number(event.target.value).toFixed(2).toString().replace('.', ',')
   }
 
   const availableTasksByProject = invoiceData.organization.projects.map((project) =>
@@ -211,7 +235,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <td className="p-1">
                   <InputField
                     className="input-sm input-ghost text-right"
-                    type="text"
+                    type="number"
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
                     onBlur={(event) => {
@@ -229,11 +253,12 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                         data: {
                           duration: newDuration * 60,
                           taskId: invoiceItem.task.id,
-                          hourlyRate: Number(invoiceItem.hourlyRate),
+                          hourlyRate: invoiceItem.hourlyRate,
                           invoiceId: invoiceData.id,
                         },
                         id: invoiceItem.id,
                       })
+                      return getFormattedDuration(newDuration)
                     }}
                     onFocus={(event) => event.target.select()}
                   />
@@ -244,7 +269,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     <InputField
                       className="input-sm input-ghost text-right"
                       type="number"
-                      defaultValue={Number(invoiceItem.hourlyRate).toFixed(2)}
+                      defaultValue={getFormattedHourlyRate(Number(invoiceItem.hourlyRate))}
                       disabled={isSubmitting}
                       onBlur={(event) => {
                         const newHourlyRate = Number(event.target.value)
@@ -257,19 +282,13 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                           },
                           id: invoiceItem.id,
                         })
-                        return (event.target.value = newHourlyRate.toFixed(2))
+                        return getFormattedHourlyRate(newHourlyRate)
                       }}
                       onFocus={(event) => event.target.select()}
                     />
-                    <span>
-                      {Number(invoiceItem.hourlyRate).toLocaleString(navigator.languages, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
                   </div>
                 </td>
-                <td>€ {((invoiceItem.duration * invoiceItem.hourlyRate) / 60).toFixed(2).replace('.', ',')}</td>
+                <td>{getFormattedAmount((invoiceItem.duration * invoiceItem.hourlyRate) / 60)}</td>
               </tr>
             ))}
         </tbody>
@@ -314,12 +333,15 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <InputField
                   {...register('duration', { valueAsNumber: true })}
                   className="input-sm input-ghost text-right"
-                  type="text"
+                  type="number"
                   placeholder="Duration"
                   defaultValue={getFormattedDuration(0)}
                   disabled={isSubmitting}
                   errorMessage={errors.duration?.message}
-                  onBlur={handleBlur}
+                  onBlur={(event) => {
+                    event.target.value = getFormattedDuration(Number(event.target.value) * 60)
+                    handleBlur(event)
+                  }}
                   isDirty={isDirty && dirtyFields.duration}
                   onFocus={(event) => event.target.select()}
                 />
@@ -334,21 +356,24 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     className="input-sm input-ghost text-right"
                     type="number"
                     placeholder="Hourly rate"
-                    defaultValue={(0).toFixed(2)}
+                    defaultValue={getFormattedHourlyRate(0)}
                     disabled={isSubmitting}
                     errorMessage={errors.hourlyRate?.message}
-                    onBlur={handleBlur}
+                    onBlur={(event) => {
+                      event.target.value = getFormattedHourlyRate(Number(event.target.value))
+                      handleBlur(event)
+                    }}
                     isDirty={isDirty && dirtyFields.hourlyRate}
                     onFocus={(event) => event.target.select()}
                   />
                 </div>
               </form>
             </td>
-            <td />
+            <td>{getFormattedAmount(footerAmount)}</td>
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end font-bold">Total: € {total.toFixed(2)}</div>
+      <div className="pt-2 text-end font-bold">Total: {getFormattedAmount(total)}</div>
     </>
   )
 }
