@@ -94,14 +94,7 @@ const getFormattedDuration = (duration: number): string => {
   })
 }
 
-const getFormattedHourlyRate = (hourlyRate: number): string => {
-  return hourlyRate.toLocaleString(navigator.languages, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
-
-const getFormattedAmount = (amount: number): string => {
+const getFormattedCurrency = (amount: number): string => {
   return amount.toLocaleString(navigator.languages, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -235,7 +228,6 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <td className="p-1">
                   <InputField
                     className="input-sm input-ghost text-right"
-                    type="number"
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
                     onBlur={(event) => {
@@ -264,31 +256,27 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   />
                 </td>
                 <td className="p-1">
-                  <div className="relative">
-                    <span className="absolute left-2 top-1.5 z-10">€</span>
-                    <InputField
-                      className="input-sm input-ghost text-right"
-                      type="number"
-                      defaultValue={getFormattedHourlyRate(Number(invoiceItem.hourlyRate))}
-                      disabled={isSubmitting}
-                      onBlur={(event) => {
-                        const newHourlyRate = Number(event.target.value)
-                        invoiceItemUpdate({
-                          data: {
-                            duration: invoiceItem.duration,
-                            taskId: invoiceItem.task.id,
-                            hourlyRate: newHourlyRate,
-                            invoiceId: invoiceData.id,
-                          },
-                          id: invoiceItem.id,
-                        })
-                        return getFormattedHourlyRate(newHourlyRate)
-                      }}
-                      onFocus={(event) => event.target.select()}
-                    />
-                  </div>
+                  <InputField
+                    className="input-sm input-ghost text-right"
+                    defaultValue={getFormattedCurrency(Number(invoiceItem.hourlyRate))}
+                    disabled={isSubmitting}
+                    onBlur={(event) => {
+                      const newHourlyRate = Number(event.target.value)
+                      invoiceItemUpdate({
+                        data: {
+                          duration: invoiceItem.duration,
+                          taskId: invoiceItem.task.id,
+                          hourlyRate: newHourlyRate,
+                          invoiceId: invoiceData.id,
+                        },
+                        id: invoiceItem.id,
+                      })
+                      return getFormattedCurrency(newHourlyRate)
+                    }}
+                    onFocus={(event) => event.target.select()}
+                  />
                 </td>
-                <td>{getFormattedAmount((invoiceItem.duration * invoiceItem.hourlyRate) / 60)}</td>
+                <td>{getFormattedCurrency((invoiceItem.duration * invoiceItem.hourlyRate) / 60)}</td>
               </tr>
             ))}
         </tbody>
@@ -333,7 +321,6 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <InputField
                   {...register('duration', { valueAsNumber: true })}
                   className="input-sm input-ghost text-right"
-                  type="number"
                   placeholder="Duration"
                   defaultValue={getFormattedDuration(0)}
                   disabled={isSubmitting}
@@ -349,31 +336,27 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
             </td>
             <td className="p-1">
               <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
-                <div className="relative">
-                  <span className="absolute left-2 top-1.5 z-10">€</span>
-                  <InputField
-                    {...register('hourlyRate', { valueAsNumber: true })}
-                    className="input-sm input-ghost text-right"
-                    type="number"
-                    placeholder="Hourly rate"
-                    defaultValue={getFormattedHourlyRate(0)}
-                    disabled={isSubmitting}
-                    errorMessage={errors.hourlyRate?.message}
-                    onBlur={(event) => {
-                      event.target.value = getFormattedHourlyRate(Number(event.target.value))
-                      handleBlur(event)
-                    }}
-                    isDirty={isDirty && dirtyFields.hourlyRate}
-                    onFocus={(event) => event.target.select()}
-                  />
-                </div>
+                <InputField
+                  {...register('hourlyRate', { valueAsNumber: true })}
+                  className="input-sm input-ghost text-right"
+                  placeholder="Hourly rate"
+                  defaultValue={getFormattedCurrency(0)}
+                  disabled={isSubmitting}
+                  errorMessage={errors.hourlyRate?.message}
+                  onBlur={(event) => {
+                    event.target.value = getFormattedCurrency(Number(event.target.value))
+                    handleBlur(event)
+                  }}
+                  isDirty={isDirty && dirtyFields.hourlyRate}
+                  onFocus={(event) => event.target.select()}
+                />
               </form>
             </td>
-            <td>{getFormattedAmount(footerAmount)}</td>
+            <td>{getFormattedCurrency(footerAmount)}</td>
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end font-bold">Total: {getFormattedAmount(total)}</div>
+      <div className="pt-2 text-end font-bold">Total: {getFormattedCurrency(total)}</div>
     </>
   )
 }
