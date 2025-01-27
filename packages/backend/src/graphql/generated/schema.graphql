@@ -97,6 +97,13 @@ input InvoiceItemInput {
   taskId: ID!
 }
 
+input InvoiceSendInput {
+  id: ID!
+  invoiceStatus: InvoiceStatus! = DRAFT
+  organizationId: ID!
+  sendDate: DateTime!
+}
+
 """
 Status of the invoice
 """
@@ -110,7 +117,6 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
-  invoiceStatus: InvoiceStatus
   organizationId: ID
 }
 
@@ -270,12 +276,7 @@ type Mutation {
   """
   Send an invoice
   """
-  sendInvoice(
-    """
-    id of the invoice
-    """
-    id: ID!
-  ): Invoice!
+  sendInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Archive a task

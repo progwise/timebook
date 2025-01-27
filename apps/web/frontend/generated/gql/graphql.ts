@@ -78,6 +78,13 @@ export type InvoiceItemInput = {
   taskId: Scalars['ID']
 }
 
+export type InvoiceSendInput = {
+  id: Scalars['ID']
+  invoiceStatus?: InvoiceStatus
+  organizationId: Scalars['ID']
+  sendDate: Scalars['DateTime']
+}
+
 /** Status of the invoice */
 export enum InvoiceStatus {
   Draft = 'DRAFT',
@@ -89,7 +96,6 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
-  invoiceStatus?: InputMaybe<InvoiceStatus>
   organizationId?: InputMaybe<Scalars['ID']>
 }
 
@@ -289,7 +295,7 @@ export type MutationProjectUpdateArgs = {
 }
 
 export type MutationSendInvoiceArgs = {
-  id: Scalars['ID']
+  data: InvoiceSendInput
 }
 
 export type MutationTaskArchiveArgs = {
@@ -1194,16 +1200,11 @@ export type MyProjectsMembersQuery = {
   user: { __typename?: 'User'; id: string }
 }
 
-export type SendInvoiceButtonFragment = { __typename?: 'Invoice'; id: string } & {
-  ' $fragmentName'?: 'SendInvoiceButtonFragment'
-}
-
-export type SendInvoiceMutationVariables = Exact<{
-  id: Scalars['ID']
-  sendDate: Scalars['DateTime']
-}>
-
-export type SendInvoiceMutation = { __typename?: 'Mutation'; sendInvoice: { __typename?: 'Invoice'; id: string } }
+export type SendInvoiceButtonFragment = {
+  __typename?: 'Invoice'
+  id: string
+  organization: { __typename?: 'Organization'; id: string }
+} & { ' $fragmentName'?: 'SendInvoiceButtonFragment' }
 
 export type WeekGridProjectFragment = ({
   __typename?: 'Project'
@@ -1386,6 +1387,12 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
+export type SendInvoiceMutationVariables = Exact<{
+  data: InvoiceSendInput
+}>
+
+export type SendInvoiceMutation = { __typename?: 'Mutation'; sendInvoice: { __typename?: 'Invoice'; id: string } }
+
 export type InvoiceFragmentFragment = ({
   __typename?: 'Invoice'
   id: string
@@ -1393,6 +1400,8 @@ export type InvoiceFragmentFragment = ({
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
+  sendDate?: string | null
+  organization: { __typename?: 'Organization'; id: string }
   invoiceItems: Array<
     { __typename?: 'InvoiceItem'; id: string } & {
       ' $fragmentRefs'?: { InvoiceItemsListInvoiceFragment: InvoiceItemsListInvoiceFragment }
@@ -3595,7 +3604,20 @@ export const SendInvoiceButtonFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'SendInvoiceButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
     },
   ],
 } as unknown as DocumentNode<SendInvoiceButtonFragment, unknown>
@@ -3643,6 +3665,15 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
           {
@@ -3706,7 +3737,20 @@ export const InvoiceFragmentFragmentDoc = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'SendInvoiceButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
     },
     {
       kind: 'FragmentDefinition',
@@ -5279,48 +5323,6 @@ export const MyProjectsMembersDocument = {
     },
   ],
 } as unknown as DocumentNode<MyProjectsMembersQuery, MyProjectsMembersQueryVariables>
-export const SendInvoiceDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'sendInvoice' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sendDate' } },
-          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'DateTime' } } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'sendInvoice' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<SendInvoiceMutation, SendInvoiceMutationVariables>
 export const WorkHourUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -5912,6 +5914,43 @@ export const OrganizationUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>
+export const SendInvoiceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'sendInvoice' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceSendInput' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'sendInvoice' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SendInvoiceMutation, SendInvoiceMutationVariables>
 export const InvoiceUpdateDocument = {
   kind: 'Document',
   definitions: [
@@ -6091,7 +6130,20 @@ export const InvoiceDocument = {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'SendInvoiceButton' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
-      selectionSet: { kind: 'SelectionSet', selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }] },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
     },
     {
       kind: 'FragmentDefinition',
@@ -6129,6 +6181,15 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'customerAddress' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
           {

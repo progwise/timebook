@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaPen, FaPrint } from 'react-icons/fa6'
 import { useMutation } from 'urql'
@@ -11,6 +11,14 @@ import { FragmentType, graphql, useFragment } from '../../../../../../frontend/g
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { InvoiceItemList } from './invoiceItemList'
 
+const SendInvoiceMutationDocument = graphql(`
+  mutation sendInvoice($data: InvoiceSendInput!) {
+    sendInvoice(data: $data) {
+      id
+    }
+  }
+`)
+
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
     id
@@ -18,6 +26,10 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
+    sendDate
+    organization {
+      id
+    }
     ...InvoiceListInvoice
     ...SendInvoiceButton
     invoiceItems {
@@ -49,7 +61,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress'>>({})
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-
+  const [{}, sendInvoice] = useMutation(SendInvoiceMutationDocument)
+  const dialogReference = useRef<HTMLDialogElement>(null)
   const handleSubmitHelper = async (
     handleSubmitHelperField: 'customerName' | 'customerAddress',
     data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
@@ -86,7 +99,20 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
-
+  const handleSendInvoice = async () => {
+    try {
+      await sendInvoice({
+        data: {
+          id: invoice.id,
+          organizationId: invoice.organization.id,
+          sendDate: invoice.sendDate ?? new Date().toDateString(),
+        },
+      })
+    } catch {}
+    {
+      dialogReference.current?.close()
+    }
+  }
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
       <div className="flex justify-between pb-4">
@@ -120,7 +146,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </div>
       </div>
       <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
-      <SendInvoiceButton invoice={invoice} />
+      <SendInvoiceButton invoice={invoice} onSubmit={handleSendInvoice} />
       <div>
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
