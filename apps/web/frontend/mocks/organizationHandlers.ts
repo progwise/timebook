@@ -114,7 +114,7 @@ export const organizationHandlers = [
           invoiceItems: [
             {
               id: '1',
-              duration: 5,
+              duration: 300,
               hourlyRate: 20,
               task: {
                 id: '1',

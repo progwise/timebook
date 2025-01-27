@@ -174,6 +174,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
         )()
       }
     }
+    return Number(event.target.value).toFixed(2).toString().replace('.', ',')
   }
 
   const availableTasksByProject = invoiceData.organization.projects.map((project) =>
@@ -213,7 +214,6 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     type="text"
                     defaultValue={getFormattedDuration(invoiceItem.duration)}
                     disabled={isSubmitting}
-                    errorMessage={errors.duration?.message}
                     onBlur={(event) => {
                       let newDuration = Number(event.target.value)
                       const taskWorkHours = workHoursMap[invoiceItem.task.id]?.task
@@ -243,10 +243,9 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     <span className="absolute left-2 top-1.5 z-10">€</span>
                     <InputField
                       className="input-sm input-ghost text-right"
-                      type="text"
-                      defaultValue={Number(invoiceItem.hourlyRate).toFixed(2).toString()}
+                      type="number"
+                      defaultValue={Number(invoiceItem.hourlyRate).toFixed(2)}
                       disabled={isSubmitting}
-                      errorMessage={errors.hourlyRate?.message}
                       onBlur={(event) => {
                         const newHourlyRate = Number(event.target.value)
                         invoiceItemUpdate({
@@ -258,12 +257,19 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                           },
                           id: invoiceItem.id,
                         })
+                        return (event.target.value = newHourlyRate.toFixed(2))
                       }}
                       onFocus={(event) => event.target.select()}
                     />
+                    <span>
+                      {Number(invoiceItem.hourlyRate).toLocaleString(navigator.languages, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
                   </div>
                 </td>
-                <td>€ {((invoiceItem.duration * invoiceItem.hourlyRate) / 60).toFixed(2)}</td>
+                <td>€ {((invoiceItem.duration * invoiceItem.hourlyRate) / 60).toFixed(2).replace('.', ',')}</td>
               </tr>
             ))}
         </tbody>
@@ -326,9 +332,9 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   <InputField
                     {...register('hourlyRate', { valueAsNumber: true })}
                     className="input-sm input-ghost text-right"
-                    type="text"
+                    type="number"
                     placeholder="Hourly rate"
-                    defaultValue={Number(0).toFixed(2).toString()}
+                    defaultValue={(0).toFixed(2)}
                     disabled={isSubmitting}
                     errorMessage={errors.hourlyRate?.message}
                     onBlur={handleBlur}
