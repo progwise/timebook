@@ -124,7 +124,7 @@ export const projectHandlers = [
               {
                 id: 'task1',
                 title: 'Task 1',
-                project: { id: testProject1.id, isArchived: false, members },
+                project: { id: testProject1.id, canModify: true, isArchived: false, members },
                 isLocked: false,
                 isLockedByAdmin: false,
                 tracking: undefined,
