@@ -1,42 +1,34 @@
+/* eslint-disable testing-library/prefer-screen-queries */
 import { Page, expect } from '@playwright/test'
 import { format } from 'date-fns'
 
-export class ProjectsPage {
-  private _page: Page
-
-  constructor(page: Page) {
-    this._page = page
+export const createProjectsPage = (page: Page) => {
+  const gotoProjectPage = async () => {
+    await page.goto('http://localhost:3000/projects')
+    await page.getByRole('button', { name: 'New Project' }).click()
   }
 
-  private async _gotoProjectPage() {
-    await this._page.getByRole('link', { name: 'Projects' }).click()
-  }
-
-  public async addProject(projectName: string, startDate?: Date, endDate?: Date) {
-    await this._gotoProjectPage()
-    await this._page.getByRole('button', { name: 'New project' }).click()
-    await this._page.fill('[placeholder="Enter project name"]', projectName)
+  const createProjectWithTask = async (projectTitle: string, taskTitle: string, startDate?: Date, endDate?: Date) => {
+    await gotoProjectPage()
+    await page.fill('[placeholder="Enter project name"]', projectTitle)
     if (startDate) {
-      await this._page.fill('text="Start"', format(startDate, 'yyyy-MM-dd'))
+      await page.fill('text="Start"', format(startDate, 'yyyy-MM-dd'))
     }
 
     if (endDate) {
-      await this._page.fill('text="End"', format(endDate, 'yyyy-MM-dd'))
+      await page.fill('text="End"', format(endDate, 'yyyy-MM-dd'))
     }
 
-    await this._page.getByRole('button', { name: 'Create' }).click()
+    await page.getByRole('button', { name: 'Create' }).click()
 
-    await expect(this._page).not.toHaveURL('/projects/new')
+    const taskTitleInput = page.getByPlaceholder('Enter a new task name')
+    await taskTitleInput.fill(taskTitle)
+    await page.getByRole('button', { name: 'Add', exact: true }).click()
+
+    await expect(page).not.toHaveURL('/projects/new')
   }
 
-  public async addTask(projectName: string, taskName: string) {
-    await this._gotoProjectPage()
-    await this._page.getByRole('link', { name: projectName }).click()
-
-    const projectTitleInput = this._page.getByPlaceholder('Enter a new task name')
-    await projectTitleInput.fill(taskName)
-    await this._page.getByRole('button', { name: 'Add', exact: true }).click()
-
-    await expect(projectTitleInput).toHaveValue('')
+  return {
+    createProjectWithTask,
   }
 }

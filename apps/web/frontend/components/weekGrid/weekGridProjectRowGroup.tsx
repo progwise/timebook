@@ -6,8 +6,7 @@ import { FaAngleRight } from 'react-icons/fa6'
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { WeekGridTaskRowAllUsers } from './weekGridTaskRowAllUsers'
-import { WeekGridTaskRowSingleUser } from './weekGridTaskRowSingleUser'
+import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
   fragment WeekGridProjectRowGroup on Project {
@@ -27,8 +26,7 @@ export const WeekGridProjectRowGroupFragment = graphql(`
           duration
         }
       }
-      ...WeekGridTaskRowSingleUser
-      ...WeekGridTaskRowAllUsers
+      ...WeekGridTaskRow
     }
   }
 `)
@@ -88,13 +86,9 @@ export const WeekGridProjectRowGroup = ({
       </div>
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
-        {project.tasks.map((task) =>
-          userIds.length === 1 ? (
-            <WeekGridTaskRowSingleUser task={task} isDataOutdated={isDataOutdated} userIds={userIds} key={task.id} />
-          ) : (
-            <WeekGridTaskRowAllUsers task={task} isDataOutdated={isDataOutdated} userIds={userIds} key={task.id} />
-          ),
-        )}
+        {project.tasks.map((task) => (
+          <WeekGridTaskRow key={task.id} task={task} isDataOutdated={isDataOutdated} userIds={userIds} />
+        ))}
       </div>
     </>
   )
