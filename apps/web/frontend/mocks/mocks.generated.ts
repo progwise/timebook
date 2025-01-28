@@ -1184,6 +1184,7 @@ export type WeekGridProjectFragment = {
     }>
     project: {
       __typename?: 'Project'
+      canModify: boolean
       id: string
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
@@ -1242,6 +1243,7 @@ export type WeekGridProjectRowGroupFragment = {
     project: {
       __typename?: 'Project'
       id: string
+      canModify: boolean
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
@@ -1277,6 +1279,40 @@ export type WorkHourUpdateMutationVariables = Exact<{
 export type WorkHourUpdateMutation = {
   __typename?: 'Mutation'
   workHourUpdate: Array<{ __typename?: 'WorkHour'; id: string }>
+}
+
+export type WeekGridTaskRowFragment = {
+  __typename?: 'Task'
+  id: string
+  title: string
+  isLockedByAdmin: boolean
+  isLocked: boolean
+  project: {
+    __typename?: 'Project'
+    id: string
+    canModify: boolean
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  }
+  taskTotal: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+  }>
+  tracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+  } | null
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
 }
 
 export type WeekGridTaskRowAllUsersFragment = {
@@ -1712,6 +1748,7 @@ export type WeekGridQuery = {
       }>
       project: {
         __typename?: 'Project'
+        canModify: boolean
         id: string
         isArchived: boolean
         members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
