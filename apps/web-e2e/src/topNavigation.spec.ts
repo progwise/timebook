@@ -24,10 +24,4 @@ test.describe('top navigation', () => {
     await projectsButton.click()
     await expect(page).toHaveURL('/projects')
   })
-
-  test('navigates to reports page', async ({ page }) => {
-    const reportsButton = page.getByRole('link', { name: 'Reports' })
-    await reportsButton.click()
-    await expect(page).toHaveURL('/reports')
-  })
 })

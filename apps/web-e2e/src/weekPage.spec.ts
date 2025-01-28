@@ -39,7 +39,10 @@ test.describe('week page', () => {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
+      // eslint-disable-next-line playwright/no-wait-for-timeout
+      await page.waitForTimeout(500)
     }
+
     await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
 
