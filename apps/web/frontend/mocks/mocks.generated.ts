@@ -43,6 +43,8 @@ export type Invoice = ModifyInterface & {
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
+  invoiceWorkFrom: Scalars['Date']
+  invoiceWorkUntil: Scalars['Date']
   organization: Organization
   payDate?: Maybe<Scalars['Date']>
   sendDate?: Maybe<Scalars['Date']>
@@ -52,6 +54,8 @@ export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
   invoiceDate: Scalars['Date']
+  invoiceWorkFrom: Scalars['Date']
+  invoiceWorkUntil: Scalars['Date']
   organizationId: Scalars['ID']
 }
 
@@ -98,6 +102,8 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
+  invoiceWorkFrom?: InputMaybe<Scalars['Date']>
+  invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
 }
 
@@ -183,7 +189,7 @@ export type Mutation = {
   /** Delete a work hour entry */
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
-  workHourUpdate: WorkHour
+  workHourUpdate: Array<WorkHour>
 }
 
 export type MutationAccessTokenCreateArgs = {
@@ -338,8 +344,8 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Organization = ModifyInterface & {
@@ -493,8 +499,8 @@ export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type QueryProjectsCountArgs = {
@@ -592,14 +598,14 @@ export type Task = ModifyInterface & {
 
 export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskInput = {
@@ -673,6 +679,7 @@ export type WorkHourOfDay = {
   __typename?: 'WorkHourOfDay'
   date: Scalars['Date']
   isLocked: Scalars['Boolean']
+  user: User
   workHour?: Maybe<WorkHour>
 }
 
@@ -1189,26 +1196,45 @@ export type WeekGridProjectFragment = {
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    workHourOfDays: Array<{
+    footerTotal: Array<{
       __typename?: 'WorkHourOfDay'
       date: string
-      isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
     }>
     project: {
       __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
+      canModify: boolean
       id: string
-      isProjectMember: boolean
       isArchived: boolean
+      members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
+    projectTotal: Array<{
+      __typename?: 'WorkHourOfDay'
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
+    taskTotal: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+    }>
   }>
+  members: Array<{ __typename?: 'User'; id: string }>
 }
 
 export type WeekGridFooterFragment = {
@@ -1222,31 +1248,44 @@ export type WeekGridProjectRowGroupFragment = {
   id: string
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
     id: string
     title: string
     isLockedByAdmin: boolean
     isLocked: boolean
-    workHourOfDays: Array<{
+    projectTotal: Array<{
       __typename?: 'WorkHourOfDay'
-      date: string
-      isLocked: boolean
-      workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
     }>
     project: {
       __typename?: 'Project'
-      startDate?: string | null
-      endDate?: string | null
       id: string
-      isProjectMember: boolean
+      canModify: boolean
       isArchived: boolean
+      members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
+    taskTotal: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; duration: number } | null
+    }>
     tracking?: {
       __typename?: 'Tracking'
       start: string
       task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
     } | null
+    workHourOfDays: Array<{
+      __typename?: 'WorkHourOfDay'
+      date: string
+      isLocked: boolean
+      user: { __typename?: 'User'; id: string }
+      workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+    }>
   }>
 }
 
@@ -1254,12 +1293,12 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds: Array<Scalars['ID']> | Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; id: string }
+  workHourUpdate: Array<{ __typename?: 'WorkHour'; id: string }>
 }
 
 export type WeekGridTaskRowFragment = {
@@ -1270,23 +1309,91 @@ export type WeekGridTaskRowFragment = {
   isLocked: boolean
   project: {
     __typename?: 'Project'
-    startDate?: string | null
-    endDate?: string | null
     id: string
-    isProjectMember: boolean
+    canModify: boolean
     isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
-  workHourOfDays: Array<{
+  taskTotal: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
-    workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
   }>
   tracking?: {
     __typename?: 'Tracking'
     start: string
     task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
   } | null
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
+}
+
+export type WeekGridTaskRowAllUsersFragment = {
+  __typename?: 'Task'
+  id: string
+  title: string
+  isLockedByAdmin: boolean
+  isLocked: boolean
+  project: {
+    __typename?: 'Project'
+    id: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
+  }
+  taskTotal: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+  }>
+  tracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+  } | null
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
+}
+
+export type WeekGridTaskRowSingleUserFragment = {
+  __typename?: 'Task'
+  id: string
+  title: string
+  isLockedByAdmin: boolean
+  isLocked: boolean
+  project: { __typename?: 'Project'; id: string; isArchived: boolean }
+  taskTotal: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+  }>
+  tracking?: {
+    __typename?: 'Tracking'
+    start: string
+    task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
+  } | null
+  workHourOfDays: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+  }>
 }
 
 export type WorkHourCommentFragmentFragment = {
@@ -1297,6 +1404,7 @@ export type WorkHourCommentFragmentFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
+    user: { __typename?: 'User'; id: string }
     workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
   }>
 }
@@ -1416,6 +1524,8 @@ export type InvoiceFragmentFragment = {
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
   sendDate?: string | null
+  invoiceWorkFrom: string
+  invoiceWorkUntil: string
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1489,6 +1599,8 @@ export type InvoiceQuery = {
     customerAddress?: string | null
     invoiceStatus: InvoiceStatus
     sendDate?: string | null
+    invoiceWorkFrom: string
+    invoiceWorkUntil: string
     organization: {
       __typename?: 'Organization'
       id: string
@@ -1640,7 +1752,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -1656,26 +1768,45 @@ export type WeekGridQuery = {
       title: string
       isLockedByAdmin: boolean
       isLocked: boolean
-      workHourOfDays: Array<{
+      footerTotal: Array<{
         __typename?: 'WorkHourOfDay'
         date: string
-        isLocked: boolean
-        workHour?: { __typename?: 'WorkHour'; duration: number; comment?: string | null } | null
+        user: { __typename?: 'User'; id: string }
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
       }>
       project: {
         __typename?: 'Project'
-        startDate?: string | null
-        endDate?: string | null
+        canModify: boolean
         id: string
-        isProjectMember: boolean
         isArchived: boolean
+        members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
       }
+      projectTotal: Array<{
+        __typename?: 'WorkHourOfDay'
+        user: { __typename?: 'User'; id: string }
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      }>
+      taskTotal: Array<{
+        __typename?: 'WorkHourOfDay'
+        date: string
+        isLocked: boolean
+        user: { __typename?: 'User'; id: string }
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      }>
       tracking?: {
         __typename?: 'Tracking'
         start: string
         task: { __typename?: 'Task'; id: string; title: string; project: { __typename?: 'Project'; title: string } }
       } | null
+      workHourOfDays: Array<{
+        __typename?: 'WorkHourOfDay'
+        date: string
+        isLocked: boolean
+        user: { __typename?: 'User'; id: string }
+        workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
+      }>
     }>
+    members: Array<{ __typename?: 'User'; id: string }>
   }>
 }
 
@@ -2186,7 +2317,7 @@ export const mockMyProjectsMembersQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWorkHourUpdateMutation((req, res, ctx) => {
- *   const { data, date, taskId, projectMemberUserId } = req.variables;
+ *   const { data, date, taskId, userIds } = req.variables;
  *   return res(
  *     ctx.data({ workHourUpdate })
  *   )
@@ -2592,7 +2723,7 @@ export const mockOrganizationsQuery = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockWeekGridQuery((req, res, ctx) => {
- *   const { from, to, projectMemberUserId } = req.variables;
+ *   const { from, to, userIds } = req.variables;
  *   return res(
  *     ctx.data({ projects })
  *   )

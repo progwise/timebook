@@ -8,8 +8,8 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const workHourUpdateMutation = gql`
-  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: ID!, $projectMemberUserId: ID) {
-    workHourUpdate(data: $data, date: $date, taskId: $taskId, projectMemberUserId: $projectMemberUserId) {
+  mutation workHourUpdateMutation($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {
+    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {
       date
       duration
       user {
@@ -102,6 +102,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -130,22 +131,25 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
     expect(response.data).toEqual({
-      workHourUpdate: {
-        date: '2022-01-02',
-        duration: 60,
-        task: {
-          id: 'T1',
-          title: 'Task 1',
+      workHourUpdate: [
+        {
+          date: '2022-01-02',
+          duration: 60,
+          task: {
+            id: 'T1',
+            title: 'Task 1',
+          },
+          user: {
+            id: '1',
+            name: 'Test User with project membership and admin role',
+          },
         },
-        user: {
-          id: '1',
-          name: 'Test User with project membership and admin role',
-        },
-      },
+      ],
     })
     expect(response.errors).toBeUndefined()
 
@@ -167,6 +171,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -188,6 +193,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -209,6 +215,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -230,6 +237,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -251,6 +259,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -272,6 +281,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -291,22 +301,25 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-07-03',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
     expect(response.data).toEqual({
-      workHourUpdate: {
-        date: '2022-07-03',
-        duration: 60,
-        task: {
-          id: 'T1',
-          title: 'Task 1',
+      workHourUpdate: [
+        {
+          date: '2022-07-03',
+          duration: 60,
+          task: {
+            id: 'T1',
+            title: 'Task 1',
+          },
+          user: {
+            id: '1',
+            name: 'Test User with project membership and admin role',
+          },
         },
-        user: {
-          id: '1',
-          name: 'Test User with project membership and admin role',
-        },
-      },
+      ],
     })
     expect(response.errors).toBeUndefined()
   })
@@ -332,6 +345,7 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
+        userIds: ['1'],
       },
     })
 
@@ -360,23 +374,25 @@ describe('workHourUpdateMutationField', () => {
         },
         date: '2022-01-01',
         taskId: 'T1',
-        projectMemberUserId: '3',
+        userIds: ['3'],
       },
     })
 
     expect(response.data).toEqual({
-      workHourUpdate: {
-        date: '2022-01-01',
-        duration: 60,
-        task: {
-          id: 'T1',
-          title: 'Task 1',
+      workHourUpdate: [
+        {
+          date: '2022-01-01',
+          duration: 60,
+          task: {
+            id: 'T1',
+            title: 'Task 1',
+          },
+          user: {
+            id: '3',
+            name: 'Test User with project membership and member role',
+          },
         },
-        user: {
-          id: '3',
-          name: 'Test User with project membership and member role',
-        },
-      },
+      ],
     })
     expect(response.errors).toBeUndefined()
 

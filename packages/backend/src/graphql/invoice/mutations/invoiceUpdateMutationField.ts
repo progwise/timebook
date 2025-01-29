@@ -26,14 +26,20 @@ builder.mutationField('invoiceUpdate', (t) =>
 
       return { isAdminByOrganization: oldOrganizationId }
     },
-    resolve: async (query, _source, { id, data: { customerAddress, customerName, invoiceDate, organizationId } }) => {
+    resolve: async (
+      query,
+      _source,
+      { id, data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
+    ) => {
       return prisma.invoice.update({
         ...query,
         data: {
-          customerAddress,
+          customerAddress: customerAddress ?? undefined,
           customerName: customerName ?? undefined,
           invoiceDate: invoiceDate ?? undefined,
           organizationId: organizationId?.toString(),
+          invoiceWorkFrom: invoiceWorkFrom ?? undefined,
+          invoiceWorkUntil: invoiceWorkUntil ?? undefined,
         },
         where: { id: id.toString() },
       })

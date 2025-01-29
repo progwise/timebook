@@ -1,78 +1,43 @@
-import { parseISO } from 'date-fns'
-
-import { FormattedDuration } from '@progwise/timebook-ui'
+import { useSession } from 'next-auth/react'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { TrackingButtons } from '../trackingButtons/trackingButtons'
-import { WorkHourCommentButton } from '../workHourCommentButton'
-import { WeekGridTaskDayCell } from './weekGridTaskDayCell'
+import { useProjectMembers } from '../useProjectMembers'
+import { WeekGridTaskRowAllUsers } from './weekGridTaskRowAllUsers'
+import { WeekGridTaskRowSingleUser } from './weekGridTaskRowSingleUser'
 
 const WeekGridTaskRowFragment = graphql(`
   fragment WeekGridTaskRow on Task {
-    id
-    title
-    project {
-      startDate
-      endDate
-    }
-    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
-      date
-      workHour {
-        duration
-      }
-      isLocked
-    }
+    ...WeekGridTaskRowSingleUser
+    ...WeekGridTaskRowAllUsers
     project {
       id
-      isProjectMember
-      isArchived
+      canModify
     }
-    tracking {
-      ...TrackingButtonsTracking
-    }
-    isLockedByAdmin
-    ...TrackingButtonsTask
-    ...WorkHourCommentFragment
   }
 `)
 
 interface WeekGridTaskRowProps {
   task: FragmentType<typeof WeekGridTaskRowFragment>
   isDataOutdated?: boolean
+  userIds: string[]
 }
 
-export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false }: WeekGridTaskRowProps) => {
+export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, userIds }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const taskDurations = task.workHourOfDays
-    .map((workHour) => workHour.workHour?.duration ?? 0)
-    .reduce((previous, current) => previous + current, 0)
+  const { myProjectsMembersData } = useProjectMembers()
+  const sessionUser = useSession()
 
-  return (
-    <div className="contents" role="row">
-      <div className="pl-3" role="cell">
-        {!task.isLockedByAdmin && !task.project.isArchived && (
-          <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
-        )}
-      </div>
-      <div className="px-3" role="cell">
-        {task.title}
-      </div>
-      {task.workHourOfDays.map((workHourOfDay) => (
-        <WeekGridTaskDayCell
-          day={parseISO(workHourOfDay.date)}
-          disabled={workHourOfDay.isLocked}
-          taskId={task.id}
-          duration={workHourOfDay.workHour?.duration ?? 0}
-          key={workHourOfDay.date}
-          isDataOutdated={isDataOutdated}
-        />
-      ))}
-      <div className="px-2 text-right" role="cell">
-        {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
-      </div>
-      <div className="px-2" role="cell">
-        <WorkHourCommentButton task={task} />
-      </div>
-    </div>
-  )
+  const isSessionUserAdminOfProject =
+    task.project.canModify && myProjectsMembersData.some((member) => member.id === sessionUser.data?.user?.id)
+
+  const filteredUserIds = isSessionUserAdminOfProject
+    ? userIds
+    : userIds.filter((userId) => userId === sessionUser.data?.user?.id)
+
+  return userIds.length === 1 ? (
+    <WeekGridTaskRowSingleUser task={task} isDataOutdated={isDataOutdated} userIds={userIds} />
+  ) : // eslint-disable-next-line unicorn/no-nested-ternary
+  filteredUserIds.length > 0 ? (
+    <WeekGridTaskRowAllUsers task={task} isDataOutdated={isDataOutdated} userIds={filteredUserIds} />
+  ) : undefined
 }

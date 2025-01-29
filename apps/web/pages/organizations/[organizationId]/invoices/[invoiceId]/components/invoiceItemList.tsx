@@ -190,7 +190,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
           </tr>
         </tfoot>
       </table>
-      <div className="text-end">
+      <div className="pt-2 text-end">
         <button
           className="btn btn-success btn-sm print:hidden"
           type="submit"
@@ -200,7 +200,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
           <FaPlus /> Add
         </button>
         <div className="pt-2 font-bold">
-          Total €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
+          Total: €{invoiceItemsData.reduce((sum, item) => sum + item.duration * item.hourlyRate, 0)}
         </div>
       </div>
     </>

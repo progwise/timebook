@@ -38,10 +38,12 @@ model Invoice {
   id          String   @id @default(cuid())
   invoiceDate DateTime @default(now())
 
-  createdByUserId String
-  customerAddress String?
-  organizationId  String
-  customerName    String
+  createdByUserId  String
+  customerAddress  String?
+  organizationId   String
+  customerName     String
+  invoiceWorkFrom  DateTime
+  invoiceWorkUntil DateTime
 
   sendDate      DateTime?
   payDate       DateTime?
