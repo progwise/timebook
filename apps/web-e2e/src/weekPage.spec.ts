@@ -7,22 +7,18 @@ import { format } from 'date-fns'
 import { test } from './pageObjects/testFixtures'
 
 test.describe('week page', () => {
-  test.beforeEach(async ({ loginPage }) => {
+  test.beforeEach(async ({ loginPage, projectsPage }) => {
     await loginPage.login()
+    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
   })
 
-  test('it should display the current month', async ({ page }) => {
+  test('displays the current month and changes week', async ({ page }) => {
     const currentMonthString = format(new Date(), 'MMMM')
-
-    await page.getByRole('link', { name: 'Week' }).click()
-    const header = page.getByRole('heading', { name: currentMonthString })
+    await page.goto('http://localhost:3000/week')
+    const header = page.getByRole('heading', { name: currentMonthString }).nth(0)
     await expect(header).toBeVisible()
-  })
 
-  test('it should be possible to change the week', async ({ page }) => {
-    await page.getByRole('link', { name: 'Week' }).click()
     await page.getByRole('button', { name: 'Next week' }).click()
-
     await expect(page).not.toHaveURL('/week')
 
     await page.getByRole('button', { name: 'Previous week' }).click()
@@ -30,37 +26,37 @@ test.describe('week page', () => {
     await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
 
-  test('it should be possible to enter work hours', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
+  test('enters work hours', async ({ page }) => {
+    await page.goto('http://localhost:3000/week')
 
-    await page.getByRole('link', { name: 'Week' }).click()
-
-    const taskRow = page.getByRole('row', { name: `Test Task` })
+    const taskRow = page.getByRole('row', { name: 'Test Task' })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
 
-    for (const textbox of await taskRow.getByRole('textbox', { name: 'duration' }).all()) {
+    const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
+    for (const textbox of textboxes) {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
-
-      await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
+      // eslint-disable-next-line playwright/no-wait-for-timeout
+      await page.waitForTimeout(500)
     }
+
+    await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
 
-  test('it should be possible to enter a comment', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
-
-    await page.getByRole('link', { name: 'Week' }).click()
+  test('enters a comment', async ({ page }) => {
+    await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Comments' }).click()
 
-    await page.getByRole('textbox', { name: 'comment' }).first().fill('a comment')
+    const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
+    await commentBox.fill('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
+
+    await expect(commentBox).toHaveValue('a comment')
 
     const indicator = page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
