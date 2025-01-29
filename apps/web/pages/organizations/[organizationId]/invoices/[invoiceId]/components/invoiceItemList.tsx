@@ -103,6 +103,14 @@ const getFormattedCurrency = (amount: number): string => {
   })
 }
 
+const parseNumericInput = (value: string, oldValue: number): number => {
+  const newValue = Number(value)
+  if (Number.isNaN(newValue)) {
+    return oldValue
+  }
+  return newValue
+}
+
 export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
   const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
   const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
@@ -176,21 +184,15 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     }
   }
 
-  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const relatedTarget = event.relatedTarget as HTMLElement
-    const isInForm = relatedTarget?.closest('#form-create-invoice-item')
-
-    if (!isInForm) {
-      const { taskId, duration, hourlyRate } = getValues()
-      if (taskId && duration && hourlyRate) {
-        const durationInMinutes = duration * 60
-        handleSubmit((data) =>
-          handleAddInvoiceItem({
-            ...data,
-            duration: durationInMinutes,
-          }),
-        )()
-      }
+  const handleFormSubmission = () => {
+    const { taskId, duration, hourlyRate } = getValues()
+    if (taskId && duration && hourlyRate) {
+      handleSubmit((data) =>
+        handleAddInvoiceItem({
+          ...data,
+          duration: duration * 60,
+        }),
+      )()
     }
   }
 
@@ -228,10 +230,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 <td className="p-1">
                   <InputField
                     className="input-sm input-ghost text-right"
-                    defaultValue={getFormattedDuration(invoiceItem.duration)}
-                    disabled={isSubmitting}
+                    defaultValue={getFormattedDuration(Number(invoiceItem.duration))}
                     onBlur={(event) => {
-                      let newDuration = Number(event.target.value)
+                      const oldDuration = invoiceItem.duration / 60
+                      let newDuration = parseNumericInput(event.target.value, oldDuration)
+                      const hourlyRate = Number(invoiceItem.hourlyRate)
                       const taskWorkHours = workHoursMap[invoiceItem.task.id]?.task
                       if (!newDuration && taskWorkHours) {
                         const totalTaskDuration = taskWorkHours.workHours.reduce(
@@ -245,12 +248,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                         data: {
                           duration: newDuration * 60,
                           taskId: invoiceItem.task.id,
-                          hourlyRate: invoiceItem.hourlyRate,
+                          hourlyRate: hourlyRate,
                           invoiceId: invoiceData.id,
                         },
                         id: invoiceItem.id,
                       })
-                      return getFormattedDuration(newDuration)
                     }}
                     onFocus={(event) => event.target.select()}
                   />
@@ -259,9 +261,10 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   <InputField
                     className="input-sm input-ghost text-right"
                     defaultValue={getFormattedCurrency(Number(invoiceItem.hourlyRate))}
-                    disabled={isSubmitting}
                     onBlur={(event) => {
-                      const newHourlyRate = Number(event.target.value)
+                      const oldHourlyRate = invoiceItem.hourlyRate
+                      const newHourlyRate = parseNumericInput(event.target.value, oldHourlyRate)
+                      event.target.value = getFormattedCurrency(newHourlyRate)
                       invoiceItemUpdate({
                         data: {
                           duration: invoiceItem.duration,
@@ -271,7 +274,6 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                         },
                         id: invoiceItem.id,
                       })
-                      return getFormattedCurrency(newHourlyRate)
                     }}
                     onFocus={(event) => event.target.select()}
                   />
@@ -326,11 +328,19 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   disabled={isSubmitting}
                   errorMessage={errors.duration?.message}
                   onBlur={(event) => {
-                    event.target.value = getFormattedDuration(Number(event.target.value) * 60)
-                    handleBlur(event)
+                    event.target.value = getFormattedDuration(parseNumericInput(event.target.value, 0) * 60)
+                    handleFormSubmission()
                   }}
                   isDirty={isDirty && dirtyFields.duration}
                   onFocus={(event) => event.target.select()}
+                  onKeyDown={(event) => {
+                    if (event.code === 'Enter') {
+                      let oldValue = (event.target as HTMLInputElement).value
+                      const newDuration = parseNumericInput(oldValue, 0)
+                      oldValue = getFormattedDuration(newDuration * 60)
+                      handleFormSubmission()
+                    }
+                  }}
                 />
               </form>
             </td>
@@ -344,11 +354,19 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   disabled={isSubmitting}
                   errorMessage={errors.hourlyRate?.message}
                   onBlur={(event) => {
-                    event.target.value = getFormattedCurrency(Number(event.target.value))
-                    handleBlur(event)
+                    event.target.value = getFormattedCurrency(parseNumericInput(event.target.value, 0))
+                    handleFormSubmission()
                   }}
                   isDirty={isDirty && dirtyFields.hourlyRate}
                   onFocus={(event) => event.target.select()}
+                  onKeyDown={(event) => {
+                    if (event.code === 'Enter') {
+                      let oldHourlyRate = (event.target as HTMLInputElement).value
+                      const newHourlyRate = parseNumericInput(oldHourlyRate, 0)
+                      oldHourlyRate = getFormattedCurrency(newHourlyRate)
+                      handleFormSubmission()
+                    }
+                  }}
                 />
               </form>
             </td>
