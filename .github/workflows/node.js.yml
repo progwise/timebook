@@ -118,7 +118,9 @@ jobs:
           retention-days: 30
 
   deploy:
+    needs: [build, test, eslint, prettier, graphqlCodeGenerator, e2e-tests]
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
     name: Deploy App
     steps:
       - name: Checkout code
