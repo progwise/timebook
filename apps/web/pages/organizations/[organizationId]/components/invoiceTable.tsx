@@ -40,12 +40,24 @@ export const InvoiceTable = ({ invoices, organizationId }: InvoiceTableProps): J
             <tr key={invoice.id}>
               <td>{invoice.invoiceDate}</td>
               <td>{invoice.customerName}</td>
-              <td>{invoice.invoiceItems.reduce((sum, invoiceItem) => sum + invoiceItem.duration, 0)}</td>
               <td>
-                {invoice.invoiceItems.reduce(
-                  (sum, invoiceItem) => sum + invoiceItem.duration * invoiceItem.hourlyRate,
-                  0,
+                {(invoice.invoiceItems.reduce((sum, invoiceItem) => sum + invoiceItem.duration, 0) / 60).toLocaleString(
+                  navigator.languages,
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  },
                 )}
+              </td>
+              <td>
+                {invoice.invoiceItems
+                  .reduce((sum, invoiceItem) => sum + invoiceItem.duration * invoiceItem.hourlyRate, 0)
+                  .toLocaleString(navigator.languages, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    style: 'currency',
+                    currency: 'EUR',
+                  })}
               </td>
               <td className="text-right">
                 <Link
