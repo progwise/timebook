@@ -10,7 +10,6 @@ const WeekGridTaskRowFragment = graphql(`
     ...WeekGridTaskRowSingleUser
     ...WeekGridTaskRowAllUsers
     project {
-      id
       canModify
     }
   }
@@ -26,13 +25,12 @@ export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, us
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
   const { myProjectsMembersData } = useProjectMembers()
   const sessionUser = useSession()
+  const sessionUserId = sessionUser.data?.user.id
 
   const isSessionUserAdminOfProject =
-    task.project.canModify && myProjectsMembersData.some((member) => member.id === sessionUser.data?.user?.id)
+    task.project.canModify && myProjectsMembersData.some((member) => member.id === sessionUserId)
 
-  const filteredUserIds = isSessionUserAdminOfProject
-    ? userIds
-    : userIds.filter((userId) => userId === sessionUser.data?.user?.id)
+  const filteredUserIds = isSessionUserAdminOfProject ? userIds : userIds.filter((userId) => userId === sessionUserId)
 
   return userIds.length === 1 ? (
     <WeekGridTaskRowSingleUser task={task} isDataOutdated={isDataOutdated} userIds={userIds} />

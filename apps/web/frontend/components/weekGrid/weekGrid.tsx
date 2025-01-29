@@ -49,13 +49,19 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
+  const sessionUser = useSession()
+  const sessionUserId = sessionUser.data?.user.id
   const allWorkHours = projects.flatMap((project) =>
     project.tasks.flatMap((task) =>
-      task.footerTotal.filter((workHour) => task.project.members.some((member) => member.id === workHour.user.id)),
+      task.footerTotal.filter((workHour) => {
+        const isSessionUserAdminOfProject = task.project.members.some(
+          (member) => member.id === sessionUserId && task.project.canModify,
+        )
+        return isSessionUserAdminOfProject || workHour.user.id === sessionUserId
+      }),
     ),
   )
   const allTasks = projects.flatMap((project) => project.tasks)
-  const sessionUser = useSession()
   const numberOfRows =
     projects.length === 0
       ? 3 // header row + one empty row + footer row
@@ -64,11 +70,11 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
         // eslint-disable-next-line unicorn/no-array-reduce
         allTasks.reduce((accumulator, task) => {
           const isSessionUserAdminOfProject = task.project.members.some(
-            (member) => member.id === sessionUser.data?.user?.id && task.project.canModify,
+            (member) => member.id === sessionUserId && task.project.canModify,
           )
           const projectMembers = isSessionUserAdminOfProject
             ? task.project.members.filter((member) => userIds.includes(member.id))
-            : task.project.members.filter((member) => member.id === sessionUser.data?.user?.id)
+            : task.project.members.filter((member) => member.id === sessionUserId)
           return accumulator + (userIds.length > 1 ? projectMembers.length : 1)
         }, 0) +
         1 // header row + project rows + task rows + footer row

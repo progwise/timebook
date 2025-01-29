@@ -134,7 +134,7 @@ const documents = {
     types.WeekGridProjectRowGroupFragmentDoc,
   '\n  mutation workHourUpdate($data: WorkHourInput!, $date: Date!, $taskId: ID!, $userIds: [ID!]!) {\n    workHourUpdate(data: $data, date: $date, taskId: $taskId, userIds: $userIds) {\n      id\n    }\n  }\n':
     types.WorkHourUpdateDocument,
-  '\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      id\n      canModify\n    }\n  }\n':
+  '\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      canModify\n    }\n  }\n':
     types.WeekGridTaskRowFragmentDoc,
   '\n  fragment WeekGridTaskRowAllUsers on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowAllUsersFragmentDoc,
@@ -591,8 +591,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      id\n      canModify\n    }\n  }\n',
-): (typeof documents)['\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      id\n      canModify\n    }\n  }\n']
+  source: '\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      canModify\n    }\n  }\n',
+): (typeof documents)['\n  fragment WeekGridTaskRow on Task {\n    ...WeekGridTaskRowSingleUser\n    ...WeekGridTaskRowAllUsers\n    project {\n      canModify\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

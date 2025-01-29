@@ -1242,8 +1242,8 @@ export type WeekGridProjectRowGroupFragment = {
     }>
     project: {
       __typename?: 'Project'
-      id: string
       canModify: boolean
+      id: string
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
@@ -1289,8 +1289,8 @@ export type WeekGridTaskRowFragment = {
   isLocked: boolean
   project: {
     __typename?: 'Project'
-    id: string
     canModify: boolean
+    id: string
     isArchived: boolean
     members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
