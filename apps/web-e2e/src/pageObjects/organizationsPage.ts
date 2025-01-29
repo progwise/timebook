@@ -3,7 +3,7 @@ import { Page, expect } from '@playwright/test'
 
 export const createOrganizationsPage = (page: Page) => {
   const gotoOrganizationPage = async () => {
-    await page.goto('http://localhost:3000/organizations')
+    await page.goto('http://localhost:3000/organizations', { waitUntil: 'load' })
     await page.getByRole('link', { name: 'New organization' }).click()
   }
 
@@ -15,7 +15,16 @@ export const createOrganizationsPage = (page: Page) => {
     await expect(page).not.toHaveURL('/organizations/new')
   }
 
+  const archiveOrganization = async (organizationTitle: string) => {
+    await page.goto('http://localhost:3000/organizations')
+    await page.getByRole('link', { name: `${organizationTitle}` }).click()
+    await page.getByRole('button', { name: 'Archive', exact: true }).nth(0).click()
+    await page.getByRole('button', { name: 'Archive', exact: true }).nth(1).click()
+    await expect(page).toHaveURL('/organizations')
+  }
+
   return {
     createOrganizationWithAddress,
+    archiveOrganization,
   }
 }

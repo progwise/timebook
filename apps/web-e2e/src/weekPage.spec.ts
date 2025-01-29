@@ -4,12 +4,16 @@
 import { expect } from '@playwright/test'
 import { format } from 'date-fns'
 
+import { PrismaClient } from '@progwise/timebook-prisma'
+
 import { test } from './pageObjects/testFixtures'
+
+const prisma = new PrismaClient()
 
 test.describe('week page', () => {
   test.beforeEach(async ({ loginPage, projectsPage }) => {
     await loginPage.login()
-    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
+    await projectsPage.createProjectWithTask('E2E Project', 'E2E Task')
   })
 
   test('displays the current month and changes week', async ({ page }) => {
@@ -29,7 +33,7 @@ test.describe('week page', () => {
   test('enters work hours', async ({ page }) => {
     await page.goto('http://localhost:3000/week')
 
-    const taskRow = page.getByRole('row', { name: 'Test Task' })
+    const taskRow = page.getByRole('row', { name: 'E2E Task' })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
@@ -39,8 +43,7 @@ test.describe('week page', () => {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
-      // eslint-disable-next-line playwright/no-wait-for-timeout
-      await page.waitForTimeout(500)
+      await expect(textbox).toHaveValue('1:00')
     }
 
     await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
@@ -60,5 +63,11 @@ test.describe('week page', () => {
 
     const indicator = page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
+  })
+
+  test.afterAll(async () => {
+    await prisma.lockedMonth.deleteMany({ where: { project: { title: 'E2E Project' } } })
+    await prisma.workHour.deleteMany({ where: { task: { title: 'E2E Task' } } })
+    await prisma.project.deleteMany({ where: { title: 'E2E Project' } })
   })
 })

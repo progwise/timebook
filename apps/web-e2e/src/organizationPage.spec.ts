@@ -6,17 +6,17 @@ import { test } from './pageObjects/testFixtures'
 test.describe('organization page', () => {
   test.beforeEach(async ({ loginPage, organizationPage }) => {
     await loginPage.login()
-    await organizationPage.createOrganizationWithAddress('Test Organization', 'Test Address')
+    await organizationPage.createOrganizationWithAddress('E2E Organization', 'E2E Address')
   })
 
-  test('creates a new organization with address and then archive the organization', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Organization Test Organization' })).toBeVisible()
+  test.afterEach(async ({ organizationPage }) => {
+    await organizationPage.archiveOrganization('E2E Organization')
+  })
+
+  test('creates a new organization with address', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Organization E2E Organization' })).toBeVisible()
     // Check Subscription badge
     await expect(page.getByText('Free')).toBeVisible()
-    await expect(page.getByPlaceholder('Enter an organization address')).toHaveValue('Test Address')
-    await page.getByRole('button', { name: 'Archive', exact: true }).nth(0).click()
-    // Confirm archiving on the dialog
-    await page.getByRole('button', { name: 'Archive', exact: true }).nth(1).click()
-    await expect(page).toHaveURL('/organizations')
+    await expect(page.getByPlaceholder('Enter an organization address')).toHaveValue('E2E Address')
   })
 })

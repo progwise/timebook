@@ -33,6 +33,7 @@ export const createLoginPage = (page: Page) => {
   const deleteAccount = async () => {
     await prisma.workHour.deleteMany({ where: { user: { email } } })
     await prisma.user.delete({ where: { email } })
+    await prisma.organization.deleteMany({ where: { title: 'E2E Organization' } })
   }
 
   return {

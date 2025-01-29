@@ -8,19 +8,16 @@ test.describe('project page', () => {
   test.beforeEach(async ({ loginPage, projectsPage }) => {
     await loginPage.login()
     const today = new Date()
-    await projectsPage.createProjectWithTask('Test Project', 'Test Task', today, addYears(today, 1))
+    await projectsPage.createProjectWithTask('E2E Project', 'E2E Task', today, addYears(today, 1))
   })
 
-  test('creates a new project and task and then delete the project', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Project Test Project', exact: true })).toBeVisible()
-    await expect(page.getByRole('cell', { name: 'Test Task', exact: true })).toBeVisible()
-    await page.getByRole('button', { name: 'Delete', exact: true }).nth(0).click()
-    // Confirm the deletion on the dialog
-    await page.getByRole('button', { name: 'Delete', exact: true }).nth(1).click()
-    await expect(page).toHaveURL('/projects')
+  test.afterEach(async ({ projectsPage }) => {
+    await projectsPage.deleteProject('E2E Project')
   })
 
-  test('opens the members tab', async ({ page }) => {
+  test('creates a new project with task and opens members tab', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Project E2E Project', exact: true })).toBeVisible()
+    await expect(page.getByRole('cell', { name: 'E2E Task', exact: true })).toBeVisible()
     await page.getByRole('tab', { name: 'Members', exact: true }).click()
     await expect(page.getByText('Admin')).toBeVisible()
   })

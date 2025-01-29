@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 
 export const createProjectsPage = (page: Page) => {
   const gotoProjectPage = async () => {
-    await page.goto('http://localhost:3000/projects')
+    await page.goto('http://localhost:3000/projects', { waitUntil: 'load' })
     await page.getByRole('button', { name: 'New Project' }).click()
   }
 
@@ -28,7 +28,22 @@ export const createProjectsPage = (page: Page) => {
     await expect(page).not.toHaveURL('/projects/new')
   }
 
+  const deleteProject = async (projectTitle: string) => {
+    await page.goto('http://localhost:3000/projects')
+    await page.getByRole('link', { name: `${projectTitle}` }).click()
+    await page
+      .getByRole('button', { name: /^(Delete|Archive)$/, exact: true })
+      .nth(0)
+      .click()
+    await page
+      .getByRole('button', { name: /^(Delete|Archive)$/, exact: true })
+      .nth(1)
+      .click()
+    await expect(page).toHaveURL('/projects')
+  }
+
   return {
     createProjectWithTask,
+    deleteProject,
   }
 }

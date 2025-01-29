@@ -11,7 +11,7 @@ test.describe('top navigation', () => {
   test('navigates to week page', async ({ page }) => {
     const weekButton = page.getByRole('link', { name: 'Week' })
     await weekButton.click()
-    await expect(page).toHaveURL('/week')
+    await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
   test('navigates to organizations page', async ({ page }) => {
     const organizationButton = page.getByRole('link', { name: 'Organization' })
