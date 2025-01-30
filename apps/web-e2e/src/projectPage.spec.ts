@@ -2,7 +2,11 @@
 import { expect } from '@playwright/test'
 import { addYears } from 'date-fns'
 
+import { PrismaClient } from '@progwise/timebook-prisma'
+
 import { test } from './pageObjects/testFixtures'
+
+const prisma = new PrismaClient()
 
 test.describe('project page', () => {
   test.beforeEach(async ({ loginPage, projectsPage }) => {
@@ -20,5 +24,9 @@ test.describe('project page', () => {
     await expect(page.getByRole('cell', { name: 'E2E Task', exact: true })).toBeVisible()
     await page.getByRole('tab', { name: 'Members', exact: true }).click()
     await expect(page.getByText('Admin')).toBeVisible()
+  })
+
+  test.afterAll(async () => {
+    await prisma.project.deleteMany({ where: { title: 'E2E Project' } })
   })
 })

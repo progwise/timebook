@@ -1,7 +1,11 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { expect } from '@playwright/test'
 
+import { PrismaClient } from '@progwise/timebook-prisma'
+
 import { test } from './pageObjects/testFixtures'
+
+const prisma = new PrismaClient()
 
 test.describe('organization page', () => {
   test.beforeEach(async ({ loginPage, organizationPage }) => {
@@ -18,5 +22,9 @@ test.describe('organization page', () => {
     // Check Subscription badge
     await expect(page.getByText('Free')).toBeVisible()
     await expect(page.getByPlaceholder('Enter an organization address')).toHaveValue('E2E Address')
+  })
+
+  test.afterAll(async () => {
+    await prisma.organization.deleteMany({ where: { title: 'E2E Organization' } })
   })
 })
