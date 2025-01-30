@@ -14,13 +14,13 @@ test.describe('top navigation', () => {
     await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
   test('navigates to organizations page', async ({ page }) => {
-    const organizationButton = page.getByRole('link', { name: 'Organization' })
+    const organizationButton = page.getByRole('link', { name: 'Organization' }).nth(0)
     await organizationButton.click()
     await expect(page).toHaveURL('/organizations')
   })
 
   test('navigates to projects page', async ({ page }) => {
-    const projectsButton = page.getByRole('link', { name: 'Projects' })
+    const projectsButton = page.getByRole('link', { name: 'Projects' }).nth(0)
     await projectsButton.click()
     await expect(page).toHaveURL('/projects')
   })
