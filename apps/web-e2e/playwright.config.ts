@@ -3,6 +3,8 @@ import type { PlaywrightTestConfig } from '@playwright/test'
 import { devices } from '@playwright/test'
 import { config as dotenvConfig } from 'dotenv'
 
+import './customReporter'
+
 dotenvConfig({ path: '../../.env' })
 
 const config: PlaywrightTestConfig = {
@@ -25,7 +27,9 @@ const config: PlaywrightTestConfig = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'github' : 'html',
+  reporter: process.env.CI ? [['github'], ['./customReporter']] : 'html',
+  /* Whether to report slow test files. Pass null to disable this feature. */
+  reportSlowTests: process.env.CI ? null : undefined,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
