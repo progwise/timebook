@@ -1168,6 +1168,7 @@ export type MyProjectsMembersQuery = {
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
   tasks: Array<{
@@ -1226,6 +1227,7 @@ export type WeekGridFooterFragment = {
 export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
   members: Array<{ __typename?: 'User'; id: string }>
@@ -1732,6 +1734,7 @@ export type WeekGridQuery = {
   projects: Array<{
     __typename?: 'Project'
     id: string
+    canModify: boolean
     title: string
     isArchived: boolean
     tasks: Array<{

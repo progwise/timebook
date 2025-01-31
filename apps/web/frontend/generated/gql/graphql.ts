@@ -1220,6 +1220,7 @@ export type WeekGridFooterFragment = {
 export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
   members: Array<{ __typename?: 'User'; id: string }>
@@ -3503,6 +3504,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
@@ -4261,6 +4263,7 @@ export const WeekGridProjectFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
@@ -8149,6 +8152,7 @@ export const WeekGridDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
