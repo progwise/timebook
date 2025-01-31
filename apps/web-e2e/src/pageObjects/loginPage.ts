@@ -26,7 +26,7 @@ export const createLoginPage = (page: Page) => {
       },
     })
 
-    await page.goto(signInUrl, { waitUntil: 'domcontentloaded' })
+    await page.goto(signInUrl)
     await page.waitForURL('http://localhost:3000/week')
   }
 
