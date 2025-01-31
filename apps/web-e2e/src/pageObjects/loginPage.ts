@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test'
+import { expect, Page } from '@playwright/test'
 import { createHash, randomBytes } from 'crypto'
 import { addYears } from 'date-fns'
 
@@ -28,6 +28,7 @@ export const createLoginPage = (page: Page) => {
 
     await page.goto(signInUrl)
     await page.waitForURL('http://localhost:3000/week')
+    expect(page.url()).toBe('http://localhost:3000/week')
   }
 
   const deleteAccount = async () => {
