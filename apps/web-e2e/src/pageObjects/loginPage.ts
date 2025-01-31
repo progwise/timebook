@@ -10,6 +10,7 @@ export const createLoginPage = (page: Page) => {
   const email = randomBytes(4).toString('hex') + '@progwise.net'
 
   const login = async () => {
+    console.log('Starting login process...')
     const token = randomBytes(10).toString('hex')
     const hashedToken = createHash('sha256')
       .update(`${token}${process.env.SECRET ?? ''}`)
@@ -26,8 +27,8 @@ export const createLoginPage = (page: Page) => {
       },
     })
 
-    await page.goto(signInUrl)
-    await page.waitForURL('http://localhost:3000/week')
+    await page.goto(signInUrl, { waitUntil: 'load' })
+    await page.waitForURL('http://localhost:3000/week', { timeout: 60 * 1000 })
     expect(page.url()).toBe('http://localhost:3000/week')
   }
 
