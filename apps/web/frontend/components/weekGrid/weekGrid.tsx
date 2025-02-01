@@ -1,8 +1,8 @@
 import { differenceInDays, isWithinInterval } from 'date-fns'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { isSessionUserAdminOfProject, getSessionUserId } from '../projectUtils'
 import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
 import { WeekGridFooterRow } from './weekGridFooterRow'
 import { WeekGridProjectRowGroup } from './weekGridProjectRowGroup'
@@ -49,18 +49,17 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const sessionUser = useSession()
-  const sessionUserId = sessionUser.data?.user.id
-  const allWorkHours = projects.flatMap((project) =>
-    project.tasks.flatMap((task) =>
-      task.footerTotal.filter((workHour) => {
-        const isSessionUserAdminOfProject = task.project.members.some(
-          (member) => member.id === sessionUserId && task.project.canModify,
-        )
-        return isSessionUserAdminOfProject || workHour.user.id === sessionUserId
-      }),
-    ),
-  )
+  const sessionUserId = getSessionUserId()
+  const allWorkHours = sessionUserId
+    ? projects.flatMap((project) =>
+        project.tasks.flatMap((task) =>
+          task.footerTotal.filter((workHour) => {
+            const isAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
+            return isAdmin || workHour.user.id === sessionUserId
+          }),
+        ),
+      )
+    : []
   const allTasks = projects.flatMap((project) => project.tasks)
   const numberOfRows =
     projects.length === 0
@@ -69,10 +68,8 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
         projects.length +
         // eslint-disable-next-line unicorn/no-array-reduce
         allTasks.reduce((accumulator, task) => {
-          const isSessionUserAdminOfProject = task.project.members.some(
-            (member) => member.id === sessionUserId && task.project.canModify,
-          )
-          const projectMembers = isSessionUserAdminOfProject
+          const isAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
+          const projectMembers = isAdmin
             ? task.project.members.filter((member) => userIds.includes(member.id))
             : task.project.members.filter((member) => member.id === sessionUserId)
           return accumulator + (userIds.length > 1 ? projectMembers.length : 1)

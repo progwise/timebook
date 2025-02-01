@@ -1251,7 +1251,7 @@ export type WorkHourUpdateMutation = {
 
 export type WeekGridTaskRowFragment = ({
   __typename?: 'Task'
-  project: { __typename?: 'Project'; canModify: boolean }
+  project: { __typename?: 'Project'; canModify: boolean; members: Array<{ __typename?: 'User'; id: string }> }
 } & {
   ' $fragmentRefs'?: {
     WeekGridTaskRowSingleUserFragment: WeekGridTaskRowSingleUserFragment
@@ -3217,7 +3217,17 @@ export const WeekGridTaskRowFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -3854,7 +3864,17 @@ export const WeekGridProjectRowGroupFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -4230,7 +4250,17 @@ export const WeekGridProjectFragmentDoc = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -8138,7 +8168,17 @@ export const WeekGridDocument = {
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'canModify' } }],
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
             },
           },
         ],
