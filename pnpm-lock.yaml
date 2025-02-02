@@ -302,7 +302,7 @@ importers:
   apps/web-e2e:
     dependencies:
       '@playwright/test':
-        specifier: ^1.49.1
+        specifier: ^1.28.1
         version: 1.49.1
       date-fns:
         specifier: ^4.1.0
