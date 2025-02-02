@@ -1,18 +1,35 @@
 /* eslint-disable testing-library/no-await-sync-query */
 
 /* eslint-disable testing-library/prefer-screen-queries */
-import { expect } from '@playwright/test'
+import { expect, BrowserContext, Page } from '@playwright/test'
 import { format } from 'date-fns'
 
+import { createLoginPage } from './pageObjects/loginPage'
+import { createProjectsPage } from './pageObjects/projectsPage'
 import { test } from './pageObjects/testFixtures'
 
-test.describe('week page', () => {
-  test.beforeEach(async ({ loginPage, projectsPage }) => {
-    await loginPage.login()
-    await projectsPage.createProjectWithTask('Test Project', 'Test Task')
-  })
+test.describe.configure({ mode: 'serial' })
 
-  test('displays the current month and changes week', async ({ page }) => {
+let context: BrowserContext
+let page: Page
+
+test.beforeAll(async ({ browser }) => {
+  test.setTimeout(60 * 1000)
+  context = await browser.newContext()
+  page = await context.newPage()
+  const loginPage = createLoginPage(page)
+  const projectsPage = createProjectsPage(page)
+  await loginPage.login()
+  await projectsPage.createProjectWithTask('E2E Project', 'E2E Task')
+})
+
+test.afterAll(async () => {
+  await page.close()
+  await context.close()
+})
+
+test.describe('week page', () => {
+  test('displays the current month and changes week', async () => {
     const currentMonthString = format(new Date(), 'MMMM')
     await page.goto('http://localhost:3000/week')
     const header = page.getByRole('heading', { name: currentMonthString }).nth(0)
@@ -26,10 +43,10 @@ test.describe('week page', () => {
     await expect(page).toHaveURL(/\/week(\?.*)?$/)
   })
 
-  test('enters work hours', async ({ page }) => {
+  test('enters work hours', async () => {
     await page.goto('http://localhost:3000/week')
 
-    const taskRow = page.getByRole('row', { name: 'Test Task' })
+    const taskRow = page.getByRole('row', { name: 'E2E Task' })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
@@ -46,7 +63,7 @@ test.describe('week page', () => {
     await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
 
-  test('enters a comment', async ({ page }) => {
+  test('enters a comment', async () => {
     await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Comments' }).click()
