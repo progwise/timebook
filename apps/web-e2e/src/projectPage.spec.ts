@@ -28,13 +28,17 @@ test.afterAll(async () => {
 })
 
 test.describe('project page', () => {
-  test('creates a new project and task and then delete the project', async () => {
+  test('creates a new project and task', async () => {
     await expect(page.getByRole('heading', { name: 'Project E2E Project', exact: true })).toBeVisible()
     await expect(page.getByRole('cell', { name: 'E2E Task', exact: true })).toBeVisible()
-    // Open members tab
+  })
+
+  test('opens the members tab', async () => {
     await page.getByRole('tab', { name: 'Members', exact: true }).click()
     await expect(page.getByText('Admin')).toBeVisible()
-    // Delete the project
+  })
+
+  test('deletes the project', async () => {
     await page.getByRole('button', { name: 'Delete', exact: true }).nth(0).click()
     // Confirm the deletion on the dialog
     await page.getByRole('button', { name: 'Delete', exact: true }).nth(1).click()

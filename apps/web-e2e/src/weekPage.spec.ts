@@ -29,15 +29,23 @@ test.afterAll(async () => {
 })
 
 test.describe('week page', () => {
-  test('displays the current month and changes week', async () => {
+  test('displays the current month', async () => {
     const currentMonthString = format(new Date(), 'MMMM')
     await page.goto('http://localhost:3000/week')
     const header = page.getByRole('heading', { name: currentMonthString }).nth(0)
+
     await expect(header).toBeVisible()
+  })
+
+  test('changes to the next week', async () => {
+    await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Next week' }).click()
     await expect(page).not.toHaveURL('/week')
+  })
 
+  test('changes to the previous week', async () => {
+    await page.goto('http://localhost:3000/week')
     await page.getByRole('button', { name: 'Previous week' }).click()
 
     await expect(page).toHaveURL(/\/week(\?.*)?$/)
@@ -65,7 +73,6 @@ test.describe('week page', () => {
 
   test('enters a comment', async () => {
     await page.goto('http://localhost:3000/week')
-
     await page.getByRole('button', { name: 'Comments' }).click()
 
     const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
