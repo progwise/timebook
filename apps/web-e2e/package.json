@@ -6,7 +6,7 @@
     "e2e-tests": "playwright test"
   },
   "dependencies": {
-    "@playwright/test": "^1.28.1",
+    "@playwright/test": "^1.50.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7"
   },
