@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://timebookdbuser:Test123@localhost:5432/timebookdb?schema=public
-      SECRET: secr3t
+      SECRET: ${{ secrets.SECRET }}
       NEXTAUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v3
