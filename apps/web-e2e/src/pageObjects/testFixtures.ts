@@ -1,11 +1,13 @@
 import { test as base } from '@playwright/test'
 
 import { createLoginPage } from './loginPage'
+import { createOrganizationPage } from './organizationsPage'
 import { createProjectsPage } from './projectsPage'
 
 type MyFixtures = {
   loginPage: ReturnType<typeof createLoginPage>
   projectsPage: ReturnType<typeof createProjectsPage>
+  organizationPage: ReturnType<typeof createOrganizationPage>
 }
 
 export const test = base.extend<MyFixtures>({
@@ -20,5 +22,10 @@ export const test = base.extend<MyFixtures>({
     const projectsPage = createProjectsPage(page)
 
     await use(projectsPage)
+  },
+  organizationPage: async ({ page }, use) => {
+    const organizationPage = createOrganizationPage(page)
+
+    await use(organizationPage)
   },
 })

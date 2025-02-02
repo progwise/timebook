@@ -41,14 +41,14 @@ test.describe('week page', () => {
     await page.goto('http://localhost:3000/week')
 
     await page.getByRole('button', { name: 'Next week' }).click()
-    await expect(page).not.toHaveURL('/week')
+    await expect(page).toHaveURL(/\/week\/\d{4}-\d{2}-\d{2}\?userId=\w+/)
   })
 
   test('changes to the previous week', async () => {
     await page.goto('http://localhost:3000/week')
     await page.getByRole('button', { name: 'Previous week' }).click()
 
-    await expect(page).toHaveURL(/\/week(\?.*)?$/)
+    await expect(page).toHaveURL(/\/week\/\d{4}-\d{2}-\d{2}\?userId=\w+/)
   })
 
   test('enters work hours', async () => {
