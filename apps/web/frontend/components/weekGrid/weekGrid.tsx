@@ -10,6 +10,9 @@ import { WeekGridProjectRowGroup } from './weekGridProjectRowGroup'
 export const WeekGridProjectFragment = graphql(`
   fragment WeekGridProject on Project {
     id
+    members {
+      id
+    }
     tasks {
       footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
         ...WeekGridFooter
@@ -50,8 +53,10 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
   const sessionUser = getSessionUser()
+  const filteredProjects = projects.filter((project) => project.members.some((member) => userIds.includes(member.id)))
+
   const allWorkHours = sessionUser
-    ? projects.flatMap((project) =>
+    ? filteredProjects.flatMap((project) =>
         project.tasks.flatMap((task) =>
           task.footerTotal.filter((workHour) => {
             const isAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
@@ -63,12 +68,13 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
         ),
       )
     : []
-  const allTasks = projects.flatMap((project) => project.tasks)
+
+  const allTasks = filteredProjects.flatMap((project) => project.tasks)
   const numberOfRows =
-    projects.length === 0
+    filteredProjects.length === 0
       ? 3 // header row + one empty row + footer row
       : 1 +
-        projects.length +
+        filteredProjects.length +
         // eslint-disable-next-line unicorn/no-array-reduce
         allTasks.reduce((accumulator, task) => {
           const isAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
@@ -107,7 +113,7 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
       )}
 
       <WeekGridDateHeaderRow interval={interval} />
-      {projects.map((project) => (
+      {filteredProjects.map((project) => (
         <WeekGridProjectRowGroup
           interval={interval}
           project={project}

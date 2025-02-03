@@ -1196,6 +1196,7 @@ export type MyProjectsMembersQuery = {
 export type WeekGridProjectFragment = ({
   __typename?: 'Project'
   id: string
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
     footerTotal: Array<
@@ -3893,6 +3894,14 @@ export const WeekGridProjectFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -8268,6 +8277,14 @@ export const WeekGridDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },

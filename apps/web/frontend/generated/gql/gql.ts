@@ -126,7 +126,7 @@ const documents = {
   '\n  fragment ProjectMember on User {\n    id\n    name\n    image\n  }\n': types.ProjectMemberFragmentDoc,
   '\n  query MyProjectsMembers {\n    myProjectsMembers {\n      ...ProjectMember\n    }\n    user {\n      id\n    }\n  }\n':
     types.MyProjectsMembersDocument,
-  '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n':
+  '\n  fragment WeekGridProject on Project {\n    id\n    members {\n      id\n    }\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n':
     types.WeekGridProjectFragmentDoc,
   '\n  fragment WeekGridFooter on WorkHourOfDay {\n    date\n    workHour {\n      duration\n    }\n  }\n':
     types.WeekGridFooterFragmentDoc,
@@ -567,8 +567,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n',
-): (typeof documents)['\n  fragment WeekGridProject on Project {\n    id\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n']
+  source: '\n  fragment WeekGridProject on Project {\n    id\n    members {\n      id\n    }\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n',
+): (typeof documents)['\n  fragment WeekGridProject on Project {\n    id\n    members {\n      id\n    }\n    tasks {\n      footerTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n        ...WeekGridFooter\n        user {\n          id\n        }\n        workHour {\n          duration\n        }\n      }\n      project {\n        canModify\n        members {\n          id\n        }\n      }\n    }\n    ...WeekGridProjectRowGroup\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

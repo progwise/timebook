@@ -1171,6 +1171,7 @@ export type WeekGridProjectFragment = {
   canModify: boolean
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -1215,7 +1216,6 @@ export type WeekGridProjectFragment = {
       workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
     }>
   }>
-  members: Array<{ __typename?: 'User'; id: string }>
 }
 
 export type WeekGridFooterFragment = {
@@ -1737,6 +1737,7 @@ export type WeekGridQuery = {
     canModify: boolean
     title: string
     isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string }>
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -1781,7 +1782,6 @@ export type WeekGridQuery = {
         workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
       }>
     }>
-    members: Array<{ __typename?: 'User'; id: string }>
   }>
 }
 
