@@ -1188,8 +1188,10 @@ export type SendInvoiceButtonFragment = {
 export type WeekGridProjectFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
     id: string
@@ -1234,7 +1236,6 @@ export type WeekGridProjectFragment = {
       workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
     }>
   }>
-  members: Array<{ __typename?: 'User'; id: string }>
 }
 
 export type WeekGridFooterFragment = {
@@ -1246,6 +1247,7 @@ export type WeekGridFooterFragment = {
 export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
   members: Array<{ __typename?: 'User'; id: string }>
@@ -1262,8 +1264,8 @@ export type WeekGridProjectRowGroupFragment = {
     }>
     project: {
       __typename?: 'Project'
-      id: string
       canModify: boolean
+      id: string
       isArchived: boolean
       members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
     }
@@ -1309,8 +1311,8 @@ export type WeekGridTaskRowFragment = {
   isLocked: boolean
   project: {
     __typename?: 'Project'
-    id: string
     canModify: boolean
+    id: string
     isArchived: boolean
     members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
@@ -1760,8 +1762,10 @@ export type WeekGridQuery = {
   projects: Array<{
     __typename?: 'Project'
     id: string
+    canModify: boolean
     title: string
     isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string }>
     tasks: Array<{
       __typename?: 'Task'
       id: string
@@ -1806,7 +1810,6 @@ export type WeekGridQuery = {
         workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
       }>
     }>
-    members: Array<{ __typename?: 'User'; id: string }>
   }>
 }
 

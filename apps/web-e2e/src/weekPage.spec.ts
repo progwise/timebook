@@ -1,64 +1,83 @@
-/* eslint-disable testing-library/no-await-sync-query */
-
 /* eslint-disable testing-library/prefer-screen-queries */
-import { expect } from '@playwright/test'
+import { expect, BrowserContext, Page } from '@playwright/test'
 import { format } from 'date-fns'
 
+import { createProjectsPage } from './pageObjects/createProjectPage'
+import { createLoginPage } from './pageObjects/loginPage'
 import { test } from './pageObjects/testFixtures'
 
+test.describe.configure({ mode: 'serial' })
+
+let context: BrowserContext
+let page: Page
+
+test.beforeAll(async ({ browser }) => {
+  test.setTimeout(60 * 1000)
+  context = await browser.newContext()
+  page = await context.newPage()
+  const loginPage = createLoginPage(page)
+  const projectsPage = createProjectsPage(page)
+  await loginPage.login()
+  await projectsPage.createProjectWithTask('E2E Project', 'E2E Task')
+})
+
+test.afterAll(async () => {
+  await page.close()
+  await context.close()
+})
+
 test.describe('week page', () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.login()
-  })
+  const baseUrl = 'http://localhost:3000/week'
+  const weekUrlPattern = /\/week\/\d{4}-\d{2}-\d{2}\?userId=\w+/
 
-  test('it should display the current month', async ({ page }) => {
+  test('displays the current month', async () => {
     const currentMonthString = format(new Date(), 'MMMM')
+    await page.goto(`${baseUrl}`)
+    const header = page.getByRole('heading', { name: currentMonthString }).nth(0)
 
-    await page.getByRole('link', { name: 'Week' }).click()
-    const header = page.getByRole('heading', { name: currentMonthString })
     await expect(header).toBeVisible()
   })
 
-  test('it should be possible to change the week', async ({ page }) => {
-    await page.getByRole('link', { name: 'Week' }).click()
+  test('changes to the next week', async () => {
+    await page.goto(`${baseUrl}`)
+
     await page.getByRole('button', { name: 'Next week' }).click()
-
-    await expect(page).not.toHaveURL('/week')
-
-    await page.getByRole('button', { name: 'Previous week' }).click()
-
-    await expect(page).toHaveURL(/\/week(\?.*)?$/)
+    await expect(page).toHaveURL(weekUrlPattern)
   })
 
-  test('it should be possible to enter work hours', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
+  test('changes to the previous week', async () => {
+    await page.goto(`${baseUrl}`)
+    await page.getByRole('button', { name: 'Previous week' }).click()
 
-    await page.getByRole('link', { name: 'Week' }).click()
+    await expect(page).toHaveURL(weekUrlPattern)
+  })
 
-    const taskRow = page.getByRole('row', { name: `Test Task` })
+  test('enters work hours', async () => {
+    test.setTimeout(60 * 1000)
+    await page.goto(`${baseUrl}`)
+
+    const taskRow = page.getByRole('row', { name: 'E2E Task' })
     await expect(taskRow).toBeVisible()
 
     let currentHours = 0
-
-    for (const textbox of await taskRow.getByRole('textbox', { name: 'duration' }).all()) {
+    const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
+    for (const textbox of textboxes) {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
       currentHours++
-
-      await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
+      await expect(textbox).toHaveValue('1:00')
     }
+
+    await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
 
-  test('it should be possible to enter a comment', async ({ page, projectsPage }) => {
-    await projectsPage.addProject('Test Project')
-    await projectsPage.addTask('Test Project', 'Test Task')
-
-    await page.getByRole('link', { name: 'Week' }).click()
-
+  test('enters a comment', async () => {
+    await page.goto(`${baseUrl}`)
     await page.getByRole('button', { name: 'Comments' }).click()
 
-    await page.getByRole('textbox', { name: 'comment' }).first().fill('a comment')
+    const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
+    await commentBox.fill('a comment')
+    await expect(commentBox).toHaveValue('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
 
