@@ -1,8 +1,8 @@
 import { test as base } from '@playwright/test'
 
+import { createOrganizationPage } from './createOrganizationPage'
+import { createProjectsPage } from './createProjectPage'
 import { createLoginPage } from './loginPage'
-import { createOrganizationPage } from './organizationsPage'
-import { createProjectsPage } from './projectsPage'
 
 type MyFixtures = {
   loginPage: ReturnType<typeof createLoginPage>

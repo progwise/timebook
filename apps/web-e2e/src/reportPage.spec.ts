@@ -1,8 +1,8 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { expect, BrowserContext, Page } from '@playwright/test'
 
+import { createProjectsPage } from './pageObjects/createProjectPage'
 import { createLoginPage } from './pageObjects/loginPage'
-import { createProjectsPage } from './pageObjects/projectsPage'
 import { test } from './pageObjects/testFixtures'
 
 test.describe.configure({ mode: 'serial' })

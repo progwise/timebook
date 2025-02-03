@@ -1,8 +1,8 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { expect, BrowserContext, Page } from '@playwright/test'
 
+import { createOrganizationPage } from './pageObjects/createOrganizationPage'
 import { createLoginPage } from './pageObjects/loginPage'
-import { createOrganizationPage } from './pageObjects/organizationsPage'
 import { test } from './pageObjects/testFixtures'
 
 test.describe.configure({ mode: 'serial' })
@@ -34,7 +34,7 @@ test.describe('organization page', () => {
 
   test('deletes the organization', async () => {
     await page.getByRole('button', { name: 'Archive', exact: true }).nth(0).click()
-    // Confirm the deletion on the dialog
+    // Confirm archiving on the dialog
     await page.getByRole('button', { name: 'Archive', exact: true }).nth(1).click()
     await expect(page).toHaveURL('/organizations')
   })

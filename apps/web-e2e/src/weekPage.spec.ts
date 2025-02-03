@@ -2,8 +2,8 @@
 import { expect, BrowserContext, Page } from '@playwright/test'
 import { format } from 'date-fns'
 
+import { createProjectsPage } from './pageObjects/createProjectPage'
 import { createLoginPage } from './pageObjects/loginPage'
-import { createProjectsPage } from './pageObjects/projectsPage'
 import { test } from './pageObjects/testFixtures'
 
 test.describe.configure({ mode: 'serial' })
