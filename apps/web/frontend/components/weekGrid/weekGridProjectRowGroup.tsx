@@ -1,16 +1,19 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FaAngleRight } from 'react-icons/fa6'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { isSessionUserAdminOfProject } from '../projectUtils'
 import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
   fragment WeekGridProjectRowGroup on Project {
     id
+    canModify
     title
     isArchived
     members {
@@ -49,9 +52,16 @@ export const WeekGridProjectRowGroup = ({
     defaultValue: false,
     initializeWithValue: false,
   })
-
+  const session = useSession()
+  const sessionUserId = session.data?.user.id
   const workHours = project.tasks.flatMap((task) =>
-    task.projectTotal.filter((workHour) => project.members.some((member) => member.id === workHour.user.id)),
+    task.projectTotal.filter((workHour) => {
+      const isSessionUserAdmin = sessionUserId && isSessionUserAdminOfProject(project, sessionUserId)
+      return (
+        (isSessionUserAdmin || workHour.user.id === sessionUserId) &&
+        project.members.some((member) => member.id === workHour.user.id)
+      )
+    }),
   )
   const projectDuration = workHours.reduce(
     (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
