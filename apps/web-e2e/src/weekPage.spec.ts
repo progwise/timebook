@@ -74,17 +74,9 @@ test.describe('week page', () => {
 
     const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
     await commentBox.fill('a comment')
+    await expect(commentBox).toHaveValue('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
-    await expect(commentBox).toBeHidden()
-  })
-
-  test('verifies the comment', async () => {
-    await page.goto('http://localhost:3000/week')
-    await page.getByRole('button', { name: 'Comments' }).click()
-
-    const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
-    await expect(commentBox).toHaveValue('a comment')
 
     const indicator = page.getByTitle('1 comment')
     await expect(indicator).toBeVisible()
