@@ -1,8 +1,8 @@
+import { useSession } from 'next-auth/react'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
-import { getSessionUser } from '../projectUtils'
 import { RoleButton } from '../roleButton'
 import { RoleLabel } from '../roleLabel'
 import { UserLabel } from '../userLabel'
@@ -37,7 +37,7 @@ interface ProjectMemberListProps {
 
 export const ProjectMemberList = (props: ProjectMemberListProps) => {
   const project = useFragment(ProjectMemberListProjectFragment, props.project)
-  const sessionUser = getSessionUser()
+  const session = useSession()
   const [{ fetching }, updateProjectMembership] = useMutation(ProjectMembershipUpdateMutationDocument)
 
   const handleUpdateProjectMembership = async (userId: string, projectRole: Role) => {
@@ -60,7 +60,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
               <RoleLabel role={user.projectRole} context="Project" />
             </td>
             <td className="w-px">
-              {user.id !== sessionUser.id && project.canModify && (
+              {user.id !== session.data?.user.id && project.canModify && (
                 <RoleButton
                   role={user.projectRole}
                   loading={fetching}
@@ -70,7 +70,7 @@ export const ProjectMemberList = (props: ProjectMemberListProps) => {
               )}
             </td>
             <td className="w-px">
-              {project.canModify && sessionUser.id !== user.id && (
+              {project.canModify && session.data?.user.id !== user.id && (
                 <RemoveUserFromProjectButton user={user} project={project} />
               )}
             </td>

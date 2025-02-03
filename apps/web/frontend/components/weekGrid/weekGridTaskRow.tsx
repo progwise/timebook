@@ -1,5 +1,7 @@
+import { useSession } from 'next-auth/react'
+
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { isSessionUserAdminOfProject, getSessionUser } from '../projectUtils'
+import { isSessionUserAdminOfProject } from '../projectUtils'
 import { WeekGridTaskRowAllUsers } from './weekGridTaskRowAllUsers'
 import { WeekGridTaskRowSingleUser } from './weekGridTaskRowSingleUser'
 
@@ -24,11 +26,12 @@ interface WeekGridTaskRowProps {
 
 export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, userIds }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const sessionUser = getSessionUser()
+  const session = useSession()
+  const sessionUserId = session.data?.user.id
 
-  const isSessionUserAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
+  const isSessionUserAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
 
-  const filteredUserIds = isSessionUserAdmin ? userIds : userIds.filter((userId) => userId === sessionUser.id)
+  const filteredUserIds = isSessionUserAdmin ? userIds : userIds.filter((userId) => userId === sessionUserId)
 
   return userIds.length === 1 ? (
     <WeekGridTaskRowSingleUser task={task} isDataOutdated={isDataOutdated} userIds={userIds} />
