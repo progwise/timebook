@@ -1,7 +1,7 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import { Page, expect } from '@playwright/test'
 
-export const createOrganizationsPage = (page: Page) => {
+export const createOrganizationPage = (page: Page) => {
   const gotoOrganizationPage = async () => {
     await page.goto('http://localhost:3000/organizations')
     await page.getByRole('link', { name: 'New organization' }).click()
