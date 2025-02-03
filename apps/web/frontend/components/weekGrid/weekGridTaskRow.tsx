@@ -1,5 +1,5 @@
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { isSessionUserAdminOfProject, getSessionUserId } from '../projectUtils'
+import { isSessionUserAdminOfProject, getSessionUser } from '../projectUtils'
 import { WeekGridTaskRowAllUsers } from './weekGridTaskRowAllUsers'
 import { WeekGridTaskRowSingleUser } from './weekGridTaskRowSingleUser'
 
@@ -24,11 +24,11 @@ interface WeekGridTaskRowProps {
 
 export const WeekGridTaskRow = ({ task: taskFragment, isDataOutdated = false, userIds }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowFragment, taskFragment)
-  const sessionUserId = getSessionUserId()
+  const sessionUser = getSessionUser()
 
-  const isSessionUserAdmin = sessionUserId ? isSessionUserAdminOfProject(task.project, sessionUserId) : false
+  const isSessionUserAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
 
-  const filteredUserIds = isSessionUserAdmin ? userIds : userIds.filter((userId) => userId === sessionUserId)
+  const filteredUserIds = isSessionUserAdmin ? userIds : userIds.filter((userId) => userId === sessionUser.id)
 
   return userIds.length === 1 ? (
     <WeekGridTaskRowSingleUser task={task} isDataOutdated={isDataOutdated} userIds={userIds} />

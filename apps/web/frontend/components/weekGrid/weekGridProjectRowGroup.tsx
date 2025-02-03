@@ -6,7 +6,7 @@ import { FaAngleRight } from 'react-icons/fa6'
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { isSessionUserAdminOfProject, getSessionUserId } from '../projectUtils'
+import { isSessionUserAdminOfProject, getSessionUser } from '../projectUtils'
 import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
@@ -51,12 +51,12 @@ export const WeekGridProjectRowGroup = ({
     defaultValue: false,
     initializeWithValue: false,
   })
-  const sessionUserId = getSessionUserId()
+  const sessionUser = getSessionUser()
   const workHours = project.tasks.flatMap((task) =>
     task.projectTotal.filter((workHour) => {
-      const isSessionUserAdmin = isSessionUserAdminOfProject(project, sessionUserId ?? '')
+      const isSessionUserAdmin = isSessionUserAdminOfProject(project, sessionUser.id ?? '')
       return (
-        (isSessionUserAdmin || workHour.user.id === sessionUserId) &&
+        (isSessionUserAdmin || workHour.user.id === sessionUser.id) &&
         project.members.some((member) => member.id === workHour.user.id)
       )
     }),

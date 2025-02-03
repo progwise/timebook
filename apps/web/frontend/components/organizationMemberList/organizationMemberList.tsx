@@ -1,8 +1,8 @@
-import { useSession } from 'next-auth/react'
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
 import { Role } from '../../generated/gql/graphql'
+import { getSessionUser } from '../projectUtils'
 import { RoleButton } from '../roleButton'
 import { RoleLabel } from '../roleLabel'
 import { UserLabel } from '../userLabel'
@@ -41,7 +41,7 @@ interface OrganizationMemberListProps {
 
 export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
   const organization = useFragment(OrganizationMemberListOrganizationFragment, props.organization)
-  const session = useSession()
+  const sessionUser = getSessionUser()
   const [{ fetching }, updateOrganizationMembership] = useMutation(OrganizationMembershipUpdateMutationDocument)
 
   const handleUpdateOrganizationMembership = async (userId: string, organizationRole: Role) => {
@@ -64,7 +64,7 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
               <RoleLabel role={user.organizationRole} context="Organization" />
             </td>
             <td className="w-px">
-              {user.id !== session.data?.user.id && organization.canModify && (
+              {user.id !== sessionUser.id && organization.canModify && (
                 <RoleButton
                   role={user.organizationRole}
                   loading={fetching}
@@ -74,7 +74,7 @@ export const OrganizationMemberList = (props: OrganizationMemberListProps) => {
               )}
             </td>
             <td className="w-px">
-              {session.data?.user.id !== user.id && organization.canModify && (
+              {sessionUser.id !== user.id && organization.canModify && (
                 <RemoveUserFromOrganizationButton user={user} organization={organization} />
               )}
             </td>

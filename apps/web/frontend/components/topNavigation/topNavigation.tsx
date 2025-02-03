@@ -1,6 +1,6 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { parseISO } from 'date-fns'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useRef } from 'react'
@@ -10,6 +10,7 @@ import { useQuery } from 'urql'
 
 import { graphql } from '../../generated/gql'
 import { LiveDuration } from '../liveDuration/liveDuration'
+import { getSessionUser } from '../projectUtils'
 import { TrackingButtons } from '../trackingButtons/trackingButtons'
 import { TopNavigationLink } from './topNavigationLink'
 import { TopNavigationMenuLink } from './topNavigationMenuLink'
@@ -32,7 +33,7 @@ const CurrentTrackingQueryDocument = graphql(`
 export const TopNavigation = (): JSX.Element => {
   const currentTrackingContext = useMemo(() => ({ additionalTypenames: ['Tracking', 'Task', 'Project'] }), [])
   const [{ data }] = useQuery({ query: CurrentTrackingQueryDocument, context: currentTrackingContext })
-  const session = useSession()
+  const sessionUser = getSessionUser()
   const drawerCheckboxReference = useRef<HTMLInputElement>(null)
 
   const { value: theme, set: setTheme } = useLocalStorageValue<'system' | 'light' | 'dark'>('theme', {
@@ -234,13 +235,13 @@ export const TopNavigation = (): JSX.Element => {
         {/* prettier-ignore */}
         <div className="dropdown dropdown-end leading-none dropdown-hover">
           <label tabIndex={0} className="avatar btn btn-circle btn-ghost">
-            {session.data?.user.image && (
+            {sessionUser.image && (
               <Image
                 className="rounded-full"
                 width={48}
                 height={48}
-                src={session.data?.user.image}
-                alt={session.data?.user.name ?? 'Profile picture'}
+                src={sessionUser.image}
+                alt={sessionUser.name ?? 'Profile picture'}
               />
             )}
           </label>
@@ -254,7 +255,7 @@ export const TopNavigation = (): JSX.Element => {
             </a></li>
           </ul>
         </div>
-        {session.status !== 'authenticated' && (
+        {sessionUser.status !== 'authenticated' && (
           <button className="btn btn-primary normal-case" onClick={() => signIn('github')}>
             Sign in
           </button>

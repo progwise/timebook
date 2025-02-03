@@ -2,7 +2,7 @@ import { differenceInDays, isWithinInterval } from 'date-fns'
 import Link from 'next/link'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
-import { isSessionUserAdminOfProject, getSessionUserId } from '../projectUtils'
+import { isSessionUserAdminOfProject, getSessionUser } from '../projectUtils'
 import { WeekGridDateHeaderRow } from './weekGridDateHeaderRow'
 import { WeekGridFooterRow } from './weekGridFooterRow'
 import { WeekGridProjectRowGroup } from './weekGridProjectRowGroup'
@@ -49,14 +49,14 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
   const projects = useFragment(WeekGridProjectFragment, tableData)
   const interval = { start: startDate, end: endDate }
   const numberOfDays = differenceInDays(endDate, startDate) + 1
-  const sessionUserId = getSessionUserId()
-  const allWorkHours = sessionUserId
+  const sessionUser = getSessionUser()
+  const allWorkHours = sessionUser
     ? projects.flatMap((project) =>
         project.tasks.flatMap((task) =>
           task.footerTotal.filter((workHour) => {
-            const isAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
+            const isAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
             return (
-              (isAdmin || workHour.user.id === sessionUserId) &&
+              (isAdmin || workHour.user.id === sessionUser.id) &&
               task.project.members.some((member) => member.id === workHour.user.id)
             )
           }),
@@ -71,10 +71,10 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
         projects.length +
         // eslint-disable-next-line unicorn/no-array-reduce
         allTasks.reduce((accumulator, task) => {
-          const isAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
+          const isAdmin = sessionUser && isSessionUserAdminOfProject(task.project, sessionUser.id ?? '')
           const projectMembers = isAdmin
             ? task.project.members.filter((member) => userIds.includes(member.id))
-            : task.project.members.filter((member) => member.id === sessionUserId)
+            : task.project.members.filter((member) => member.id === sessionUser.id)
           return accumulator + (userIds.length > 1 ? projectMembers.length : 1)
         }, 0) +
         1 // header row + project rows + task rows + footer row
