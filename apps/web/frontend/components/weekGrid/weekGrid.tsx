@@ -55,7 +55,10 @@ export const WeekGrid: React.FC<WeekGridProps> = ({
         project.tasks.flatMap((task) =>
           task.footerTotal.filter((workHour) => {
             const isAdmin = sessionUserId && isSessionUserAdminOfProject(task.project, sessionUserId)
-            return isAdmin || workHour.user.id === sessionUserId
+            return (
+              (isAdmin || workHour.user.id === sessionUserId) &&
+              task.project.members.some((member) => member.id === workHour.user.id)
+            )
           }),
         ),
       )

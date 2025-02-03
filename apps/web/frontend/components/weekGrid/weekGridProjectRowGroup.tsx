@@ -55,7 +55,10 @@ export const WeekGridProjectRowGroup = ({
   const workHours = project.tasks.flatMap((task) =>
     task.projectTotal.filter((workHour) => {
       const isSessionUserAdmin = isSessionUserAdminOfProject(project, sessionUserId ?? '')
-      return isSessionUserAdmin || workHour.user.id === sessionUserId
+      return (
+        (isSessionUserAdmin || workHour.user.id === sessionUserId) &&
+        project.members.some((member) => member.id === workHour.user.id)
+      )
     }),
   )
   const projectDuration = workHours.reduce(

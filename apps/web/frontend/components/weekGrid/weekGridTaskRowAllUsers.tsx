@@ -57,7 +57,7 @@ export const WeekGridTaskRowAllUsers = ({
 
   const calculateMemberDuration = (userId: string) =>
     task.taskTotal
-      .filter((workHour) => workHour.user.id === userId)
+      .filter((workHour) => workHour.user.id === userId && task.project.members.some((member) => member.id === userId))
       .reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
   return task.project.members.map((member) => {
@@ -81,7 +81,10 @@ export const WeekGridTaskRowAllUsers = ({
         </div>
         {DAYS_OF_WEEK.map((day) => {
           const workHour = task.taskTotal.find(
-            (hour) => new Date(hour.date).getDay() === day && hour.user.id === member.id,
+            (hour) =>
+              new Date(hour.date).getDay() === day &&
+              hour.user.id === member.id &&
+              task.project.members.some((member) => member.id === hour.user.id),
           )
           return workHour ? (
             <WeekGridTaskDayCell
