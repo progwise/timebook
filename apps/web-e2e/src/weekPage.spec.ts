@@ -51,22 +51,29 @@ test.describe('week page', () => {
     await expect(page).toHaveURL(/\/week\/\d{4}-\d{2}-\d{2}\?userId=\w+/)
   })
 
-  test('enters work hours', async () => {
+  test('fills work hours', async () => {
     await page.goto('http://localhost:3000/week')
 
     const taskRow = page.getByRole('row', { name: 'E2E Task' })
     await expect(taskRow).toBeVisible()
 
-    let currentHours = 0
-
     const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
     for (const textbox of textboxes) {
       await textbox.fill('1:00')
       await page.keyboard.press('Tab')
-      currentHours++
       // eslint-disable-next-line playwright/no-wait-for-timeout
       await page.waitForTimeout(500)
     }
+  })
+
+  test('verifies total work hours', async () => {
+    await page.goto('http://localhost:3000/week')
+
+    const taskRow = page.getByRole('row', { name: 'E2E Task' })
+    await expect(taskRow).toBeVisible()
+
+    const textboxes = await taskRow.getByRole('textbox', { name: 'duration' }).all()
+    const currentHours = textboxes.length
 
     await expect(taskRow.getByText(`${currentHours}:00`)).toBeVisible()
   })
@@ -79,7 +86,13 @@ test.describe('week page', () => {
     await commentBox.fill('a comment')
 
     await page.getByRole('button', { name: 'Close', exact: true }).click()
+  })
 
+  test('verifies the comment', async () => {
+    await page.goto('http://localhost:3000/week')
+    await page.getByRole('button', { name: 'Comments' }).click()
+
+    const commentBox = page.getByRole('textbox', { name: 'comment' }).first()
     await expect(commentBox).toHaveValue('a comment')
 
     const indicator = page.getByTitle('1 comment')
