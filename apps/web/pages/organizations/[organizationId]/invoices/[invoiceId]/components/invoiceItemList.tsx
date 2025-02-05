@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from 'urql'
+import { useMutation } from 'urql'
 import { z } from 'zod'
 
 import { InputField } from '@progwise/timebook-ui'
@@ -9,9 +9,11 @@ import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
+import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
+import { InvoiceItemListRow } from './invoiceItemListRow'
 
-const InvoiceListInvoiceFragment = graphql(`
-  fragment InvoiceListInvoice on Invoice {
+const InvoiceItemListInvoiceFragment = graphql(`
+  fragment InvoiceItemListInvoice on Invoice {
     id
     invoiceWorkFrom
     invoiceWorkUntil
@@ -26,21 +28,19 @@ const InvoiceListInvoiceFragment = graphql(`
         }
       }
     }
-  }
-`)
-
-const InvoiceItemsListInvoiceFragment = graphql(`
-  fragment InvoiceItemsListInvoice on InvoiceItem {
-    id
-    duration
-    hourlyRate
-    task {
+    invoiceItems {
       id
-      title
-      project {
+      duration
+      hourlyRate
+      task {
         id
         title
+        project {
+          id
+          title
+        }
       }
+      ...InvoiceItemListRow
     }
   }
 `)
@@ -49,26 +49,6 @@ const InvoiceItemCreateMutationDocument = graphql(`
   mutation invoiceItemCreate($data: InvoiceItemInput!) {
     invoiceItemCreate(data: $data) {
       id
-    }
-  }
-`)
-
-const InvoiceItemUpdateMutationDocument = graphql(`
-  mutation invoiceItemUpdate($id: ID!, $data: InvoiceItemInput!) {
-    invoiceItemUpdate(id: $id, data: $data) {
-      id
-    }
-  }
-`)
-
-const TaskWorkHoursQuery = graphql(`
-  query TaskWorkHours($id: ID!, $from: Date!, $to: Date!) {
-    task(taskId: $id) {
-      id
-      workHours(from: $from, to: $to) {
-        id
-        duration
-      }
     }
   }
 `)
@@ -82,43 +62,15 @@ export const invoiceItemInputSchema: z.ZodSchema<InvoiceItemFormData> = invoiceI
 })
 
 export interface InvoiceItemListProps {
-  invoice: FragmentType<typeof InvoiceListInvoiceFragment>
-  invoiceItems: FragmentType<typeof InvoiceItemsListInvoiceFragment>[]
+  invoice: FragmentType<typeof InvoiceItemListInvoiceFragment>
 }
 
-const getFormattedDuration = (duration: number): string => {
-  const hours = duration / 60
-  return hours.toLocaleString(navigator.languages, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
+export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element => {
+  const invoiceData = useFragment(InvoiceItemListInvoiceFragment, invoice)
 
-const getFormattedCurrency = (amount: number): string => {
-  return amount.toLocaleString(navigator.languages, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    style: 'currency',
-    currency: 'EUR',
-  })
-}
-
-const parseNumericInput = (value: string, oldValue: number): number => {
-  const newValue = Number(value)
-  if (Number.isNaN(newValue)) {
-    return oldValue
-  }
-  return newValue
-}
-
-export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps): JSX.Element => {
-  const invoiceData = useFragment(InvoiceListInvoiceFragment, invoice)
-  const invoiceItemsData = useFragment(InvoiceItemsListInvoiceFragment, invoiceItems)
-  const context = useMemo(() => ({ additionalTypenames: ['InvoiceItem', 'Invoice'] }), [])
   const [total, setTotal] = useState<number>(0)
   const [footerAmount, setFooterAmount] = useState<number>(0)
   const [, invoiceItemCreate] = useMutation(InvoiceItemCreateMutationDocument)
-  const [, invoiceItemUpdate] = useMutation(InvoiceItemUpdateMutationDocument)
 
   const {
     register,
@@ -131,28 +83,10 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
     resolver: zodResolver(invoiceItemInputSchema),
   })
 
-  const [workHoursResult] = useQuery({
-    query: TaskWorkHoursQuery,
-    variables: {
-      id: invoiceItemsData[0]?.task.id || '',
-      from: invoiceData.invoiceWorkFrom,
-      to: invoiceData.invoiceWorkUntil,
-    },
-    context,
-    pause: invoiceItemsData.length === 0,
-  })
-
-  const workHoursQueries = invoiceItemsData.map((item) => ({
-    taskId: item.task.id,
-    query: workHoursResult,
-  }))
-
-  const workHoursMap = Object.fromEntries(workHoursQueries.map(({ taskId, query }) => [taskId, query.data]))
-
   useEffect(() => {
-    const newTotal = invoiceItemsData.reduce((sum, item) => sum + (item.duration * item.hourlyRate) / 60, 0)
+    const newTotal = invoiceData.invoiceItems.reduce((sum, item) => sum + (item.duration * item.hourlyRate) / 60, 0)
     setTotal(newTotal)
-  }, [invoiceItemsData])
+  }, [invoiceData.invoiceItems])
 
   useEffect(() => {
     const { duration = 0, hourlyRate = 0 } = getValues()
@@ -197,7 +131,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
   }
 
   const availableTasksByProject = invoiceData.organization.projects.map((project) =>
-    project.tasks.filter((task) => !invoiceItemsData.some((invoiceItem) => invoiceItem.task.id === task.id)),
+    project.tasks.filter((task) => !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id)),
   )
 
   const filteredProjectsWithTasks = availableTasksByProject
@@ -212,74 +146,23 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
           <tr className="[&_th]:border [&_th]:border-neutral">
             <th />
             <th className="w-1/12">Duration</th>
-            <th className="w-1/12">Hourly Rate</th>
-            <th className="w-1/12">Amount</th>
+            <th className="w-1/12">Hourly Rate, €</th>
+            <th className="w-1/12">Amount, €</th>
           </tr>
         </thead>
         <tbody>
-          {[...invoiceItemsData]
+          {invoiceData.invoiceItems
             .sort((a, b) => {
               const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
               return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
             })
             .map((invoiceItem) => (
-              <tr key={invoiceItem.id} className="[&_td]:border [&_td]:border-neutral">
-                <td className="text-left">
-                  <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
-                </td>
-                <td className="p-1">
-                  <InputField
-                    className="input-sm input-ghost text-right"
-                    defaultValue={getFormattedDuration(Number(invoiceItem.duration))}
-                    onBlur={(event) => {
-                      const oldDuration = invoiceItem.duration / 60
-                      let newDuration = parseNumericInput(event.target.value, oldDuration)
-                      const hourlyRate = Number(invoiceItem.hourlyRate)
-                      const taskWorkHours = workHoursMap[invoiceItem.task.id]?.task
-                      if (!newDuration && taskWorkHours) {
-                        const totalTaskDuration = taskWorkHours.workHours.reduce(
-                          (sum, workHour) => sum + workHour.duration,
-                          0,
-                        )
-                        newDuration = totalTaskDuration / 60
-                      }
-                      event.target.value = getFormattedDuration(newDuration * 60)
-                      invoiceItemUpdate({
-                        data: {
-                          duration: newDuration * 60,
-                          taskId: invoiceItem.task.id,
-                          hourlyRate: hourlyRate,
-                          invoiceId: invoiceData.id,
-                        },
-                        id: invoiceItem.id,
-                      })
-                    }}
-                    onFocus={(event) => event.target.select()}
-                  />
-                </td>
-                <td className="p-1">
-                  <InputField
-                    className="input-sm input-ghost text-right"
-                    defaultValue={getFormattedCurrency(Number(invoiceItem.hourlyRate))}
-                    onBlur={(event) => {
-                      const oldHourlyRate = invoiceItem.hourlyRate
-                      const newHourlyRate = parseNumericInput(event.target.value, oldHourlyRate)
-                      event.target.value = getFormattedCurrency(newHourlyRate)
-                      invoiceItemUpdate({
-                        data: {
-                          duration: invoiceItem.duration,
-                          taskId: invoiceItem.task.id,
-                          hourlyRate: newHourlyRate,
-                          invoiceId: invoiceData.id,
-                        },
-                        id: invoiceItem.id,
-                      })
-                    }}
-                    onFocus={(event) => event.target.select()}
-                  />
-                </td>
-                <td>{getFormattedCurrency((invoiceItem.duration * invoiceItem.hourlyRate) / 60)}</td>
-              </tr>
+              <InvoiceItemListRow
+                key={invoiceItem.id}
+                invoiceItem={invoiceItem}
+                workFrom={invoiceData.invoiceWorkFrom}
+                workUntil={invoiceData.invoiceWorkUntil}
+              />
             ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
@@ -289,12 +172,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                 onSubmit={handleSubmit(handleAddInvoiceItem)}
                 id="form-create-invoice-item"
                 {...register('taskId', { disabled: isSubmitting })}
-                {...register('taskId', { disabled: isSubmitting })}
               >
                 <select
                   className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                   {...register('taskId', { disabled: isSubmitting })}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                 >
                   {filteredProjectsWithTasks.length === 0 ? (
                     <option value="">No tasks available</option>
@@ -324,11 +206,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   {...register('duration', { valueAsNumber: true })}
                   className="input-sm input-ghost text-right"
                   placeholder="Duration"
-                  defaultValue={getFormattedDuration(0)}
-                  disabled={isSubmitting}
+                  defaultValue={getFormattedValue(0)}
+                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                   errorMessage={errors.duration?.message}
                   onBlur={(event) => {
-                    event.target.value = getFormattedDuration(parseNumericInput(event.target.value, 0) * 60)
+                    event.target.value = getFormattedValue(parseNumericInput(event.target.value, 0))
                     handleFormSubmission()
                   }}
                   isDirty={isDirty && dirtyFields.duration}
@@ -337,7 +219,7 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     if (event.code === 'Enter') {
                       let oldValue = (event.target as HTMLInputElement).value
                       const newDuration = parseNumericInput(oldValue, 0)
-                      oldValue = getFormattedDuration(newDuration * 60)
+                      oldValue = getFormattedValue(newDuration * 60)
                       handleFormSubmission()
                     }
                   }}
@@ -350,11 +232,11 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                   {...register('hourlyRate', { valueAsNumber: true })}
                   className="input-sm input-ghost text-right"
                   placeholder="Hourly rate"
-                  defaultValue={getFormattedCurrency(0)}
-                  disabled={isSubmitting}
+                  defaultValue={getFormattedValue(0)}
+                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                   errorMessage={errors.hourlyRate?.message}
                   onBlur={(event) => {
-                    event.target.value = getFormattedCurrency(parseNumericInput(event.target.value, 0))
+                    event.target.value = getFormattedValue(parseNumericInput(event.target.value, 0))
                     handleFormSubmission()
                   }}
                   isDirty={isDirty && dirtyFields.hourlyRate}
@@ -363,18 +245,18 @@ export const InvoiceItemList = ({ invoice, invoiceItems }: InvoiceItemListProps)
                     if (event.code === 'Enter') {
                       let oldHourlyRate = (event.target as HTMLInputElement).value
                       const newHourlyRate = parseNumericInput(oldHourlyRate, 0)
-                      oldHourlyRate = getFormattedCurrency(newHourlyRate)
+                      oldHourlyRate = getFormattedValue(newHourlyRate)
                       handleFormSubmission()
                     }
                   }}
                 />
               </form>
             </td>
-            <td>{getFormattedCurrency(footerAmount)}</td>
+            <td>{getFormattedValue(footerAmount)}</td>
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end font-bold">Total: {getFormattedCurrency(total)}</div>
+      <div className="pt-2 text-end font-bold">Total: {getFormattedValue(total)}</div>
     </>
   )
 }

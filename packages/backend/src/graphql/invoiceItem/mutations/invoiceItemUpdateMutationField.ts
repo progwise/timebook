@@ -1,6 +1,6 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { InvoiceItemInput } from '../invoiceItemInput'
+import { InvoiceItemUpdateInput } from '../invoiceItemUpdateInput'
 
 builder.mutationField('invoiceItemUpdate', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -8,18 +8,26 @@ builder.mutationField('invoiceItemUpdate', (t) =>
     description: 'Update an invoice item',
     args: {
       id: t.arg.id({ description: 'id of the invoice item' }),
-      data: t.arg({ type: InvoiceItemInput }),
+      data: t.arg({ type: InvoiceItemUpdateInput }),
     },
-    authScopes: (_source, { data: { taskId } }) => ({ isAdminByTask: taskId.toString() }),
-    resolve: async (query, _source, { id, data: { duration, hourlyRate, taskId } }) => {
+    authScopes: async (_source, { id, data: {} }) => {
+      const invoiceItem = await prisma.invoiceItem.findUniqueOrThrow({
+        select: { invoice: { select: { organization: { select: { id: true } } } } },
+        where: { id: id.toString() },
+      })
+
+      return { isAdminByOrganization: invoiceItem.invoice.organization.id }
+    },
+    resolve: async (query, _source, { id, data: { taskId, invoiceId, duration, hourlyRate } }) => {
       return prisma.invoiceItem.update({
         ...query,
-        data: {
-          duration,
-          hourlyRate,
-          taskId: taskId.toString(),
-        },
         where: { id: id.toString() },
+        data: {
+          taskId: taskId?.toString(),
+          invoiceId: invoiceId?.toString(),
+          duration: duration ?? undefined,
+          hourlyRate: hourlyRate ?? undefined,
+        },
       })
     },
   }),

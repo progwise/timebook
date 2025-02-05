@@ -101,6 +101,20 @@ input InvoiceItemInput {
   taskId: ID!
 }
 
+input InvoiceItemUpdateInput {
+  """
+  Invoice item duration in minutes
+  """
+  duration: Int
+
+  """
+  Invoice item hourly rate in euro
+  """
+  hourlyRate: Int
+  invoiceId: ID
+  taskId: ID
+}
+
 """
 Status of the invoice
 """
@@ -159,7 +173,7 @@ type Mutation {
   Update an invoice item
   """
   invoiceItemUpdate(
-    data: InvoiceItemInput!
+    data: InvoiceItemUpdateInput!
 
     """
     id of the invoice item

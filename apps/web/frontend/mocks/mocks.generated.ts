@@ -84,6 +84,15 @@ export type InvoiceItemInput = {
   taskId: Scalars['ID']
 }
 
+export type InvoiceItemUpdateInput = {
+  /** Invoice item duration in minutes */
+  duration?: InputMaybe<Scalars['Int']>
+  /** Invoice item hourly rate in euro */
+  hourlyRate?: InputMaybe<Scalars['Int']>
+  invoiceId?: InputMaybe<Scalars['ID']>
+  taskId?: InputMaybe<Scalars['ID']>
+}
+
 /** Status of the invoice */
 export enum InvoiceStatus {
   Draft = 'DRAFT',
@@ -202,7 +211,7 @@ export type MutationInvoiceItemCreateArgs = {
 }
 
 export type MutationInvoiceItemUpdateArgs = {
-  data: InvoiceItemInput
+  data: InvoiceItemUpdateInput
   id: Scalars['ID']
 }
 
@@ -1429,7 +1438,7 @@ export type InvoiceUpdateMutationVariables = Exact<{
 
 export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
 
-export type InvoiceListInvoiceFragment = {
+export type InvoiceItemListInvoiceFragment = {
   __typename?: 'Invoice'
   id: string
   invoiceWorkFrom: string
@@ -1444,9 +1453,30 @@ export type InvoiceListInvoiceFragment = {
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
+  invoiceItems: Array<{
+    __typename?: 'InvoiceItem'
+    id: string
+    duration: number
+    hourlyRate: number
+    task: {
+      __typename?: 'Task'
+      id: string
+      title: string
+      project: { __typename?: 'Project'; id: string; title: string }
+    }
+  }>
 }
 
-export type InvoiceItemsListInvoiceFragment = {
+export type InvoiceItemCreateMutationVariables = Exact<{
+  data: InvoiceItemInput
+}>
+
+export type InvoiceItemCreateMutation = {
+  __typename?: 'Mutation'
+  invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
+}
+
+export type InvoiceItemListRowFragment = {
   __typename?: 'InvoiceItem'
   id: string
   duration: number
@@ -1459,18 +1489,9 @@ export type InvoiceItemsListInvoiceFragment = {
   }
 }
 
-export type InvoiceItemCreateMutationVariables = Exact<{
-  data: InvoiceItemInput
-}>
-
-export type InvoiceItemCreateMutation = {
-  __typename?: 'Mutation'
-  invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
-}
-
 export type InvoiceItemUpdateMutationVariables = Exact<{
   id: Scalars['ID']
-  data: InvoiceItemInput
+  data: InvoiceItemUpdateInput
 }>
 
 export type InvoiceItemUpdateMutation = {
@@ -1486,7 +1507,11 @@ export type TaskWorkHoursQueryVariables = Exact<{
 
 export type TaskWorkHoursQuery = {
   __typename?: 'Query'
-  task: { __typename?: 'Task'; id: string; workHours: Array<{ __typename?: 'WorkHour'; id: string; duration: number }> }
+  task: {
+    __typename?: 'Task'
+    id: string
+    workHours: Array<{ __typename?: 'WorkHour'; id: string; duration: number; date: string }>
+  }
 }
 
 export type InvoiceQueryVariables = Exact<{

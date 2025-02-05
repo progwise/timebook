@@ -26,11 +26,10 @@ const InvoiceDetailsFragment = graphql(`
     invoiceStatus
     invoiceWorkFrom
     invoiceWorkUntil
-    ...InvoiceListInvoice
     invoiceItems {
       id
-      ...InvoiceItemsListInvoice
     }
+    ...InvoiceItemListInvoice
   }
 `)
 
@@ -204,7 +203,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </div>
         </div>
       </div>
-      <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
+      <InvoiceItemList invoice={invoice} />
       <div>
         <p className="font-bold">
           Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
