@@ -83,10 +83,9 @@ export type InvoiceItemInput = {
 }
 
 export type InvoiceSendInput = {
-  id: Scalars['ID']
-  invoiceStatus?: InvoiceStatus
+  invoiceId: Scalars['ID']
   organizationId: Scalars['ID']
-  sendDate: Scalars['DateTime']
+  sendDate?: InputMaybe<Scalars['Date']>
 }
 
 /** Status of the invoice */
@@ -180,6 +179,8 @@ export type Mutation = {
   trackingStart: Tracking
   /** The ongoing time tracking will be stopped and converted to work hours */
   trackingStop: Array<WorkHour>
+  /** Withdraw an invoice */
+  withdrawInvoice: Invoice
   /** Updates a comment of a work hour or creates one */
   workHourCommentUpdate: WorkHour
   /** Create a new WorkHour */
@@ -208,8 +209,7 @@ export type MutationInvoiceItemCreateArgs = {
 
 export type MutationInvoiceUpdateArgs = {
   data: InvoiceUpdateInput
-  id: Scalars['ID']
-  invoiceStatus?: InvoiceStatus
+  invoiceId: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -323,6 +323,10 @@ export type MutationTaskUpdateArgs = {
 
 export type MutationTrackingStartArgs = {
   taskId: Scalars['ID']
+}
+
+export type MutationWithdrawInvoiceArgs = {
+  data: InvoiceSendInput
 }
 
 export type MutationWorkHourCommentUpdateArgs = {
@@ -1207,12 +1211,6 @@ export type MyProjectsMembersQuery = {
   user: { __typename?: 'User'; id: string }
 }
 
-export type SendInvoiceButtonFragment = {
-  __typename?: 'Invoice'
-  id: string
-  organization: { __typename?: 'Organization'; id: string }
-} & { ' $fragmentName'?: 'SendInvoiceButtonFragment' }
-
 export type WeekGridProjectFragment = ({
   __typename?: 'Project'
   id: string
@@ -1461,12 +1459,12 @@ export type InvoiceFragmentFragment = ({
 } & {
   ' $fragmentRefs'?: {
     InvoiceListInvoiceFragment: InvoiceListInvoiceFragment
-    SendInvoiceButtonFragment: SendInvoiceButtonFragment
+    SendOrWithdrawInvoiceFragment: SendOrWithdrawInvoiceFragment
   }
 }) & { ' $fragmentName'?: 'InvoiceFragmentFragment' }
 
 export type InvoiceUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
+  invoiceId: Scalars['ID']
   data: InvoiceUpdateInput
 }>
 
@@ -1502,6 +1500,32 @@ export type InvoiceItemCreateMutationVariables = Exact<{
 export type InvoiceItemCreateMutation = {
   __typename?: 'Mutation'
   invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
+}
+
+export type SendInvoiceButtonFragment = {
+  __typename?: 'Invoice'
+  id: string
+  sendDate?: string | null
+  organization: { __typename?: 'Organization'; id: string }
+} & { ' $fragmentName'?: 'SendInvoiceButtonFragment' }
+
+export type SendOrWithdrawInvoiceFragment = ({
+  __typename?: 'Invoice'
+  id: string
+  sendDate?: string | null
+  invoiceStatus: InvoiceStatus
+  organization: { __typename?: 'Organization'; id: string }
+} & { ' $fragmentRefs'?: { SendInvoiceButtonFragment: SendInvoiceButtonFragment } }) & {
+  ' $fragmentName'?: 'SendOrWithdrawInvoiceFragment'
+}
+
+export type WithdrawInvoiceMutationVariables = Exact<{
+  data: InvoiceSendInput
+}>
+
+export type WithdrawInvoiceMutation = {
+  __typename?: 'Mutation'
+  withdrawInvoice: { __typename?: 'Invoice'; id: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
@@ -4492,6 +4516,7 @@ export const SendInvoiceButtonFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -4505,6 +4530,53 @@ export const SendInvoiceButtonFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SendInvoiceButtonFragment, unknown>
+export const SendOrWithdrawInvoiceFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SendOrWithdrawInvoice' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SendInvoiceButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SendOrWithdrawInvoiceFragment, unknown>
 export const InvoiceItemsListInvoiceFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4561,7 +4633,7 @@ export const InvoiceFragmentFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendOrWithdrawInvoice' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'invoiceItems' },
@@ -4571,6 +4643,26 @@ export const InvoiceFragmentFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemsListInvoice' } },
               ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SendInvoiceButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
         ],
@@ -4621,12 +4713,14 @@ export const InvoiceFragmentFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'SendInvoiceButton' },
+      name: { kind: 'Name', value: 'SendOrWithdrawInvoice' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -4635,6 +4729,7 @@ export const InvoiceFragmentFragmentDoc = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
         ],
       },
     },
@@ -6853,7 +6948,7 @@ export const InvoiceUpdateDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'invoiceId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
         {
@@ -6874,8 +6969,8 @@ export const InvoiceUpdateDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+                name: { kind: 'Name', value: 'invoiceId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'invoiceId' } },
               },
               {
                 kind: 'Argument',
@@ -6930,6 +7025,43 @@ export const InvoiceItemCreateDocument = {
     },
   ],
 } as unknown as DocumentNode<InvoiceItemCreateMutation, InvoiceItemCreateMutationVariables>
+export const WithdrawInvoiceDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'withdrawInvoice' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceSendInput' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'withdrawInvoice' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'data' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WithdrawInvoiceMutation, WithdrawInvoiceMutationVariables>
 export const InvoiceDocument = {
   kind: 'Document',
   definitions: [
@@ -7026,6 +7158,7 @@ export const InvoiceDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -7034,6 +7167,28 @@ export const InvoiceDocument = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'SendOrWithdrawInvoice' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Invoice' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'organization' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
         ],
       },
     },
@@ -7085,7 +7240,7 @@ export const InvoiceDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkFrom' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceWorkUntil' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceListInvoice' } },
-          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendInvoiceButton' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'SendOrWithdrawInvoice' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'invoiceItems' },

@@ -2,7 +2,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FaPen, FaPrint } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
@@ -12,11 +12,11 @@ import { InputField } from '@progwise/timebook-ui'
 
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
 import { dateStringValidation, getDate } from '../../../../../../frontend/components/dateStringValidation'
-import { SendInvoiceButton } from '../../../../../../frontend/components/weekGrid/sendInvoiceButton'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
-import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { InvoiceSendInput, InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceInputSchema } from '../../invoiceInputSchema'
 import { InvoiceItemList } from './invoiceItemList'
+import { SendOrWithdrawInvoice } from './sendOrWithdrawInvoice'
 
 const SendInvoiceMutationDocument = graphql(`
   mutation sendInvoice($data: InvoiceSendInput!) {
@@ -40,7 +40,7 @@ const InvoiceDetailsFragment = graphql(`
     invoiceWorkFrom
     invoiceWorkUntil
     ...InvoiceListInvoice
-    ...SendInvoiceButton
+    ...SendOrWithdrawInvoice
     invoiceItems {
       id
       ...InvoiceItemsListInvoice
@@ -49,8 +49,8 @@ const InvoiceDetailsFragment = graphql(`
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {
-    invoiceUpdate(id: $id, data: $data) {
+  mutation invoiceUpdate($invoiceId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(invoiceId: $invoiceId, data: $data) {
       id
     }
   }
@@ -74,13 +74,12 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-  const [{}, sendInvoice] = useMutation(SendInvoiceMutationDocument)
-  const dialogReference = useRef<HTMLDialogElement>(null)
+  const [, sendInvoice] = useMutation(SendInvoiceMutationDocument)
   const handleSubmitHelper = async (
     handleSubmitHelperField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil',
     data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
   ) => {
-    const result = await updateInvoice({ id: invoice.id, data })
+    const result = await updateInvoice({ invoiceId: invoice.id, data })
     if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
   }
 
@@ -114,19 +113,16 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
-  const handleSendInvoice = async () => {
+  const handleSendInvoice = async (data: InvoiceSendInput) => {
     try {
       await sendInvoice({
         data: {
-          id: invoice.id,
+          invoiceId: invoice.id,
           organizationId: invoice.organization.id,
-          sendDate: invoice.sendDate ?? new Date().toDateString(),
+          sendDate: data.sendDate,
         },
       })
     } catch {}
-    {
-      dialogReference.current?.close()
-    }
   }
   const renderEditableDateField = (editableDateField: 'invoiceWorkFrom' | 'invoiceWorkUntil') =>
     isEditing[editableDateField] ? (
@@ -222,12 +218,16 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </div>
       </div>
       <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
-      <SendInvoiceButton invoice={invoice} onSubmit={handleSendInvoice} />
-      <div>
-        <p className="font-bold">
-          Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
-        </p>
-        <p>Thank you for your business!</p>
+      <div className="flex items-center justify-between pt-4">
+        <div className="flex flex-col">
+          <p className="font-bold">
+            Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
+          </p>
+          <p>Thank you for your business!</p>
+        </div>
+        <div className="flex gap-2">
+          <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendInvoice} />
+        </div>
       </div>
     </div>
   )

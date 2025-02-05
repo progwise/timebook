@@ -1,6 +1,5 @@
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { InvoiceStatus, InvoiceStatusEnum } from '../invoiceStatusEnum'
 import { InvoiceUpdateInput } from '../invoiceUpdateInput'
 
 builder.mutationField('invoiceUpdate', (t) =>
@@ -8,14 +7,13 @@ builder.mutationField('invoiceUpdate', (t) =>
     type: 'Invoice',
     description: 'Update an invoice',
     args: {
-      id: t.arg.id({ description: 'id of the invoice' }),
+      invoiceId: t.arg.id({ description: 'ID of the invoice' }),
       data: t.arg({ type: InvoiceUpdateInput }),
-      invoiceStatus: t.arg({ type: InvoiceStatusEnum, defaultValue: InvoiceStatus.DRAFT }),
     },
-    authScopes: async (_source, { id, data: { organizationId } }) => {
+    authScopes: async (_source, { invoiceId, data: { organizationId } }) => {
       const invoice = await prisma.invoice.findUniqueOrThrow({
         select: { organizationId: true },
-        where: { id: id.toString() },
+        where: { id: invoiceId.toString() },
       })
 
       const oldOrganizationId = invoice.organizationId
@@ -29,7 +27,10 @@ builder.mutationField('invoiceUpdate', (t) =>
     resolve: async (
       query,
       _source,
-      { id, data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
+      {
+        invoiceId,
+        data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil },
+      },
     ) => {
       return prisma.invoice.update({
         ...query,
@@ -41,7 +42,7 @@ builder.mutationField('invoiceUpdate', (t) =>
           invoiceWorkFrom: invoiceWorkFrom ?? undefined,
           invoiceWorkUntil: invoiceWorkUntil ?? undefined,
         },
-        where: { id: id.toString() },
+        where: { id: invoiceId.toString() },
       })
     },
   }),

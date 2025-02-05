@@ -102,10 +102,9 @@ input InvoiceItemInput {
 }
 
 input InvoiceSendInput {
-  id: ID!
-  invoiceStatus: InvoiceStatus! = DRAFT
+  invoiceId: ID!
   organizationId: ID!
-  sendDate: DateTime!
+  sendDate: Date
 }
 
 """
@@ -169,10 +168,9 @@ type Mutation {
     data: InvoiceUpdateInput!
 
     """
-    id of the invoice
+    ID of the invoice
     """
-    id: ID!
-    invoiceStatus: InvoiceStatus! = DRAFT
+    invoiceId: ID!
   ): Invoice!
 
   """
@@ -335,6 +333,11 @@ type Mutation {
   The ongoing time tracking will be stopped and converted to work hours
   """
   trackingStop: [WorkHour!]!
+
+  """
+  Withdraw an invoice
+  """
+  withdrawInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Updates a comment of a work hour or creates one

@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
 export const invoiceSendInputValidations = z.object({
-  id: z.string(),
+  invoiceId: z.string(),
   organizationId: z.string(),
-  invoiceStatus: z.string().optional(),
-  sendDate: z.string().optional(),
+  sendDate: z.date().nullish(),
 })
