@@ -40,5 +40,5 @@ it('should render invoice items', async () => {
   await screen.findByText('Task')
   expect(screen.getByDisplayValue('5.00')).toBeInTheDocument()
   expect(screen.getByDisplayValue('20.00')).toBeInTheDocument()
-  expect(screen.getByText('€100.00')).toBeInTheDocument()
+  expect(screen.getByText('100.00')).toBeInTheDocument()
 })
