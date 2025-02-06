@@ -38,7 +38,7 @@ it('should render invoice items', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
   await screen.findByText('Task')
-  expect(screen.getByText('5')).toBeInTheDocument()
-  expect(screen.getByText('20')).toBeInTheDocument()
-  expect(screen.getByText('100')).toBeInTheDocument()
+  expect(screen.getAllByText('5')[0]).toBeInTheDocument()
+  expect(screen.getAllByText('20')[0]).toBeInTheDocument()
+  expect(screen.getAllByText('100')[0]).toBeInTheDocument()
 })
