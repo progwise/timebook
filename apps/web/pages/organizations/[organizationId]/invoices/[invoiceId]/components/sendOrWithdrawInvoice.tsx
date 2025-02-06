@@ -9,10 +9,8 @@ const SendOrWithdrawInvoiceFragment = graphql(`
     id
     sendDate
     invoiceStatus
-    organization {
-      id
-    }
     ...SendInvoiceButton
+    ...WithdrawInvoiceButton
   }
 `)
 
@@ -25,7 +23,7 @@ export const SendOrWithdrawInvoice = ({ invoice: InvoiceFragment, onSubmit }: Se
   const invoice = useFragment(SendOrWithdrawInvoiceFragment, InvoiceFragment)
 
   if (invoice.sendDate && invoice.invoiceStatus === 'SENT') {
-    return <WithdrawInvoiceButton invoiceId={invoice.id} organizationId={invoice.organization.id} />
+    return <WithdrawInvoiceButton invoice={invoice} />
   }
 
   return <SendInvoiceButton invoice={invoice} onSubmit={onSubmit} />

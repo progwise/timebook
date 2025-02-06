@@ -170,12 +170,14 @@ const documents = {
     types.InvoiceItemsListInvoiceFragmentDoc,
   '\n  mutation invoiceItemCreate($data: InvoiceItemInput!) {\n    invoiceItemCreate(data: $data) {\n      id\n    }\n  }\n':
     types.InvoiceItemCreateDocument,
-  '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n':
+  '\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n':
     types.SendInvoiceButtonFragmentDoc,
-  '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...SendInvoiceButton\n  }\n':
+  '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n':
     types.SendOrWithdrawInvoiceFragmentDoc,
   '\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n':
     types.WithdrawInvoiceDocument,
+  '\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n':
+    types.WithdrawInvoiceButtonFragmentDoc,
   '\n  query invoice($invoiceId: ID!, $organizationId: ID!) {\n    invoice(invoiceId: $invoiceId, organizationId: $organizationId) {\n      ...InvoiceFragment\n    }\n  }\n':
     types.InvoiceDocument,
   '\n  mutation invoiceCreate($data: InvoiceInput!) {\n    invoiceCreate(data: $data) {\n      id\n    }\n  }\n':
@@ -707,20 +709,26 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n']
+  source: '\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...SendInvoiceButton\n  }\n',
-): (typeof documents)['\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...SendInvoiceButton\n  }\n']
+  source: '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n',
+): (typeof documents)['\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
   source: '\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

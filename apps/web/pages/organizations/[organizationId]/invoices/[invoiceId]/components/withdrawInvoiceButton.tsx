@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 
-import { graphql } from '../../../../../../frontend/generated/gql'
+import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceSendInput } from '../../../../../../frontend/generated/gql/graphql'
 
 const WithdrawInvoiceMutationDocument = graphql(`
@@ -14,12 +14,22 @@ const WithdrawInvoiceMutationDocument = graphql(`
   }
 `)
 
+export const WithdrawInvoiceFragment = graphql(`
+  fragment WithdrawInvoiceButton on Invoice {
+    id
+    customerName
+    organization {
+      id
+    }
+  }
+`)
+
 interface WithdrawInvoiceButtonProps {
-  invoiceId: string
-  organizationId: string
+  invoice: FragmentType<typeof WithdrawInvoiceFragment>
 }
 
-export const WithdrawInvoiceButton = ({ invoiceId, organizationId }: WithdrawInvoiceButtonProps) => {
+export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: WithdrawInvoiceButtonProps) => {
+  const invoice = useFragment(WithdrawInvoiceFragment, InvoiceFragment)
   const [, withdrawInvoice] = useMutation(WithdrawInvoiceMutationDocument)
   const dialogReference = useRef<HTMLDialogElement>(null)
 
@@ -28,16 +38,16 @@ export const WithdrawInvoiceButton = ({ invoiceId, organizationId }: WithdrawInv
     formState: { isSubmitting },
   } = useForm<InvoiceSendInput>({
     defaultValues: {
-      invoiceId,
-      organizationId,
+      invoiceId: invoice.id,
+      organizationId: invoice.organization.id,
     },
   })
 
   const handleWithdraw = async () => {
     await withdrawInvoice({
       data: {
-        invoiceId,
-        organizationId,
+        invoiceId: invoice.id,
+        organizationId: invoice.organization.id,
         sendDate: null,
       },
     })
@@ -57,7 +67,7 @@ export const WithdrawInvoiceButton = ({ invoiceId, organizationId }: WithdrawInv
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
           <h3 className="text-lg font-bold">Withdraw Invoice</h3>
-          <p className="py-4"> Are you sure you want to withdraw this invoice?</p>
+          <p className="py-4"> Are you sure you want to withdraw this invoice billed to {invoice.customerName}?</p>
           <div className="modal-action">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={isSubmitting}>

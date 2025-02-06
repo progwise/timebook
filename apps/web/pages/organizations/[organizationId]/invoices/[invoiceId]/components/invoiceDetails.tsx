@@ -113,7 +113,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
-  const handleSendInvoice = async (data: InvoiceSendInput) => {
+  const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
     try {
       await sendInvoice({
         data: {
@@ -226,7 +226,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           <p>Thank you for your business!</p>
         </div>
         <div className="flex gap-2">
-          <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendInvoice} />
+          <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
         </div>
       </div>
     </div>

@@ -16,7 +16,6 @@ import { InvoiceSendInput } from '../../../../../../frontend/generated/gql/graph
 export const SendInvoiceButtonFragment = graphql(`
   fragment SendInvoiceButton on Invoice {
     id
-    sendDate
     customerName
     organization {
       id

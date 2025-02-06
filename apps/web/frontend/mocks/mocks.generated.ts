@@ -1587,7 +1587,6 @@ export type InvoiceItemCreateMutation = {
 export type SendInvoiceButtonFragment = {
   __typename?: 'Invoice'
   id: string
-  sendDate?: string | null
   customerName: string
   organization: { __typename?: 'Organization'; id: string }
 }
@@ -1608,6 +1607,13 @@ export type WithdrawInvoiceMutationVariables = Exact<{
 export type WithdrawInvoiceMutation = {
   __typename?: 'Mutation'
   withdrawInvoice: { __typename?: 'Invoice'; id: string }
+}
+
+export type WithdrawInvoiceButtonFragment = {
+  __typename?: 'Invoice'
+  id: string
+  customerName: string
+  organization: { __typename?: 'Organization'; id: string }
 }
 
 export type InvoiceQueryVariables = Exact<{
