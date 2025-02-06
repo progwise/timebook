@@ -75,59 +75,63 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendIn
         Send
       </button>
       <dialog className="modal" ref={dialogReference}>
-        <div className="modal-box">
-          <h3 className="text-lg font-bold">Send Invoice</h3>
-          <p className="py-4"> Do you want to send this invoice?</p>
-          <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
-            <Controller
-              control={control}
-              rules={{ validate: (value) => !value || dateStringValidation(value) }}
-              name="sendDate"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <div className="flex items-center">
-                  <InputMask
-                    mask="9999-99-99"
-                    disabled={isSubmitting}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    value={value ?? ''}
-                    id="end"
-                    type="text"
-                    size={10}
-                    className="input input-bordered py-1"
-                  />
-                  <CalendarSelector
-                    disabled={isSubmitting}
-                    className="shrink-0 pl-1"
-                    date={getDate(value)}
-                    hideLabel={true}
-                    onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
-                  />
-                </div>
-              )}
-            />
-            <div className="label">
-              <ErrorMessage
-                name="sendDate"
-                errors={errors}
-                as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
-              />
-            </div>
-          </form>
-          <div className="modal-action">
+        <div className="modal-box flex min-h-[500px] flex-col">
+          <div className="modal-action mb-4 flex justify-end">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={isSubmitting}>
                 Cancel
               </button>
             </form>
             <button
-              className="btn btn-warning btn-sm"
+              className="btn btn-warning btn-sm ml-2"
               onClick={handleSubmit(handleSendInvoice)}
               disabled={isSubmitting}
               form="send-invoice-form"
             >
               Send
             </button>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold">Send Invoice</h3>
+              <p className="py-4"> Do you want to send this invoice?</p>
+            </div>
+            <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
+              <Controller
+                control={control}
+                rules={{ validate: (value) => !value || dateStringValidation(value) }}
+                name="sendDate"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <div className="flex items-center gap-4">
+                    <InputMask
+                      mask="9999-99-99"
+                      disabled={isSubmitting}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      value={value ?? ''}
+                      id="end"
+                      type="text"
+                      size={10}
+                      className="input input-bordered py-1"
+                    />
+                    <CalendarSelector
+                      disabled={isSubmitting}
+                      className="shrink-0 pl-1"
+                      date={getDate(value)}
+                      hideLabel={true}
+                      onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
+                    />
+                  </div>
+                )}
+              />
+              <div className="label">
+                <ErrorMessage
+                  name="sendDate"
+                  errors={errors}
+                  as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
+                />
+              </div>
+            </form>
           </div>
         </div>
         <form method="dialog" className="modal-backdrop">
