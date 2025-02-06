@@ -1506,6 +1506,7 @@ export type SendInvoiceButtonFragment = {
   __typename?: 'Invoice'
   id: string
   sendDate?: string | null
+  customerName: string
   organization: { __typename?: 'Organization'; id: string }
 } & { ' $fragmentName'?: 'SendInvoiceButtonFragment' }
 
@@ -4517,6 +4518,7 @@ export const SendInvoiceButtonFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -4564,6 +4566,7 @@ export const SendOrWithdrawInvoiceFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -4657,6 +4660,7 @@ export const InvoiceFragmentFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },
@@ -7159,6 +7163,7 @@ export const InvoiceDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'sendDate' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'organization' },

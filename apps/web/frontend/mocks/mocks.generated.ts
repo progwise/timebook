@@ -1588,6 +1588,7 @@ export type SendInvoiceButtonFragment = {
   __typename?: 'Invoice'
   id: string
   sendDate?: string | null
+  customerName: string
   organization: { __typename?: 'Organization'; id: string }
 }
 
@@ -1596,6 +1597,7 @@ export type SendOrWithdrawInvoiceFragment = {
   id: string
   sendDate?: string | null
   invoiceStatus: InvoiceStatus
+  customerName: string
   organization: { __typename?: 'Organization'; id: string }
 }
 

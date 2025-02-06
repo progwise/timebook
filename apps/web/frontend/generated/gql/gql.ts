@@ -170,7 +170,7 @@ const documents = {
     types.InvoiceItemsListInvoiceFragmentDoc,
   '\n  mutation invoiceItemCreate($data: InvoiceItemInput!) {\n    invoiceItemCreate(data: $data) {\n      id\n    }\n  }\n':
     types.InvoiceItemCreateDocument,
-  '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    organization {\n      id\n    }\n  }\n':
+  '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n':
     types.SendInvoiceButtonFragmentDoc,
   '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...SendInvoiceButton\n  }\n':
     types.SendOrWithdrawInvoiceFragmentDoc,
@@ -707,8 +707,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    organization {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    organization {\n      id\n    }\n  }\n']
+  source: '\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  fragment SendInvoiceButton on Invoice {\n    id\n    sendDate\n    customerName\n    organization {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

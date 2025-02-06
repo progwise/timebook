@@ -17,6 +17,7 @@ export const SendInvoiceButtonFragment = graphql(`
   fragment SendInvoiceButton on Invoice {
     id
     sendDate
+    customerName
     organization {
       id
     }
@@ -26,6 +27,7 @@ export const SendInvoiceButtonFragment = graphql(`
 export const InvoiceSendInputSchema: z.ZodSchema<InvoiceSendInput> = invoiceSendInputValidations.extend({
   sendDate: z
     .string()
+    .min('____-__-__'.length, 'Enter a date')
     .refine((value) => value !== '____-__-__', 'Enter a date')
     .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
     .refine((value) => !value || !isAfter(parseISO(value), new Date()), 'Send date cannot be in the future'),
@@ -75,8 +77,51 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendIn
         Send
       </button>
       <dialog className="modal" ref={dialogReference}>
-        <div className="modal-box flex min-h-[500px] flex-col">
-          <div className="modal-action mb-4 flex justify-end">
+        <div className="modal-box flex flex-col justify-between">
+          <div>
+            <h3 className="text-lg font-bold">Send Invoice</h3>
+            <p className="py-4"> Do you want to send this invoice billed to {invoice.customerName}?</p>
+          </div>
+          <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
+            <div className="flex flex-col items-center">
+              <Controller
+                control={control}
+                rules={{ validate: (value) => !value || dateStringValidation(value) }}
+                name="sendDate"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <InputMask
+                      mask="9999-99-99"
+                      disabled={isSubmitting}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      value={value ?? ''}
+                      id="end"
+                      type="text"
+                      size={10}
+                      className="input input-bordered mb-2"
+                    />
+                    <CalendarSelector
+                      disabled={isSubmitting}
+                      className="shrink-0"
+                      date={getDate(value)}
+                      hideLabel={true}
+                      onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
+                      alwaysOpen={true}
+                    />
+                  </>
+                )}
+              />
+              <div className="label">
+                <ErrorMessage
+                  name="sendDate"
+                  errors={errors}
+                  as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
+                />
+              </div>
+            </div>
+          </form>
+          <div className="modal-action justify-end">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={isSubmitting}>
                 Cancel
@@ -90,48 +135,6 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendIn
             >
               Send
             </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold">Send Invoice</h3>
-              <p className="py-4"> Do you want to send this invoice?</p>
-            </div>
-            <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
-              <Controller
-                control={control}
-                rules={{ validate: (value) => !value || dateStringValidation(value) }}
-                name="sendDate"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <div className="flex items-center gap-4">
-                    <InputMask
-                      mask="9999-99-99"
-                      disabled={isSubmitting}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      value={value ?? ''}
-                      id="end"
-                      type="text"
-                      size={10}
-                      className="input input-bordered py-1"
-                    />
-                    <CalendarSelector
-                      disabled={isSubmitting}
-                      className="shrink-0 pl-1"
-                      date={getDate(value)}
-                      hideLabel={true}
-                      onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
-                    />
-                  </div>
-                )}
-              />
-              <div className="label">
-                <ErrorMessage
-                  name="sendDate"
-                  errors={errors}
-                  as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
-                />
-              </div>
-            </form>
           </div>
         </div>
         <form method="dialog" className="modal-backdrop">
