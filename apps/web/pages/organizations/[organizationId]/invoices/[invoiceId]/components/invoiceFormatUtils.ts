@@ -5,10 +5,10 @@ export const getFormattedValue = (value: number): string => {
   })
 }
 
-export const parseNumericInput = (value: string, oldValue?: number): number => {
+export const parseNumericInput = (value: string): number => {
   const newValue = Number(value)
   if (Number.isNaN(newValue)) {
-    return oldValue ?? 0
+    return Number.NaN
   }
   return newValue
 }

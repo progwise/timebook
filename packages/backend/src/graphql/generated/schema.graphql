@@ -52,7 +52,6 @@ type Invoice implements ModifyInterface {
 input InvoiceInput {
   customerAddress: String
   customerName: String!
-  invoiceDate: Date!
   invoiceWorkFrom: Date!
   invoiceWorkUntil: Date!
   organizationId: ID!
@@ -98,6 +97,7 @@ input InvoiceItemInput {
   """
   hourlyRate: Int!
   invoiceId: ID!
+  organizationId: ID
   taskId: ID!
 }
 
@@ -111,8 +111,7 @@ input InvoiceItemUpdateInput {
   Invoice item hourly rate in euro
   """
   hourlyRate: Int
-  invoiceId: ID
-  taskId: ID
+  organizationId: ID
 }
 
 """
@@ -127,7 +126,6 @@ enum InvoiceStatus {
 input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
-  invoiceDate: Date
   invoiceWorkFrom: Date
   invoiceWorkUntil: Date
   organizationId: ID

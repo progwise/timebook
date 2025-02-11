@@ -9,7 +9,9 @@ builder.mutationField('invoiceItemCreate', (t) =>
     args: {
       data: t.arg({ type: InvoiceItemInput }),
     },
-    authScopes: (_source, { data: { taskId } }) => ({ isAdminByTask: taskId.toString() }),
+    authScopes: async (_source, { data: { organizationId } }) => ({
+      isAdminByOrganization: organizationId?.toString(),
+    }),
     resolve: async (query, _source, { data: { duration, hourlyRate, invoiceId, taskId } }) => {
       return prisma.invoiceItem.create({
         ...query,

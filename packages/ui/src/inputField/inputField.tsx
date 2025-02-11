@@ -12,7 +12,6 @@ export interface InputFieldProps {
   className?: string
   label?: string
   errorMessage?: string | ReactNode
-  onKeyPress?: KeyboardEventHandler<HTMLInputElement>
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>
   loading?: boolean
   type?: 'number' | 'text' | 'email'
@@ -30,7 +29,6 @@ export const InputField = React.forwardRef(
       hideLabel = false,
       disabled,
       onChange,
-      onKeyPress,
       onBlur,
       onKeyDown,
       value,
@@ -72,7 +70,6 @@ export const InputField = React.forwardRef(
             onBlur={onBlur}
             value={value}
             ref={reference}
-            onKeyPress={onKeyPress}
             onKeyDown={onKeyDown}
             name={name}
             size={size}

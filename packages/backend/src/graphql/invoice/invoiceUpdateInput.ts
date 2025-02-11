@@ -7,7 +7,6 @@ export const InvoiceUpdateInput = builder.inputType('InvoiceUpdateInput', {
   fields: (t) => ({
     customerAddress: t.string({ required: false }),
     customerName: t.string({ required: false }),
-    invoiceDate: t.field({ type: 'Date', required: false }),
     organizationId: t.id({ required: false }),
     invoiceWorkFrom: t.field({ type: 'Date', required: false }),
     invoiceWorkUntil: t.field({ type: 'Date', required: false }),
