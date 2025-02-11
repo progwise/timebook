@@ -24,9 +24,6 @@ Documentation for installing pnpm https://pnpm.io/installation.
 - **packages/backend**  
   the GraphQL backend with database build with prisma and pothos
 
-- **packages/pulumi**  
-  the infrastructure as code package build with pulumi
-
 - **packages/ui**  
   re-usable UI components
 

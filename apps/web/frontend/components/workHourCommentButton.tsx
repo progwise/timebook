@@ -11,7 +11,10 @@ export const WorkHourCommentFragment = graphql(`
   fragment WorkHourCommentFragment on Task {
     id
     title
-    workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+    workHourOfDays(from: $from, to: $to, userIds: $userIds) {
+      user {
+        id
+      }
       date
       workHour {
         comment
@@ -88,7 +91,7 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
             {task.workHourOfDays.map((workHourOfDay) => {
               const date = parseISO(workHourOfDay.date)
               return (
-                <div key={workHourOfDay.date} className="flex flex-col gap-2">
+                <div key={`${workHourOfDay.date}-${workHourOfDay.user.id}`} className="flex flex-col gap-2">
                   <div className="flex rounded-box py-1">{format(date, 'EEEE, MMMM do')}</div>
                   <textarea
                     title="comment"

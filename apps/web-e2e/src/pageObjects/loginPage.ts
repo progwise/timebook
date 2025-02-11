@@ -6,42 +6,40 @@ import { PrismaClient } from '@progwise/timebook-prisma'
 
 const prisma = new PrismaClient()
 
-export class LoginPage {
-  private _email: string
-  private _page: Page
+export const createLoginPage = (page: Page) => {
+  const email = randomBytes(4).toString('hex') + '@progwise.net'
 
-  constructor(page: Page) {
-    this._email = randomBytes(4).toString('hex') + '@progwise.net'
-    this._page = page
-  }
-
-  async login() {
+  const login = async () => {
     const token = randomBytes(10).toString('hex')
     const hashedToken = createHash('sha256')
       .update(`${token}${process.env.SECRET ?? ''}`)
       .digest('hex')
     const todayInOneYear = addYears(new Date(), 1)
 
-    const signInUrl = `http://localhost:3000/api/auth/callback/email?&token=${token}&email=${this._email}`
+    const signInUrl = `http://localhost:3000/api/auth/callback/email?&token=${token}&email=${email}`
 
     await prisma.verificationToken.create({
       data: {
-        identifier: this._email,
+        identifier: email,
         token: hashedToken,
         expires: todayInOneYear,
       },
     })
 
-    await this._page.goto(signInUrl)
-    await this._page.waitForURL('http://localhost:3000/week')
+    await page.goto(signInUrl)
+    await page.waitForURL(/http:\/\/localhost:3000\/week(\?.*)?/)
   }
 
-  async deleteAccount() {
-    await prisma.workHour.deleteMany({ where: { user: { email: this._email } } })
-    await prisma.user.delete({ where: { email: this._email } })
+  const deleteAccount = async () => {
+    await prisma.workHour.deleteMany({ where: { user: { email } } })
+    await prisma.user.delete({ where: { email } })
   }
 
-  get email() {
-    return this._email
+  return {
+    login,
+    deleteAccount,
+    get email() {
+      return email
+    },
   }
 }
