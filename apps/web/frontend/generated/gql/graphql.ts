@@ -209,7 +209,7 @@ export type MutationInvoiceItemCreateArgs = {
 
 export type MutationInvoiceUpdateArgs = {
   data: InvoiceUpdateInput
-  invoiceId: Scalars['ID']
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1464,7 +1464,7 @@ export type InvoiceFragmentFragment = ({
 }) & { ' $fragmentName'?: 'InvoiceFragmentFragment' }
 
 export type InvoiceUpdateMutationVariables = Exact<{
-  invoiceId: Scalars['ID']
+  id: Scalars['ID']
   data: InvoiceUpdateInput
 }>
 
@@ -7008,7 +7008,7 @@ export const InvoiceUpdateDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'invoiceId' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
         {
@@ -7029,8 +7029,8 @@ export const InvoiceUpdateDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'invoiceId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'invoiceId' } },
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
               },
               {
                 kind: 'Argument',

@@ -49,8 +49,8 @@ const InvoiceDetailsFragment = graphql(`
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($invoiceId: ID!, $data: InvoiceUpdateInput!) {
-    invoiceUpdate(invoiceId: $invoiceId, data: $data) {
+  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, data: $data) {
       id
     }
   }
@@ -79,7 +79,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     handleSubmitHelperField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil',
     data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
   ) => {
-    const result = await updateInvoice({ invoiceId: invoice.id, data })
+    const result = await updateInvoice({ id: invoice.id, data })
     if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
   }
 
@@ -218,16 +218,14 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </div>
       </div>
       <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
-      <div className="flex items-center justify-between pt-4">
-        <div className="flex flex-col">
+      <div className="flex items-center justify-between">
+        <div>
           <p className="font-bold">
             Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
           </p>
           <p>Thank you for your business!</p>
         </div>
-        <div className="flex gap-2">
-          <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
-        </div>
+        <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
       </div>
     </div>
   )

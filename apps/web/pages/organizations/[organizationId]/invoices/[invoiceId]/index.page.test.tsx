@@ -38,7 +38,7 @@ it('should render invoice items', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
   await screen.findByText('Task')
-  expect(screen.getAllByText('5')[0]).toBeInTheDocument()
-  expect(screen.getAllByText('20')[0]).toBeInTheDocument()
-  expect(screen.getAllByText('100')[0]).toBeInTheDocument()
+  expect(screen.getByRole('cell', { name: '5' })).toBeInTheDocument()
+  expect(screen.getByRole('cell', { name: '20' })).toBeInTheDocument()
+  expect(screen.getByRole('cell', { name: '100' })).toBeInTheDocument()
 })

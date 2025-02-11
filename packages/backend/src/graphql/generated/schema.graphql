@@ -170,7 +170,7 @@ type Mutation {
     """
     ID of the invoice
     """
-    invoiceId: ID!
+    id: ID!
   ): Invoice!
 
   """

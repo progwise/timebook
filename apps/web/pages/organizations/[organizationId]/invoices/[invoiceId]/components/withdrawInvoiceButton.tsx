@@ -6,7 +6,7 @@ import { useMutation } from 'urql'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceSendInput } from '../../../../../../frontend/generated/gql/graphql'
 
-const WithdrawInvoiceMutationDocument = graphql(`
+const InvoiceWithdrawMutationDocument = graphql(`
   mutation withdrawInvoice($data: InvoiceSendInput!) {
     withdrawInvoice(data: $data) {
       id
@@ -14,7 +14,7 @@ const WithdrawInvoiceMutationDocument = graphql(`
   }
 `)
 
-export const WithdrawInvoiceFragment = graphql(`
+export const InvoiceWithdrawFragment = graphql(`
   fragment WithdrawInvoiceButton on Invoice {
     id
     customerName
@@ -24,13 +24,13 @@ export const WithdrawInvoiceFragment = graphql(`
   }
 `)
 
-interface WithdrawInvoiceButtonProps {
-  invoice: FragmentType<typeof WithdrawInvoiceFragment>
+interface InvoiceWithdrawButtonProps {
+  invoice: FragmentType<typeof InvoiceWithdrawFragment>
 }
 
-export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: WithdrawInvoiceButtonProps) => {
-  const invoice = useFragment(WithdrawInvoiceFragment, InvoiceFragment)
-  const [, withdrawInvoice] = useMutation(WithdrawInvoiceMutationDocument)
+export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithdrawButtonProps) => {
+  const invoice = useFragment(InvoiceWithdrawFragment, InvoiceFragment)
+  const [, withdrawInvoice] = useMutation(InvoiceWithdrawMutationDocument)
   const dialogReference = useRef<HTMLDialogElement>(null)
 
   const {
