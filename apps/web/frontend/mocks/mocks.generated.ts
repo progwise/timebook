@@ -211,7 +211,7 @@ export type MutationInvoiceItemCreateArgs = {
 
 export type MutationInvoiceUpdateArgs = {
   data: InvoiceUpdateInput
-  invoiceId: Scalars['ID']
+  id: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1546,7 +1546,7 @@ export type InvoiceFragmentFragment = {
 }
 
 export type InvoiceUpdateMutationVariables = Exact<{
-  invoiceId: Scalars['ID']
+  id: Scalars['ID']
   data: InvoiceUpdateInput
 }>
 
@@ -2512,7 +2512,7 @@ export const mockSendInvoiceMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockInvoiceUpdateMutation((req, res, ctx) => {
- *   const { invoiceId, data } = req.variables;
+ *   const { id, data } = req.variables;
  *   return res(
  *     ctx.data({ invoiceUpdate })
  *   )

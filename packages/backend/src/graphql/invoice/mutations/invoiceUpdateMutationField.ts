@@ -7,13 +7,13 @@ builder.mutationField('invoiceUpdate', (t) =>
     type: 'Invoice',
     description: 'Update an invoice',
     args: {
-      invoiceId: t.arg.id({ description: 'ID of the invoice' }),
+      id: t.arg.id({ description: 'ID of the invoice' }),
       data: t.arg({ type: InvoiceUpdateInput }),
     },
-    authScopes: async (_source, { invoiceId, data: { organizationId } }) => {
+    authScopes: async (_source, { id, data: { organizationId } }) => {
       const invoice = await prisma.invoice.findUniqueOrThrow({
         select: { organizationId: true },
-        where: { id: invoiceId.toString() },
+        where: { id: id.toString() },
       })
 
       const oldOrganizationId = invoice.organizationId
@@ -28,7 +28,7 @@ builder.mutationField('invoiceUpdate', (t) =>
       query,
       _source,
       {
-        invoiceId,
+        id: invoiceId,
         data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil },
       },
     ) => {

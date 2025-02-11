@@ -13,7 +13,7 @@ import { dateStringValidation, getDate } from '../../../../../../frontend/compon
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceSendInput } from '../../../../../../frontend/generated/gql/graphql'
 
-export const SendInvoiceButtonFragment = graphql(`
+export const InvoiceSendButtonFragment = graphql(`
   fragment SendInvoiceButton on Invoice {
     id
     customerName
@@ -26,19 +26,22 @@ export const SendInvoiceButtonFragment = graphql(`
 export const InvoiceSendInputSchema: z.ZodSchema<InvoiceSendInput> = invoiceSendInputValidations.extend({
   sendDate: z
     .string()
-    .min('____-__-__'.length, 'Enter a date')
+    .min(10, 'Enter a date')
     .refine((value) => value !== '____-__-__', 'Enter a date')
     .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
-    .refine((value) => !value || !isAfter(parseISO(value), new Date()), 'Send date cannot be in the future'),
+    .refine(
+      (value) => !value || !isAfter(parseISO(value), new Date()),
+      'Send date cannot be a future date. Please enter a valid date.',
+    ),
 })
 
-export interface SendInvoiceButtonProps {
-  invoice: FragmentType<typeof SendInvoiceButtonFragment>
+export interface InvoiceSendButtonProps {
+  invoice: FragmentType<typeof InvoiceSendButtonFragment>
   onSubmit: (data: InvoiceSendInput) => Promise<void>
 }
 
-export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendInvoiceButtonProps): JSX.Element => {
-  const invoice = useFragment(SendInvoiceButtonFragment, InvoiceFragment)
+export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: InvoiceSendButtonProps): JSX.Element => {
+  const invoice = useFragment(InvoiceSendButtonFragment, InvoiceFragment)
   const dialogReference = useRef<HTMLDialogElement>(null)
 
   const {
@@ -76,19 +79,17 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendIn
         Send
       </button>
       <dialog className="modal" ref={dialogReference}>
-        <div className="modal-box flex flex-col justify-between">
-          <div>
-            <h3 className="text-lg font-bold">Send Invoice</h3>
-            <p className="py-4"> Do you want to send this invoice billed to {invoice.customerName}?</p>
-          </div>
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Send Invoice</h3>
           <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
-            <div className="flex flex-col items-center">
-              <Controller
-                control={control}
-                rules={{ validate: (value) => !value || dateStringValidation(value) }}
-                name="sendDate"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <>
+            <Controller
+              control={control}
+              rules={{ validate: (value) => !value || dateStringValidation(value) }}
+              name="sendDate"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <div>
+                  <div className="flex items-center">
+                    <p className="py-4"> When do you want to send this invoice billed to {invoice.customerName}?</p>
                     <InputMask
                       mask="9999-99-99"
                       disabled={isSubmitting}
@@ -98,36 +99,35 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: SendIn
                       id="end"
                       type="text"
                       size={10}
-                      className="input input-bordered mb-2"
+                      className="input input-sm input-bordered"
                     />
-                    <CalendarSelector
-                      disabled={isSubmitting}
-                      className="shrink-0"
-                      date={getDate(value)}
-                      hideLabel={true}
-                      onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
-                      alwaysOpen={true}
-                    />
-                  </>
-                )}
+                  </div>
+                  <CalendarSelector
+                    disabled={isSubmitting}
+                    date={getDate(value)}
+                    hideLabel
+                    onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
+                    alwaysOpen
+                  />
+                </div>
+              )}
+            />
+            <div className="label">
+              <ErrorMessage
+                name="sendDate"
+                errors={errors}
+                as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
               />
-              <div className="label">
-                <ErrorMessage
-                  name="sendDate"
-                  errors={errors}
-                  as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
-                />
-              </div>
             </div>
           </form>
-          <div className="modal-action justify-end">
+          <div className="modal-action">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={isSubmitting}>
                 Cancel
               </button>
             </form>
             <button
-              className="btn btn-warning btn-sm ml-2"
+              className="btn btn-success btn-sm"
               onClick={handleSubmit(handleSendInvoice)}
               disabled={isSubmitting}
               form="send-invoice-form"

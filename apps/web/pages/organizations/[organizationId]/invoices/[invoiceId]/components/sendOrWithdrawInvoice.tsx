@@ -4,7 +4,7 @@ import { InvoiceSendInput } from '../../../../../../frontend/generated/gql/graph
 import { SendInvoiceButton } from './sendInvoiceButton'
 import { WithdrawInvoiceButton } from './withdrawInvoiceButton'
 
-const SendOrWithdrawInvoiceFragment = graphql(`
+const InvoiceSendOrWithdrawFragment = graphql(`
   fragment SendOrWithdrawInvoice on Invoice {
     id
     sendDate
@@ -14,13 +14,13 @@ const SendOrWithdrawInvoiceFragment = graphql(`
   }
 `)
 
-interface SendOrWithdrawInvoiceProps {
-  invoice: FragmentType<typeof SendOrWithdrawInvoiceFragment>
+interface InvoiceSendOrWithdrawProps {
+  invoice: FragmentType<typeof InvoiceSendOrWithdrawFragment>
   onSubmit: (data: InvoiceSendInput) => Promise<void>
 }
 
-export const SendOrWithdrawInvoice = ({ invoice: InvoiceFragment, onSubmit }: SendOrWithdrawInvoiceProps) => {
-  const invoice = useFragment(SendOrWithdrawInvoiceFragment, InvoiceFragment)
+export const SendOrWithdrawInvoice = ({ invoice: InvoiceFragment, onSubmit }: InvoiceSendOrWithdrawProps) => {
+  const invoice = useFragment(InvoiceSendOrWithdrawFragment, InvoiceFragment)
 
   if (invoice.sendDate && invoice.invoiceStatus === 'SENT') {
     return <WithdrawInvoiceButton invoice={invoice} />
