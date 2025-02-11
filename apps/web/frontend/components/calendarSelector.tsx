@@ -9,7 +9,6 @@ import {
   getDate,
   isSameDay,
   isSameMonth,
-  isThisMonth,
   isToday,
   isWeekend,
   startOfMonth,
@@ -17,7 +16,9 @@ import {
   subMonths,
 } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { FaAngleLeft, FaAngleRight, FaArrowTurnUp, FaRegCalendar } from 'react-icons/fa6'
+import { FaRegCalendar } from 'react-icons/fa6'
+
+import { CalendarPanel } from './calendarPanel'
 
 interface DayItemProps {
   day: Date
@@ -26,7 +27,7 @@ interface DayItemProps {
   onClick: () => void
 }
 
-const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
+export const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
   const classNames = ['btn btn-sm']
 
   if (!isSameMonth(day, shownDate)) {
@@ -88,15 +89,10 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
     setShownDate((oldDate) => addMonths(oldDate, 1))
   }
 
-  const monthTitle = format(shownDate, 'MMMM yyyy')
-
   const { floatingStyles, refs } = useFloating({
     middleware: [offset(10), shift({ crossAxis: true })],
     whileElementsMounted: autoUpdate,
   })
-
-  const currentDate = new Date()
-  const currentMonth = format(currentDate, 'MMMM yyyy')
 
   return (
     <section>
@@ -127,64 +123,18 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
             >
               <Popover.Panel>
                 {({ close }) => (
-                  <>
-                    <header className="flex items-center justify-between font-bold">
-                      <button
-                        className="btn btn-ghost btn-xs"
-                        onClick={gotoPreviousMonth}
-                        type="button"
-                        aria-label="go to previous month"
-                      >
-                        <FaAngleLeft />
-                      </button>
-                      <div className="text-lg" role="heading">
-                        {monthTitle}
-                      </div>
-                      <button
-                        className="btn btn-ghost btn-xs"
-                        onClick={gotoNextMonth}
-                        type="button"
-                        aria-label="go to next month"
-                      >
-                        <FaAngleRight />
-                      </button>
-                    </header>
-                    <div className="grid grid-cols-7 gap-2 pt-2 text-center">
-                      <div>Mon</div>
-                      <div>Tue</div>
-                      <div>Wed</div>
-                      <div>Thu</div>
-                      <div>Fri</div>
-                      <div className="opacity-50">Sat</div>
-                      <div className="opacity-50">Sun</div>
-                      <div className="divider col-span-7 -my-2" />
-                      {daysToRender.map((day) => (
-                        <DayItem
-                          key={day.toString()}
-                          day={day}
-                          selectedDate={props.date}
-                          shownDate={shownDate}
-                          onClick={() => {
-                            props.onDateChange(day)
-                            close()
-                          }}
-                        />
-                      ))}
-                    </div>
-                    {!isThisMonth(shownDate) && (
-                      <>
-                        <div className="divider col-span-7 -my-1" />
-                        <button
-                          className="btn btn-ghost no-animation btn-xs btn-block"
-                          onClick={goToToday}
-                          aria-label="go to today"
-                        >
-                          Back to {currentMonth}
-                          <FaArrowTurnUp />
-                        </button>
-                      </>
-                    )}
-                  </>
+                  <CalendarPanel
+                    shownDate={shownDate}
+                    daysToRender={daysToRender}
+                    selectedDate={props.date}
+                    onDateChange={(day) => {
+                      props.onDateChange(day)
+                      close()
+                    }}
+                    gotoPreviousMonth={gotoPreviousMonth}
+                    gotoNextMonth={gotoNextMonth}
+                    goToToday={goToToday}
+                  />
                 )}
               </Popover.Panel>
             </Transition>
@@ -193,59 +143,15 @@ export const CalendarSelector = (props: CalendarSelectorProps): JSX.Element => {
       )}
       {props.alwaysOpen && (
         <div className="rounded-box border border-base-content/50 bg-base-200 p-2 shadow-md">
-          <header className="flex items-center justify-between font-bold">
-            <button
-              className="btn btn-ghost btn-xs"
-              onClick={gotoPreviousMonth}
-              type="button"
-              aria-label="go to previous month"
-            >
-              <FaAngleLeft />
-            </button>
-            <div className="text-lg" role="heading">
-              {monthTitle}
-            </div>
-            <button
-              className="btn btn-ghost btn-xs"
-              onClick={gotoNextMonth}
-              type="button"
-              aria-label="go to next month"
-            >
-              <FaAngleRight />
-            </button>
-          </header>
-          <div className="grid grid-cols-7 gap-2 pt-2 text-center">
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div className="opacity-50">Sat</div>
-            <div className="opacity-50">Sun</div>
-            <div className="divider col-span-7 -my-2" />
-            {daysToRender.map((day) => (
-              <DayItem
-                key={day.toString()}
-                day={day}
-                selectedDate={props.date}
-                shownDate={shownDate}
-                onClick={() => props.onDateChange(day)}
-              />
-            ))}
-          </div>
-          {!isThisMonth(shownDate) && (
-            <>
-              <div className="divider col-span-7 -my-1" />
-              <button
-                className="btn btn-ghost no-animation btn-xs btn-block"
-                onClick={goToToday}
-                aria-label="go to today"
-              >
-                Back to {currentMonth}
-                <FaArrowTurnUp />
-              </button>
-            </>
-          )}
+          <CalendarPanel
+            shownDate={shownDate}
+            daysToRender={daysToRender}
+            selectedDate={props.date}
+            onDateChange={props.onDateChange}
+            gotoPreviousMonth={gotoPreviousMonth}
+            gotoNextMonth={gotoNextMonth}
+            goToToday={goToToday}
+          />
         </div>
       )}
     </section>
