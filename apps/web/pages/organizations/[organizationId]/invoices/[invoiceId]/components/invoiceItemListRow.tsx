@@ -38,9 +38,10 @@ export interface InvoiceItemListRowProps {
   invoiceItem: FragmentType<typeof InvoiceItemListRowFragment>
   workFrom: string
   workUntil: string
+  deleteButton?: JSX.Element
 }
 
-export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: InvoiceItemListRowProps) => {
+export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteButton }: InvoiceItemListRowProps) => {
   const invoiceItem = useFragment(InvoiceItemListRowFragment, invoiceItemFragment)
   const [{ fetching }, updateInvoiceItem] = useMutation(InvoiceItemUpdateMutationDocument)
 
@@ -85,14 +86,15 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
   }
 
   return (
-    <tr className="[&_td]:border [&_td]:border-neutral">
+    <tr className="[&_td.w-px]:border-r-transparent [&_td]:border [&_td]:border-neutral">
+      <td className="w-px p-1">{deleteButton}</td>
       <td className="text-left">
         <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
       </td>
       <td className="p-1">
         <InputField
           {...register('duration', { valueAsNumber: true })}
-          className="input-sm input-ghost text-right"
+          className="input-sm input-ghost text-left"
           defaultValue={getFormattedValue(invoiceItem.duration / 60)}
           onBlur={(event) => handleInputEvent(event, 'duration', invoiceItem.duration / 60)}
           onFocus={(event) => event.target.select()}
@@ -109,7 +111,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
       <td className="p-1">
         <InputField
           {...register('hourlyRate', { valueAsNumber: true })}
-          className="input-sm input-ghost text-right"
+          className="input-sm input-ghost text-left"
           defaultValue={getFormattedValue(Number(invoiceItem.hourlyRate))}
           onBlur={(event) => handleInputEvent(event, 'hourlyRate', Number(invoiceItem.hourlyRate))}
           onFocus={(event) => event.target.select()}
@@ -123,7 +125,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
           }}
         />
       </td>
-      <td>{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
+      <td className="p-1">{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
     </tr>
   )
 }

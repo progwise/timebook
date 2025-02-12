@@ -168,6 +168,21 @@ type Mutation {
   invoiceItemCreate(data: InvoiceItemInput!): InvoiceItem!
 
   """
+  Delete an invoice item
+  """
+  invoiceItemDelete(
+    """
+    ID of the invoice item
+    """
+    invoiceItemId: ID!
+
+    """
+    ID of the organization
+    """
+    organizationId: ID!
+  ): InvoiceItem!
+
+  """
   Update an invoice item
   """
   invoiceItemUpdate(

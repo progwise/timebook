@@ -10,6 +10,7 @@ import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
 import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
+import { InvoiceItemDeleteButton } from './invoiceItemDeleteButton'
 import { InvoiceItemListRow } from './invoiceItemListRow'
 
 const InvoiceItemListInvoiceFragment = graphql(`
@@ -41,6 +42,7 @@ const InvoiceItemListInvoiceFragment = graphql(`
         }
       }
       ...InvoiceItemListRow
+      ...InvoiceItemDeleteButton
     }
   }
 `)
@@ -135,16 +137,17 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
 
   return (
     <>
-      <table className="table text-right">
+      <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr className="[&_th]:border [&_th]:border-neutral">
             <th />
-            <th className="w-1/12">Duration</th>
-            <th className="w-1/12">Hourly Rate (€)</th>
-            <th className="w-1/12">Amount (€)</th>
+            <th />
+            <th className="w-2/12">Duration</th>
+            <th className="w-2/12">Hourly Rate (€)</th>
+            <th className="w-2/12 text-center">Amount (€)</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {invoiceData.invoiceItems
             .sort((a, b) => {
               const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
@@ -156,12 +159,13 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 invoiceItem={invoiceItem}
                 workFrom={invoiceData.invoiceWorkFrom}
                 workUntil={invoiceData.invoiceWorkUntil}
+                deleteButton={<InvoiceItemDeleteButton invoiceItem={invoiceItem} />}
               />
             ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
-            <td className="p-1">
+            <td className="p-1" colSpan={2}>
               <select
                 className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                 {...register('taskId', { disabled: isSubmitting })}
@@ -191,7 +195,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
             <td className="p-1">
               <InputField
                 {...register('duration', { valueAsNumber: true })}
-                className="input-sm input-ghost text-right"
+                className="input-sm input-ghost text-left"
                 placeholder="Duration"
                 defaultValue={getFormattedValue(0)}
                 disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
@@ -221,7 +225,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
             <td className="p-1">
               <InputField
                 {...register('hourlyRate', { valueAsNumber: true })}
-                className="input-sm input-ghost text-right"
+                className="input-sm input-ghost text-left"
                 placeholder="Hourly rate"
                 defaultValue={getFormattedValue(0)}
                 disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
@@ -248,11 +252,11 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 }}
               />
             </td>
-            <td>{getFormattedValue(footerAmount)}</td>
+            <td className="p-1 text-center">{getFormattedValue(footerAmount)}</td>
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end font-bold">Total: {getFormattedValue(total)}</div>
+      <div className="p-2 text-end font-bold">Total: {getFormattedValue(total)}</div>
     </>
   )
 }
