@@ -37,7 +37,6 @@ export type Invoice = ModifyInterface & {
   /** identifies the invoice */
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
-  /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
@@ -1458,6 +1457,8 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Project'
       id: string
       title: string
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1471,7 +1472,13 @@ export type InvoiceItemListInvoiceFragment = {
         __typename?: 'Task'
         id: string
         title: string
-        project: { __typename?: 'Project'; id: string; title: string }
+        project: {
+          __typename?: 'Project'
+          id: string
+          title: string
+          startDate?: string | null
+          endDate?: string | null
+        }
       }
     } & { ' $fragmentRefs'?: { InvoiceItemListRowFragment: InvoiceItemListRowFragment } }
   >
@@ -4506,6 +4513,8 @@ export const InvoiceItemListInvoiceFragmentDoc = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -4548,6 +4557,8 @@ export const InvoiceItemListInvoiceFragmentDoc = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },
@@ -4695,6 +4706,8 @@ export const InvoiceFragmentFragmentDoc = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -4737,6 +4750,8 @@ export const InvoiceFragmentFragmentDoc = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },
@@ -7136,6 +7151,8 @@ export const InvoiceDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -7178,6 +7195,8 @@ export const InvoiceDocument = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },

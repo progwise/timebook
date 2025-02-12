@@ -32,10 +32,6 @@ type Invoice implements ModifyInterface {
   """
   id: ID!
   invoiceDate: Date!
-
-  """
-  Items associated with the invoice
-  """
   invoiceItems: [InvoiceItem!]!
 
   """

@@ -39,7 +39,6 @@ export type Invoice = ModifyInterface & {
   /** identifies the invoice */
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
-  /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
@@ -1518,7 +1517,7 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     }
   }>
   organization: {
@@ -1528,6 +1527,8 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Project'
       id: string
       title: string
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1552,6 +1553,8 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Project'
       id: string
       title: string
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1564,7 +1567,7 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     }
   }>
 }
@@ -1626,7 +1629,13 @@ export type InvoiceQuery = {
         __typename?: 'Task'
         id: string
         title: string
-        project: { __typename?: 'Project'; id: string; title: string }
+        project: {
+          __typename?: 'Project'
+          id: string
+          title: string
+          startDate?: string | null
+          endDate?: string | null
+        }
       }
     }>
     organization: {
@@ -1636,6 +1645,8 @@ export type InvoiceQuery = {
         __typename?: 'Project'
         id: string
         title: string
+        startDate?: string | null
+        endDate?: string | null
         tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
       }>
     }

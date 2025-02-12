@@ -93,7 +93,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     const validHourlyRate = Number.isNaN(hourlyRate) ? 0 : hourlyRate
     const newFooterAmount = validDuration * validHourlyRate
     setFooterAmount(newFooterAmount)
-  }, [getValues, watch('duration'), watch('hourlyRate')])
+  }, [getValues, watch('duration'), watch('hourlyRate'), watch('taskId')])
 
   const handleFormSubmission = async (oldValues: InvoiceItemFormData) => {
     const { taskId, duration, hourlyRate } = getValues()
@@ -145,19 +145,14 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
           </tr>
         </thead>
         <tbody>
-          {invoiceData.invoiceItems
-            .sort((a, b) => {
-              const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
-              return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
-            })
-            .map((invoiceItem) => (
-              <InvoiceItemListRow
-                key={invoiceItem.id}
-                invoiceItem={invoiceItem}
-                workFrom={invoiceData.invoiceWorkFrom}
-                workUntil={invoiceData.invoiceWorkUntil}
-              />
-            ))}
+          {invoiceData.invoiceItems.map((invoiceItem) => (
+            <InvoiceItemListRow
+              key={invoiceItem.id}
+              invoiceItem={invoiceItem}
+              workFrom={invoiceData.invoiceWorkFrom}
+              workUntil={invoiceData.invoiceWorkUntil}
+            />
+          ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
@@ -194,7 +189,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 className="input-sm input-ghost text-right"
                 placeholder="Duration"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
                 errorMessage={errors.duration?.message}
                 onBlur={(event) => {
                   const oldValues = getValues()
@@ -224,7 +219,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 className="input-sm input-ghost text-right"
                 placeholder="Hourly rate"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
                 errorMessage={errors.hourlyRate?.message}
                 onBlur={(event) => {
                   const oldValues = getValues()
