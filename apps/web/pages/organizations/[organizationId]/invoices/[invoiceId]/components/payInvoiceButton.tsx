@@ -11,22 +11,24 @@ import { FragmentType, graphql, useFragment } from '../../../../../../frontend/g
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
 
-const InvoiceSendButtonFragment = graphql(`
-  fragment SendInvoiceButton on Invoice {
+const InvoicePayButtonFragment = graphql(`
+  fragment InvoicePayButton on Invoice {
     id
     customerName
+    sendDate
     organization {
       id
     }
   }
 `)
-interface InvoiceSendButtonProps {
-  invoice: FragmentType<typeof InvoiceSendButtonFragment>
+
+interface InvoicePayButtonProps {
+  invoice: FragmentType<typeof InvoicePayButtonFragment>
   onSubmit: (data: InvoiceUpdateInput) => Promise<void>
 }
 
-export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: InvoiceSendButtonProps): JSX.Element => {
-  const invoice = useFragment(InvoiceSendButtonFragment, InvoiceFragment)
+export const PayInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: InvoicePayButtonProps): JSX.Element => {
+  const invoice = useFragment(InvoicePayButtonFragment, InvoiceFragment)
   const dialogReference = useRef<HTMLDialogElement>(null)
 
   const {
@@ -37,18 +39,19 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
   } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
-      sendDate: format(new Date(), 'yyyy-MM-dd'),
+      payDate: format(new Date(), 'yyyy-MM-dd'),
       invoiceId: invoice.id,
       organizationId: invoice.organization.id,
+      sendDate: invoice.sendDate,
     },
   })
 
-  const handleSendInvoice = async (data: InvoiceUpdateInput) => {
+  const handlePayInvoice = async (data: InvoiceUpdateInput) => {
     await onSubmit({
       ...data,
       invoiceId: data.invoiceId,
       organizationId: data.organizationId,
-      sendDate: data.sendDate,
+      payDate: data.payDate,
     })
     dialogReference.current?.close()
   }
@@ -59,29 +62,29 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
         className="btn btn-primary btn-sm print:hidden"
         type="button"
         onClick={() => dialogReference.current?.showModal()}
-        disabled={isSubmitting}
+        disabled={isSubmitting || !invoice.sendDate}
       >
-        Send
+        Pay
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
-          <h3 className="text-lg font-bold">Send Invoice</h3>
-          <form onSubmit={handleSubmit(handleSendInvoice)} className="contents" id="send-invoice-form">
+          <h3 className="text-lg font-bold">Pay Invoice</h3>
+          <form onSubmit={handleSubmit(handlePayInvoice)} className="contents" id="pay-invoice-form">
             <Controller
               control={control}
               rules={{ validate: (value) => !value || dateStringValidation(value) }}
-              name="sendDate"
+              name="payDate"
               render={({ field: { onChange, onBlur, value } }) => (
                 <div>
                   <div className="flex items-center">
-                    <p className="py-4"> When do you want to send this invoice billed to {invoice.customerName}?</p>
+                    <p className="py-4"> When do you want to mark this invoice as paid for {invoice.customerName}?</p>
                     <InputMask
                       mask="9999-99-99"
                       disabled={isSubmitting}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value ?? ''}
-                      id="end"
+                      id="pay"
                       type="text"
                       size={10}
                       className="input input-sm input-bordered"
@@ -91,7 +94,7 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
                     disabled={isSubmitting}
                     date={getDate(value)}
                     hideLabel
-                    onDateChange={(newDate) => setValue('sendDate', format(newDate, 'yyyy-MM-dd'))}
+                    onDateChange={(newDate) => setValue('payDate', format(newDate, 'yyyy-MM-dd'))}
                     alwaysOpen
                   />
                 </div>
@@ -99,7 +102,7 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
             />
             <div className="label">
               <ErrorMessage
-                name="sendDate"
+                name="payDate"
                 errors={errors}
                 as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
               />
@@ -113,11 +116,11 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
             </form>
             <button
               className="btn btn-success btn-sm"
-              onClick={handleSubmit(handleSendInvoice)}
+              onClick={handleSubmit(handlePayInvoice)}
               disabled={isSubmitting}
-              form="send-invoice-form"
+              form="pay-invoice-form"
             >
-              Send
+              Pay
             </button>
           </div>
         </div>
