@@ -49,6 +49,6 @@ export const Invoice = builder.prismaObject('Invoice', {
     }),
 
     organization: t.relation('organization'),
-    invoiceItems: t.relation('InvoiceItems'),
+    invoiceItems: t.relation('invoiceItems'),
   }),
 })

@@ -22,6 +22,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
       projects {
         id
         title
+        startDate
+        endDate
         tasks {
           id
           title
@@ -38,6 +40,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
         project {
           id
           title
+          startDate
+          endDate
         }
       }
       ...InvoiceItemListRow
@@ -124,9 +128,21 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     }
   }
 
-  const availableTasksByProject = invoiceData.organization.projects.map((project) =>
-    project.tasks.filter((task) => !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id)),
-  )
+  const availableTasksByProject = invoiceData.organization.projects.map((project) => {
+    const projectStartDate = project.startDate ? new Date(project.startDate) : undefined
+    const projectEndDate = project.endDate ? new Date(project.endDate) : undefined
+    const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
+    const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
+    return project.tasks.filter((task) => {
+      return (
+        !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id) &&
+        projectStartDate &&
+        projectStartDate >= invoiceStartDate &&
+        projectEndDate &&
+        projectEndDate <= invoiceEndDate
+      )
+    })
+  })
 
   const filteredProjectsWithTasks = availableTasksByProject
     // eslint-disable-next-line unicorn/no-null
@@ -145,14 +161,22 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
           </tr>
         </thead>
         <tbody>
-          {invoiceData.invoiceItems.map((invoiceItem) => (
-            <InvoiceItemListRow
-              key={invoiceItem.id}
-              invoiceItem={invoiceItem}
-              workFrom={invoiceData.invoiceWorkFrom}
-              workUntil={invoiceData.invoiceWorkUntil}
-            />
-          ))}
+          {invoiceData.invoiceItems
+            .filter((invoiceItem) => {
+              const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
+              const taskEndDate = new Date(invoiceItem.task.project.endDate ?? 0)
+              const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
+              const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
+              return taskStartDate >= invoiceStartDate && taskEndDate <= invoiceEndDate
+            })
+            .map((invoiceItem) => (
+              <InvoiceItemListRow
+                key={invoiceItem.id}
+                invoiceItem={invoiceItem}
+                workFrom={invoiceData.invoiceWorkFrom}
+                workUntil={invoiceData.invoiceWorkUntil}
+              />
+            ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
