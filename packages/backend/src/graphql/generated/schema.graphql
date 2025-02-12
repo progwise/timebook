@@ -49,10 +49,19 @@ type Invoice implements ModifyInterface {
   sendDate: Date
 }
 
+"""
+Actions that can be performed on an invoice
+"""
+enum InvoiceAction {
+  Pay
+  ResetPayDate
+  Send
+  Withdraw
+}
+
 input InvoiceInput {
   customerAddress: String
   customerName: String!
-  invoiceDate: Date!
   invoiceWorkFrom: Date!
   invoiceWorkUntil: Date!
   organizationId: ID!
@@ -101,12 +110,6 @@ input InvoiceItemInput {
   taskId: ID!
 }
 
-input InvoiceSendInput {
-  invoiceId: ID!
-  organizationId: ID!
-  sendDate: Date
-}
-
 """
 Status of the invoice
 """
@@ -120,9 +123,12 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
+  invoiceId: ID
   invoiceWorkFrom: Date
   invoiceWorkUntil: Date
   organizationId: ID
+  payDate: Date
+  sendDate: Date
 }
 
 """
@@ -165,6 +171,10 @@ type Mutation {
   Update an invoice
   """
   invoiceUpdate(
+    """
+    Action to perform on the invoice
+    """
+    action: InvoiceAction
     data: InvoiceUpdateInput!
 
     """
@@ -278,11 +288,6 @@ type Mutation {
   ): Project!
 
   """
-  Send an invoice
-  """
-  sendInvoice(data: InvoiceSendInput!): Invoice!
-
-  """
   Archive a task
   """
   taskArchive(
@@ -333,11 +338,6 @@ type Mutation {
   The ongoing time tracking will be stopped and converted to work hours
   """
   trackingStop: [WorkHour!]!
-
-  """
-  Withdraw an invoice
-  """
-  withdrawInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Updates a comment of a work hour or creates one
