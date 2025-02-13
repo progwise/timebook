@@ -115,19 +115,27 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         data: updateData,
         action,
       })
-    } catch {}
+    } catch (error) {
+      alert('An error occurred while sending the invoice. Please try again.')
+      throw error
+    }
   }
 
   const handlePayOrResetInvoice = async (data: InvoiceUpdateInput) => {
     const action = invoice.payDate ? InvoiceAction.ResetPayDate : InvoiceAction.Pay
-    await updateInvoice({
-      id: invoice.id,
-      data: {
-        ...data,
-        organizationId: invoice.organization.id,
-      },
-      action,
-    })
+    try {
+      await updateInvoice({
+        id: invoice.id,
+        data: {
+          ...data,
+          organizationId: invoice.organization.id,
+        },
+        action,
+      })
+    } catch (error) {
+      alert('An error occurred while updating the invoice payment status. Please try again.')
+      throw error
+    }
   }
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
