@@ -41,7 +41,6 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
     formState: { isSubmitting },
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
-      invoiceId: invoice.id,
       organizationId: invoice.organization.id,
     },
   })

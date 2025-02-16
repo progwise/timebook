@@ -17,6 +17,7 @@ import { getDate } from '../../../../../../frontend/components/dateStringValidat
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
+import { adjustDateToUTC } from './dateUtils'
 import { InvoiceItemList } from './invoiceItemList'
 import { PayOrResetInvoiceButton } from './payOrResetInvoiceButton'
 import { SendOrWithdrawInvoice } from './sendOrWithdrawInvoice'
@@ -68,21 +69,21 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     control,
     handleSubmit,
     clearErrors,
-  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
+  } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
       customerName: invoice.customerName,
       customerAddress: invoice.customerAddress,
       invoiceWorkFrom: invoice.invoiceWorkFrom,
       invoiceWorkUntil: invoice.invoiceWorkUntil,
+      sendDate: invoice.sendDate,
+      payDate: invoice.payDate,
     },
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
 
-  const handleSubmitForm = async (
-    data: Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>,
-  ) => {
+  const handleSubmitForm = async (data: InvoiceUpdateInput) => {
     const updateInvoiceResult = await updateInvoice({
       id: invoice.id,
       data: {
@@ -100,12 +101,12 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
 
   const handleSendOrWithdrawInvoice = async (data: InvoiceUpdateInput, action: InvoiceAction) => {
     try {
-      const updateData: Partial<InvoiceUpdateInput> = {
+      const updateData: InvoiceUpdateInput = {
         organizationId: invoice.organization.id,
       }
 
       if (action === InvoiceAction.Send) {
-        updateData.sendDate = data.sendDate
+        updateData.sendDate = adjustDateToUTC(data.sendDate ?? '')
       } else if (action === InvoiceAction.Withdraw) {
         updateData.sendDate = null
       }
@@ -115,27 +116,24 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         data: updateData,
         action,
       })
-    } catch (error) {
-      alert('An error occurred while sending the invoice. Please try again.')
-      throw error
-    }
+    } catch {}
   }
 
   const handlePayOrResetInvoice = async (data: InvoiceUpdateInput) => {
     const action = invoice.payDate ? InvoiceAction.ResetPayDate : InvoiceAction.Pay
     try {
+      const adjustedPayDate = adjustDateToUTC(data.payDate ?? '')
+
       await updateInvoice({
         id: invoice.id,
         data: {
           ...data,
           organizationId: invoice.organization.id,
+          payDate: adjustedPayDate,
         },
         action,
       })
-    } catch (error) {
-      alert('An error occurred while updating the invoice payment status. Please try again.')
-      throw error
-    }
+    } catch {}
   }
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>

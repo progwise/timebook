@@ -170,7 +170,7 @@ const documents = {
     types.InvoiceItemCreateDocument,
   '\n  fragment InvoicePayButton on Invoice {\n    id\n    customerName\n    sendDate\n    organization {\n      id\n    }\n  }\n':
     types.InvoicePayButtonFragmentDoc,
-  '\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    customerName\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n':
+  '\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n':
     types.PayOrResetInvoiceButtonFragmentDoc,
   '\n  fragment ResetPayInvoiceButton on Invoice {\n    id\n    payDate\n    invoiceStatus\n    customerName\n    organization {\n      id\n    }\n  }\n':
     types.ResetPayInvoiceButtonFragmentDoc,
@@ -711,8 +711,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    customerName\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n',
-): (typeof documents)['\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    customerName\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n']
+  source: '\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n',
+): (typeof documents)['\n  fragment PayOrResetInvoiceButton on Invoice {\n    id\n    payDate\n    invoiceStatus\n    organization {\n      id\n    }\n    ...InvoicePayButton\n    ...ResetPayInvoiceButton\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -8,31 +8,31 @@ import { InvoiceUpdateInput } from '../../../../frontend/generated/gql/graphql'
 
 const invoiceUpdateWorkDateSchema = z
   .string()
-  .min('____-__-__'.length, 'Enter a date')
-  .refine((value) => value === '' || value !== '____-__-__', 'Enter a date')
-  .refine((value) => value === '' || isValid(parseISO(value)), 'Invalid date')
+  .trim()
+  .min(10, 'Enter a date')
+  .refine((value) => value !== '' && value !== '____-__-__', 'Enter a date')
+  .refine((value) => isValid(parseISO(value)) && !Number.isNaN(parseISO(value).getTime()), 'Invalid date')
+
+const dateTimeSchema = z
+  .string()
+  .trim()
+  .min(10, 'Enter a date')
+  .refine((value) => value !== '____-__-__', 'Enter a date')
+  .refine((value) => !value || (isValid(parseISO(value)) && !Number.isNaN(parseISO(value).getTime())), 'Invalid date')
 
 export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoiceUpdateInputValidations
   .extend({
     invoiceWorkFrom: invoiceUpdateWorkDateSchema.optional(),
     invoiceWorkUntil: invoiceUpdateWorkDateSchema.optional(),
-    sendDate: z
-      .string()
-      .min('____-__-__'.length, 'Enter a date')
-      .refine((value) => value !== '____-__-__', 'Enter a date')
-      .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
+    sendDate: dateTimeSchema
       .refine(
-        (value) => !value || !isAfter(parseISO(value), new Date()),
+        (value) => !value || (!Number.isNaN(parseISO(value).getTime()) && !isAfter(parseISO(value), new Date())),
         'Send date cannot be a future date. Please enter a valid date.',
       )
       .optional(),
-    payDate: z
-      .string()
-      .min('____-__-__'.length, 'Enter a date')
-      .refine((value) => value !== '____-__-__', 'Enter a date')
-      .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
+    payDate: dateTimeSchema
       .refine(
-        (value) => !value || !isAfter(parseISO(value), new Date()),
+        (value) => !value || (!Number.isNaN(parseISO(value).getTime()) && !isAfter(parseISO(value), new Date())),
         'Pay date cannot be a future date. Please enter a valid date.',
       )
       .optional(),
@@ -51,7 +51,7 @@ export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoice
       })
     }
 
-    if (sendDate && payDate && payDate < sendDate) {
+    if (sendDate && payDate && sendDate > payDate) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['payDate'],

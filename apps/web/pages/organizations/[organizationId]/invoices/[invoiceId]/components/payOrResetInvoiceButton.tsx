@@ -6,7 +6,6 @@ import { ResetPayInvoiceButton } from './resetPayInvoiceButton'
 const PayOrResetInvoiceButtonFragment = graphql(`
   fragment PayOrResetInvoiceButton on Invoice {
     id
-    customerName
     payDate
     invoiceStatus
     organization {

@@ -6,7 +6,6 @@ export const invoiceInputValidations = z.object({
   organizationId: z.string(),
   invoiceWorkFrom: z.date(),
   invoiceWorkUntil: z.date(),
-  invoiceId: z.string().nullish(),
   sendDate: z.date().nullish(),
   payDate: z.date().nullish(),
 })

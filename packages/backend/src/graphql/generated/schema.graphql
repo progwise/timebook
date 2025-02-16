@@ -123,12 +123,11 @@ input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
   invoiceDate: Date
-  invoiceId: ID
   invoiceWorkFrom: Date
   invoiceWorkUntil: Date
   organizationId: ID
-  payDate: Date
-  sendDate: Date
+  payDate: DateTime
+  sendDate: DateTime
 }
 
 """

@@ -100,12 +100,11 @@ export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
   invoiceDate?: InputMaybe<Scalars['Date']>
-  invoiceId?: InputMaybe<Scalars['ID']>
   invoiceWorkFrom?: InputMaybe<Scalars['Date']>
   invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
-  payDate?: InputMaybe<Scalars['Date']>
-  sendDate?: InputMaybe<Scalars['Date']>
+  payDate?: InputMaybe<Scalars['DateTime']>
+  sendDate?: InputMaybe<Scalars['DateTime']>
 }
 
 /** Adds the information whether the user can edit the entity */
@@ -1503,7 +1502,6 @@ export type InvoicePayButtonFragment = {
 export type PayOrResetInvoiceButtonFragment = ({
   __typename?: 'Invoice'
   id: string
-  customerName: string
   payDate?: string | null
   invoiceStatus: InvoiceStatus
   organization: { __typename?: 'Organization'; id: string }
@@ -4703,7 +4701,6 @@ export const PayOrResetInvoiceButtonFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
           {
@@ -4987,7 +4984,6 @@ export const InvoiceFragmentFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
           {
@@ -7463,7 +7459,6 @@ export const InvoiceDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'customerName' } },
           { kind: 'Field', name: { kind: 'Name', value: 'payDate' } },
           { kind: 'Field', name: { kind: 'Name', value: 'invoiceStatus' } },
           {
