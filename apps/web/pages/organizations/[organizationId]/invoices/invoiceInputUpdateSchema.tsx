@@ -6,33 +6,25 @@ import { invoiceUpdateInputValidations } from '@progwise/timebook-validations'
 import { getDate } from '../../../../frontend/components/dateStringValidation'
 import { InvoiceUpdateInput } from '../../../../frontend/generated/gql/graphql'
 
-const invoiceUpdateWorkDateSchema = z
+const invoiceUpdateDateSchema = z
   .string()
-  .trim()
   .min(10, 'Enter a date')
-  .refine((value) => value !== '' && value !== '____-__-__', 'Enter a date')
-  .refine((value) => isValid(parseISO(value)) && !Number.isNaN(parseISO(value).getTime()), 'Invalid date')
-
-const dateTimeSchema = z
-  .string()
-  .trim()
-  .min(10, 'Enter a date')
-  .refine((value) => value !== '____-__-__', 'Enter a date')
-  .refine((value) => !value || (isValid(parseISO(value)) && !Number.isNaN(parseISO(value).getTime())), 'Invalid date')
+  .refine((value) => value === '' || value !== '____-__-__', 'Enter a date')
+  .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
 
 export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoiceUpdateInputValidations
   .extend({
-    invoiceWorkFrom: invoiceUpdateWorkDateSchema.optional(),
-    invoiceWorkUntil: invoiceUpdateWorkDateSchema.optional(),
-    sendDate: dateTimeSchema
+    invoiceWorkFrom: invoiceUpdateDateSchema.optional(),
+    invoiceWorkUntil: invoiceUpdateDateSchema.optional(),
+    sendDate: invoiceUpdateDateSchema
       .refine(
-        (value) => !value || (!Number.isNaN(parseISO(value).getTime()) && !isAfter(parseISO(value), new Date())),
+        (value) => !value || !isAfter(parseISO(value), new Date()),
         'Send date cannot be a future date. Please enter a valid date.',
       )
       .optional(),
-    payDate: dateTimeSchema
+    payDate: invoiceUpdateDateSchema
       .refine(
-        (value) => !value || (!Number.isNaN(parseISO(value).getTime()) && !isAfter(parseISO(value), new Date())),
+        (value) => !value || !isAfter(parseISO(value), new Date()),
         'Pay date cannot be a future date. Please enter a valid date.',
       )
       .optional(),
