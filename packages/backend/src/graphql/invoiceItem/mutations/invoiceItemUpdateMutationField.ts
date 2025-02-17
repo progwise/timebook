@@ -10,21 +10,14 @@ builder.mutationField('invoiceItemUpdate', (t) =>
       id: t.arg.id({ description: 'id of the invoice item' }),
       data: t.arg({ type: InvoiceItemUpdateInput }),
     },
-    authScopes: async (_source, { id, data: {} }) => {
-      const invoiceItem = await prisma.invoiceItem.findUniqueOrThrow({
-        select: { invoice: { select: { organization: { select: { id: true } } } } },
-        where: { id: id.toString() },
-      })
-
-      return { isAdminByOrganization: invoiceItem.invoice.organization.id }
-    },
-    resolve: async (query, _source, { id, data: { taskId, invoiceId, duration, hourlyRate } }) => {
+    authScopes: async (_source, { data: { organizationId } }) => ({
+      isAdminByOrganization: organizationId?.toString(),
+    }),
+    resolve: async (query, _source, { id, data: { duration, hourlyRate } }) => {
       return prisma.invoiceItem.update({
         ...query,
         where: { id: id.toString() },
         data: {
-          taskId: taskId?.toString(),
-          invoiceId: invoiceId?.toString(),
           duration: duration ?? undefined,
           hourlyRate: hourlyRate ?? undefined,
         },

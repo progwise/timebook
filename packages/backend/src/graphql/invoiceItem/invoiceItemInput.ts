@@ -5,6 +5,7 @@ import { builder } from '../builder'
 export const InvoiceItemInput = builder.inputType('InvoiceItemInput', {
   validate: { schema: invoiceItemInputValidations },
   fields: (t) => ({
+    organizationId: t.id({ required: false }),
     taskId: t.id(),
     invoiceId: t.id(),
     duration: t.int({ description: 'Invoice item duration in minutes' }),

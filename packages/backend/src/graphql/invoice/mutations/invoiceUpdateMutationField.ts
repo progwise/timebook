@@ -10,32 +10,25 @@ builder.mutationField('invoiceUpdate', (t) =>
       id: t.arg.id({ description: 'id of the invoice' }),
       data: t.arg({ type: InvoiceUpdateInput }),
     },
-    authScopes: async (_source, { id, data: { organizationId } }) => {
-      const invoice = await prisma.invoice.findUniqueOrThrow({
-        select: { organizationId: true },
-        where: { id: id.toString() },
-      })
-
-      const oldOrganizationId = invoice.organizationId
-      if (organizationId) {
-        const newOrganizationId = organizationId.toString()
-        return { isAdminByOrganizations: [oldOrganizationId, newOrganizationId] }
-      }
-
-      return { isAdminByOrganization: oldOrganizationId }
-    },
+    authScopes: (_source, { data: { organizationId } }) => ({ isAdminByOrganization: organizationId?.toString() }),
     resolve: async (
       query,
       _source,
-      { id, data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
+      { id, data: { customerAddress, customerName, invoiceWorkFrom, invoiceWorkUntil } },
     ) => {
+      const invoice = await prisma.invoice.findUniqueOrThrow({
+        where: { id: id.toString() },
+      })
+
+      if (invoiceWorkFrom && invoiceWorkUntil && invoiceWorkFrom >= invoiceWorkUntil) {
+        throw new Error('The end date must be after the start date')
+      }
+
       const updatedInvoice = await prisma.invoice.update({
         ...query,
         data: {
           customerAddress: customerAddress ?? undefined,
           customerName: customerName ?? undefined,
-          invoiceDate: invoiceDate ?? undefined,
-          organizationId: organizationId?.toString(),
           invoiceWorkFrom: invoiceWorkFrom ?? undefined,
           invoiceWorkUntil: invoiceWorkUntil ?? undefined,
         },
@@ -53,27 +46,18 @@ builder.mutationField('invoiceUpdate', (t) =>
         const workHours = await prisma.workHour.groupBy({
           by: ['taskId'],
           where: {
-            AND: [
-              {
-                date: {
-                  ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
-                  ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
-                },
-              },
-              {
-                task: {
-                  project: {
-                    organizationId: updatedInvoice.organizationId,
-                  },
-                },
-              },
-              {
-                taskId: {
-                  notIn: [...existingTaskIds],
-                },
-              },
-            ],
+            date: {
+              ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
+              ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
+            },
+
+            task: { project: { organization: { id: invoice.organizationId } } },
+
+            taskId: {
+              notIn: [...existingTaskIds],
+            },
           },
+
           _sum: {
             duration: true,
           },

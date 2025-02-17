@@ -22,6 +22,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
       projects {
         id
         title
+        startDate
+        endDate
         tasks {
           id
           title
@@ -38,6 +40,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
         project {
           id
           title
+          startDate
+          endDate
         }
       }
       ...InvoiceItemListRow
@@ -74,7 +78,6 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
 
   const {
     register,
-    handleSubmit,
     reset,
     getValues,
     watch,
@@ -94,45 +97,51 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     const validHourlyRate = Number.isNaN(hourlyRate) ? 0 : hourlyRate
     const newFooterAmount = validDuration * validHourlyRate
     setFooterAmount(newFooterAmount)
-  }, [getValues, watch('duration'), watch('hourlyRate')])
+  }, [getValues, watch('duration'), watch('hourlyRate'), watch('taskId')])
 
-  const handleAddInvoiceItem = async (invoiceItemData: InvoiceItemFormData) => {
-    try {
-      const result = await invoiceItemCreate({
-        data: {
-          invoiceId: invoiceData.id,
-          ...invoiceItemData,
-        },
-      })
-      if (result.error) {
-        throw new Error(`GraphQL Error ${result.error}`)
-      }
-
-      reset({
-        duration: 0,
-        hourlyRate: 0,
-      })
-      setFooterAmount(0)
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  const handleFormSubmission = () => {
+  const handleFormSubmission = async (oldValues: InvoiceItemFormData) => {
     const { taskId, duration, hourlyRate } = getValues()
     if (taskId && duration && hourlyRate) {
-      handleSubmit((data) =>
-        handleAddInvoiceItem({
-          ...data,
-          duration: duration * 60,
-        }),
-      )()
+      if (Number.isNaN(duration) || Number.isNaN(hourlyRate)) {
+        alert('Invalid input')
+        reset(oldValues)
+        return
+      }
+      try {
+        const result = await invoiceItemCreate({
+          data: {
+            invoiceId: invoiceData.id,
+            organizationId: invoiceData.organization.id,
+            taskId,
+            duration: duration * 60,
+            hourlyRate,
+          },
+        })
+        if (result.error) {
+          throw new Error(`GraphQL Error ${result.error}`)
+        }
+        reset({ duration: 0, hourlyRate: 0 })
+        setFooterAmount(0)
+      } catch (error) {
+        alert(error)
+      }
     }
   }
 
-  const availableTasksByProject = invoiceData.organization.projects.map((project) =>
-    project.tasks.filter((task) => !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id)),
-  )
+  const availableTasksByProject = invoiceData.organization.projects.map((project) => {
+    const projectStartDate = project.startDate ? new Date(project.startDate) : undefined
+    const projectEndDate = project.endDate ? new Date(project.endDate) : undefined
+    const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
+    const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
+    return project.tasks.filter((task) => {
+      return (
+        !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id) &&
+        projectStartDate &&
+        projectStartDate <= invoiceEndDate &&
+        (!projectEndDate || projectEndDate >= invoiceStartDate)
+      )
+    })
+  })
 
   const filteredProjectsWithTasks = availableTasksByProject
     // eslint-disable-next-line unicorn/no-null
@@ -146,15 +155,20 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
           <tr className="[&_th]:border [&_th]:border-neutral">
             <th />
             <th className="w-1/12">Duration</th>
-            <th className="w-1/12">Hourly Rate, €</th>
-            <th className="w-1/12">Amount, €</th>
+            <th className="w-1/12">Hourly Rate (€)</th>
+            <th className="w-1/12">Amount (€)</th>
           </tr>
         </thead>
         <tbody>
           {invoiceData.invoiceItems
-            .sort((a, b) => {
-              const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
-              return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
+            .filter((invoiceItem) => {
+              const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
+              const taskEndDate = invoiceItem.task.project.endDate
+                ? new Date(invoiceItem.task.project.endDate)
+                : undefined
+              const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
+              const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
+              return taskStartDate <= invoiceEndDate && (!taskEndDate || taskEndDate >= invoiceStartDate)
             })
             .map((invoiceItem) => (
               <InvoiceItemListRow
@@ -168,89 +182,91 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
         <tfoot className="text-sm text-base-content">
           <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
             <td className="p-1">
-              <form
-                onSubmit={handleSubmit(handleAddInvoiceItem)}
-                id="form-create-invoice-item"
+              <select
+                className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                 {...register('taskId', { disabled: isSubmitting })}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
               >
-                <select
-                  className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
-                  {...register('taskId', { disabled: isSubmitting })}
-                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
-                >
-                  {filteredProjectsWithTasks.length === 0 ? (
-                    <option value="">No tasks available</option>
-                  ) : (
-                    <>
-                      <option value="">Select a task</option>
-                      {filteredProjectsWithTasks.map((index) => (
-                        <optgroup
-                          key={invoiceData.organization.projects[index].id}
-                          label={invoiceData.organization.projects[index].title}
-                        >
-                          {availableTasksByProject[index].map((task) => (
-                            <option key={task.id} value={task.id}>
-                              {task.title}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </>
-                  )}
-                </select>
-              </form>
+                {filteredProjectsWithTasks.length === 0 ? (
+                  <option value="">No tasks available</option>
+                ) : (
+                  <>
+                    <option value="">Select a task</option>
+                    {filteredProjectsWithTasks.map((index) => (
+                      <optgroup
+                        key={invoiceData.organization.projects[index].id}
+                        label={invoiceData.organization.projects[index].title}
+                      >
+                        {availableTasksByProject[index].map((task) => (
+                          <option key={task.id} value={task.id}>
+                            {task.title}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </>
+                )}
+              </select>
             </td>
             <td className="p-1">
-              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
-                <InputField
-                  {...register('duration', { valueAsNumber: true })}
-                  className="input-sm input-ghost text-right"
-                  placeholder="Duration"
-                  defaultValue={getFormattedValue(0)}
-                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
-                  errorMessage={errors.duration?.message}
-                  onBlur={(event) => {
-                    event.target.value = getFormattedValue(parseNumericInput(event.target.value, 0))
-                    handleFormSubmission()
-                  }}
-                  isDirty={isDirty && dirtyFields.duration}
-                  onFocus={(event) => event.target.select()}
-                  onKeyDown={(event) => {
-                    if (event.code === 'Enter') {
-                      let oldValue = (event.target as HTMLInputElement).value
-                      const newDuration = parseNumericInput(oldValue, 0)
-                      oldValue = getFormattedValue(newDuration * 60)
-                      handleFormSubmission()
-                    }
-                  }}
-                />
-              </form>
+              <InputField
+                {...register('duration', { valueAsNumber: true })}
+                className="input-sm input-ghost text-right"
+                placeholder="Duration"
+                defaultValue={getFormattedValue(0)}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
+                errorMessage={errors.duration?.message}
+                onBlur={(event) => {
+                  const oldValues = getValues()
+                  const value = parseNumericInput(event.target.value)
+                  if (Number.isNaN(value)) {
+                    reset(oldValues)
+                    event.target.value = getFormattedValue(oldValues.duration)
+                  } else {
+                    event.target.value = getFormattedValue(value)
+                    handleFormSubmission(oldValues)
+                  }
+                }}
+                isDirty={isDirty && dirtyFields.duration}
+                onFocus={(event) => event.target.select()}
+                onKeyDown={async (event) => {
+                  if (event.code === 'Enter') {
+                    event.preventDefault()
+                    const oldValues = getValues()
+                    await handleFormSubmission(oldValues)
+                  }
+                }}
+              />
             </td>
             <td className="p-1">
-              <form onSubmit={handleSubmit(handleAddInvoiceItem)} id="form-create-invoice-item">
-                <InputField
-                  {...register('hourlyRate', { valueAsNumber: true })}
-                  className="input-sm input-ghost text-right"
-                  placeholder="Hourly rate"
-                  defaultValue={getFormattedValue(0)}
-                  disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
-                  errorMessage={errors.hourlyRate?.message}
-                  onBlur={(event) => {
-                    event.target.value = getFormattedValue(parseNumericInput(event.target.value, 0))
-                    handleFormSubmission()
-                  }}
-                  isDirty={isDirty && dirtyFields.hourlyRate}
-                  onFocus={(event) => event.target.select()}
-                  onKeyDown={(event) => {
-                    if (event.code === 'Enter') {
-                      let oldHourlyRate = (event.target as HTMLInputElement).value
-                      const newHourlyRate = parseNumericInput(oldHourlyRate, 0)
-                      oldHourlyRate = getFormattedValue(newHourlyRate)
-                      handleFormSubmission()
-                    }
-                  }}
-                />
-              </form>
+              <InputField
+                {...register('hourlyRate', { valueAsNumber: true })}
+                className="input-sm input-ghost text-right"
+                placeholder="Hourly rate"
+                defaultValue={getFormattedValue(0)}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
+                errorMessage={errors.hourlyRate?.message}
+                onBlur={(event) => {
+                  const oldValues = getValues()
+                  const value = parseNumericInput(event.target.value)
+                  if (Number.isNaN(value)) {
+                    reset(oldValues)
+                    event.target.value = getFormattedValue(oldValues.hourlyRate)
+                  } else {
+                    event.target.value = getFormattedValue(value)
+                    handleFormSubmission(oldValues)
+                  }
+                }}
+                isDirty={isDirty && dirtyFields.hourlyRate}
+                onFocus={(event) => event.target.select()}
+                onKeyDown={async (event) => {
+                  if (event.code === 'Enter') {
+                    event.preventDefault()
+                    const oldValues = getValues()
+                    await handleFormSubmission(oldValues)
+                  }
+                }}
+              />
             </td>
             <td>{getFormattedValue(footerAmount)}</td>
           </tr>

@@ -30,7 +30,6 @@ const NewInvoicePage = (): JSX.Element => {
   const router = useRouter()
 
   const { organizationId } = router.query
-  const invoiceDate = format(new Date(), 'yyyy-MM-dd')
 
   const {
     register,
@@ -41,7 +40,6 @@ const NewInvoicePage = (): JSX.Element => {
   } = useForm<InvoiceInput>({
     defaultValues: {
       organizationId: organizationId?.toString() ?? '',
-      invoiceDate,
     },
     resolver: zodResolver(invoiceInputSchema),
   })
@@ -57,8 +55,8 @@ const NewInvoicePage = (): JSX.Element => {
     } catch {}
   }
 
-  const handleCancel = async () => {
-    await router.push(`/organizations/${organizationId}`)
+  const handleCancel = () => {
+    router.push(`/organizations/${organizationId}`)
   }
 
   return (

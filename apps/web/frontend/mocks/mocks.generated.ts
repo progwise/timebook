@@ -39,7 +39,6 @@ export type Invoice = ModifyInterface & {
   /** identifies the invoice */
   id: Scalars['ID']
   invoiceDate: Scalars['Date']
-  /** Items associated with the invoice */
   invoiceItems: Array<InvoiceItem>
   /** Status of the invoice */
   invoiceStatus: InvoiceStatus
@@ -53,7 +52,6 @@ export type Invoice = ModifyInterface & {
 export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
-  invoiceDate: Scalars['Date']
   invoiceWorkFrom: Scalars['Date']
   invoiceWorkUntil: Scalars['Date']
   organizationId: Scalars['ID']
@@ -81,6 +79,7 @@ export type InvoiceItemInput = {
   /** Invoice item hourly rate in euro */
   hourlyRate: Scalars['Int']
   invoiceId: Scalars['ID']
+  organizationId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
 }
 
@@ -89,8 +88,7 @@ export type InvoiceItemUpdateInput = {
   duration?: InputMaybe<Scalars['Int']>
   /** Invoice item hourly rate in euro */
   hourlyRate?: InputMaybe<Scalars['Int']>
-  invoiceId?: InputMaybe<Scalars['ID']>
-  taskId?: InputMaybe<Scalars['ID']>
+  organizationId?: InputMaybe<Scalars['ID']>
 }
 
 /** Status of the invoice */
@@ -103,7 +101,6 @@ export enum InvoiceStatus {
 export type InvoiceUpdateInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName?: InputMaybe<Scalars['String']>
-  invoiceDate?: InputMaybe<Scalars['Date']>
   invoiceWorkFrom?: InputMaybe<Scalars['Date']>
   invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
@@ -1520,7 +1517,7 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     }
   }>
   organization: {
@@ -1530,6 +1527,8 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Project'
       id: string
       title: string
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1554,6 +1553,8 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Project'
       id: string
       title: string
+      startDate?: string | null
+      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1566,7 +1567,7 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string }
+      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
     }
   }>
 }
@@ -1603,21 +1604,6 @@ export type InvoiceItemUpdateMutation = {
   invoiceItemUpdate: { __typename?: 'InvoiceItem'; id: string }
 }
 
-export type TaskWorkHoursQueryVariables = Exact<{
-  id: Scalars['ID']
-  from: Scalars['Date']
-  to: Scalars['Date']
-}>
-
-export type TaskWorkHoursQuery = {
-  __typename?: 'Query'
-  task: {
-    __typename?: 'Task'
-    id: string
-    workHours: Array<{ __typename?: 'WorkHour'; id: string; duration: number; date: string }>
-  }
-}
-
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
   organizationId: Scalars['ID']
@@ -1643,7 +1629,13 @@ export type InvoiceQuery = {
         __typename?: 'Task'
         id: string
         title: string
-        project: { __typename?: 'Project'; id: string; title: string }
+        project: {
+          __typename?: 'Project'
+          id: string
+          title: string
+          startDate?: string | null
+          endDate?: string | null
+        }
       }
     }>
     organization: {
@@ -1653,6 +1645,8 @@ export type InvoiceQuery = {
         __typename?: 'Project'
         id: string
         title: string
+        startDate?: string | null
+        endDate?: string | null
         tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
       }>
     }
@@ -2554,21 +2548,6 @@ export const mockInvoiceItemUpdateMutation = (
     any
   >,
 ) => graphql.mutation<InvoiceItemUpdateMutation, InvoiceItemUpdateMutationVariables>('invoiceItemUpdate', resolver)
-
-/**
- * @param resolver a function that accepts a captured request and may return a mocked response.
- * @see https://mswjs.io/docs/basics/response-resolver
- * @example
- * mockTaskWorkHoursQuery((req, res, ctx) => {
- *   const { id, from, to } = req.variables;
- *   return res(
- *     ctx.data({ task })
- *   )
- * })
- */
-export const mockTaskWorkHoursQuery = (
-  resolver: ResponseResolver<GraphQLRequest<TaskWorkHoursQueryVariables>, GraphQLContext<TaskWorkHoursQuery>, any>,
-) => graphql.query<TaskWorkHoursQuery, TaskWorkHoursQueryVariables>('TaskWorkHours', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.
