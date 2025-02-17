@@ -8,7 +8,7 @@ import { InvoiceInput } from '../../../../frontend/generated/gql/graphql'
 
 const invoiceWorkDateSchema = z
   .string()
-  .min('____-__-__'.length, 'Enter a date')
+  .min(10, 'Enter a date')
   .refine((value) => value !== '____-__-__', 'Enter a date')
   .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
 

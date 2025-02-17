@@ -682,7 +682,14 @@ type ReportGroupedByUser {
 Roles a user can have in a team
 """
 enum Role {
+  """
+  Admin role
+  """
   ADMIN
+
+  """
+  Member role
+  """
   MEMBER
 }
 
