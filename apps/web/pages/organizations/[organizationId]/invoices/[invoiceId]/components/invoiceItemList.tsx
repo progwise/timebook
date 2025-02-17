@@ -23,6 +23,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
       projects {
         id
         title
+        startDate
+        endDate
         tasks {
           id
           title
@@ -39,6 +41,8 @@ const InvoiceItemListInvoiceFragment = graphql(`
         project {
           id
           title
+          startDate
+          endDate
         }
       }
       ...InvoiceItemListRow
@@ -95,7 +99,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     const validHourlyRate = Number.isNaN(hourlyRate) ? 0 : hourlyRate
     const newFooterAmount = validDuration * validHourlyRate
     setFooterAmount(newFooterAmount)
-  }, [getValues, watch('duration'), watch('hourlyRate')])
+  }, [getValues, watch('duration'), watch('hourlyRate'), watch('taskId')])
 
   const handleFormSubmission = async (oldValues: InvoiceItemFormData) => {
     const { taskId, duration, hourlyRate } = getValues()
@@ -149,9 +153,14 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
         </thead>
         <tbody className="text-center">
           {invoiceData.invoiceItems
-            .sort((a, b) => {
-              const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
-              return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
+            .filter((invoiceItem) => {
+              const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
+              const taskEndDate = invoiceItem.task.project.endDate
+                ? new Date(invoiceItem.task.project.endDate)
+                : undefined
+              const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
+              const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
+              return taskStartDate <= invoiceEndDate && (!taskEndDate || taskEndDate >= invoiceStartDate)
             })
             .map((invoiceItem) => (
               <InvoiceItemListRow

@@ -20,11 +20,16 @@ export const invoiceInputSchema: z.ZodSchema<InvoiceInput> = invoiceInputValidat
   .superRefine((data, context) => {
     const startDate = getDate(data.invoiceWorkFrom)
     const endDate = getDate(data.invoiceWorkUntil)
+  .superRefine((data, context) => {
+    const startDate = getDate(data.invoiceWorkFrom)
+    const endDate = getDate(data.invoiceWorkUntil)
 
+    if (startDate && endDate && startDate >= endDate) {
     if (startDate && endDate && startDate >= endDate) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['invoiceWorkUntil'],
+        message: 'End date must be after start date',
         message: 'End date must be after start date',
       })
     }

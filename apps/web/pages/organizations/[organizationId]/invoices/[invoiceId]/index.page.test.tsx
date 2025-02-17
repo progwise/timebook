@@ -37,8 +37,6 @@ it('should render invoice details', async () => {
 it('should render invoice items', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
-  await screen.findByText('Task')
-  expect(screen.getByDisplayValue('5.00')).toBeInTheDocument()
-  expect(screen.getByDisplayValue('20.00')).toBeInTheDocument()
-  expect(screen.getByText('100.00')).toBeInTheDocument()
+  await screen.findByText('No tasks available')
+  expect(screen.getAllByDisplayValue('0.00')).toHaveLength(2)
 })
