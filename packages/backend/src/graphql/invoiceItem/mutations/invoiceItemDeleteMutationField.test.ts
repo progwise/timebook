@@ -56,7 +56,7 @@ beforeEach(async () => {
             invoiceWorkFrom: new Date(),
             invoiceWorkUntil: new Date(),
             createdByUserId: '1',
-            InvoiceItems: {
+            invoiceItems: {
               create: {
                 id: 'II1',
                 taskId: 'T1',
