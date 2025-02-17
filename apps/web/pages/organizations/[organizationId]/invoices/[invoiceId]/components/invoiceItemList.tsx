@@ -143,15 +143,15 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     <>
       <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
-          <tr className="[&_th]:border [&_th]:border-neutral">
+          <tr className="text-right [&_th]:border [&_th]:border-neutral">
             <th />
-            <th />
-            <th className="w-2/12">Duration</th>
-            <th className="w-2/12">Hourly Rate (€)</th>
-            <th className="w-2/12 text-center">Amount (€)</th>
+            <th>Duration</th>
+            <th>H. Rate (€)</th>
+            <th>Amount (€)</th>
+            <th className="border-none bg-base-100" />
           </tr>
         </thead>
-        <tbody className="text-center">
+        <tbody>
           {invoiceData.invoiceItems
             .filter((invoiceItem) => {
               const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
@@ -173,8 +173,8 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
             ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
-          <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
-            <td className="p-1" colSpan={2}>
+          <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral [&_td]:p-2">
+            <td>
               <select
                 className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                 {...register('taskId', { disabled: isSubmitting })}
@@ -201,10 +201,10 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 )}
               </select>
             </td>
-            <td className="p-1">
+            <td>
               <InputField
                 {...register('duration', { valueAsNumber: true })}
-                className="input-sm input-ghost text-left"
+                className="input-sm input-ghost text-right"
                 placeholder="Duration"
                 defaultValue={getFormattedValue(0)}
                 disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
@@ -231,10 +231,10 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 }}
               />
             </td>
-            <td className="p-1">
+            <td>
               <InputField
                 {...register('hourlyRate', { valueAsNumber: true })}
-                className="input-sm input-ghost text-left"
+                className="input-sm input-ghost text-right"
                 placeholder="Hourly rate"
                 defaultValue={getFormattedValue(0)}
                 disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
@@ -261,7 +261,8 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 }}
               />
             </td>
-            <td className="p-1 text-center">{getFormattedValue(footerAmount)}</td>
+            <td className="text-right">{getFormattedValue(footerAmount)}</td>
+            <td className="border-none" />
           </tr>
         </tfoot>
       </table>
