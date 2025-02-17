@@ -19,7 +19,7 @@ import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/gra
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
 import { InvoiceItemList } from './invoiceItemList'
 import { PayOrResetInvoiceButton } from './payOrResetInvoiceButton'
-import { SendOrWithdrawInvoice } from './sendOrWithdrawInvoice'
+import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
 
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -290,7 +290,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           <p>Thank you for your business!</p>
         </div>
         <div className="flex gap-4">
-          <SendOrWithdrawInvoice
+          <SendOrWithdrawInvoiceButton
             invoice={invoice}
             onSubmit={(data) => handleSendOrWithdrawInvoice(data, InvoiceAction.Send)}
           />

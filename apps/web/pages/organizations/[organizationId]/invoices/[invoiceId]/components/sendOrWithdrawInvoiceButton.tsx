@@ -19,7 +19,7 @@ interface InvoiceSendOrWithdrawProps {
   onSubmit: (data: InvoiceUpdateInput) => Promise<void>
 }
 
-export const SendOrWithdrawInvoice = ({ invoice: InvoiceFragment, onSubmit }: InvoiceSendOrWithdrawProps) => {
+export const SendOrWithdrawInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: InvoiceSendOrWithdrawProps) => {
   const invoice = useFragment(InvoiceSendOrWithdrawFragment, InvoiceFragment)
 
   if (invoice.sendDate || invoice.invoiceStatus === 'SENT') {
