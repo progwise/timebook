@@ -16,7 +16,7 @@ import { FragmentType, graphql, useFragment } from '../../../../../../frontend/g
 import { InvoiceSendInput, InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceInputSchema } from '../../invoiceInputSchema'
 import { InvoiceItemList } from './invoiceItemList'
-import { SendOrWithdrawInvoice } from './sendOrWithdrawInvoice'
+import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
 
 const SendInvoiceMutationDocument = graphql(`
   mutation sendInvoice($data: InvoiceSendInput!) {
@@ -225,7 +225,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </p>
           <p>Thank you for your business!</p>
         </div>
-        <SendOrWithdrawInvoice invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
+        <SendOrWithdrawInvoiceButton invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
       </div>
     </div>
   )

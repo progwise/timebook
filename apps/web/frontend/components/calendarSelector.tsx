@@ -1,60 +1,10 @@
 import { autoUpdate, offset, shift, useFloating } from '@floating-ui/react-dom'
 import { Popover, Transition } from '@headlessui/react'
-import {
-  addMonths,
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
-  format,
-  getDate,
-  isSameDay,
-  isSameMonth,
-  isToday,
-  isWeekend,
-  startOfMonth,
-  startOfWeek,
-  subMonths,
-} from 'date-fns'
+import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, startOfMonth, startOfWeek, subMonths } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { FaRegCalendar } from 'react-icons/fa6'
 
 import { CalendarPanel } from './calendarPanel'
-
-interface DayItemProps {
-  day: Date
-  selectedDate?: Date
-  shownDate: Date
-  onClick: () => void
-}
-
-export const DayItem = ({ day, selectedDate, onClick, shownDate }: DayItemProps): JSX.Element => {
-  const classNames = ['btn btn-sm']
-
-  if (!isSameMonth(day, shownDate)) {
-    classNames.push('opacity-50')
-  }
-
-  let title = format(day, 'do MMM yyyy')
-
-  if (isWeekend(day)) {
-    classNames.push('opacity-50')
-  }
-
-  if (selectedDate && isSameDay(day, selectedDate)) {
-    classNames.push('btn-primary')
-    title = `Selected Day, ${title}`
-  } else if (isToday(day)) {
-    classNames.push('btn-neutral')
-  } else {
-    classNames.push('btn-ghost')
-  }
-
-  return (
-    <button title={title} className={classNames.join(' ')} onClick={onClick} type="button">
-      {getDate(day)}
-    </button>
-  )
-}
 
 export interface CalendarSelectorProps {
   onDateChange: (newDate: Date) => void
