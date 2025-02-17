@@ -86,15 +86,15 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
   }
 
   return (
-    <tr className="[&_td.w-px]:border-r-transparent [&_td]:border [&_td]:border-neutral">
-      <td className="w-px p-1">{deleteButton}</td>
+    <tr className="[&_td:first-child]:border-r-transparent [&_td]:border [&_td]:border-neutral [&_td]:p-2">
+      <td>{deleteButton}</td>
       <td className="text-left">
         <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
       </td>
-      <td className="p-1">
+      <td>
         <InputField
           {...register('duration', { valueAsNumber: true })}
-          className="input-sm input-ghost text-left"
+          className="input-sm input-ghost text-right"
           defaultValue={getFormattedValue(invoiceItem.duration / 60)}
           onBlur={(event) => handleInputEvent(event, 'duration', invoiceItem.duration / 60)}
           onFocus={(event) => event.target.select()}
@@ -108,10 +108,10 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
           }}
         />
       </td>
-      <td className="p-1">
+      <td>
         <InputField
           {...register('hourlyRate', { valueAsNumber: true })}
-          className="input-sm input-ghost text-left"
+          className="input-sm input-ghost text-right"
           defaultValue={getFormattedValue(Number(invoiceItem.hourlyRate))}
           onBlur={(event) => handleInputEvent(event, 'hourlyRate', Number(invoiceItem.hourlyRate))}
           onFocus={(event) => event.target.select()}
@@ -125,7 +125,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
           }}
         />
       </td>
-      <td className="p-1">{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
+      <td className="text-right">{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
     </tr>
   )
 }
