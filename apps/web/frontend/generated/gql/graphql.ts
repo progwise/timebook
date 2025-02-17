@@ -568,7 +568,9 @@ export type ReportGroupedByUser = {
 
 /** Roles a user can have in a team */
 export enum Role {
+  /** Admin role */
   Admin = 'ADMIN',
+  /** Member role */
   Member = 'MEMBER',
 }
 
