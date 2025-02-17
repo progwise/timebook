@@ -5,6 +5,7 @@ import { withUrqlClient } from 'next-urql'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { cacheExchange, fetchExchange } from 'urql'
 
 import { TimebookToaster } from '@progwise/timebook-ui'
@@ -25,6 +26,14 @@ interface TimebookProps extends AppProps {
 
 const TimebookApp = ({ Component, pageProps }: TimebookProps): JSX.Element => {
   const { session, ...restPageProps } = pageProps || { session: undefined }
+  // Hydration https://nextjs.org/docs/messages/react-hydration-error
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return <div />
 
   return (
     <SessionProvider session={session}>

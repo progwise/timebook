@@ -1,4 +1,4 @@
-import { isValid, parseISO } from 'date-fns'
+import { isAfter, isValid, parseISO } from 'date-fns'
 import { z } from 'zod'
 
 import { invoiceUpdateInputValidations } from '@progwise/timebook-validations'
@@ -16,8 +16,18 @@ export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoice
   .extend({
     invoiceWorkFrom: invoiceUpdateDateSchema.optional(),
     invoiceWorkUntil: invoiceUpdateDateSchema.optional(),
-    sendDate: invoiceUpdateDateSchema.optional(),
-    payDate: invoiceUpdateDateSchema.optional(),
+    sendDate: invoiceUpdateDateSchema
+      .refine(
+        (value) => !value || !isAfter(parseISO(value), new Date()),
+        'Send date cannot be a future date. Please enter a valid date.',
+      )
+      .optional(),
+    payDate: invoiceUpdateDateSchema
+      .refine(
+        (value) => !value || !isAfter(parseISO(value), new Date()),
+        'Pay date cannot be a future date. Please enter a valid date.',
+      )
+      .optional(),
   })
   .superRefine((data, context) => {
     const startDate = getDate(data.invoiceWorkFrom)
@@ -30,22 +40,6 @@ export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoice
         code: z.ZodIssueCode.custom,
         path: ['invoiceWorkUntil'],
         message: 'End date must be after start date',
-      })
-    }
-
-    if (sendDate && sendDate > new Date()) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['sendDate'],
-        message: 'Send date cannot be a future date. Please enter a valid date.',
-      })
-    }
-
-    if (payDate && payDate > new Date()) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['payDate'],
-        message: 'Pay date cannot be a future date. Please enter a valid date.',
       })
     }
 
