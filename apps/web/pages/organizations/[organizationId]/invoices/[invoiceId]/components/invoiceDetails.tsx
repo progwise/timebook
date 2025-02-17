@@ -3,7 +3,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FaArrowRotateRight, FaPen, FaPrint } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
@@ -17,7 +17,6 @@ import { getDate } from '../../../../../../frontend/components/dateStringValidat
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
-import { adjustDateToUTC } from './dateUtils'
 import { InvoiceItemList } from './invoiceItemList'
 import { PayOrResetInvoiceButton } from './payOrResetInvoiceButton'
 import { SendOrWithdrawInvoice } from './sendOrWithdrawInvoice'
@@ -69,6 +68,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     control,
     handleSubmit,
     clearErrors,
+    watch,
+    trigger,
   } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
@@ -106,7 +107,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       }
 
       if (action === InvoiceAction.Send) {
-        updateData.sendDate = adjustDateToUTC(data.sendDate ?? '')
+        updateData.sendDate = data.sendDate
       } else if (action === InvoiceAction.Withdraw) {
         updateData.sendDate = null
       }
@@ -122,19 +123,23 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const handlePayOrResetInvoice = async (data: InvoiceUpdateInput) => {
     const action = invoice.payDate ? InvoiceAction.ResetPayDate : InvoiceAction.Pay
     try {
-      const adjustedPayDate = adjustDateToUTC(data.payDate ?? '')
-
       await updateInvoice({
         id: invoice.id,
         data: {
           ...data,
           organizationId: invoice.organization.id,
-          payDate: adjustedPayDate,
+          payDate: data.payDate,
         },
         action,
       })
     } catch {}
   }
+
+  useEffect(() => {
+    if (watch('sendDate')) {
+      trigger('payDate')
+    }
+  }, [watch('sendDate')])
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
     isEditing[editableField] ? (

@@ -10,7 +10,6 @@ import { dateStringValidation, getDate } from '../../../../../../frontend/compon
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
-import { adjustDateToUTC } from './dateUtils'
 
 const InvoicePayButtonFragment = graphql(`
   fragment InvoicePayButton on Invoice {
@@ -37,7 +36,6 @@ export const PayInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoice
     setValue,
     handleSubmit,
     formState: { isSubmitting, errors },
-    trigger,
   } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
@@ -48,11 +46,8 @@ export const PayInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoice
   })
 
   const handlePayInvoice = async (data: InvoiceUpdateInput) => {
-    const adjustedPayDate = adjustDateToUTC(data.payDate ?? '')
     await onSubmit({
-      ...data,
-      payDate: adjustedPayDate,
-      sendDate: adjustDateToUTC(invoice.sendDate ?? ''),
+      payDate: data.payDate ? format(new Date(data.payDate), 'yyyy-MM-dd') : '',
     })
     dialogReference.current?.close()
   }
@@ -117,12 +112,7 @@ export const PayInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoice
             </form>
             <button
               className="btn btn-success btn-sm"
-              onClick={async () => {
-                const isValid = await trigger()
-                if (isValid) {
-                  handleSubmit(handlePayInvoice)()
-                }
-              }}
+              onClick={handleSubmit(handlePayInvoice)}
               disabled={isSubmitting}
               form="pay-invoice-form"
             >

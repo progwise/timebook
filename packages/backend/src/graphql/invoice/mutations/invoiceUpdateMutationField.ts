@@ -65,39 +65,35 @@ builder.mutationField('invoiceUpdate', (t) =>
           if (!sendDate) {
             throw new Error('Send date is required')
           }
-          // Adjust sendDate to the start of the day to avoid time zone issues
-          const adjustedSendDate = new Date(sendDate)
-          adjustedSendDate.setHours(0, 0, 0, 0) // Set to midnight in local time
 
-          // Convert adjustedSendDate to UTC by accounting for the user's time zone offset
-          const sendDateInUTC = new Date(adjustedSendDate.getTime() - adjustedSendDate.getTimezoneOffset() * 60_000)
+          // Adjust sendDate to the start of the day in UTC (midnight)
+          const adjustedSendDate = new Date(sendDate)
+          adjustedSendDate.setUTCHours(0, 0, 0, 0) // Set to midnight in UTC
 
           // Get the current time in UTC for comparison
           const localNowUTC = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
 
           // Now, compare the UTC versions of sendDate and localNow
-          if (sendDateInUTC.getTime() > localNowUTC.getTime()) {
+          if (adjustedSendDate.getTime() > localNowUTC.getTime()) {
             throw new Error('Invoice send date must not be in the future')
           }
 
-          updateData.sendDate = sendDateInUTC
+          updateData.sendDate = adjustedSendDate
           break
         case InvoiceAction.Pay:
           if (!payDate) {
             throw new Error('Pay date is required')
           }
-          // Adjust payDate to the start of the day to avoid time zone issues
-          const adjustedPayDate = new Date(payDate)
-          adjustedPayDate.setHours(0, 0, 0, 0)
 
-          // Convert adjustedPayDate to UTC by accounting for the user's time zone offset
-          const payDateInUTC = new Date(adjustedPayDate.getTime() - adjustedPayDate.getTimezoneOffset() * 60_000)
+          // Adjust payDate to the start of the day in UTC (midnight)
+          const adjustedPayDate = new Date(payDate)
+          adjustedPayDate.setUTCHours(0, 0, 0, 0) // Set to midnight in UTC
 
           // Get the current time in UTC for comparison
           const localNowUTCForPay = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
 
           // Compare the UTC versions of payDate and localNow
-          if (payDateInUTC.getTime() >= localNowUTCForPay.getTime()) {
+          if (adjustedPayDate.getTime() >= localNowUTCForPay.getTime()) {
             throw new Error('Invoice pay date must not be in the future')
           }
 
@@ -109,22 +105,17 @@ builder.mutationField('invoiceUpdate', (t) =>
           if (existingInvoice?.sendDate) {
             const existingSendDate = new Date(existingInvoice.sendDate)
 
-            // Convert existing send date to UTC for comparison
-            const existingSendDateUTC = new Date(
-              existingSendDate.getTime() - existingSendDate.getTimezoneOffset() * 60_000,
-            )
+            // Set both dates to UTC midnight for comparison
+            existingSendDate.setUTCHours(0, 0, 0, 0)
+            adjustedPayDate.setUTCHours(0, 0, 0, 0)
 
-            // Set both dates to the start of the day (midnight in UTC) for comparison
-            existingSendDateUTC.setHours(0, 0, 0, 0)
-            payDateInUTC.setHours(0, 0, 0, 0)
-
-            // Compare the pay date with the send date
-            if (payDateInUTC.getTime() < existingSendDateUTC.getTime()) {
+            // Compare the adjusted pay date with the send date
+            if (adjustedPayDate.getTime() < existingSendDate.getTime()) {
               throw new Error('Invoice pay date must not be before send date')
             }
           }
 
-          updateData.payDate = payDateInUTC
+          updateData.payDate = adjustedPayDate
           break
         case InvoiceAction.ResetPayDate:
           updateData.payDate = null

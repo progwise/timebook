@@ -42,7 +42,6 @@ export const ResetPayInvoiceButton = ({ invoice: InvoiceFragment }: ResetPayInvo
     formState: { isSubmitting },
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
-      invoiceId: invoice.id,
       organizationId: invoice.organization.id,
     },
   })
