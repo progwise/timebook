@@ -101,6 +101,12 @@ input InvoiceItemInput {
   taskId: ID!
 }
 
+input InvoiceSendInput {
+  invoiceId: ID!
+  organizationId: ID!
+  sendDate: Date
+}
+
 """
 Status of the invoice
 """
@@ -162,7 +168,7 @@ type Mutation {
     data: InvoiceUpdateInput!
 
     """
-    id of the invoice
+    ID of the invoice
     """
     id: ID!
   ): Invoice!
@@ -272,6 +278,11 @@ type Mutation {
   ): Project!
 
   """
+  Send an invoice
+  """
+  sendInvoice(data: InvoiceSendInput!): Invoice!
+
+  """
   Archive a task
   """
   taskArchive(
@@ -322,6 +333,11 @@ type Mutation {
   The ongoing time tracking will be stopped and converted to work hours
   """
   trackingStop: [WorkHour!]!
+
+  """
+  Withdraw an invoice
+  """
+  withdrawInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Updates a comment of a work hour or creates one
@@ -667,7 +683,14 @@ type ReportGroupedByUser {
 Roles a user can have in a team
 """
 enum Role {
+  """
+  Admin role
+  """
   ADMIN
+
+  """
+  Member role
+  """
   MEMBER
 }
 

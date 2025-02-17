@@ -7,7 +7,7 @@ builder.mutationField('invoiceUpdate', (t) =>
     type: 'Invoice',
     description: 'Update an invoice',
     args: {
-      id: t.arg.id({ description: 'id of the invoice' }),
+      id: t.arg.id({ description: 'ID of the invoice' }),
       data: t.arg({ type: InvoiceUpdateInput }),
     },
     authScopes: async (_source, { id, data: { organizationId } }) => {

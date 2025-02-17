@@ -84,6 +84,12 @@ export type InvoiceItemInput = {
   taskId: Scalars['ID']
 }
 
+export type InvoiceSendInput = {
+  invoiceId: Scalars['ID']
+  organizationId: Scalars['ID']
+  sendDate?: InputMaybe<Scalars['Date']>
+}
+
 /** Status of the invoice */
 export enum InvoiceStatus {
   Draft = 'DRAFT',
@@ -159,6 +165,8 @@ export type Mutation = {
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
+  /** Send an invoice */
+  sendInvoice: Invoice
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
@@ -173,6 +181,8 @@ export type Mutation = {
   trackingStart: Tracking
   /** The ongoing time tracking will be stopped and converted to work hours */
   trackingStop: Array<WorkHour>
+  /** Withdraw an invoice */
+  withdrawInvoice: Invoice
   /** Updates a comment of a work hour or creates one */
   workHourCommentUpdate: WorkHour
   /** Create a new WorkHour */
@@ -292,6 +302,10 @@ export type MutationProjectUpdateArgs = {
   id: Scalars['ID']
 }
 
+export type MutationSendInvoiceArgs = {
+  data: InvoiceSendInput
+}
+
 export type MutationTaskArchiveArgs = {
   taskId: Scalars['ID']
 }
@@ -311,6 +325,10 @@ export type MutationTaskUpdateArgs = {
 
 export type MutationTrackingStartArgs = {
   taskId: Scalars['ID']
+}
+
+export type MutationWithdrawInvoiceArgs = {
+  data: InvoiceSendInput
 }
 
 export type MutationWorkHourCommentUpdateArgs = {
@@ -552,7 +570,9 @@ export type ReportGroupedByUser = {
 
 /** Roles a user can have in a team */
 export enum Role {
+  /** Admin role */
   Admin = 'ADMIN',
+  /** Member role */
   Member = 'MEMBER',
 }
 
@@ -1492,6 +1512,12 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
+export type SendInvoiceMutationVariables = Exact<{
+  data: InvoiceSendInput
+}>
+
+export type SendInvoiceMutation = { __typename?: 'Mutation'; sendInvoice: { __typename?: 'Invoice'; id: string } }
+
 export type InvoiceFragmentFragment = {
   __typename?: 'Invoice'
   id: string
@@ -1499,15 +1525,9 @@ export type InvoiceFragmentFragment = {
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
+  sendDate?: string | null
   invoiceWorkFrom: string
   invoiceWorkUntil: string
-  invoiceItems: Array<{
-    __typename?: 'InvoiceItem'
-    id: string
-    duration: number
-    hourlyRate: number
-    task: { __typename?: 'Task'; id: string; title: string }
-  }>
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1518,6 +1538,13 @@ export type InvoiceFragmentFragment = {
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
+  invoiceItems: Array<{
+    __typename?: 'InvoiceItem'
+    id: string
+    duration: number
+    hourlyRate: number
+    task: { __typename?: 'Task'; id: string; title: string }
+  }>
 }
 
 export type InvoiceUpdateMutationVariables = Exact<{
@@ -1559,6 +1586,38 @@ export type InvoiceItemCreateMutation = {
   invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
 }
 
+export type SendInvoiceButtonFragment = {
+  __typename?: 'Invoice'
+  id: string
+  customerName: string
+  organization: { __typename?: 'Organization'; id: string }
+}
+
+export type SendOrWithdrawInvoiceFragment = {
+  __typename?: 'Invoice'
+  id: string
+  sendDate?: string | null
+  invoiceStatus: InvoiceStatus
+  customerName: string
+  organization: { __typename?: 'Organization'; id: string }
+}
+
+export type WithdrawInvoiceMutationVariables = Exact<{
+  data: InvoiceSendInput
+}>
+
+export type WithdrawInvoiceMutation = {
+  __typename?: 'Mutation'
+  withdrawInvoice: { __typename?: 'Invoice'; id: string }
+}
+
+export type WithdrawInvoiceButtonFragment = {
+  __typename?: 'Invoice'
+  id: string
+  customerName: string
+  organization: { __typename?: 'Organization'; id: string }
+}
+
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['ID']
   organizationId: Scalars['ID']
@@ -1573,15 +1632,9 @@ export type InvoiceQuery = {
     customerName: string
     customerAddress?: string | null
     invoiceStatus: InvoiceStatus
+    sendDate?: string | null
     invoiceWorkFrom: string
     invoiceWorkUntil: string
-    invoiceItems: Array<{
-      __typename?: 'InvoiceItem'
-      id: string
-      duration: number
-      hourlyRate: number
-      task: { __typename?: 'Task'; id: string; title: string }
-    }>
     organization: {
       __typename?: 'Organization'
       id: string
@@ -1592,6 +1645,13 @@ export type InvoiceQuery = {
         tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
       }>
     }
+    invoiceItems: Array<{
+      __typename?: 'InvoiceItem'
+      id: string
+      duration: number
+      hourlyRate: number
+      task: { __typename?: 'Task'; id: string; title: string }
+    }>
   }
 }
 
@@ -2438,6 +2498,21 @@ export const mockOrganizationUpdateMutation = (
  * @param resolver a function that accepts a captured request and may return a mocked response.
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockSendInvoiceMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ sendInvoice })
+ *   )
+ * })
+ */
+export const mockSendInvoiceMutation = (
+  resolver: ResponseResolver<GraphQLRequest<SendInvoiceMutationVariables>, GraphQLContext<SendInvoiceMutation>, any>,
+) => graphql.mutation<SendInvoiceMutation, SendInvoiceMutationVariables>('sendInvoice', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockInvoiceUpdateMutation((req, res, ctx) => {
  *   const { id, data } = req.variables;
  *   return res(
@@ -2471,6 +2546,25 @@ export const mockInvoiceItemCreateMutation = (
     any
   >,
 ) => graphql.mutation<InvoiceItemCreateMutation, InvoiceItemCreateMutationVariables>('invoiceItemCreate', resolver)
+
+/**
+ * @param resolver a function that accepts a captured request and may return a mocked response.
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWithdrawInvoiceMutation((req, res, ctx) => {
+ *   const { data } = req.variables;
+ *   return res(
+ *     ctx.data({ withdrawInvoice })
+ *   )
+ * })
+ */
+export const mockWithdrawInvoiceMutation = (
+  resolver: ResponseResolver<
+    GraphQLRequest<WithdrawInvoiceMutationVariables>,
+    GraphQLContext<WithdrawInvoiceMutation>,
+    any
+  >,
+) => graphql.mutation<WithdrawInvoiceMutation, WithdrawInvoiceMutationVariables>('withdrawInvoice', resolver)
 
 /**
  * @param resolver a function that accepts a captured request and may return a mocked response.

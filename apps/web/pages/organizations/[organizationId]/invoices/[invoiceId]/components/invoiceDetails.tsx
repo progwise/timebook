@@ -13,9 +13,18 @@ import { InputField } from '@progwise/timebook-ui'
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
 import { dateStringValidation, getDate } from '../../../../../../frontend/components/dateStringValidation'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
-import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { InvoiceSendInput, InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceInputSchema } from '../../invoiceInputSchema'
 import { InvoiceItemList } from './invoiceItemList'
+import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
+
+const SendInvoiceMutationDocument = graphql(`
+  mutation sendInvoice($data: InvoiceSendInput!) {
+    sendInvoice(data: $data) {
+      id
+    }
+  }
+`)
 
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -24,9 +33,14 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
+    sendDate
+    organization {
+      id
+    }
     invoiceWorkFrom
     invoiceWorkUntil
     ...InvoiceListInvoice
+    ...SendOrWithdrawInvoice
     invoiceItems {
       id
       ...InvoiceItemsListInvoice
@@ -60,7 +74,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-
+  const [, sendInvoice] = useMutation(SendInvoiceMutationDocument)
   const handleSubmitHelper = async (
     handleSubmitHelperField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil',
     data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
@@ -99,7 +113,17 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
-
+  const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
+    try {
+      await sendInvoice({
+        data: {
+          invoiceId: invoice.id,
+          organizationId: invoice.organization.id,
+          sendDate: data.sendDate,
+        },
+      })
+    } catch {}
+  }
   const renderEditableDateField = (editableDateField: 'invoiceWorkFrom' | 'invoiceWorkUntil') =>
     isEditing[editableDateField] ? (
       <>
@@ -194,11 +218,14 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </div>
       </div>
       <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
-      <div>
-        <p className="font-bold">
-          Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
-        </p>
-        <p>Thank you for your business!</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-bold">
+            Payment method: <span className="font-normal">Bank Transfer / PayPal</span>
+          </p>
+          <p>Thank you for your business!</p>
+        </div>
+        <SendOrWithdrawInvoiceButton invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
       </div>
     </div>
   )
