@@ -126,6 +126,13 @@ export const organizationHandlers = [
                   __typename: 'Project',
                 },
               },
+              invoice: {
+                organization: {
+                  id: testOrganization1.id,
+                  __typename: 'Organization',
+                },
+                __typename: 'Invoice',
+              },
               __typename: 'InvoiceItem',
             },
           ],

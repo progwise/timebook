@@ -38,9 +38,10 @@ export interface InvoiceItemListRowProps {
   invoiceItem: FragmentType<typeof InvoiceItemListRowFragment>
   workFrom: string
   workUntil: string
+  deleteButton?: JSX.Element
 }
 
-export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: InvoiceItemListRowProps) => {
+export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteButton }: InvoiceItemListRowProps) => {
   const invoiceItem = useFragment(InvoiceItemListRowFragment, invoiceItemFragment)
   const [{ fetching }, updateInvoiceItem] = useMutation(InvoiceItemUpdateMutationDocument)
 
@@ -85,11 +86,12 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
   }
 
   return (
-    <tr className="[&_td]:border [&_td]:border-neutral">
+    <tr className="[&_td:first-child]:border-r-transparent [&_td]:border [&_td]:border-neutral [&_td]:p-2">
+      <td>{deleteButton}</td>
       <td className="text-left">
         <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
       </td>
-      <td className="p-1">
+      <td>
         <InputField
           {...register('duration', { valueAsNumber: true })}
           className="input-sm input-ghost text-right"
@@ -106,7 +108,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
           }}
         />
       </td>
-      <td className="p-1">
+      <td>
         <InputField
           {...register('hourlyRate', { valueAsNumber: true })}
           className="input-sm input-ghost text-right"
@@ -123,7 +125,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: Invoice
           }}
         />
       </td>
-      <td>{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
+      <td className="text-right">{getFormattedValue((invoiceItem.duration / 60) * invoiceItem.hourlyRate)}</td>
     </tr>
   )
 }

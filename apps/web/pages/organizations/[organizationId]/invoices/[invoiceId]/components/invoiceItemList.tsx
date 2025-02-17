@@ -10,6 +10,7 @@ import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
 import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
+import { InvoiceItemDeleteButton } from './invoiceItemDeleteButton'
 import { InvoiceItemListRow } from './invoiceItemListRow'
 
 const InvoiceItemListInvoiceFragment = graphql(`
@@ -45,6 +46,7 @@ const InvoiceItemListInvoiceFragment = graphql(`
         }
       }
       ...InvoiceItemListRow
+      ...InvoiceItemDeleteButton
     }
   }
 `)
@@ -128,20 +130,9 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     }
   }
 
-  const availableTasksByProject = invoiceData.organization.projects.map((project) => {
-    const projectStartDate = project.startDate ? new Date(project.startDate) : undefined
-    const projectEndDate = project.endDate ? new Date(project.endDate) : undefined
-    const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
-    const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
-    return project.tasks.filter((task) => {
-      return (
-        !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id) &&
-        projectStartDate &&
-        projectStartDate <= invoiceEndDate &&
-        (!projectEndDate || projectEndDate >= invoiceStartDate)
-      )
-    })
-  })
+  const availableTasksByProject = invoiceData.organization.projects.map((project) =>
+    project.tasks.filter((task) => !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id)),
+  )
 
   const filteredProjectsWithTasks = availableTasksByProject
     // eslint-disable-next-line unicorn/no-null
@@ -150,12 +141,13 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
 
   return (
     <>
-      <table className="table text-right">
+      <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
-          <tr className="[&_th]:border [&_th]:border-neutral">
+          <tr className="text-right [&_td:first-child]:border-r-transparent [&_th]:border [&_th]:border-neutral">
+            <th className="w-px" />
             <th />
             <th className="w-1/12">Duration</th>
-            <th className="w-1/12">Hourly Rate (€)</th>
+            <th className="w-1/12">H. Rate (€)</th>
             <th className="w-1/12">Amount (€)</th>
           </tr>
         </thead>
@@ -176,12 +168,13 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 invoiceItem={invoiceItem}
                 workFrom={invoiceData.invoiceWorkFrom}
                 workUntil={invoiceData.invoiceWorkUntil}
+                deleteButton={<InvoiceItemDeleteButton invoiceItem={invoiceItem} />}
               />
             ))}
         </tbody>
         <tfoot className="text-sm text-base-content">
-          <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral">
-            <td className="p-1">
+          <tr className="font-normal print:hidden [&_td]:border [&_td]:border-neutral [&_td]:p-2">
+            <td colSpan={2}>
               <select
                 className={`select select-bordered select-sm w-full ${dirtyFields.taskId ? 'select-warning' : ''} disabled:text-opacity-100`}
                 {...register('taskId', { disabled: isSubmitting })}
@@ -208,13 +201,13 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 )}
               </select>
             </td>
-            <td className="p-1">
+            <td>
               <InputField
                 {...register('duration', { valueAsNumber: true })}
                 className="input-sm input-ghost text-right"
                 placeholder="Duration"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                 errorMessage={errors.duration?.message}
                 onBlur={(event) => {
                   const oldValues = getValues()
@@ -238,13 +231,13 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 }}
               />
             </td>
-            <td className="p-1">
+            <td>
               <InputField
                 {...register('hourlyRate', { valueAsNumber: true })}
                 className="input-sm input-ghost text-right"
                 placeholder="Hourly rate"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                 errorMessage={errors.hourlyRate?.message}
                 onBlur={(event) => {
                   const oldValues = getValues()
@@ -268,11 +261,11 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 }}
               />
             </td>
-            <td>{getFormattedValue(footerAmount)}</td>
+            <td className="text-right">{getFormattedValue(footerAmount)}</td>
           </tr>
         </tfoot>
       </table>
-      <div className="pt-2 text-end font-bold">Total: {getFormattedValue(total)}</div>
+      <div className="p-2 text-end font-bold">Total: {getFormattedValue(total)}</div>
     </>
   )
 }
