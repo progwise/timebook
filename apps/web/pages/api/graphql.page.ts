@@ -1,5 +1,6 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { ApolloServer } from 'apollo-server-micro'
+/* eslint-disable unicorn/no-null */
+import { createYoga } from 'graphql-yoga'
+import { json } from 'micro'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 
@@ -16,36 +17,42 @@ export const context = async ({
 }): Promise<Context> => {
   const session = await getServerSession(request, response, nextAuthOptions)
   if (session) {
-    return {
-      session,
-    }
+    return { session }
   }
 
   const accessTokenString = request.headers.authorization?.toString().split(/\s+/).at(1)
   if (!accessTokenString) {
-    // eslint-disable-next-line unicorn/no-null
     return { session: null }
   }
 
   const tokenHash = hashAccessToken(accessTokenString)
   const accessToken = await prisma.accessToken.findUnique({ where: { tokenHash }, select: { user: true } })
-  // eslint-disable-next-line unicorn/no-null
   return { session: accessToken ? { user: accessToken.user } : null }
 }
 
-export const server = new ApolloServer({
+const yoga = createYoga({
   schema,
   context,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } })],
+  graphqlEndpoint: '/api/graphql',
 })
 
-const startPromise = server.start()
-
 const graphqlHandler: NextApiHandler = async (request, response) => {
-  await startPromise
-
-  return server.createHandler({ path: request.url })(request, response)
+  try {
+    if (request.method === 'POST') {
+      request.body = await json(request)
+    }
+    await yoga(request, response)
+    if (!response.writableFinished) {
+      response.end()
+    }
+  } catch (error) {
+    // Log the error for debugging purposes
+    // eslint-disable-next-line no-console
+    console.error(error)
+    response.status(500).end('Internal Server Error')
+  }
 }
+
 export const config = {
   api: {
     bodyParser: false,
