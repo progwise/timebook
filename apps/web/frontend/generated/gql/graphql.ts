@@ -103,8 +103,8 @@ export type InvoiceUpdateInput = {
   invoiceWorkFrom?: InputMaybe<Scalars['Date']>
   invoiceWorkUntil?: InputMaybe<Scalars['Date']>
   organizationId?: InputMaybe<Scalars['ID']>
-  payDate?: InputMaybe<Scalars['DateTime']>
-  sendDate?: InputMaybe<Scalars['DateTime']>
+  payDate?: InputMaybe<Scalars['Date']>
+  sendDate?: InputMaybe<Scalars['Date']>
 }
 
 /** Adds the information whether the user can edit the entity */

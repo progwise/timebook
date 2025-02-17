@@ -1,18 +1,8 @@
 /* eslint-disable unicorn/no-null */
-import { convertToTimeZone } from 'date-fns-timezone'
-
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { InvoiceAction } from '../invoiceStatusEnum'
 import { InvoiceUpdateInput } from '../invoiceUpdateInput'
-
-// Utility function to adjust dates to UTC
-const adjustDateToUTC = (localDate: Date | string): string => {
-  const date = typeof localDate === 'string' ? new Date(localDate) : localDate
-  const zonedDate = convertToTimeZone(date, { timeZone: 'UTC' })
-  const offset = date.getTimezoneOffset() * 60_000 // Convert minutes to milliseconds
-  return new Date(zonedDate.getTime() - offset).toISOString()
-}
 
 builder.mutationField('invoiceUpdate', (t) =>
   t.prismaField({
@@ -63,8 +53,8 @@ builder.mutationField('invoiceUpdate', (t) =>
                 : 'DRAFT',
       }
 
-      // Get the current date in UTC
-      const localNow = new Date().toISOString()
+      // Get the current local date
+      const localNow = new Date()
 
       switch (action) {
         case InvoiceAction.Withdraw:
@@ -75,31 +65,66 @@ builder.mutationField('invoiceUpdate', (t) =>
           if (!sendDate) {
             throw new Error('Send date is required')
           }
-          const adjustedSendDate = adjustDateToUTC(sendDate)
-          if (new Date(adjustedSendDate).getTime() > new Date(localNow).getTime()) {
+          // Adjust sendDate to the start of the day to avoid time zone issues
+          const adjustedSendDate = new Date(sendDate)
+          adjustedSendDate.setHours(0, 0, 0, 0) // Set to midnight in local time
+
+          // Convert adjustedSendDate to UTC by accounting for the user's time zone offset
+          const sendDateInUTC = new Date(adjustedSendDate.getTime() - adjustedSendDate.getTimezoneOffset() * 60_000)
+
+          // Get the current time in UTC for comparison
+          const localNowUTC = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
+
+          // Now, compare the UTC versions of sendDate and localNow
+          if (sendDateInUTC.getTime() > localNowUTC.getTime()) {
             throw new Error('Invoice send date must not be in the future')
           }
-          updateData.sendDate = new Date(adjustedSendDate)
+
+          updateData.sendDate = sendDateInUTC
           break
         case InvoiceAction.Pay:
           if (!payDate) {
             throw new Error('Pay date is required')
           }
-          const adjustedPayDate = adjustDateToUTC(payDate)
-          if (new Date(adjustedPayDate).getTime() >= new Date(localNow).getTime()) {
+          // Adjust payDate to the start of the day to avoid time zone issues
+          const adjustedPayDate = new Date(payDate)
+          adjustedPayDate.setHours(0, 0, 0, 0)
+
+          // Convert adjustedPayDate to UTC by accounting for the user's time zone offset
+          const payDateInUTC = new Date(adjustedPayDate.getTime() - adjustedPayDate.getTimezoneOffset() * 60_000)
+
+          // Get the current time in UTC for comparison
+          const localNowUTCForPay = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
+
+          // Compare the UTC versions of payDate and localNow
+          if (payDateInUTC.getTime() >= localNowUTCForPay.getTime()) {
             throw new Error('Invoice pay date must not be in the future')
           }
+
           const existingInvoice = await prisma.invoice.findUnique({
             where: { id: invoiceId.toString() },
             select: { sendDate: true },
           })
+
           if (existingInvoice?.sendDate) {
-            const existingSendDateUtc = new Date(existingInvoice.sendDate).toISOString()
-            if (new Date(adjustedPayDate).getTime() < new Date(existingSendDateUtc).getTime()) {
+            const existingSendDate = new Date(existingInvoice.sendDate)
+
+            // Convert existing send date to UTC for comparison
+            const existingSendDateUTC = new Date(
+              existingSendDate.getTime() - existingSendDate.getTimezoneOffset() * 60_000,
+            )
+
+            // Set both dates to the start of the day (midnight in UTC) for comparison
+            existingSendDateUTC.setHours(0, 0, 0, 0)
+            payDateInUTC.setHours(0, 0, 0, 0)
+
+            // Compare the pay date with the send date
+            if (payDateInUTC.getTime() < existingSendDateUTC.getTime()) {
               throw new Error('Invoice pay date must not be before send date')
             }
           }
-          updateData.payDate = new Date(adjustedPayDate)
+
+          updateData.payDate = payDateInUTC
           break
         case InvoiceAction.ResetPayDate:
           updateData.payDate = null

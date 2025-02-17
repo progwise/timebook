@@ -126,8 +126,8 @@ input InvoiceUpdateInput {
   invoiceWorkFrom: Date
   invoiceWorkUntil: Date
   organizationId: ID
-  payDate: DateTime
-  sendDate: DateTime
+  payDate: Date
+  sendDate: Date
 }
 
 """
