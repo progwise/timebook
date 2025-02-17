@@ -4,6 +4,7 @@ import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import path from 'node:path'
 import url from 'node:url'
+import circularDependencyPlugin from 'rollup-plugin-circular-dependencies'
 
 const isWatching = !!process.env.ROLLUP_WATCH
 const sdPlugin = 'net.progwise.timebook.sdPlugin'
@@ -37,6 +38,10 @@ const config = {
     }),
     commonjs(),
     !isWatching && terser(),
+    circularDependencyPlugin({
+      exclude: /node_modules/,
+      failOnError: true,
+    }),
     {
       name: 'emit-module-package-file',
       generateBundle() {
