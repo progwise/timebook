@@ -137,9 +137,8 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
       return (
         !invoiceData.invoiceItems.some((invoiceItem) => invoiceItem.task.id === task.id) &&
         projectStartDate &&
-        projectStartDate >= invoiceStartDate &&
-        projectEndDate &&
-        projectEndDate <= invoiceEndDate
+        projectStartDate <= invoiceEndDate &&
+        (!projectEndDate || projectEndDate >= invoiceStartDate)
       )
     })
   })
@@ -164,10 +163,12 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
           {invoiceData.invoiceItems
             .filter((invoiceItem) => {
               const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
-              const taskEndDate = new Date(invoiceItem.task.project.endDate ?? 0)
+              const taskEndDate = invoiceItem.task.project.endDate
+                ? new Date(invoiceItem.task.project.endDate)
+                : undefined
               const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
               const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
-              return taskStartDate >= invoiceStartDate && taskEndDate <= invoiceEndDate
+              return taskStartDate <= invoiceEndDate && (!taskEndDate || taskEndDate >= invoiceStartDate)
             })
             .map((invoiceItem) => (
               <InvoiceItemListRow
