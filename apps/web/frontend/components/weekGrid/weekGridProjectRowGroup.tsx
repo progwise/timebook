@@ -1,26 +1,35 @@
 import { useLocalStorageValue } from '@react-hookz/web'
 import { eachDayOfInterval } from 'date-fns'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FaAngleRight } from 'react-icons/fa6'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
 import { FragmentType, graphql, useFragment } from '../../generated/gql'
+import { isSessionUserAdminOfProject } from '../projectUtils'
 import { WeekGridTaskRow } from './weekGridTaskRow'
 
 export const WeekGridProjectRowGroupFragment = graphql(`
   fragment WeekGridProjectRowGroup on Project {
     id
+    canModify
     title
     isArchived
+    members {
+      id
+    }
     tasks {
       id
-      ...WeekGridTaskRow
-      workHourOfDays(from: $from, to: $to, projectMemberUserId: $projectMemberUserId) {
+      projectTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
+        user {
+          id
+        }
         workHour {
           duration
         }
       }
+      ...WeekGridTaskRow
     }
   }
 `)
@@ -29,21 +38,31 @@ interface WeekGridProjectRowGroupProps {
   interval: { start: Date; end: Date }
   project: FragmentType<typeof WeekGridProjectRowGroupFragment>
   isDataOutdated?: boolean
+  userIds: string[]
 }
 
 export const WeekGridProjectRowGroup = ({
   interval,
   project: projectFragment,
   isDataOutdated = false,
+  userIds,
 }: WeekGridProjectRowGroupProps) => {
   const project = useFragment(WeekGridProjectRowGroupFragment, projectFragment)
-
   const { value: isCollapsed, set: setIsCollapsed } = useLocalStorageValue(`isCollapsed-${project.id}`, {
     defaultValue: false,
     initializeWithValue: false,
   })
-
-  const workHours = project.tasks.flatMap((task) => task.workHourOfDays)
+  const session = useSession()
+  const sessionUserId = session.data?.user.id
+  const workHours = project.tasks.flatMap((task) =>
+    task.projectTotal.filter((workHour) => {
+      const isSessionUserAdmin = sessionUserId && isSessionUserAdminOfProject(project, sessionUserId)
+      return (
+        (isSessionUserAdmin || workHour.user.id === sessionUserId) &&
+        project.members.some((member) => member.id === workHour.user.id)
+      )
+    }),
+  )
   const projectDuration = workHours.reduce(
     (accumulator, workHour) => accumulator + (workHour.workHour?.duration ?? 0),
     0,
@@ -78,7 +97,7 @@ export const WeekGridProjectRowGroup = ({
       <div className="self-stretch rounded-r-box bg-base-200" role="cell" />
       <div className={`contents ${isCollapsed ? 'invisible [&_*]:h-0' : ''}`}>
         {project.tasks.map((task) => (
-          <WeekGridTaskRow task={task} key={task.id} isDataOutdated={isDataOutdated} />
+          <WeekGridTaskRow key={task.id} task={task} isDataOutdated={isDataOutdated} userIds={userIds} />
         ))}
       </div>
     </>

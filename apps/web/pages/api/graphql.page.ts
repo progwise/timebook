@@ -1,5 +1,4 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { ApolloServer } from 'apollo-server-micro'
+import { createYoga } from 'graphql-yoga'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 
@@ -33,19 +32,16 @@ export const context = async ({
   return { session: accessToken ? { user: accessToken.user } : null }
 }
 
-export const server = new ApolloServer({
+const yoga = createYoga({
   schema,
   context,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground({ settings: { 'request.credentials': 'include' } })],
+  graphqlEndpoint: '/api/graphql',
 })
 
-const startPromise = server.start()
-
 const graphqlHandler: NextApiHandler = async (request, response) => {
-  await startPromise
-
-  return server.createHandler({ path: request.url })(request, response)
+  return yoga(request, response)
 }
+
 export const config = {
   api: {
     bodyParser: false,

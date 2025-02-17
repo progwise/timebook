@@ -189,7 +189,7 @@ export type Mutation = {
   /** Delete a work hour entry */
   workHourDelete: WorkHour
   /** Updates a work hour entry or creates if work hour does not exist */
-  workHourUpdate: WorkHour
+  workHourUpdate: Array<WorkHour>
 }
 
 export type MutationAccessTokenCreateArgs = {
@@ -344,8 +344,8 @@ export type MutationWorkHourDeleteArgs = {
 export type MutationWorkHourUpdateArgs = {
   data: WorkHourInput
   date: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   taskId: Scalars['ID']
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type Organization = ModifyInterface & {
@@ -493,8 +493,8 @@ export type QueryProjectsArgs = {
   filter?: ProjectFilter
   from: Scalars['Date']
   includeProjectsWhereUserBookedWorkHours?: Scalars['Boolean']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type QueryProjectsCountArgs = {
@@ -592,14 +592,14 @@ export type Task = ModifyInterface & {
 
 export type TaskWorkHourOfDaysArgs = {
   from: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskWorkHoursArgs = {
   from: Scalars['Date']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
   to?: InputMaybe<Scalars['Date']>
+  userIds?: InputMaybe<Array<Scalars['ID']>>
 }
 
 export type TaskInput = {
@@ -673,6 +673,7 @@ export type WorkHourOfDay = {
   __typename?: 'WorkHourOfDay'
   date: Scalars['Date']
   isLocked: Scalars['Boolean']
+  user: User
   workHour?: Maybe<WorkHour>
 }
 
@@ -1205,13 +1206,17 @@ export type MyProjectsMembersQuery = {
 export type WeekGridProjectFragment = ({
   __typename?: 'Project'
   id: string
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<{
     __typename?: 'Task'
-    workHourOfDays: Array<
-      { __typename?: 'WorkHourOfDay'; workHour?: { __typename?: 'WorkHour'; duration: number } | null } & {
-        ' $fragmentRefs'?: { WeekGridFooterFragment: WeekGridFooterFragment }
-      }
+    footerTotal: Array<
+      {
+        __typename?: 'WorkHourOfDay'
+        user: { __typename?: 'User'; id: string }
+        workHour?: { __typename?: 'WorkHour'; duration: number } | null
+      } & { ' $fragmentRefs'?: { WeekGridFooterFragment: WeekGridFooterFragment } }
     >
+    project: { __typename?: 'Project'; canModify: boolean; members: Array<{ __typename?: 'User'; id: string }> }
   }>
 } & { ' $fragmentRefs'?: { WeekGridProjectRowGroupFragment: WeekGridProjectRowGroupFragment } }) & {
   ' $fragmentName'?: 'WeekGridProjectFragment'
@@ -1226,14 +1231,17 @@ export type WeekGridFooterFragment = {
 export type WeekGridProjectRowGroupFragment = {
   __typename?: 'Project'
   id: string
+  canModify: boolean
   title: string
   isArchived: boolean
+  members: Array<{ __typename?: 'User'; id: string }>
   tasks: Array<
     {
       __typename?: 'Task'
       id: string
-      workHourOfDays: Array<{
+      projectTotal: Array<{
         __typename?: 'WorkHourOfDay'
+        user: { __typename?: 'User'; id: string }
         workHour?: { __typename?: 'WorkHour'; duration: number } | null
       }>
     } & { ' $fragmentRefs'?: { WeekGridTaskRowFragment: WeekGridTaskRowFragment } }
@@ -1244,31 +1252,40 @@ export type WorkHourUpdateMutationVariables = Exact<{
   data: WorkHourInput
   date: Scalars['Date']
   taskId: Scalars['ID']
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds: Array<Scalars['ID']> | Scalars['ID']
 }>
 
 export type WorkHourUpdateMutation = {
   __typename?: 'Mutation'
-  workHourUpdate: { __typename?: 'WorkHour'; id: string }
+  workHourUpdate: Array<{ __typename?: 'WorkHour'; id: string }>
 }
 
 export type WeekGridTaskRowFragment = ({
+  __typename?: 'Task'
+  project: { __typename?: 'Project'; canModify: boolean; members: Array<{ __typename?: 'User'; id: string }> }
+} & {
+  ' $fragmentRefs'?: {
+    WeekGridTaskRowSingleUserFragment: WeekGridTaskRowSingleUserFragment
+    WeekGridTaskRowAllUsersFragment: WeekGridTaskRowAllUsersFragment
+  }
+}) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
+
+export type WeekGridTaskRowAllUsersFragment = ({
   __typename?: 'Task'
   id: string
   title: string
   isLockedByAdmin: boolean
   project: {
     __typename?: 'Project'
-    startDate?: string | null
-    endDate?: string | null
     id: string
-    isProjectMember: boolean
     isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string; name?: string | null; image?: string | null }>
   }
-  workHourOfDays: Array<{
+  taskTotal: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
+    user: { __typename?: 'User'; id: string }
     workHour?: { __typename?: 'WorkHour'; duration: number } | null
   }>
   tracking?:
@@ -1281,7 +1298,32 @@ export type WeekGridTaskRowFragment = ({
     TrackingButtonsTaskFragment: TrackingButtonsTaskFragment
     WorkHourCommentFragmentFragment: WorkHourCommentFragmentFragment
   }
-}) & { ' $fragmentName'?: 'WeekGridTaskRowFragment' }
+}) & { ' $fragmentName'?: 'WeekGridTaskRowAllUsersFragment' }
+
+export type WeekGridTaskRowSingleUserFragment = ({
+  __typename?: 'Task'
+  id: string
+  title: string
+  isLockedByAdmin: boolean
+  project: { __typename?: 'Project'; id: string; isArchived: boolean }
+  taskTotal: Array<{
+    __typename?: 'WorkHourOfDay'
+    date: string
+    isLocked: boolean
+    user: { __typename?: 'User'; id: string }
+    workHour?: { __typename?: 'WorkHour'; duration: number } | null
+  }>
+  tracking?:
+    | ({ __typename?: 'Tracking' } & {
+        ' $fragmentRefs'?: { TrackingButtonsTrackingFragment: TrackingButtonsTrackingFragment }
+      })
+    | null
+} & {
+  ' $fragmentRefs'?: {
+    TrackingButtonsTaskFragment: TrackingButtonsTaskFragment
+    WorkHourCommentFragmentFragment: WorkHourCommentFragmentFragment
+  }
+}) & { ' $fragmentName'?: 'WeekGridTaskRowSingleUserFragment' }
 
 export type WorkHourCommentFragmentFragment = {
   __typename?: 'Task'
@@ -1291,6 +1333,7 @@ export type WorkHourCommentFragmentFragment = {
     __typename?: 'WorkHourOfDay'
     date: string
     isLocked: boolean
+    user: { __typename?: 'User'; id: string }
     workHour?: { __typename?: 'WorkHour'; comment?: string | null } | null
   }>
 } & { ' $fragmentName'?: 'WorkHourCommentFragmentFragment' }
@@ -1607,7 +1650,7 @@ export type OrganizationsQuery = {
 export type WeekGridQueryVariables = Exact<{
   from: Scalars['Date']
   to?: InputMaybe<Scalars['Date']>
-  projectMemberUserId?: InputMaybe<Scalars['ID']>
+  userIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>
 }>
 
 export type WeekGridQuery = {
@@ -2801,13 +2844,21 @@ export const WorkHourCommentFragmentFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -2826,12 +2877,12 @@ export const WorkHourCommentFragmentFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<WorkHourCommentFragmentFragment, unknown>
-export const WeekGridTaskRowFragmentDoc = {
+export const WeekGridTaskRowSingleUserFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -2844,13 +2895,14 @@ export const WeekGridTaskRowFragmentDoc = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
           {
             kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
             name: { kind: 'Name', value: 'workHourOfDays' },
             arguments: [
               {
@@ -2865,13 +2917,21 @@ export const WeekGridTaskRowFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -2882,18 +2942,6 @@ export const WeekGridTaskRowFragmentDoc = {
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'project' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -2978,13 +3026,21 @@ export const WeekGridTaskRowFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -3002,60 +3058,226 @@ export const WeekGridTaskRowFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<WeekGridTaskRowFragment, unknown>
-export const WeekGridProjectRowGroupFragmentDoc = {
+} as unknown as DocumentNode<WeekGridTaskRowSingleUserFragment, unknown>
+export const WeekGridTaskRowAllUsersFragmentDoc = {
   kind: 'Document',
   definitions: [
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'tasks' },
+            name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'workHourOfDays' },
-                  arguments: [
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'from' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'to' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
-                    },
-                    {
-                      kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectMemberUserId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
-                    },
-                  ],
+                  name: { kind: 'Name', value: 'members' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'workHour' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
-                        },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
                     ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WorkHourCommentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'comment' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WeekGridTaskRowAllUsersFragment, unknown>
+export const WeekGridTaskRowFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
                   },
                 },
               ],
@@ -3131,13 +3353,21 @@ export const WeekGridProjectRowGroupFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -3156,7 +3386,7 @@ export const WeekGridProjectRowGroupFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3169,11 +3399,293 @@ export const WeekGridProjectRowGroupFragmentDoc = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WeekGridTaskRowFragment, unknown>
+export const WeekGridProjectRowGroupFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tasks' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  alias: { kind: 'Name', value: 'projectTotal' },
+                  name: { kind: 'Name', value: 'workHourOfDays' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'from' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'to' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'userIds' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'workHour' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTracking' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Tracking' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'start' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'task' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'title' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'TrackingButtonsTask' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WorkHourCommentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'workHourOfDays' },
@@ -3190,13 +3702,89 @@ export const WeekGridProjectRowGroupFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'comment' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -3212,13 +3800,92 @@ export const WeekGridProjectRowGroupFragmentDoc = {
           },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -3233,6 +3900,36 @@ export const WeekGridProjectRowGroupFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3251,12 +3948,21 @@ export const WeekGridProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 {
                   kind: 'Field',
+                  alias: { kind: 'Name', value: 'footerTotal' },
                   name: { kind: 'Name', value: 'workHourOfDays' },
                   arguments: [
                     {
@@ -3271,8 +3977,8 @@ export const WeekGridProjectFragmentDoc = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectMemberUserId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                      name: { kind: 'Name', value: 'userIds' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
                     },
                   ],
                   selectionSet: {
@@ -3281,10 +3987,36 @@ export const WeekGridProjectFragmentDoc = {
                       { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridFooter' } },
                       {
                         kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      {
+                        kind: 'Field',
                         name: { kind: 'Name', value: 'workHour' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'members' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
                         },
                       },
                     ],
@@ -3364,13 +4096,21 @@ export const WeekGridProjectFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -3389,7 +4129,7 @@ export const WeekGridProjectFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -3402,13 +4142,14 @@ export const WeekGridProjectFragmentDoc = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
           {
             kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
             name: { kind: 'Name', value: 'workHourOfDays' },
             arguments: [
               {
@@ -3423,13 +4164,21 @@ export const WeekGridProjectFragmentDoc = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -3445,13 +4194,92 @@ export const WeekGridProjectFragmentDoc = {
           },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'project' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
               ],
             },
           },
@@ -3466,6 +4294,36 @@ export const WeekGridProjectFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3496,8 +4354,17 @@ export const WeekGridProjectFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -3505,9 +4372,9 @@ export const WeekGridProjectFragmentDoc = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
                 {
                   kind: 'Field',
+                  alias: { kind: 'Name', value: 'projectTotal' },
                   name: { kind: 'Name', value: 'workHourOfDays' },
                   arguments: [
                     {
@@ -3522,13 +4389,21 @@ export const WeekGridProjectFragmentDoc = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectMemberUserId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                      name: { kind: 'Name', value: 'userIds' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'workHour' },
@@ -3540,6 +4415,7 @@ export const WeekGridProjectFragmentDoc = {
                     ],
                   },
                 },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
               ],
             },
           },
@@ -5454,8 +6330,14 @@ export const WorkHourUpdateDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+            },
+          },
         },
       ],
       selectionSet: {
@@ -5482,8 +6364,8 @@ export const WorkHourUpdateDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
@@ -7299,8 +8181,11 @@ export const WeekGridDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+          type: {
+            kind: 'ListType',
+            type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+          },
         },
       ],
       selectionSet: {
@@ -7322,8 +8207,8 @@ export const WeekGridDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
               {
                 kind: 'Argument',
@@ -7425,13 +8310,21 @@ export const WeekGridDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -7450,7 +8343,7 @@ export const WeekGridDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
       selectionSet: {
         kind: 'SelectionSet',
@@ -7463,13 +8356,14 @@ export const WeekGridDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
           {
             kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
             name: { kind: 'Name', value: 'workHourOfDays' },
             arguments: [
               {
@@ -7484,13 +8378,21 @@ export const WeekGridDocument = {
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'projectMemberUserId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
               },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'date' } },
                 {
                   kind: 'Field',
@@ -7501,18 +8403,6 @@ export const WeekGridDocument = {
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'project' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isProjectMember' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
               ],
             },
           },
@@ -7532,14 +8422,144 @@ export const WeekGridDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'image' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'taskTotal' },
+            name: { kind: 'Name', value: 'workHourOfDays' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'from' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'from' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'to' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'to' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userIds' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'user' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'date' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'workHour' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'isLocked' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tracking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTracking' } }],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'isLockedByAdmin' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'TrackingButtonsTask' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WorkHourCommentFragment' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'WeekGridTaskRow' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Task' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowSingleUser' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRowAllUsers' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'project' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'WeekGridProjectRowGroup' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Project' } },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
           { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
@@ -7547,9 +8567,9 @@ export const WeekGridDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
                 {
                   kind: 'Field',
+                  alias: { kind: 'Name', value: 'projectTotal' },
                   name: { kind: 'Name', value: 'workHourOfDays' },
                   arguments: [
                     {
@@ -7564,13 +8584,21 @@ export const WeekGridDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectMemberUserId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                      name: { kind: 'Name', value: 'userIds' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
                     },
                   ],
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'workHour' },
@@ -7582,6 +8610,7 @@ export const WeekGridDocument = {
                     ],
                   },
                 },
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridTaskRow' } },
               ],
             },
           },
@@ -7598,12 +8627,21 @@ export const WeekGridDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           {
             kind: 'Field',
+            name: { kind: 'Name', value: 'members' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+            },
+          },
+          {
+            kind: 'Field',
             name: { kind: 'Name', value: 'tasks' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 {
                   kind: 'Field',
+                  alias: { kind: 'Name', value: 'footerTotal' },
                   name: { kind: 'Name', value: 'workHourOfDays' },
                   arguments: [
                     {
@@ -7618,8 +8656,8 @@ export const WeekGridDocument = {
                     },
                     {
                       kind: 'Argument',
-                      name: { kind: 'Name', value: 'projectMemberUserId' },
-                      value: { kind: 'Variable', name: { kind: 'Name', value: 'projectMemberUserId' } },
+                      name: { kind: 'Name', value: 'userIds' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'userIds' } },
                     },
                   ],
                   selectionSet: {
@@ -7628,10 +8666,36 @@ export const WeekGridDocument = {
                       { kind: 'FragmentSpread', name: { kind: 'Name', value: 'WeekGridFooter' } },
                       {
                         kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      {
+                        kind: 'Field',
                         name: { kind: 'Name', value: 'workHour' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [{ kind: 'Field', name: { kind: 'Name', value: 'duration' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'project' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'canModify' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'members' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
                         },
                       },
                     ],

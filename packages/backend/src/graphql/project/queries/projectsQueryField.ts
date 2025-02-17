@@ -3,7 +3,7 @@ import { prisma } from '../../prisma'
 import { DateScalar } from '../../scalars'
 import { ProjectFilter, ProjectFilterEnum } from '../projectsFilterEnum'
 import { getWhereFromProjectFilter } from './getWhereFormProjectFilter'
-import { getWhereUserIsMember } from './getWhereUserIsMember'
+import { getWhereUsersAreMembers } from './getWhereUserIsMember'
 
 builder.queryField('projects', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
@@ -18,19 +18,15 @@ builder.queryField('projects', (t) =>
         description:
           'If true, projects where the user is no longer a project member but booked work hours in the given time frame are included.',
       }),
-      projectMemberUserId: t.arg.id({
+      userIds: t.arg.idList({
         required: false,
-        description:
-          'Filter projects where the given user is a project member. If not given, the projects of the signed in user are returned.',
+        description: 'List of user ids. If not provided only the projects of the current users are returned.',
       }),
     },
-    resolve: (
-      query,
-      _source,
-      { from, to, filter, includeProjectsWhereUserBookedWorkHours, projectMemberUserId },
-      context,
-    ) => {
-      const showProjectsForOtherUser = !!projectMemberUserId && projectMemberUserId !== context.session.user.id
+    resolve: (query, _source, { from, to, filter, includeProjectsWhereUserBookedWorkHours, userIds }, context) => {
+      // session userId not included in order to additionally query the projects where the user is only a member
+      const showProjectsForOtherUser = !!(userIds?.length && !userIds.includes(context.session.user.id))
+      const userIdFilter = userIds?.map((id) => id.toString()) ?? [context.session.user.id]
 
       return prisma.project.findMany({
         ...query,
@@ -41,24 +37,26 @@ builder.queryField('projects', (t) =>
                 {
                   AND: [
                     getWhereFromProjectFilter(filter, from, to ?? from),
-                    // check if the signed in user is allowed to see the project
-                    getWhereUserIsMember(
-                      context.session.user.id,
+                    // check if the signed in user is allowed to see the projects
+                    getWhereUsersAreMembers({
+                      userIds: [context.session.user.id],
                       // when signed in user requests projects for another user, the signed in user must be an admin
-                      showProjectsForOtherUser,
-                    ),
-                    // check if the given user is allowed to see the project
-                    showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
+                      isAdmin: showProjectsForOtherUser,
+                    }),
+                    // check if the given user is allowed to see the projects
+                    showProjectsForOtherUser ? getWhereUsersAreMembers({ userIds: userIds.map(String) }) : {},
                   ],
                 },
                 // or get projects where user booked work hours
                 {
-                  ...(showProjectsForOtherUser ? getWhereUserIsMember(context.session.user.id, true) : {}),
+                  ...(showProjectsForOtherUser
+                    ? getWhereUsersAreMembers({ userIds: [context.session.user.id], isAdmin: true })
+                    : {}),
                   tasks: {
                     some: {
                       workHours: {
                         some: {
-                          userId: projectMemberUserId?.toString() ?? context.session.user.id,
+                          userId: { in: userIdFilter },
                           AND: [{ date: { gte: from } }, { date: { lte: to ?? from } }],
                           OR: [
                             { duration: { gt: 0 } },
@@ -81,13 +79,13 @@ builder.queryField('projects', (t) =>
               AND: [
                 getWhereFromProjectFilter(filter, from, to ?? from),
                 // check if the signed in user is allowed to see the project
-                getWhereUserIsMember(
-                  context.session.user.id,
+                getWhereUsersAreMembers({
+                  userIds: [context.session.user.id],
                   // when signed in user requests projects for another user, the signed in user must be an admin
-                  showProjectsForOtherUser,
-                ),
-                // check if the given user is allowed to see the project
-                showProjectsForOtherUser ? getWhereUserIsMember(projectMemberUserId.toString()) : {},
+                  isAdmin: showProjectsForOtherUser,
+                }),
+                // check if the given user is allowed to see the projects
+                showProjectsForOtherUser ? getWhereUsersAreMembers({ userIds: userIds.map(String) }) : {},
               ],
             },
         orderBy: { title: 'asc' },
