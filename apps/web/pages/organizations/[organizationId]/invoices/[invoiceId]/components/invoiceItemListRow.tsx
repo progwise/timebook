@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 
@@ -52,32 +51,42 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
   } = useForm<Pick<InvoiceItemUpdateInput, 'hourlyRate' | 'duration'>>({
     resolver: zodResolver(invoiceItemInputValidations.pick({ duration: true, hourlyRate: true })),
   })
-  const router = useRouter()
-  const handleSubmitHelper = async (field: 'duration' | 'hourlyRate', value: number, oldValue: number) => {
+  const handleSubmitHelper = async (
+    field: keyof Pick<InvoiceItemUpdateInput, 'duration' | 'hourlyRate'>,
+    value: number,
+    oldValue: number,
+  ) => {
+    const data = field === 'duration' ? { duration: value * 60 } : { hourlyRate: value }
+
     if (Number.isNaN(value)) {
       setError(field, { message: 'Invalid input' })
       return oldValue
     }
-    const data = field === 'duration' ? { duration: value * 60 } : { hourlyRate: value }
-    const organizationId = router.query.organizationId as string
 
-    const result = await updateInvoiceItem({
-      id: invoiceItem.id,
-      data: {
-        ...data,
-        organizationId,
-      },
-    })
-    if (result.error) {
-      setError(field, { message: 'Network error' })
+    try {
+      const result = await updateInvoiceItem({
+        id: invoiceItem.id,
+        data: {
+          ...data,
+        },
+      })
+
+      if (result.error) {
+        throw new Error('Network error')
+      }
+
+      return value
+    } catch (error) {
+      setError(field, {
+        message: error instanceof Error ? error.message : 'Network error',
+      })
       return oldValue
     }
-    return value
   }
 
   const handleInputEvent = async (
     event: React.FocusEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>,
-    field: 'duration' | 'hourlyRate',
+    field: keyof Pick<InvoiceItemUpdateInput, 'duration' | 'hourlyRate'>,
     oldValue: number,
   ) => {
     const value = parseNumericInput((event.target as HTMLInputElement).value)

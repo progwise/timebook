@@ -23,8 +23,6 @@ const InvoiceItemListInvoiceFragment = graphql(`
       projects {
         id
         title
-        startDate
-        endDate
         tasks {
           id
           title
@@ -113,7 +111,6 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
         const result = await invoiceItemCreate({
           data: {
             invoiceId: invoiceData.id,
-            organizationId: invoiceData.organization.id,
             taskId,
             duration: duration * 60,
             hourlyRate,
@@ -153,14 +150,9 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
         </thead>
         <tbody>
           {invoiceData.invoiceItems
-            .filter((invoiceItem) => {
-              const taskStartDate = new Date(invoiceItem.task.project.startDate ?? 0)
-              const taskEndDate = invoiceItem.task.project.endDate
-                ? new Date(invoiceItem.task.project.endDate)
-                : undefined
-              const invoiceStartDate = new Date(invoiceData.invoiceWorkFrom)
-              const invoiceEndDate = new Date(invoiceData.invoiceWorkUntil)
-              return taskStartDate <= invoiceEndDate && (!taskEndDate || taskEndDate >= invoiceStartDate)
+            .sort((a, b) => {
+              const projectCompare = a.task.project.title.localeCompare(b.task.project.title)
+              return projectCompare === 0 ? a.task.title.localeCompare(b.task.title) : projectCompare
             })
             .map((invoiceItem) => (
               <InvoiceItemListRow
@@ -210,14 +202,12 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
                 errorMessage={errors.duration?.message}
                 onBlur={(event) => {
-                  const oldValues = getValues()
                   const value = parseNumericInput(event.target.value)
                   if (Number.isNaN(value)) {
-                    reset(oldValues)
-                    event.target.value = getFormattedValue(oldValues.duration)
+                    event.target.value = getFormattedValue(0)
                   } else {
                     event.target.value = getFormattedValue(value)
-                    handleFormSubmission(oldValues)
+                    handleFormSubmission(getValues())
                   }
                 }}
                 isDirty={isDirty && dirtyFields.duration}

@@ -1535,8 +1535,6 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Project'
       id: string
       title: string
-      startDate?: string | null
-      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1577,8 +1575,6 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Project'
       id: string
       title: string
-      startDate?: string | null
-      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -1671,8 +1667,6 @@ export type InvoiceQuery = {
         __typename?: 'Project'
         id: string
         title: string
-        startDate?: string | null
-        endDate?: string | null
         tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
       }>
     }

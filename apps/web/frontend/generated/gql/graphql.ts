@@ -1440,7 +1440,6 @@ export type InvoiceFragmentFragment = ({
   invoiceWorkFrom: string
   invoiceWorkUntil: string
   invoiceItems: Array<{ __typename?: 'InvoiceItem'; id: string }>
-  organization: { __typename?: 'Organization'; id: string }
 } & { ' $fragmentRefs'?: { InvoiceItemListInvoiceFragment: InvoiceItemListInvoiceFragment } }) & {
   ' $fragmentName'?: 'InvoiceFragmentFragment'
 }
@@ -1480,8 +1479,6 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Project'
       id: string
       title: string
-      startDate?: string | null
-      endDate?: string | null
       tasks: Array<{ __typename?: 'Task'; id: string; title: string }>
     }>
   }
@@ -4574,8 +4571,6 @@ export const InvoiceItemListInvoiceFragmentDoc = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -4724,14 +4719,6 @@ export const InvoiceFragmentFragmentDoc = {
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
             },
           },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
           { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemListInvoice' } },
         ],
       },
@@ -4824,8 +4811,6 @@ export const InvoiceFragmentFragmentDoc = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -7345,8 +7330,6 @@ export const InvoiceDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'tasks' },
@@ -7422,14 +7405,6 @@ export const InvoiceDocument = {
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'invoiceItems' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'organization' },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],

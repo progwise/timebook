@@ -29,9 +29,6 @@ const InvoiceDetailsFragment = graphql(`
     invoiceItems {
       id
     }
-    organization {
-      id
-    }
     ...InvoiceItemListInvoice
   }
 `)
@@ -78,7 +75,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       id: invoice.id,
       data: {
         ...data,
-        organizationId: invoice.organization.id,
       },
     })
     if (updateInvoiceResult.error) {
@@ -121,29 +117,27 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           name={editableDateField}
           render={({ field: { onChange, value } }) => (
             <div className="flex flex-col gap-1">
-              <div className="flex gap-1">
-                <InputMask
-                  disabled={isSubmitting}
-                  mask="9999-99-99"
-                  onBlur={handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))}
-                  onChange={onChange}
-                  value={value ?? invoice[editableDateField] ?? ''}
-                  id={editableDateField}
-                  type="text"
-                  size={10}
-                  className="input input-xs input-bordered"
-                />
-                <CalendarSelector
-                  disabled={isSubmitting}
-                  className="btn-xs"
-                  date={getDate(value)}
-                  hideLabel={true}
-                  onDateChange={(newDate) => {
-                    setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))
-                    handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))()
-                  }}
-                />
-              </div>
+              <InputMask
+                disabled={isSubmitting}
+                mask="9999-99-99"
+                onBlur={handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))}
+                onChange={onChange}
+                value={value ?? invoice[editableDateField] ?? ''}
+                id={editableDateField}
+                type="text"
+                size={10}
+                className="input input-xs input-bordered"
+              />
+              <CalendarSelector
+                disabled={isSubmitting}
+                className="btn-xs"
+                date={getDate(value)}
+                hideLabel={true}
+                onDateChange={(newDate) => {
+                  setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))
+                  handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))()
+                }}
+              />
             </div>
           )}
         />
@@ -218,7 +212,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               Print
             </button>
           </div>
-          <div className="text-left">
+          <div className="">
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">Invoice</div>
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>

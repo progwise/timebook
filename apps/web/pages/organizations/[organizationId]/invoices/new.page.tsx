@@ -55,8 +55,8 @@ const NewInvoicePage = (): JSX.Element => {
     } catch {}
   }
 
-  const handleCancel = () => {
-    router.push(`/organizations/${organizationId}`)
+  const handleCancel = async () => {
+    await router.push(`/organizations/${organizationId}`)
   }
 
   return (
