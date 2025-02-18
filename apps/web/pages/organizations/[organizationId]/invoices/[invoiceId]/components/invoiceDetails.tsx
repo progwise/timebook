@@ -70,7 +70,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     control,
     handleSubmit,
     clearErrors,
-  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
+  } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
       customerName: invoice.customerName,
@@ -82,13 +82,12 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
   const [, sendInvoice] = useMutation(SendInvoiceMutationDocument)
-  const handleSubmitForm = async (
-    data: Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>,
-  ) => {
+  const handleSubmitForm = async (data: InvoiceUpdateInput) => {
     const updateInvoiceResult = await updateInvoice({
       id: invoice.id,
       data: {
         ...data,
+        organizationId: invoice.organization.id,
       },
     })
     if (updateInvoiceResult.error) {
@@ -125,11 +124,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
     try {
       await sendInvoice({
-        data: {
-          invoiceId: invoice.id,
-          organizationId: invoice.organization.id,
-          sendDate: data.sendDate,
-        },
+        data,
       })
     } catch {}
   }

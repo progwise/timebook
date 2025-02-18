@@ -51,7 +51,7 @@ export const InvoiceTable = ({ invoices, organizationId }: InvoiceTableProps): J
               </td>
               <td>
                 {invoice.invoiceItems
-                  .reduce((sum, invoiceItem) => sum + invoiceItem.duration * invoiceItem.hourlyRate, 0)
+                  .reduce((sum, invoiceItem) => sum + (invoiceItem.duration * invoiceItem.hourlyRate) / 60, 0)
                   .toLocaleString(navigator.languages, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,

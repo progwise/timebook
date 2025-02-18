@@ -141,7 +141,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
     <>
       <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
-          <tr className="text-right [&_td:first-child]:border-r-transparent [&_th]:border [&_th]:border-neutral">
+          <tr className="text-right [&_th:first-child]:border-r-transparent [&_th]:border [&_th]:border-neutral">
             <th className="w-px" />
             <th />
             <th className="w-1/12">Duration</th>

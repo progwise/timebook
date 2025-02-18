@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 
@@ -51,12 +52,15 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
   } = useForm<Pick<InvoiceItemUpdateInput, 'hourlyRate' | 'duration'>>({
     resolver: zodResolver(invoiceItemInputValidations.pick({ duration: true, hourlyRate: true })),
   })
+  const router = useRouter()
+
   const handleSubmitHelper = async (
     field: keyof Pick<InvoiceItemUpdateInput, 'duration' | 'hourlyRate'>,
     value: number,
     oldValue: number,
   ) => {
     const data = field === 'duration' ? { duration: value * 60 } : { hourlyRate: value }
+    const organizationId = router.query.organizationId as string
 
     if (Number.isNaN(value)) {
       setError(field, { message: 'Invalid input' })
@@ -68,6 +72,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
         id: invoiceItem.id,
         data: {
           ...data,
+          organizationId,
         },
       })
 
@@ -96,14 +101,16 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
 
   return (
     <tr className="[&_td:first-child]:border-r-transparent [&_td]:border [&_td]:border-neutral [&_td]:p-2">
-      <td>{deleteButton}</td>
+      <td>
+        <div className="print:hidden">{deleteButton}</div>
+      </td>
       <td className="text-left">
         <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}
       </td>
       <td>
         <InputField
           {...register('duration', { valueAsNumber: true })}
-          className="input-sm input-ghost text-right"
+          className="input-sm input-ghost text-right print:border-none"
           defaultValue={getFormattedValue(invoiceItem.duration / 60)}
           onBlur={(event) => handleInputEvent(event, 'duration', invoiceItem.duration / 60)}
           onFocus={(event) => event.target.select()}
@@ -120,7 +127,7 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
       <td>
         <InputField
           {...register('hourlyRate', { valueAsNumber: true })}
-          className="input-sm input-ghost text-right"
+          className="input-sm input-ghost text-right print:border-none"
           defaultValue={getFormattedValue(Number(invoiceItem.hourlyRate))}
           onBlur={(event) => handleInputEvent(event, 'hourlyRate', Number(invoiceItem.hourlyRate))}
           onFocus={(event) => event.target.select()}
