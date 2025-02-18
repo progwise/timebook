@@ -11,11 +11,12 @@ builder.mutationField('workHourCommentUpdate', (t) =>
       taskId: t.arg.id(),
       date: t.arg({ type: DateScalar }),
       comment: t.arg.string(),
+      userId: t.arg.id({ required: false }),
     },
     authScopes: async (_source, { taskId }) => {
       return { isMemberByTask: taskId.toString() }
     },
-    resolve: async (query, _source, { taskId, date, comment }, context) => {
+    resolve: async (query, _source, { taskId, date, comment, userId }, context) => {
       const task = await prisma.task.findUniqueOrThrow({
         select: { projectId: true, isLocked: true, project: { select: { archivedAt: true } } },
         where: { id: taskId.toString() },
@@ -33,12 +34,14 @@ builder.mutationField('workHourCommentUpdate', (t) =>
         throw new Error('project is archived')
       }
 
+      const targetUserId = userId || context.session.user.id
+
       return prisma.workHour.upsert({
         ...query,
         where: {
-          date_userId_taskId: { date: date, taskId: taskId.toString(), userId: context.session.user.id },
+          date_userId_taskId: { date: date, taskId: taskId.toString(), userId: targetUserId.toString() },
         },
-        create: { taskId: taskId.toString(), userId: context.session.user.id, date, duration: 0, comment },
+        create: { taskId: taskId.toString(), userId: targetUserId.toString(), date, duration: 0, comment },
         update: { comment },
       })
     },

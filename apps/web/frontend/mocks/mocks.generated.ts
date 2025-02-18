@@ -335,6 +335,7 @@ export type MutationWorkHourCommentUpdateArgs = {
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
+  userId?: InputMaybe<Scalars['ID']>
 }
 
 export type MutationWorkHourCreateArgs = {
@@ -1420,6 +1421,7 @@ export type CommentUpdateMutationVariables = Exact<{
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
+  userId?: InputMaybe<Scalars['ID']>
 }>
 
 export type CommentUpdateMutation = {
@@ -2376,7 +2378,7 @@ export const mockWorkHourUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockCommentUpdateMutation((req, res, ctx) => {
- *   const { comment, date, taskId } = req.variables;
+ *   const { comment, date, taskId, userId } = req.variables;
  *   return res(
  *     ctx.data({ workHourCommentUpdate })
  *   )

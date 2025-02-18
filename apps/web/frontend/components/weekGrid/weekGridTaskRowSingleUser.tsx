@@ -96,7 +96,10 @@ export const WeekGridTaskRowSingleUser = ({
         {isDataOutdated ? <div className="skeleton h-8 w-9" /> : <FormattedDuration minutes={taskDurations} title="" />}
       </div>
       <div className="px-2" role="cell">
-        <WorkHourCommentButton task={task} />
+        <WorkHourCommentButton
+          task={task}
+          currentUserId={sessionUserId && userIds.includes(sessionUserId) ? sessionUserId : userIds[0]}
+        />
       </div>
     </div>
   )

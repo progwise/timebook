@@ -142,7 +142,7 @@ const documents = {
     types.WeekGridTaskRowSingleUserFragmentDoc,
   '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n':
     types.WorkHourCommentFragmentFragmentDoc,
-  '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n':
+  '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n':
     types.CommentUpdateDocument,
   '\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n':
     types.AccessTokensDocument,
@@ -625,8 +625,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n',
-): (typeof documents)['\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n']
+  source: '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n',
+): (typeof documents)['\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

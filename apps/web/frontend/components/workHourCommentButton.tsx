@@ -26,17 +26,18 @@ export const WorkHourCommentFragment = graphql(`
 
 interface WorkHourCommentProps {
   task: FragmentType<typeof WorkHourCommentFragment>
+  currentUserId: string
 }
 
 const CommentUpdateMutationDocument = graphql(`
-  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {
-    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {
+  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {
+    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {
       comment
     }
   }
 `)
 
-export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourCommentProps) => {
+export const WorkHourCommentButton = ({ task: commentFragment, currentUserId }: WorkHourCommentProps) => {
   const dialogReference = useRef<HTMLDialogElement>(null)
   const openDialog = () => {
     dialogReference.current?.showModal()
@@ -50,6 +51,7 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
         comment: event.target.value,
         date,
         taskId: task.id,
+        userId: currentUserId,
       })
       if (result.error) {
         throw new Error(`GraphQL Error ${result.error}`)
@@ -64,7 +66,9 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
   const lastDay = max(allDays)
   const dateTimeFormat = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' })
 
-  const commentCount = task.workHourOfDays.filter((workHourOfDay) => workHourOfDay.workHour?.comment).length
+  const commentCount = task.workHourOfDays.filter(
+    (workHourOfDay) => workHourOfDay.user.id === currentUserId && workHourOfDay.workHour?.comment,
+  ).length
 
   return (
     <>
@@ -88,22 +92,24 @@ export const WorkHourCommentButton = ({ task: commentFragment }: WorkHourComment
             Comments for {task.title} ({dateTimeFormat.formatRange(firstDay, lastDay)})
           </h3>
           <div className="grid gap-2 gap-x-8 @2xl:grid-cols-2">
-            {task.workHourOfDays.map((workHourOfDay) => {
-              const date = parseISO(workHourOfDay.date)
-              return (
-                <div key={`${workHourOfDay.date}-${workHourOfDay.user.id}`} className="flex flex-col gap-2">
-                  <div className="flex rounded-box py-1">{format(date, 'EEEE, MMMM do')}</div>
-                  <textarea
-                    title="comment"
-                    defaultValue={workHourOfDay.workHour?.comment ?? undefined}
-                    rows={3}
-                    className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
-                    onBlur={handleBlur(workHourOfDay.date)}
-                    disabled={workHourOfDay.isLocked}
-                  />
-                </div>
-              )
-            })}
+            {task.workHourOfDays
+              .filter((workHourOfDay) => workHourOfDay.user.id === currentUserId)
+              .map((workHourOfDay) => {
+                const date = parseISO(workHourOfDay.date)
+                return (
+                  <div key={`${workHourOfDay.date}-${workHourOfDay.user.id}`} className="flex flex-col gap-2">
+                    <div className="flex rounded-box py-1">{format(date, 'EEEE, MMMM do')}</div>
+                    <textarea
+                      title="comment"
+                      defaultValue={workHourOfDay.workHour?.comment ?? undefined}
+                      rows={3}
+                      className="textarea textarea-sm w-full resize-none bg-base-200 leading-relaxed enabled:hover:textarea-bordered"
+                      onBlur={handleBlur(workHourOfDay.date)}
+                      disabled={workHourOfDay.isLocked}
+                    />
+                  </div>
+                )
+              })}
           </div>
           <div className="modal-action">
             <form method="dialog">

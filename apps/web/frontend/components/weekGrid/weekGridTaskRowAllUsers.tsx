@@ -120,7 +120,7 @@ export const WeekGridTaskRowAllUsers = ({
           )}
         </div>
         <div className="px-2" role="cell">
-          <WorkHourCommentButton task={task} />
+          <WorkHourCommentButton task={task} currentUserId={member.id} />
         </div>
       </div>
     )
