@@ -111,6 +111,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
         const result = await invoiceItemCreate({
           data: {
             invoiceId: invoiceData.id,
+            organizationId: invoiceData.organization.id,
             taskId,
             duration: duration * 60,
             hourlyRate,

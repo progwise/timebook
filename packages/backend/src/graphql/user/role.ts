@@ -5,4 +5,12 @@ import { builder } from '../builder'
 export const RoleEnum = builder.enumType(Role, {
   name: 'Role',
   description: 'Roles a user can have in a team',
+  values: {
+    ADMIN: {
+      description: 'Admin role',
+    },
+    MEMBER: {
+      description: 'Member role',
+    },
+  },
 })
