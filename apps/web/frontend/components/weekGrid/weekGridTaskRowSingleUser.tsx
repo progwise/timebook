@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns'
+import { useSession } from 'next-auth/react'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -14,6 +15,9 @@ const WeekGridTaskRowSingleUserFragment = graphql(`
     project {
       id
       isArchived
+      members {
+        id
+      }
     }
     taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {
       user {
@@ -48,6 +52,10 @@ export const WeekGridTaskRowSingleUser = ({
   userIds,
 }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowSingleUserFragment, taskFragment)
+  const session = useSession()
+  const sessionUserId = session.data?.user.id
+
+  const isSessionUserTask = task.project.members.some((member) => member.id === sessionUserId)
 
   const taskDurations = task.taskTotal.reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
@@ -55,7 +63,12 @@ export const WeekGridTaskRowSingleUser = ({
     <div key={task.id} className="contents" role="row">
       <div className="pl-3" role="cell">
         {!task.isLockedByAdmin && !task.project.isArchived && (
-          <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
+          <TrackingButtons
+            tracking={task.tracking}
+            taskToTrack={task}
+            interactiveButtons={false}
+            isSessionUserTask={isSessionUserTask && !!sessionUserId && userIds.includes(sessionUserId)}
+          />
         )}
       </div>
       <div className="flex items-center gap-2 px-3">

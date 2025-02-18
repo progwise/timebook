@@ -1315,7 +1315,12 @@ export type WeekGridTaskRowSingleUserFragment = ({
   id: string
   title: string
   isLockedByAdmin: boolean
-  project: { __typename?: 'Project'; id: string; isArchived: boolean }
+  project: {
+    __typename?: 'Project'
+    id: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string }>
+  }
   taskTotal: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
@@ -2911,6 +2916,14 @@ export const WeekGridTaskRowSingleUserFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -3415,6 +3428,14 @@ export const WeekGridTaskRowFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -3764,6 +3785,14 @@ export const WeekGridProjectRowGroupFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -4158,6 +4187,14 @@ export const WeekGridProjectFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -8390,6 +8427,14 @@ export const WeekGridDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },

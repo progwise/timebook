@@ -64,11 +64,17 @@ interface TrackingButtonsProps {
   tracking?: FragmentType<typeof TrackingButtonsTrackingFragment> | null
   taskToTrack?: FragmentType<typeof TrackingButtonsTaskFragment> | null
   interactiveButtons?: boolean
+  isSessionUserTask?: boolean
 }
 
-export const TrackingButtons = (props: TrackingButtonsProps) => {
-  const tracking = useFragment(TrackingButtonsTrackingFragment, props.tracking)
-  const taskToTrack = useFragment(TrackingButtonsTaskFragment, props.taskToTrack)
+export const TrackingButtons = ({
+  tracking: trackingFragment,
+  taskToTrack: taskToTrackFragment,
+  interactiveButtons = false,
+  isSessionUserTask = false,
+}: TrackingButtonsProps) => {
+  const tracking = useFragment(TrackingButtonsTrackingFragment, trackingFragment)
+  const taskToTrack = useFragment(TrackingButtonsTaskFragment, taskToTrackFragment)
   const [, startTracking] = useMutation(TrackingStartMutationDocument)
   const [, stopTracking] = useMutation(TrackingStopMutationDocument)
   const [, cancelTracking] = useMutation(TrackingCancelMutationDocument)
@@ -83,7 +89,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
 
     return (
       <>
-        {props.interactiveButtons ? (
+        {interactiveButtons ? (
           <>
             <div className="flex items-center gap-2">
               <button className="btn btn-square btn-error btn-xs" onClick={openDialog}>
@@ -134,7 +140,7 @@ export const TrackingButtons = (props: TrackingButtonsProps) => {
       <button
         className="btn btn-square btn-outline btn-primary btn-xs pl-0.5"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
-        disabled={taskToTrack.isLocked}
+        disabled={taskToTrack.isLocked || !isSessionUserTask}
       >
         <FaPlay />
       </button>

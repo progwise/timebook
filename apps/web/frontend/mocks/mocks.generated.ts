@@ -1376,7 +1376,12 @@ export type WeekGridTaskRowSingleUserFragment = {
   title: string
   isLockedByAdmin: boolean
   isLocked: boolean
-  project: { __typename?: 'Project'; id: string; isArchived: boolean }
+  project: {
+    __typename?: 'Project'
+    id: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string }>
+  }
   taskTotal: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
