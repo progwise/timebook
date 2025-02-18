@@ -158,7 +158,9 @@ const documents = {
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
-  '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    invoiceWorkFrom\n    invoiceWorkUntil\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n':
+  '\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n':
+    types.SendInvoiceDocument,
+  '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    sendDate\n    organization {\n      id\n    }\n    invoiceWorkFrom\n    invoiceWorkUntil\n    ...SendOrWithdrawInvoice\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n':
     types.InvoiceFragmentFragmentDoc,
   '\n  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {\n    invoiceUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.InvoiceUpdateDocument,
@@ -174,6 +176,14 @@ const documents = {
     types.InvoiceItemListRowFragmentDoc,
   '\n  mutation invoiceItemUpdate($id: ID!, $data: InvoiceItemUpdateInput!) {\n    invoiceItemUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.InvoiceItemUpdateDocument,
+  '\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n':
+    types.SendInvoiceButtonFragmentDoc,
+  '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n':
+    types.SendOrWithdrawInvoiceFragmentDoc,
+  '\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n':
+    types.WithdrawInvoiceDocument,
+  '\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n':
+    types.WithdrawInvoiceButtonFragmentDoc,
   '\n  query invoice($invoiceId: ID!, $organizationId: ID!) {\n    invoice(invoiceId: $invoiceId, organizationId: $organizationId) {\n      ...InvoiceFragment\n    }\n  }\n':
     types.InvoiceDocument,
   '\n  mutation invoiceCreate($data: InvoiceInput!) {\n    invoiceCreate(data: $data) {\n      id\n    }\n  }\n':
@@ -669,8 +679,14 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    invoiceWorkFrom\n    invoiceWorkUntil\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n',
-): (typeof documents)['\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    invoiceWorkFrom\n    invoiceWorkUntil\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n']
+  source: '\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    sendDate\n    organization {\n      id\n    }\n    invoiceWorkFrom\n    invoiceWorkUntil\n    ...SendOrWithdrawInvoice\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n',
+): (typeof documents)['\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    sendDate\n    organization {\n      id\n    }\n    invoiceWorkFrom\n    invoiceWorkUntil\n    ...SendOrWithdrawInvoice\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -713,6 +729,30 @@ export function graphql(
 export function graphql(
   source: '\n  mutation invoiceItemUpdate($id: ID!, $data: InvoiceItemUpdateInput!) {\n    invoiceItemUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n',
 ): (typeof documents)['\n  mutation invoiceItemUpdate($id: ID!, $data: InvoiceItemUpdateInput!) {\n    invoiceItemUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  fragment SendInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n',
+): (typeof documents)['\n  fragment SendOrWithdrawInvoice on Invoice {\n    id\n    sendDate\n    invoiceStatus\n    ...SendInvoiceButton\n    ...WithdrawInvoiceButton\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation withdrawInvoice($data: InvoiceSendInput!) {\n    withdrawInvoice(data: $data) {\n      id\n    }\n  }\n']
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(
+  source: '\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  fragment WithdrawInvoiceButton on Invoice {\n    id\n    customerName\n    organization {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
