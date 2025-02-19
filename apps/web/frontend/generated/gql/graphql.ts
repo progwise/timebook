@@ -64,7 +64,6 @@ export type InvoiceItem = {
   hourlyRate: Scalars['Decimal']
   /** Identifies the invoice item */
   id: Scalars['ID']
-  /** Invoice to which the invoice item belongs */
   invoice: Invoice
   start?: Maybe<Scalars['DateTime']>
   /** Task for which the invoice item was booked */
@@ -1523,20 +1522,9 @@ export type InvoiceItemListInvoiceFragment = {
         __typename?: 'Task'
         id: string
         title: string
-        project: {
-          __typename?: 'Project'
-          id: string
-          title: string
-          startDate?: string | null
-          endDate?: string | null
-        }
+        project: { __typename?: 'Project'; id: string; title: string }
       }
-    } & {
-      ' $fragmentRefs'?: {
-        InvoiceItemListRowFragment: InvoiceItemListRowFragment
-        InvoiceItemDeleteButtonFragment: InvoiceItemDeleteButtonFragment
-      }
-    }
+    } & { ' $fragmentRefs'?: { InvoiceItemListRowFragment: InvoiceItemListRowFragment } }
   >
 } & { ' $fragmentName'?: 'InvoiceItemListInvoiceFragment' }
 
@@ -1549,7 +1537,7 @@ export type InvoiceItemCreateMutation = {
   invoiceItemCreate: { __typename?: 'InvoiceItem'; id: string }
 }
 
-export type InvoiceItemListRowFragment = {
+export type InvoiceItemListRowFragment = ({
   __typename?: 'InvoiceItem'
   id: string
   duration: number
@@ -1560,7 +1548,9 @@ export type InvoiceItemListRowFragment = {
     title: string
     project: { __typename?: 'Project'; id: string; title: string }
   }
-} & { ' $fragmentName'?: 'InvoiceItemListRowFragment' }
+} & { ' $fragmentRefs'?: { InvoiceItemDeleteButtonFragment: InvoiceItemDeleteButtonFragment } }) & {
+  ' $fragmentName'?: 'InvoiceItemListRowFragment'
+}
 
 export type InvoiceItemUpdateMutationVariables = Exact<{
   id: Scalars['ID']
@@ -4646,6 +4636,39 @@ export const SendOrWithdrawInvoiceFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SendOrWithdrawInvoiceFragment, unknown>
+export const InvoiceItemDeleteButtonFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'organization' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InvoiceItemDeleteButtonFragment, unknown>
 export const InvoiceItemListRowFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4681,14 +4704,10 @@ export const InvoiceItemListRowFragmentDoc = {
               ],
             },
           },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
         ],
       },
     },
-  ],
-} as unknown as DocumentNode<InvoiceItemListRowFragment, unknown>
-export const InvoiceItemDeleteButtonFragmentDoc = {
-  kind: 'Document',
-  definitions: [
     {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
@@ -4718,7 +4737,7 @@ export const InvoiceItemDeleteButtonFragmentDoc = {
       },
     },
   ],
-} as unknown as DocumentNode<InvoiceItemDeleteButtonFragment, unknown>
+} as unknown as DocumentNode<InvoiceItemListRowFragment, unknown>
 export const InvoiceItemListInvoiceFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -4789,8 +4808,6 @@ export const InvoiceItemListInvoiceFragmentDoc = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },
@@ -4798,7 +4815,34 @@ export const InvoiceItemListInvoiceFragmentDoc = {
                   },
                 },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemListRow' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'organization' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -4837,34 +4881,7 @@ export const InvoiceItemListInvoiceFragmentDoc = {
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'invoice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'organization' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-                  },
-                },
-              ],
-            },
-          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
         ],
       },
     },
@@ -4951,6 +4968,34 @@ export const InvoiceFragmentFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'organization' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'InvoiceItemListRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
       selectionSet: {
@@ -4981,34 +5026,7 @@ export const InvoiceFragmentFragmentDoc = {
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'invoice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'organization' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-                  },
-                },
-              ],
-            },
-          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
         ],
       },
     },
@@ -5094,8 +5112,6 @@ export const InvoiceFragmentFragmentDoc = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },
@@ -5103,7 +5119,6 @@ export const InvoiceFragmentFragmentDoc = {
                   },
                 },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemListRow' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
               ],
             },
           },
@@ -7614,6 +7629,34 @@ export const InvoiceDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'organization' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'InvoiceItemListRow' },
       typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
       selectionSet: {
@@ -7644,34 +7687,7 @@ export const InvoiceDocument = {
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'InvoiceItemDeleteButton' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceItem' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'invoice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'organization' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-                  },
-                },
-              ],
-            },
-          },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
         ],
       },
     },
@@ -7742,8 +7758,6 @@ export const InvoiceDocument = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
-                            { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
                           ],
                         },
                       },
@@ -7751,7 +7765,6 @@ export const InvoiceDocument = {
                   },
                 },
                 { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemListRow' } },
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'InvoiceItemDeleteButton' } },
               ],
             },
           },

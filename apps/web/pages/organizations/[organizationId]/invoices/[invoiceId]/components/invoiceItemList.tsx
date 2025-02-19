@@ -10,7 +10,6 @@ import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemInput } from '../../../../../../frontend/generated/gql/graphql'
 import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
-import { InvoiceItemDeleteButton } from './invoiceItemDeleteButton'
 import { InvoiceItemListRow } from './invoiceItemListRow'
 
 const InvoiceItemListInvoiceFragment = graphql(`
@@ -39,12 +38,9 @@ const InvoiceItemListInvoiceFragment = graphql(`
         project {
           id
           title
-          startDate
-          endDate
         }
       }
       ...InvoiceItemListRow
-      ...InvoiceItemDeleteButton
     }
   }
 `)
@@ -142,7 +138,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
       <table className="table">
         <thead className="bg-neutral text-sm text-neutral-content">
           <tr className="text-right [&_th:first-child]:border-r-transparent [&_th]:border [&_th]:border-neutral">
-            <th className="w-px" />
+            <th className="w-px print:hidden" />
             <th />
             <th className="w-1/12">Duration</th>
             <th className="w-1/12">H. Rate (€)</th>
@@ -161,7 +157,6 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 invoiceItem={invoiceItem}
                 workFrom={invoiceData.invoiceWorkFrom}
                 workUntil={invoiceData.invoiceWorkUntil}
-                deleteButton={<InvoiceItemDeleteButton invoiceItem={invoiceItem} />}
               />
             ))}
         </tbody>
@@ -200,7 +195,7 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 className="input-sm input-ghost text-right"
                 placeholder="Duration"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
                 errorMessage={errors.duration?.message}
                 onBlur={(event) => {
                   const value = parseNumericInput(event.target.value)
@@ -216,8 +211,8 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 onKeyDown={async (event) => {
                   if (event.code === 'Enter') {
                     event.preventDefault()
-                    const oldValues = getValues()
-                    await handleFormSubmission(oldValues)
+                    const currentValues = getValues()
+                    await handleFormSubmission(currentValues)
                   }
                 }}
               />
@@ -228,17 +223,15 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 className="input-sm input-ghost text-right"
                 placeholder="Hourly rate"
                 defaultValue={getFormattedValue(0)}
-                disabled={isSubmitting || filteredProjectsWithTasks.length === 0}
+                disabled={isSubmitting || filteredProjectsWithTasks.length === 0 || !watch('taskId')}
                 errorMessage={errors.hourlyRate?.message}
                 onBlur={(event) => {
-                  const oldValues = getValues()
                   const value = parseNumericInput(event.target.value)
                   if (Number.isNaN(value)) {
-                    reset(oldValues)
-                    event.target.value = getFormattedValue(oldValues.hourlyRate)
+                    event.target.value = getFormattedValue(0)
                   } else {
                     event.target.value = getFormattedValue(value)
-                    handleFormSubmission(oldValues)
+                    handleFormSubmission(getValues())
                   }
                 }}
                 isDirty={isDirty && dirtyFields.hourlyRate}
@@ -246,8 +239,8 @@ export const InvoiceItemList = ({ invoice }: InvoiceItemListProps): JSX.Element 
                 onKeyDown={async (event) => {
                   if (event.code === 'Enter') {
                     event.preventDefault()
-                    const oldValues = getValues()
-                    await handleFormSubmission(oldValues)
+                    const currentValues = getValues()
+                    await handleFormSubmission(currentValues)
                   }
                 }}
               />

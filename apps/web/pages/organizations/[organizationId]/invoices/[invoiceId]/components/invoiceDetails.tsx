@@ -135,7 +135,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           control={control}
           name={editableDateField}
           render={({ field: { onChange, value } }) => (
-            <div className="flex flex-col gap-1">
+            <div className="flex gap-1">
               <InputMask
                 disabled={isSubmitting}
                 mask="9999-99-99"
@@ -231,7 +231,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               Print
             </button>
           </div>
-          <div className="">
+          <div>
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">Invoice</div>
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>

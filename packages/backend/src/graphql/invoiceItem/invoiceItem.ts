@@ -1,5 +1,4 @@
 import { builder } from '../builder'
-import { prisma } from '../prisma'
 import { DecimalScalar } from '../scalars'
 
 export const InvoiceItem = builder.prismaObject('InvoiceItem', {
@@ -14,25 +13,6 @@ export const InvoiceItem = builder.prismaObject('InvoiceItem', {
     }),
     task: t.relation('task', { description: 'Task for which the invoice item was booked' }),
 
-    invoice: t.relation('invoice', {
-      description: 'Invoice to which the invoice item belongs',
-      resolve: async (query, invoiceItem) =>
-        await prisma.invoice.findUniqueOrThrow({
-          ...query,
-          where: { id: invoiceItem.invoiceId },
-          include: {
-            invoiceItems: {
-              include: {
-                task: {
-                  include: {
-                    project: true,
-                  },
-                },
-              },
-              orderBy: [{ task: { project: { title: 'asc' } } }, { task: { title: 'asc' } }],
-            },
-          },
-        }),
-    }),
+    invoice: t.relation('invoice'),
   }),
 })

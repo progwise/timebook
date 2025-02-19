@@ -9,6 +9,7 @@ import { invoiceItemInputValidations } from '@progwise/timebook-validations'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceItemUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
+import { InvoiceItemDeleteButton } from './invoiceItemDeleteButton'
 
 const InvoiceItemListRowFragment = graphql(`
   fragment InvoiceItemListRow on InvoiceItem {
@@ -23,6 +24,7 @@ const InvoiceItemListRowFragment = graphql(`
         title
       }
     }
+    ...InvoiceItemDeleteButton
   }
 `)
 
@@ -38,10 +40,9 @@ export interface InvoiceItemListRowProps {
   invoiceItem: FragmentType<typeof InvoiceItemListRowFragment>
   workFrom: string
   workUntil: string
-  deleteButton?: JSX.Element
 }
 
-export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteButton }: InvoiceItemListRowProps) => {
+export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment }: InvoiceItemListRowProps) => {
   const invoiceItem = useFragment(InvoiceItemListRowFragment, invoiceItemFragment)
   const [{ fetching }, updateInvoiceItem] = useMutation(InvoiceItemUpdateMutationDocument)
 
@@ -101,8 +102,8 @@ export const InvoiceItemListRow = ({ invoiceItem: invoiceItemFragment, deleteBut
 
   return (
     <tr className="[&_td:first-child]:border-r-transparent [&_td]:border [&_td]:border-neutral [&_td]:p-2">
-      <td>
-        <div className="print:hidden">{deleteButton}</div>
+      <td className="print:hidden">
+        <InvoiceItemDeleteButton invoiceItem={invoiceItem} />
       </td>
       <td className="text-left">
         <span className="font-bold">{invoiceItem.task.project.title}:</span> {invoiceItem.task.title}

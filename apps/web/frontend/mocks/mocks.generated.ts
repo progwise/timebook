@@ -66,7 +66,6 @@ export type InvoiceItem = {
   hourlyRate: Scalars['Decimal']
   /** Identifies the invoice item */
   id: Scalars['ID']
-  /** Invoice to which the invoice item belongs */
   invoice: Invoice
   start?: Maybe<Scalars['DateTime']>
   /** Task for which the invoice item was booked */
@@ -1561,7 +1560,7 @@ export type InvoiceFragmentFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+      project: { __typename?: 'Project'; id: string; title: string }
     }
     invoice: { __typename?: 'Invoice'; organization: { __typename?: 'Organization'; id: string } }
   }>
@@ -1614,7 +1613,7 @@ export type InvoiceItemListInvoiceFragment = {
       __typename?: 'Task'
       id: string
       title: string
-      project: { __typename?: 'Project'; id: string; title: string; startDate?: string | null; endDate?: string | null }
+      project: { __typename?: 'Project'; id: string; title: string }
     }
     invoice: { __typename?: 'Invoice'; organization: { __typename?: 'Organization'; id: string } }
   }>
@@ -1640,6 +1639,7 @@ export type InvoiceItemListRowFragment = {
     title: string
     project: { __typename?: 'Project'; id: string; title: string }
   }
+  invoice: { __typename?: 'Invoice'; organization: { __typename?: 'Organization'; id: string } }
 }
 
 export type InvoiceItemUpdateMutationVariables = Exact<{
@@ -1720,13 +1720,7 @@ export type InvoiceQuery = {
         __typename?: 'Task'
         id: string
         title: string
-        project: {
-          __typename?: 'Project'
-          id: string
-          title: string
-          startDate?: string | null
-          endDate?: string | null
-        }
+        project: { __typename?: 'Project'; id: string; title: string }
       }
       invoice: { __typename?: 'Invoice'; organization: { __typename?: 'Organization'; id: string } }
     }>

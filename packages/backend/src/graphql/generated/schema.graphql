@@ -69,10 +69,6 @@ type InvoiceItem {
   Identifies the invoice item
   """
   id: ID!
-
-  """
-  Invoice to which the invoice item belongs
-  """
   invoice: Invoice!
   start: DateTime
 
