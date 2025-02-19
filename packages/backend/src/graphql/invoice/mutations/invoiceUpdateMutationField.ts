@@ -10,37 +10,74 @@ builder.mutationField('invoiceUpdate', (t) =>
       id: t.arg.id({ description: 'ID of the invoice' }),
       data: t.arg({ type: InvoiceUpdateInput }),
     },
-    authScopes: async (_source, { id, data: { organizationId } }) => {
-      const invoice = await prisma.invoice.findUniqueOrThrow({
-        select: { organizationId: true },
-        where: { id: id.toString() },
-      })
-
-      const oldOrganizationId = invoice.organizationId
-      if (organizationId) {
-        const newOrganizationId = organizationId.toString()
-        return { isAdminByOrganizations: [oldOrganizationId, newOrganizationId] }
-      }
-
-      return { isAdminByOrganization: oldOrganizationId }
-    },
+    authScopes: (_source, { data: { organizationId } }) => ({ isAdminByOrganization: organizationId?.toString() }),
     resolve: async (
       query,
       _source,
-      { id, data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
+      { id, data: { customerAddress, customerName, invoiceWorkFrom, invoiceWorkUntil } },
     ) => {
-      return prisma.invoice.update({
+      const invoice = await prisma.invoice.findUniqueOrThrow({
+        where: { id: id.toString() },
+      })
+
+      if (invoiceWorkFrom && invoiceWorkUntil && invoiceWorkFrom >= invoiceWorkUntil) {
+        throw new Error('The end date must be after the start date')
+      }
+
+      const updatedInvoice = await prisma.invoice.update({
         ...query,
         data: {
           customerAddress: customerAddress ?? undefined,
           customerName: customerName ?? undefined,
-          invoiceDate: invoiceDate ?? undefined,
-          organizationId: organizationId?.toString(),
           invoiceWorkFrom: invoiceWorkFrom ?? undefined,
           invoiceWorkUntil: invoiceWorkUntil ?? undefined,
         },
         where: { id: id.toString() },
       })
+
+      if (invoiceWorkFrom || invoiceWorkUntil) {
+        const existingInvoiceItems = await prisma.invoiceItem.findMany({
+          where: { invoiceId: updatedInvoice.id },
+          select: { taskId: true },
+        })
+
+        const existingTaskIds = new Set(existingInvoiceItems.map((item) => item.taskId))
+
+        const workHours = await prisma.workHour.groupBy({
+          by: ['taskId'],
+          where: {
+            date: {
+              ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
+              ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
+            },
+
+            task: { project: { organization: { id: invoice.organizationId } } },
+
+            taskId: {
+              notIn: [...existingTaskIds],
+            },
+          },
+
+          _sum: {
+            duration: true,
+          },
+        })
+
+        const invoiceItems = workHours.map((workHour) => ({
+          invoiceId: updatedInvoice.id,
+          taskId: workHour.taskId,
+          duration: workHour._sum.duration ?? 0,
+          hourlyRate: 0,
+        }))
+
+        if (invoiceItems.length > 0) {
+          await prisma.invoiceItem.createMany({
+            data: invoiceItems,
+          })
+        }
+      }
+
+      return updatedInvoice
     },
   }),
 )

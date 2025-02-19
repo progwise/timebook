@@ -8,7 +8,7 @@ import { getWhereUsersAreMembers } from './getWhereUserIsMember'
 builder.queryField('projects', (t) =>
   t.withAuth({ isLoggedIn: true }).prismaField({
     type: ['Project'],
-    description: 'Returns all project of the signed in user that are active',
+    description: 'Returns all projects of the signed in user that are active',
     args: {
       from: t.arg({ type: DateScalar, required: true }),
       to: t.arg({ type: DateScalar, required: false }),

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const invoiceItemInputValidations = z.object({
+  organizationId: z.string(),
   taskId: z.string(),
   invoiceId: z.string(),
   duration: z

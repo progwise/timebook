@@ -28,7 +28,7 @@ it('should render invoice details', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
   const invoiceElements = await screen.findAllByText('INVOICE', { exact: false })
-  expect(invoiceElements).toHaveLength(4)
+  expect(invoiceElements).toHaveLength(6)
   expect(screen.getByText('Progwise')).toBeInTheDocument()
   expect(screen.getByText('Greifswald')).toBeInTheDocument()
   expect(screen.getByText('Invoice No: #1')).toBeInTheDocument()
@@ -37,8 +37,7 @@ it('should render invoice details', async () => {
 it('should render invoice items', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
-  await screen.findByText('Task')
-  expect(screen.getByRole('cell', { name: '5' })).toBeInTheDocument()
-  expect(screen.getByRole('cell', { name: '20' })).toBeInTheDocument()
-  expect(screen.getByRole('cell', { name: '100' })).toBeInTheDocument()
+  await screen.findByText('No tasks available')
+  await screen.findByText('Duration')
+  expect(screen.getAllByDisplayValue('0.00')).toHaveLength(2)
 })

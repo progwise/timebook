@@ -43,11 +43,10 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
     },
   })
 
-  const handleWithdraw = async () => {
+  const handleWithdraw = async (data: InvoiceSendInput) => {
     await withdrawInvoice({
       data: {
-        invoiceId: invoice.id,
-        organizationId: invoice.organization.id,
+        ...data,
         sendDate: null,
       },
     })

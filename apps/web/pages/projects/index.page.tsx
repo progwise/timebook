@@ -80,8 +80,8 @@ const Projects = (): JSX.Element => {
     ),
   }
 
-  const handleAddProject = async () => {
-    await router.push('/projects/new')
+  const handleAddProject = () => {
+    router.push('/projects/new')
   }
 
   return (
