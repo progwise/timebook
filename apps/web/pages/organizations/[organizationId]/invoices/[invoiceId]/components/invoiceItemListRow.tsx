@@ -11,7 +11,7 @@ import { InvoiceItemUpdateInput } from '../../../../../../frontend/generated/gql
 import { getFormattedValue, parseNumericInput } from './invoiceFormatUtils'
 import { InvoiceItemDeleteButton } from './invoiceItemDeleteButton'
 
-const InvoiceItemListRowFragment = graphql(`
+export const InvoiceItemListRowFragment = graphql(`
   fragment InvoiceItemListRow on InvoiceItem {
     id
     duration

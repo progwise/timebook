@@ -18,9 +18,9 @@ import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
 import { InvoiceItemList } from './invoiceItemList'
 import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
 
-const SendInvoiceMutationDocument = graphql(`
-  mutation sendInvoice($data: InvoiceSendInput!) {
-    sendInvoice(data: $data) {
+const invoiceSendMutationDocument = graphql(`
+  mutation invoiceSend($data: InvoiceSendInput!) {
+    invoiceSend(data: $data) {
       id
     }
   }
@@ -81,7 +81,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-  const [, sendInvoice] = useMutation(SendInvoiceMutationDocument)
+  const [, invoiceSend] = useMutation(invoiceSendMutationDocument)
   const handleSubmitForm = async (data: InvoiceUpdateInput) => {
     const updateInvoiceResult = await updateInvoice({
       id: invoice.id,
@@ -123,7 +123,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     )
   const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
     try {
-      await sendInvoice({
+      await invoiceSend({
         data,
       })
     } catch {}

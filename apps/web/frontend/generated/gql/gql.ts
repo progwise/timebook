@@ -158,8 +158,8 @@ const documents = {
     types.OrganizationDocument,
   '\n  mutation organizationUpdate($id: ID!, $data: OrganizationInput!) {\n    organizationUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
     types.OrganizationUpdateDocument,
-  '\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n':
-    types.SendInvoiceDocument,
+  '\n  mutation invoiceSend($data: InvoiceSendInput!) {\n    invoiceSend(data: $data) {\n      id\n    }\n  }\n':
+    types.InvoiceSendDocument,
   '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    sendDate\n    organization {\n      id\n    }\n    invoiceWorkFrom\n    invoiceWorkUntil\n    ...SendOrWithdrawInvoice\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n  }\n':
     types.InvoiceFragmentFragmentDoc,
   '\n  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {\n    invoiceUpdate(id: $id, data: $data) {\n      id\n    }\n  }\n':
@@ -679,8 +679,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation sendInvoice($data: InvoiceSendInput!) {\n    sendInvoice(data: $data) {\n      id\n    }\n  }\n']
+  source: '\n  mutation invoiceSend($data: InvoiceSendInput!) {\n    invoiceSend(data: $data) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation invoiceSend($data: InvoiceSendInput!) {\n    invoiceSend(data: $data) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

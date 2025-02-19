@@ -134,6 +134,8 @@ export type Mutation = {
   invoiceItemDelete: InvoiceItem
   /** Update an invoice item */
   invoiceItemUpdate: InvoiceItem
+  /** Send an invoice */
+  invoiceSend: Invoice
   /** Update an invoice */
   invoiceUpdate: Invoice
   /** Archive an organization */
@@ -172,8 +174,6 @@ export type Mutation = {
   projectUnlock: Project
   /** Update a project */
   projectUpdate: Project
-  /** Send an invoice */
-  sendInvoice: Invoice
   /** Archive a task */
   taskArchive: Task
   /** Create a new Task */
@@ -224,6 +224,10 @@ export type MutationInvoiceItemDeleteArgs = {
 export type MutationInvoiceItemUpdateArgs = {
   data: InvoiceItemUpdateInput
   id: Scalars['ID']
+}
+
+export type MutationInvoiceSendArgs = {
+  data: InvoiceSendInput
 }
 
 export type MutationInvoiceUpdateArgs = {
@@ -317,10 +321,6 @@ export type MutationProjectUnlockArgs = {
 export type MutationProjectUpdateArgs = {
   data: ProjectInput
   id: Scalars['ID']
-}
-
-export type MutationSendInvoiceArgs = {
-  data: InvoiceSendInput
 }
 
 export type MutationTaskArchiveArgs = {
@@ -1449,11 +1449,11 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
-export type SendInvoiceMutationVariables = Exact<{
+export type InvoiceSendMutationVariables = Exact<{
   data: InvoiceSendInput
 }>
 
-export type SendInvoiceMutation = { __typename?: 'Mutation'; sendInvoice: { __typename?: 'Invoice'; id: string } }
+export type InvoiceSendMutation = { __typename?: 'Mutation'; invoiceSend: { __typename?: 'Invoice'; id: string } }
 
 export type InvoiceFragmentFragment = ({
   __typename?: 'Invoice'
@@ -7269,13 +7269,13 @@ export const OrganizationUpdateDocument = {
     },
   ],
 } as unknown as DocumentNode<OrganizationUpdateMutation, OrganizationUpdateMutationVariables>
-export const SendInvoiceDocument = {
+export const InvoiceSendDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'sendInvoice' },
+      name: { kind: 'Name', value: 'invoiceSend' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -7288,7 +7288,7 @@ export const SendInvoiceDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'sendInvoice' },
+            name: { kind: 'Name', value: 'invoiceSend' },
             arguments: [
               {
                 kind: 'Argument',
@@ -7305,7 +7305,7 @@ export const SendInvoiceDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<SendInvoiceMutation, SendInvoiceMutationVariables>
+} as unknown as DocumentNode<InvoiceSendMutation, InvoiceSendMutationVariables>
 export const InvoiceUpdateDocument = {
   kind: 'Document',
   definitions: [

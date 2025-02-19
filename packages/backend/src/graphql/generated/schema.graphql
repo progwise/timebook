@@ -193,6 +193,11 @@ type Mutation {
   ): InvoiceItem!
 
   """
+  Send an invoice
+  """
+  invoiceSend(data: InvoiceSendInput!): Invoice!
+
+  """
   Update an invoice
   """
   invoiceUpdate(
@@ -307,11 +312,6 @@ type Mutation {
     """
     id: ID!
   ): Project!
-
-  """
-  Send an invoice
-  """
-  sendInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Archive a task

@@ -38,5 +38,6 @@ it('should render invoice items', async () => {
   render(<InvoiceDetailsPage />, { wrapper })
 
   await screen.findByText('No tasks available')
+  await screen.findByText('Duration')
   expect(screen.getAllByDisplayValue('0.00')).toHaveLength(2)
 })
