@@ -373,7 +373,7 @@ type Mutation {
   """
   Updates a comment of a work hour or creates one
   """
-  workHourCommentUpdate(comment: String!, date: Date!, taskId: ID!): WorkHour!
+  workHourCommentUpdate(comment: String!, date: Date!, taskId: ID!, userId: ID): WorkHour!
 
   """
   Create a new WorkHour

@@ -352,6 +352,7 @@ export type MutationWorkHourCommentUpdateArgs = {
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
+  userId?: InputMaybe<Scalars['ID']>
 }
 
 export type MutationWorkHourCreateArgs = {
@@ -1328,7 +1329,12 @@ export type WeekGridTaskRowSingleUserFragment = ({
   id: string
   title: string
   isLockedByAdmin: boolean
-  project: { __typename?: 'Project'; id: string; isArchived: boolean }
+  project: {
+    __typename?: 'Project'
+    id: string
+    isArchived: boolean
+    members: Array<{ __typename?: 'User'; id: string }>
+  }
   taskTotal: Array<{
     __typename?: 'WorkHourOfDay'
     date: string
@@ -1365,6 +1371,7 @@ export type CommentUpdateMutationVariables = Exact<{
   comment: Scalars['String']
   date: Scalars['Date']
   taskId: Scalars['ID']
+  userId?: InputMaybe<Scalars['ID']>
 }>
 
 export type CommentUpdateMutation = {
@@ -2969,6 +2976,14 @@ export const WeekGridTaskRowSingleUserFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -3473,6 +3488,14 @@ export const WeekGridTaskRowFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -3822,6 +3845,14 @@ export const WeekGridProjectRowGroupFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -4216,6 +4247,14 @@ export const WeekGridProjectFragmentDoc = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
@@ -6768,6 +6807,11 @@ export const CommentUpdateDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'taskId' } },
           type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -6790,6 +6834,11 @@ export const CommentUpdateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'comment' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'comment' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userId' } },
               },
             ],
             selectionSet: {
@@ -8867,6 +8916,14 @@ export const WeekGridDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'isArchived' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'members' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                  },
+                },
               ],
             },
           },
