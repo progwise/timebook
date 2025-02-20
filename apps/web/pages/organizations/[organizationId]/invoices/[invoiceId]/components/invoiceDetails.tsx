@@ -99,21 +99,16 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     }
   }
 
-  const handleSendOrWithdrawInvoice = async (data: InvoiceUpdateInput, action: InvoiceAction) => {
+  const handleSendOrWithdrawInvoice = async (data: InvoiceUpdateInput) => {
+    const action = invoice.sendDate ? InvoiceAction.Withdraw : InvoiceAction.Send
     try {
-      const updateData: InvoiceUpdateInput = {
-        organizationId: invoice.organization.id,
-      }
-
-      if (action === InvoiceAction.Send) {
-        updateData.sendDate = data.sendDate
-      } else if (action === InvoiceAction.Withdraw) {
-        updateData.sendDate = null
-      }
-
       await updateInvoice({
         id: invoice.id,
-        data: updateData,
+        data: {
+          ...data,
+          organizationId: invoice.organization.id,
+          sendDate: data.sendDate,
+        },
         action,
       })
     } catch {}
@@ -287,10 +282,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           <p>Thank you for your business!</p>
         </div>
         <div className="flex gap-4">
-          <SendOrWithdrawInvoiceButton
-            invoice={invoice}
-            onSubmit={(data) => handleSendOrWithdrawInvoice(data, InvoiceAction.Send)}
-          />
+          <SendOrWithdrawInvoiceButton invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
           <PayOrResetInvoiceButton invoice={invoice} onSubmit={handlePayOrResetInvoice} />
         </div>
       </div>
