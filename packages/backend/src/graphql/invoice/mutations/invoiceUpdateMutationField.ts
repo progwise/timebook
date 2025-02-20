@@ -4,6 +4,81 @@ import { prisma } from '../../prisma'
 import { InvoiceAction } from '../invoiceStatusEnum'
 import { InvoiceUpdateInput } from '../invoiceUpdateInput'
 
+const getAdjustedDate = (date: Date): Date => {
+  const adjustedDate = new Date(date)
+  adjustedDate.setUTCHours(0, 0, 0, 0)
+  return adjustedDate
+}
+
+const validateSendDate = (sendDate: Date, localNow: Date): void => {
+  const adjustedSendDate = getAdjustedDate(sendDate)
+  const localNowUTC = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
+  if (adjustedSendDate.getTime() > localNowUTC.getTime()) {
+    throw new Error('Invoice send date must not be in the future')
+  }
+}
+
+const validatePayDate = async (payDate: Date, invoiceId: string, localNow: Date): Promise<Date> => {
+  const adjustedPayDate = getAdjustedDate(payDate)
+  const localNowUTC = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
+  if (adjustedPayDate.getTime() >= localNowUTC.getTime()) {
+    throw new Error('Invoice pay date must not be in the future')
+  }
+
+  const existingInvoice = await prisma.invoice.findUnique({
+    where: { id: invoiceId },
+    select: { sendDate: true },
+  })
+
+  if (existingInvoice?.sendDate) {
+    const existingSendDate = getAdjustedDate(new Date(existingInvoice.sendDate))
+    if (adjustedPayDate.getTime() < existingSendDate.getTime()) {
+      throw new Error('Invoice pay date must not be before send date')
+    }
+  }
+
+  return adjustedPayDate
+}
+
+const updateInvoiceItems = async (
+  invoiceWorkFrom: Date | undefined,
+  invoiceWorkUntil: Date | undefined,
+  updatedInvoice: { id: string; organizationId: string },
+) => {
+  if (invoiceWorkFrom || invoiceWorkUntil) {
+    const existingInvoiceItems = await prisma.invoiceItem.findMany({
+      where: { invoiceId: updatedInvoice.id },
+      select: { taskId: true },
+    })
+
+    const existingTaskIds = new Set(existingInvoiceItems.map((invoiceItem) => invoiceItem.taskId))
+
+    const workHours = await prisma.workHour.groupBy({
+      by: ['taskId'],
+      where: {
+        date: {
+          ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
+          ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
+        },
+        task: { project: { organization: { id: updatedInvoice.organizationId } } },
+        taskId: { notIn: [...existingTaskIds] },
+      },
+      _sum: { duration: true },
+    })
+
+    const invoiceItems = workHours.map((workHour) => ({
+      invoiceId: updatedInvoice.id,
+      taskId: workHour.taskId,
+      duration: workHour._sum.duration ?? 0,
+      hourlyRate: 0,
+    }))
+
+    if (invoiceItems.length > 0) {
+      await prisma.invoiceItem.createMany({ data: invoiceItems })
+    }
+  }
+}
+
 builder.mutationField('invoiceUpdate', (t) =>
   t.prismaField({
     type: 'Invoice',
@@ -19,7 +94,7 @@ builder.mutationField('invoiceUpdate', (t) =>
       _source,
       {
         id: invoiceId,
-        data: { customerAddress, customerName, invoiceDate, invoiceWorkFrom, invoiceWorkUntil, sendDate, payDate },
+        data: { customerAddress, customerName, invoiceWorkFrom, invoiceWorkUntil, sendDate, payDate },
         action,
       },
     ) => {
@@ -37,7 +112,6 @@ builder.mutationField('invoiceUpdate', (t) =>
       const updateData: UpdateData = {
         customerAddress: customerAddress,
         customerName: customerName ?? undefined,
-        invoiceDate: invoiceDate ?? undefined,
         invoiceWorkFrom: invoiceWorkFrom ?? undefined,
         invoiceWorkUntil: invoiceWorkUntil ?? undefined,
         sendDate: sendDate,
@@ -65,57 +139,14 @@ builder.mutationField('invoiceUpdate', (t) =>
           if (!sendDate) {
             throw new Error('Send date is required')
           }
-
-          // Adjust sendDate to the start of the day in UTC (midnight)
-          const adjustedSendDate = new Date(sendDate)
-          adjustedSendDate.setUTCHours(0, 0, 0, 0) // Set to midnight in UTC
-
-          // Get the current time in UTC for comparison
-          const localNowUTC = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
-
-          // Now, compare the UTC versions of sendDate and localNow
-          if (adjustedSendDate.getTime() > localNowUTC.getTime()) {
-            throw new Error('Invoice send date must not be in the future')
-          }
-
-          updateData.sendDate = adjustedSendDate
+          validateSendDate(sendDate, localNow)
+          updateData.sendDate = getAdjustedDate(sendDate)
           break
         case InvoiceAction.Pay:
           if (!payDate) {
             throw new Error('Pay date is required')
           }
-
-          // Adjust payDate to the start of the day in UTC (midnight)
-          const adjustedPayDate = new Date(payDate)
-          adjustedPayDate.setUTCHours(0, 0, 0, 0) // Set to midnight in UTC
-
-          // Get the current time in UTC for comparison
-          const localNowUTCForPay = new Date(localNow.getTime() - localNow.getTimezoneOffset() * 60_000)
-
-          // Compare the UTC versions of payDate and localNow
-          if (adjustedPayDate.getTime() >= localNowUTCForPay.getTime()) {
-            throw new Error('Invoice pay date must not be in the future')
-          }
-
-          const existingInvoice = await prisma.invoice.findUnique({
-            where: { id: invoiceId.toString() },
-            select: { sendDate: true },
-          })
-
-          if (existingInvoice?.sendDate) {
-            const existingSendDate = new Date(existingInvoice.sendDate)
-
-            // Set both dates to UTC midnight for comparison
-            existingSendDate.setUTCHours(0, 0, 0, 0)
-            adjustedPayDate.setUTCHours(0, 0, 0, 0)
-
-            // Compare the adjusted pay date with the send date
-            if (adjustedPayDate.getTime() < existingSendDate.getTime()) {
-              throw new Error('Invoice pay date must not be before send date')
-            }
-          }
-
-          updateData.payDate = adjustedPayDate
+          updateData.payDate = await validatePayDate(payDate, invoiceId.toString(), localNow)
           break
         case InvoiceAction.ResetPayDate:
           updateData.payDate = null
@@ -132,47 +163,7 @@ builder.mutationField('invoiceUpdate', (t) =>
         throw new Error('The end date must be after the start date')
       }
 
-      if (invoiceWorkFrom || invoiceWorkUntil) {
-        const existingInvoiceItems = await prisma.invoiceItem.findMany({
-          where: { invoiceId: updatedInvoice.id },
-          select: { taskId: true },
-        })
-
-        const existingTaskIds = new Set(existingInvoiceItems.map((invoiceItem) => invoiceItem.taskId))
-
-        const workHours = await prisma.workHour.groupBy({
-          by: ['taskId'],
-          where: {
-            date: {
-              ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
-              ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
-            },
-
-            task: { project: { organization: { id: updatedInvoice.organizationId } } },
-
-            taskId: {
-              notIn: [...existingTaskIds],
-            },
-          },
-
-          _sum: {
-            duration: true,
-          },
-        })
-
-        const invoiceItems = workHours.map((workHour) => ({
-          invoiceId: updatedInvoice.id,
-          taskId: workHour.taskId,
-          duration: workHour._sum.duration ?? 0,
-          hourlyRate: 0,
-        }))
-
-        if (invoiceItems.length > 0) {
-          await prisma.invoiceItem.createMany({
-            data: invoiceItems,
-          })
-        }
-      }
+      await updateInvoiceItems(invoiceWorkFrom ?? undefined, invoiceWorkUntil ?? undefined, updatedInvoice)
 
       return updatedInvoice
     },
