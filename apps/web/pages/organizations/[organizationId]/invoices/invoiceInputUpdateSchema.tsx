@@ -10,7 +10,7 @@ const invoiceUpdateDateSchema = z
   .string()
   .min(10, 'Enter a date')
   .refine((value) => value === '' || value !== '____-__-__', 'Enter a date')
-  .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
+  .refine((value) => value === '' || isValid(parseISO(value)), 'Invalid date')
 
 export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoiceUpdateInputValidations
   .extend({

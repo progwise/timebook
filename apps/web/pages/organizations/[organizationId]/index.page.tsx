@@ -64,8 +64,8 @@ const OrganizationDetails = (): JSX.Element => {
     } catch {}
   }
 
-  const handleCancel = async () => {
-    await router.push('/organizations')
+  const handleCancel = () => {
+    router.push('/organizations')
   }
 
   if (!router.isReady || fetching) {

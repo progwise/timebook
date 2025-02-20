@@ -114,12 +114,24 @@ export const organizationHandlers = [
           invoiceItems: [
             {
               id: '1',
-              duration: 5,
+              duration: 300,
               hourlyRate: 20,
               task: {
                 id: '1',
                 title: 'Task',
                 __typename: 'Task',
+                project: {
+                  id: '1',
+                  title: 'Project',
+                  __typename: 'Project',
+                },
+              },
+              invoice: {
+                organization: {
+                  id: testOrganization1.id,
+                  __typename: 'Organization',
+                },
+                __typename: 'Invoice',
               },
               __typename: 'InvoiceItem',
             },

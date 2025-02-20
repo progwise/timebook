@@ -122,11 +122,59 @@ builder.mutationField('invoiceUpdate', (t) =>
           break
       }
 
-      return prisma.invoice.update({
+      const updatedInvoice = await prisma.invoice.update({
         ...query,
         data: updateData,
         where: { id: invoiceId.toString() },
       })
+
+      if (invoiceWorkFrom && invoiceWorkUntil && invoiceWorkFrom >= invoiceWorkUntil) {
+        throw new Error('The end date must be after the start date')
+      }
+
+      if (invoiceWorkFrom || invoiceWorkUntil) {
+        const existingInvoiceItems = await prisma.invoiceItem.findMany({
+          where: { invoiceId: updatedInvoice.id },
+          select: { taskId: true },
+        })
+
+        const existingTaskIds = new Set(existingInvoiceItems.map((invoiceItem) => invoiceItem.taskId))
+
+        const workHours = await prisma.workHour.groupBy({
+          by: ['taskId'],
+          where: {
+            date: {
+              ...(invoiceWorkFrom && { gte: invoiceWorkFrom }),
+              ...(invoiceWorkUntil && { lte: invoiceWorkUntil }),
+            },
+
+            task: { project: { organization: { id: updatedInvoice.organizationId } } },
+
+            taskId: {
+              notIn: [...existingTaskIds],
+            },
+          },
+
+          _sum: {
+            duration: true,
+          },
+        })
+
+        const invoiceItems = workHours.map((workHour) => ({
+          invoiceId: updatedInvoice.id,
+          taskId: workHour.taskId,
+          duration: workHour._sum.duration ?? 0,
+          hourlyRate: 0,
+        }))
+
+        if (invoiceItems.length > 0) {
+          await prisma.invoiceItem.createMany({
+            data: invoiceItems,
+          })
+        }
+      }
+
+      return updatedInvoice
     },
   }),
 )
