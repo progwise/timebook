@@ -64,14 +64,14 @@ interface TrackingButtonsProps {
   tracking?: FragmentType<typeof TrackingButtonsTrackingFragment> | null
   taskToTrack?: FragmentType<typeof TrackingButtonsTaskFragment> | null
   interactiveButtons?: boolean
-  isSessionUserTask?: boolean
+  canUserTrackTask?: boolean
 }
 
 export const TrackingButtons = ({
   tracking: trackingFragment,
   taskToTrack: taskToTrackFragment,
   interactiveButtons = false,
-  isSessionUserTask = false,
+  canUserTrackTask = false,
 }: TrackingButtonsProps) => {
   const tracking = useFragment(TrackingButtonsTrackingFragment, trackingFragment)
   const taskToTrack = useFragment(TrackingButtonsTaskFragment, taskToTrackFragment)
@@ -140,7 +140,7 @@ export const TrackingButtons = ({
       <button
         className="btn btn-square btn-outline btn-primary btn-xs pl-0.5"
         onClick={() => startTracking({ taskId: taskToTrack.id })}
-        disabled={taskToTrack.isLocked || !isSessionUserTask}
+        disabled={taskToTrack.isLocked || !canUserTrackTask}
       >
         <FaPlay />
       </button>

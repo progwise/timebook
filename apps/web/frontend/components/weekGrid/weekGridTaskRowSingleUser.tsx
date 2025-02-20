@@ -55,7 +55,7 @@ export const WeekGridTaskRowSingleUser = ({
   const session = useSession()
   const sessionUserId = session.data?.user.id
 
-  const isSessionUserTask = task.project.members.some((member) => member.id === sessionUserId)
+  const canUserTrackTask = task.project.members.some((member) => member.id === sessionUserId)
 
   const taskDurations = task.taskTotal.reduce((total, workHour) => total + (workHour.workHour?.duration ?? 0), 0)
 
@@ -67,7 +67,7 @@ export const WeekGridTaskRowSingleUser = ({
             tracking={task.tracking}
             taskToTrack={task}
             interactiveButtons={false}
-            isSessionUserTask={isSessionUserTask && !!sessionUserId && userIds.includes(sessionUserId)}
+            canUserTrackTask={canUserTrackTask && !!sessionUserId && userIds.includes(sessionUserId)}
           />
         )}
       </div>
