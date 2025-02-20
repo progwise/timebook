@@ -32,10 +32,6 @@ type Invoice implements ModifyInterface {
   """
   id: ID!
   invoiceDate: Date!
-
-  """
-  Items associated with the invoice
-  """
   invoiceItems: [InvoiceItem!]!
 
   """
@@ -52,7 +48,6 @@ type Invoice implements ModifyInterface {
 input InvoiceInput {
   customerAddress: String
   customerName: String!
-  invoiceDate: Date!
   invoiceWorkFrom: Date!
   invoiceWorkUntil: Date!
   organizationId: ID!
@@ -74,10 +69,6 @@ type InvoiceItem {
   Identifies the invoice item
   """
   id: ID!
-
-  """
-  Invoice to which the invoice item belongs
-  """
   invoice: Invoice!
   start: DateTime
 
@@ -98,7 +89,21 @@ input InvoiceItemInput {
   """
   hourlyRate: Int!
   invoiceId: ID!
+  organizationId: ID!
   taskId: ID!
+}
+
+input InvoiceItemUpdateInput {
+  """
+  Invoice item duration in minutes
+  """
+  duration: Int
+
+  """
+  Invoice item hourly rate in euro
+  """
+  hourlyRate: Int
+  organizationId: ID
 }
 
 input InvoiceSendInput {
@@ -119,7 +124,6 @@ enum InvoiceStatus {
 input InvoiceUpdateInput {
   customerAddress: String
   customerName: String
-  invoiceDate: Date
   invoiceWorkFrom: Date
   invoiceWorkUntil: Date
   organizationId: ID
@@ -160,6 +164,38 @@ type Mutation {
   Create a new invoice item
   """
   invoiceItemCreate(data: InvoiceItemInput!): InvoiceItem!
+
+  """
+  Delete an invoice item
+  """
+  invoiceItemDelete(
+    """
+    ID of the invoice item
+    """
+    invoiceItemId: ID!
+
+    """
+    ID of the organization
+    """
+    organizationId: ID!
+  ): InvoiceItem!
+
+  """
+  Update an invoice item
+  """
+  invoiceItemUpdate(
+    data: InvoiceItemUpdateInput!
+
+    """
+    id of the invoice item
+    """
+    id: ID!
+  ): InvoiceItem!
+
+  """
+  Send an invoice
+  """
+  invoiceSend(data: InvoiceSendInput!): Invoice!
 
   """
   Update an invoice
@@ -276,11 +312,6 @@ type Mutation {
     """
     id: ID!
   ): Project!
-
-  """
-  Send an invoice
-  """
-  sendInvoice(data: InvoiceSendInput!): Invoice!
 
   """
   Archive a task
@@ -518,16 +549,6 @@ type Query {
   ): Invoice!
 
   """
-  Returns a list of invoice items for a given invoice
-  """
-  invoiceItems(
-    """
-    Identifier for the invoice
-    """
-    invoiceId: ID!
-  ): [InvoiceItem!]!
-
-  """
   Returns all members from projects where the user is an admin
   """
   myProjectsMembers: [User!]!
@@ -559,7 +580,7 @@ type Query {
   ): Project!
 
   """
-  Returns all project of the signed in user that are active
+  Returns all projects of the signed in user that are active
   """
   projects(
     filter: ProjectFilter! = ACTIVE

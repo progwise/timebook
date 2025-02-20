@@ -46,8 +46,8 @@ const NewProjectPage = (): JSX.Element => {
     } catch {}
   }
 
-  const handleCancel = async () => {
-    await router.push('/projects')
+  const handleCancel = () => {
+    router.push('/projects')
   }
 
   return (

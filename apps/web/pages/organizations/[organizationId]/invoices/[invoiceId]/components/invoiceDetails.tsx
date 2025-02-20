@@ -4,23 +4,23 @@ import { format } from 'date-fns'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { FaPen, FaPrint } from 'react-icons/fa6'
+import { FaArrowRotateRight, FaPen, FaPrint } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
 import { useMutation } from 'urql'
 
 import { InputField } from '@progwise/timebook-ui'
 
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
-import { dateStringValidation, getDate } from '../../../../../../frontend/components/dateStringValidation'
+import { getDate } from '../../../../../../frontend/components/dateStringValidation'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceSendInput, InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
-import { invoiceInputSchema } from '../../invoiceInputSchema'
+import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
 import { InvoiceItemList } from './invoiceItemList'
 import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
 
-const SendInvoiceMutationDocument = graphql(`
-  mutation sendInvoice($data: InvoiceSendInput!) {
-    sendInvoice(data: $data) {
+const invoiceSendMutationDocument = graphql(`
+  mutation invoiceSend($data: InvoiceSendInput!) {
+    invoiceSend(data: $data) {
       id
     }
   }
@@ -39,12 +39,11 @@ const InvoiceDetailsFragment = graphql(`
     }
     invoiceWorkFrom
     invoiceWorkUntil
-    ...InvoiceListInvoice
     ...SendOrWithdrawInvoice
     invoiceItems {
       id
-      ...InvoiceItemsListInvoice
     }
+    ...InvoiceItemListInvoice
   }
 `)
 
@@ -64,27 +63,39 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const invoice = useFragment(InvoiceDetailsFragment, invoiceFragment)
   const {
     setError,
-    handleSubmit,
     formState: { isSubmitting, errors },
     setValue,
     register,
+    getValues,
     control,
-  } = useForm<Pick<InvoiceUpdateInput, 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil'>>({
-    resolver: zodResolver(invoiceInputSchema),
+    handleSubmit,
+    clearErrors,
+  } = useForm<InvoiceUpdateInput>({
+    resolver: zodResolver(invoiceUpdateInputSchema),
+    defaultValues: {
+      customerName: invoice.customerName,
+      customerAddress: invoice.customerAddress,
+      invoiceWorkFrom: invoice.invoiceWorkFrom,
+      invoiceWorkUntil: invoice.invoiceWorkUntil,
+    },
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-  const [, sendInvoice] = useMutation(SendInvoiceMutationDocument)
-  const handleSubmitHelper = async (
-    handleSubmitHelperField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil',
-    data: Pick<InvoiceUpdateInput, typeof handleSubmitHelperField>,
-  ) => {
-    const result = await updateInvoice({ id: invoice.id, data })
-    if (result.error) setError(handleSubmitHelperField, { message: 'Network error' })
-  }
-
-  const handleBlur = (handleBlurField: 'customerName' | 'customerAddress' | 'invoiceWorkFrom' | 'invoiceWorkUntil') => {
-    setIsEditing((previous) => ({ ...previous, [handleBlurField]: false }))
+  const [, invoiceSend] = useMutation(invoiceSendMutationDocument)
+  const handleSubmitForm = async (data: InvoiceUpdateInput) => {
+    const updateInvoiceResult = await updateInvoice({
+      id: invoice.id,
+      data: {
+        ...data,
+        organizationId: invoice.organization.id,
+      },
+    })
+    if (updateInvoiceResult.error) {
+      setError('root', { message: 'Network error' })
+    } else {
+      clearErrors('root')
+      setIsEditing({})
+    }
   }
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
@@ -93,10 +104,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         {...register(editableField, {
           required: editableField === 'customerName',
         })}
-        onBlur={() => {
-          handleSubmit((data) => handleSubmitHelper(editableField, { [editableField]: data[editableField] }))()
-          handleBlur(editableField)
-        }}
+        onBlur={handleSubmit(() => handleSubmitForm({ [editableField]: getValues(editableField) }))}
         loading={fetching}
         errorMessage={errors[editableField]?.message}
         defaultValue={invoice[editableField] ?? ''}
@@ -115,12 +123,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     )
   const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
     try {
-      await sendInvoice({
-        data: {
-          invoiceId: invoice.id,
-          organizationId: invoice.organization.id,
-          sendDate: data.sendDate,
-        },
+      await invoiceSend({
+        data,
       })
     } catch {}
   }
@@ -129,25 +133,18 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       <>
         <Controller
           control={control}
-          rules={{ validate: (value) => !value || dateStringValidation(value) }}
           name={editableDateField}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, value } }) => (
             <div className="flex gap-1">
               <InputMask
                 disabled={isSubmitting}
                 mask="9999-99-99"
-                onBlur={() => {
-                  onBlur()
-                  handleSubmit((data) =>
-                    handleSubmitHelper(editableDateField, { [editableDateField]: data[editableDateField] }),
-                  )()
-                  handleBlur(editableDateField)
-                }}
+                onBlur={handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))}
                 onChange={onChange}
                 value={value ?? invoice[editableDateField] ?? ''}
                 id={editableDateField}
                 type="text"
-                size={9}
+                size={10}
                 className="input input-xs input-bordered"
               />
               <CalendarSelector
@@ -155,18 +152,14 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
                 className="btn-xs"
                 date={getDate(value)}
                 hideLabel={true}
-                onDateChange={(newDate) => setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))}
+                onDateChange={(newDate) => {
+                  setValue(editableDateField, format(newDate, 'yyyy-MM-dd'))
+                  handleSubmit(() => handleSubmitForm({ [editableDateField]: getValues(editableDateField) }))()
+                }}
               />
             </div>
           )}
         />
-        {errors[editableDateField] && (
-          <ErrorMessage
-            name={editableDateField}
-            errors={errors}
-            as={<span role="alert" className="label-text-alt whitespace-nowrap text-error" />}
-          />
-        )}
       </>
     ) : (
       <div className="flex items-center">
@@ -180,7 +173,33 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       </div>
     )
 
+  const renderEditableDateFields = () => (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center justify-start gap-1">
+        {renderEditableDateField('invoiceWorkFrom')} - {renderEditableDateField('invoiceWorkUntil')}
+      </div>
+      <div className="flex justify-start gap-4">
+        {errors.invoiceWorkFrom && (
+          <ErrorMessage
+            name="invoiceWorkFrom"
+            errors={errors}
+            as={<span role="alert" className="label-text-alt text-error" />}
+          />
+        )}
+        {errors.invoiceWorkUntil && (
+          <ErrorMessage
+            name="invoiceWorkUntil"
+            errors={errors}
+            as={<span role="alert" className="label-text-alt text-error" />}
+          />
+        )}
+      </div>
+    </div>
+  )
+
   const formattedInvoiceDate = format(new Date(invoice.invoiceDate ?? ''), 'd MMMM yyyy')
+
+  const handleUpdateClick = handleSubmit(handleSubmitForm)
 
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
@@ -198,7 +217,15 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </div>
         </div>
         <div className="flex flex-col justify-between">
-          <div className="text-right">
+          <div className="flex justify-end">
+            <button
+              className="btn btn-primary btn-sm mr-2 print:hidden"
+              onClick={handleUpdateClick}
+              disabled={fetching}
+            >
+              <FaArrowRotateRight className={fetching ? 'animate-spin' : ''} />
+              Update
+            </button>
             <button className="btn btn-primary btn-sm print:hidden" onClick={() => print()}>
               <FaPrint />
               Print
@@ -210,14 +237,12 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>
             </div>
             <p>Invoice No: #{invoice.id}</p>
-            <div className="flex items-center justify-end gap-1">
-              {renderEditableDateField('invoiceWorkFrom')} - {renderEditableDateField('invoiceWorkUntil')}
-            </div>
-            <p className="text-right">Created on: {formattedInvoiceDate}</p>
+            <p>Created on: {formattedInvoiceDate}</p>
+            {renderEditableDateFields()}
           </div>
         </div>
       </div>
-      <InvoiceItemList invoice={invoice} invoiceItems={invoice.invoiceItems} />
+      <InvoiceItemList invoice={invoice} />
       <div className="flex items-center justify-between">
         <div>
           <p className="font-bold">

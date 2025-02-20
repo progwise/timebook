@@ -2,7 +2,7 @@ import { builder } from '../../builder'
 import { prisma } from '../../prisma'
 import { InvoiceSendInput } from '../invoiceSendInput'
 
-builder.mutationField('sendInvoice', (t) =>
+builder.mutationField('invoiceSend', (t) =>
   t.prismaField({
     type: 'Invoice',
     description: 'Send an invoice',

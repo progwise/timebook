@@ -13,7 +13,7 @@ builder.mutationField('invoiceCreate', (t) =>
     resolve: async (
       query,
       _source,
-      { data: { customerAddress, customerName, invoiceDate, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
+      { data: { customerAddress, customerName, organizationId, invoiceWorkFrom, invoiceWorkUntil } },
       context,
     ) => {
       return prisma.invoice.create({
@@ -21,7 +21,6 @@ builder.mutationField('invoiceCreate', (t) =>
         data: {
           customerAddress,
           customerName,
-          invoiceDate,
           organizationId: organizationId.toString(),
           createdByUserId: context.session.user.id,
           invoiceWorkFrom,

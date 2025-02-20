@@ -1,21 +1,21 @@
 import { isValid, parseISO } from 'date-fns'
 import { z } from 'zod'
 
-import { invoiceInputValidations } from '@progwise/timebook-validations'
+import { invoiceUpdateInputValidations } from '@progwise/timebook-validations'
 
 import { getDate } from '../../../../frontend/components/dateStringValidation'
-import { InvoiceInput } from '../../../../frontend/generated/gql/graphql'
+import { InvoiceUpdateInput } from '../../../../frontend/generated/gql/graphql'
 
-const invoiceWorkDateSchema = z
+const invoiceUpdateWorkDateSchema = z
   .string()
   .min(10, 'Enter a date')
-  .refine((value) => value !== '____-__-__', 'Enter a date')
-  .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
+  .refine((value) => value === '' || value !== '____-__-__', 'Enter a date')
+  .refine((value) => value === '' || isValid(parseISO(value)), 'Invalid date')
 
-export const invoiceInputSchema: z.ZodSchema<InvoiceInput> = invoiceInputValidations
+export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoiceUpdateInputValidations
   .extend({
-    invoiceWorkFrom: invoiceWorkDateSchema,
-    invoiceWorkUntil: invoiceWorkDateSchema,
+    invoiceWorkFrom: invoiceUpdateWorkDateSchema,
+    invoiceWorkUntil: invoiceUpdateWorkDateSchema,
   })
   .superRefine((data, context) => {
     const startDate = getDate(data.invoiceWorkFrom)
