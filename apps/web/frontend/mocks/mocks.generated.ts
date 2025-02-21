@@ -232,6 +232,7 @@ export type MutationInvoiceUpdateArgs = {
   action?: InputMaybe<InvoiceAction>
   data: InvoiceUpdateInput
   id: Scalars['ID']
+  organizationId: Scalars['ID']
 }
 
 export type MutationOrganizationArchiveArgs = {
@@ -1518,6 +1519,25 @@ export type OrganizationUpdateMutation = {
   organizationUpdate: { __typename?: 'Organization'; id: string }
 }
 
+export type InvoiceActionButtonsFragment = {
+  __typename?: 'Invoice'
+  id: string
+  sendDate?: string | null
+  payDate?: string | null
+  invoiceStatus: InvoiceStatus
+  customerName: string
+  organization: { __typename?: 'Organization'; id: string }
+}
+
+export type InvoiceUpdateMutationVariables = Exact<{
+  id: Scalars['ID']
+  organizationId: Scalars['ID']
+  data: InvoiceUpdateInput
+  action?: InputMaybe<InvoiceAction>
+}>
+
+export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
+
 export type InvoiceFragmentFragment = {
   __typename?: 'Invoice'
   id: string
@@ -1525,10 +1545,10 @@ export type InvoiceFragmentFragment = {
   customerName: string
   customerAddress?: string | null
   invoiceStatus: InvoiceStatus
-  sendDate?: string | null
-  payDate?: string | null
   invoiceWorkFrom: string
   invoiceWorkUntil: string
+  sendDate?: string | null
+  payDate?: string | null
   organization: {
     __typename?: 'Organization'
     id: string
@@ -1553,14 +1573,6 @@ export type InvoiceFragmentFragment = {
     invoice: { __typename?: 'Invoice'; organization: { __typename?: 'Organization'; id: string } }
   }>
 }
-
-export type InvoiceUpdateMutationVariables = Exact<{
-  id: Scalars['ID']
-  data: InvoiceUpdateInput
-  action?: InputMaybe<InvoiceAction>
-}>
-
-export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
 
 export type InvoiceItemDeleteMutationVariables = Exact<{
   invoiceItemId: Scalars['ID']
@@ -1706,10 +1718,10 @@ export type InvoiceQuery = {
     customerName: string
     customerAddress?: string | null
     invoiceStatus: InvoiceStatus
-    sendDate?: string | null
-    payDate?: string | null
     invoiceWorkFrom: string
     invoiceWorkUntil: string
+    sendDate?: string | null
+    payDate?: string | null
     organization: {
       __typename?: 'Organization'
       id: string
@@ -2580,7 +2592,7 @@ export const mockOrganizationUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockInvoiceUpdateMutation((req, res, ctx) => {
- *   const { id, data, action } = req.variables;
+ *   const { id, organizationId, data, action } = req.variables;
  *   return res(
  *     ctx.data({ invoiceUpdate })
  *   )

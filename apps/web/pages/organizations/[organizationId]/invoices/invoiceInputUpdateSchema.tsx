@@ -9,25 +9,22 @@ import { InvoiceUpdateInput } from '../../../../frontend/generated/gql/graphql'
 const invoiceUpdateDateSchema = z
   .string()
   .min(10, 'Enter a date')
+  .optional()
   .refine((value) => value === '' || value !== '____-__-__', 'Enter a date')
   .refine((value) => !value || isValid(parseISO(value)), 'Invalid date')
 
 export const invoiceUpdateInputSchema: z.ZodSchema<InvoiceUpdateInput> = invoiceUpdateInputValidations
   .extend({
-    invoiceWorkFrom: invoiceUpdateDateSchema.optional(),
-    invoiceWorkUntil: invoiceUpdateDateSchema.optional(),
-    sendDate: invoiceUpdateDateSchema
-      .refine(
-        (value) => !value || !isAfter(parseISO(value), new Date()),
-        'Send date cannot be a future date. Please enter a valid date.',
-      )
-      .optional(),
-    payDate: invoiceUpdateDateSchema
-      .refine(
-        (value) => !value || !isAfter(parseISO(value), new Date()),
-        'Pay date cannot be a future date. Please enter a valid date.',
-      )
-      .optional(),
+    invoiceWorkFrom: invoiceUpdateDateSchema,
+    invoiceWorkUntil: invoiceUpdateDateSchema,
+    sendDate: invoiceUpdateDateSchema.refine(
+      (value) => !value || !isAfter(parseISO(value), new Date()),
+      'Send date cannot be a future date. Please enter a valid date.',
+    ),
+    payDate: invoiceUpdateDateSchema.refine(
+      (value) => !value || !isAfter(parseISO(value), new Date()),
+      'Pay date cannot be a future date. Please enter a valid date.',
+    ),
   })
   .superRefine((data, context) => {
     const startDate = getDate(data.invoiceWorkFrom)

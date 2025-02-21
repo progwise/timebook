@@ -1,15 +1,13 @@
-/* eslint-disable unicorn/no-null */
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FaArrowRotateRight, FaPen, FaPrint } from 'react-icons/fa6'
 import InputMask from 'react-input-mask'
 import { useMutation } from 'urql'
 
-import { InvoiceAction } from '@progwise/timebook-backend/src/graphql/invoice/invoiceStatusEnum'
 import { InputField } from '@progwise/timebook-ui'
 
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
@@ -17,9 +15,8 @@ import { getDate } from '../../../../../../frontend/components/dateStringValidat
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
+import { InvoiceActionButtons } from './invoiceActionButtons'
 import { InvoiceItemList } from './invoiceItemList'
-import { PayOrResetInvoiceButton } from './payOrResetInvoiceButton'
-import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
 
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -28,25 +25,22 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
-    sendDate
-    payDate
     organization {
       id
     }
     invoiceWorkFrom
     invoiceWorkUntil
-    ...SendOrWithdrawInvoice
-    ...PayOrResetInvoiceButton
     invoiceItems {
       id
     }
     ...InvoiceItemListInvoice
+    ...InvoiceActionButtons
   }
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
       id
     }
   }
@@ -67,17 +61,14 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
     control,
     handleSubmit,
     clearErrors,
-    watch,
-    trigger,
   } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
+      organizationId: invoice.organization.id,
       customerName: invoice.customerName,
       customerAddress: invoice.customerAddress,
       invoiceWorkFrom: invoice.invoiceWorkFrom,
       invoiceWorkUntil: invoice.invoiceWorkUntil,
-      sendDate: invoice.sendDate,
-      payDate: invoice.payDate,
     },
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
@@ -86,10 +77,8 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   const handleSubmitForm = async (data: InvoiceUpdateInput) => {
     const updateInvoiceResult = await updateInvoice({
       id: invoice.id,
-      data: {
-        ...data,
-        organizationId: invoice.organization.id,
-      },
+      organizationId: invoice.organization.id,
+      data,
     })
     if (updateInvoiceResult.error) {
       setError('root', { message: 'Network error' })
@@ -98,42 +87,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
       setIsEditing({})
     }
   }
-
-  const handleSendOrWithdrawInvoice = async (data: InvoiceUpdateInput) => {
-    const action = invoice.sendDate ? InvoiceAction.Withdraw : InvoiceAction.Send
-    try {
-      await updateInvoice({
-        id: invoice.id,
-        data: {
-          ...data,
-          organizationId: invoice.organization.id,
-          sendDate: data.sendDate,
-        },
-        action,
-      })
-    } catch {}
-  }
-
-  const handlePayOrResetInvoice = async (data: InvoiceUpdateInput) => {
-    const action = invoice.payDate ? InvoiceAction.ResetPayDate : InvoiceAction.Pay
-    try {
-      await updateInvoice({
-        id: invoice.id,
-        data: {
-          ...data,
-          organizationId: invoice.organization.id,
-          payDate: data.payDate,
-        },
-        action,
-      })
-    } catch {}
-  }
-
-  useEffect(() => {
-    if (watch('sendDate')) {
-      trigger('payDate')
-    }
-  }, [watch('sendDate')])
 
   const renderEditableField = (editableField: 'customerName' | 'customerAddress') =>
     isEditing[editableField] ? (
@@ -230,8 +183,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
 
   const formattedInvoiceDate = format(new Date(invoice.invoiceDate ?? ''), 'd MMMM yyyy')
 
-  const handleUpdateClick = handleSubmit(handleSubmitForm)
-
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
       <div className="flex justify-between pb-4">
@@ -251,7 +202,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           <div className="flex justify-end">
             <button
               className="btn btn-primary btn-sm mr-2 print:hidden"
-              onClick={handleUpdateClick}
+              onClick={handleSubmit(handleSubmitForm)}
               disabled={fetching}
             >
               <FaArrowRotateRight className={fetching ? 'animate-spin' : ''} />
@@ -281,10 +232,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </p>
           <p>Thank you for your business!</p>
         </div>
-        <div className="flex gap-4">
-          <SendOrWithdrawInvoiceButton invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
-          <PayOrResetInvoiceButton invoice={invoice} onSubmit={handlePayOrResetInvoice} />
-        </div>
+        <InvoiceActionButtons invoice={invoice} />
       </div>
     </div>
   )

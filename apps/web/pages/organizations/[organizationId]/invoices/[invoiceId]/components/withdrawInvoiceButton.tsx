@@ -9,8 +9,8 @@ import { FragmentType, graphql, useFragment } from '../../../../../../frontend/g
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
       id
     }
   }
@@ -48,13 +48,13 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
   const handleWithdraw = async () => {
     await updateInvoice({
       id: invoice.id,
+      organizationId: invoice.organization.id,
       data: {
         organizationId: invoice.organization.id,
         sendDate: null,
       },
       action: InvoiceAction.Withdraw,
     })
-    dialogReference.current?.close()
   }
 
   return (
@@ -77,12 +77,7 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
                 Cancel
               </button>
             </form>
-            <button
-              className="btn btn-warning btn-sm"
-              onClick={handleSubmit(handleWithdraw)}
-              disabled={isSubmitting}
-              form="send-invoice-form"
-            >
+            <button className="btn btn-warning btn-sm" onClick={handleSubmit(handleWithdraw)} disabled={isSubmitting}>
               Withdraw
             </button>
           </div>

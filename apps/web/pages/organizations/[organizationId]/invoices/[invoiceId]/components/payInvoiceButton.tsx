@@ -1,7 +1,7 @@
 import { ErrorMessage } from '@hookform/error-message'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import InputMask from 'react-input-mask'
 
@@ -49,8 +49,11 @@ export const PayInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoice
     await onSubmit({
       payDate: data.payDate ? format(new Date(data.payDate), 'yyyy-MM-dd') : '',
     })
-    dialogReference.current?.close()
   }
+
+  useEffect(() => {
+    setValue('sendDate', invoice.sendDate)
+  }, [invoice.sendDate])
 
   return (
     <>

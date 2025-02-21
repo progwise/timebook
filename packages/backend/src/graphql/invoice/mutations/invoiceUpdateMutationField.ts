@@ -85,10 +85,11 @@ builder.mutationField('invoiceUpdate', (t) =>
     description: 'Update an invoice',
     args: {
       id: t.arg.id({ description: 'ID of the invoice' }),
+      organizationId: t.arg.id({ description: 'ID of the organization' }),
       data: t.arg({ type: InvoiceUpdateInput }),
       action: t.arg({ type: InvoiceAction, description: 'Action to perform on the invoice', required: false }),
     },
-    authScopes: (_source, { data: { organizationId } }) => ({ isAdminByOrganization: organizationId?.toString() }),
+    authScopes: (_source, { organizationId }) => ({ isAdminByOrganization: organizationId?.toString() }),
     resolve: async (
       query,
       _source,
@@ -160,7 +161,7 @@ builder.mutationField('invoiceUpdate', (t) =>
       })
 
       if (invoiceWorkFrom && invoiceWorkUntil && invoiceWorkFrom >= invoiceWorkUntil) {
-        throw new Error('The end date must be after the start date')
+        throw new Error('Invoice end date must be after the start date')
       }
 
       await updateInvoiceItems(invoiceWorkFrom ?? undefined, invoiceWorkUntil ?? undefined, updatedInvoice)

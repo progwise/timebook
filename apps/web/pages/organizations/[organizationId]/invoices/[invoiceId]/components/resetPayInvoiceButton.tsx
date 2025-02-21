@@ -9,8 +9,8 @@ import { FragmentType, graphql, useFragment } from '../../../../../../frontend/g
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
       id
     }
   }
@@ -49,13 +49,13 @@ export const ResetPayInvoiceButton = ({ invoice: InvoiceFragment }: ResetPayInvo
   const handleResetPayDate = async () => {
     await updateInvoice({
       id: invoice.id,
+      organizationId: invoice.organization.id,
       data: {
         organizationId: invoice.organization.id,
         payDate: null,
       },
       action: InvoiceAction.ResetPayDate,
     })
-    dialogReference.current?.close()
   }
 
   return (

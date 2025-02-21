@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import { gql } from 'apollo-server-core'
-import { format } from 'date-fns'
+import { addDays, format, subDays } from 'date-fns'
 import { GraphQLError } from 'graphql'
 
 import { PrismaClient } from '@progwise/timebook-prisma'
@@ -10,12 +10,16 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const invoiceUpdateMutation = gql`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
       id
     }
   }
 `
+
+const formattedDate = format(new Date(), 'yyyy-MM-dd')
+const currentDateISO = new Date().toISOString()
+const futureDate = format(addDays(new Date(), 1), 'yyyy-MM-dd')
 
 beforeEach(async () => {
   await prisma.invoice.deleteMany()
@@ -24,8 +28,8 @@ beforeEach(async () => {
 
   await prisma.user.createMany({
     data: [
-      { id: 'U1', name: 'ADMIN' },
-      { id: 'U2', name: 'MEMBER' },
+      { id: 'U1', name: 'Admin' },
+      { id: 'U2', name: 'Member' },
     ],
   })
   await prisma.organization.create({
@@ -39,18 +43,15 @@ beforeEach(async () => {
     data: {
       id: 'I1',
       createdByUserId: 'U1',
-      invoiceDate: new Date().toISOString(),
       customerName: 'Customer 1',
       customerAddress: 'Address 1',
       invoiceStatus: 'DRAFT',
       organizationId: '01',
-      invoiceWorkFrom: new Date().toISOString(),
-      invoiceWorkUntil: new Date().toISOString(),
+      invoiceWorkFrom: currentDateISO,
+      invoiceWorkUntil: addDays(new Date(currentDateISO), 1).toISOString(),
     },
   })
 })
-
-const formattedDate = format(new Date(), 'yyyy-MM-dd')
 
 describe('invoiceUpdateMutation', () => {
   it('should throw error when user is unauthorized', async () => {
@@ -59,11 +60,9 @@ describe('invoiceUpdateMutation', () => {
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
           customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
-          organizationId: '01',
         },
       },
     })
@@ -77,8 +76,8 @@ describe('invoiceUpdateMutation', () => {
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: 'O1',
         data: {
-          organizationId: 'O1',
           customerName: 'Customer 1',
         },
       },
@@ -88,17 +87,55 @@ describe('invoiceUpdateMutation', () => {
     expect(response.errors).toEqual([new GraphQLError('Not authorized')])
   })
 
+  it('should throw error when invoice end date is before start date', async () => {
+    const testServer = getTestServer({ userId: 'U1' })
+    const response = await testServer.executeOperation({
+      query: invoiceUpdateMutation,
+      variables: {
+        id: 'I1',
+        organizationId: '01',
+        data: {
+          invoiceWorkFrom: formattedDate,
+          invoiceWorkUntil: format(subDays(new Date(currentDateISO), 1), 'yyyy-MM-dd'),
+        },
+      },
+    })
+    expect(response.errors).toEqual([new GraphQLError('Invoice end date must be after the start date')])
+    expect(response.data).toBeNull()
+  })
+
+  it('should update invoice customer address', async () => {
+    const testServer = getTestServer({ userId: 'U1' })
+    const response = await testServer.executeOperation({
+      query: invoiceUpdateMutation,
+      variables: {
+        id: 'I1',
+        organizationId: '01',
+        data: {
+          customerAddress: 'Address 2',
+        },
+      },
+    })
+
+    expect(response.errors).toBeUndefined()
+    expect(response.data).toEqual({
+      invoiceUpdate: {
+        id: 'I1',
+      },
+    })
+    const invoice = await prisma.invoice.findUnique({ where: { id: 'I1' } })
+    expect(invoice?.customerAddress).toBe('Address 2')
+  })
+
   it('should update invoice customer name', async () => {
     const testServer = getTestServer({ userId: 'U1' })
     const response = await testServer.executeOperation({
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
           customerName: 'Customer 2',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
-          organizationId: '01',
         },
       },
     })
@@ -115,17 +152,15 @@ describe('invoiceUpdateMutation', () => {
 
   it('should send invoice', async () => {
     const testServer = getTestServer({ userId: 'U1' })
-    const sendDate = format(new Date(), 'yyyy-MM-dd')
+    const sendDate = formattedDate
     const response = await testServer.executeOperation({
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
           customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
           sendDate,
-          organizationId: '01',
         },
         action: 'Send',
       },
@@ -143,17 +178,13 @@ describe('invoiceUpdateMutation', () => {
 
   it('should throw error when send date is in the future', async () => {
     const testServer = getTestServer({ userId: 'U1' })
-    const futureDate = format(new Date(Date.now() + 1000 * 60 * 60 * 24), 'yyyy-MM-dd')
     const response = await testServer.executeOperation({
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
-          customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
           sendDate: futureDate,
-          organizationId: '01',
         },
         action: 'Send',
       },
@@ -162,19 +193,40 @@ describe('invoiceUpdateMutation', () => {
     expect(response.data).toBeNull()
   })
 
-  it('should pay invoice', async () => {
+  it('should withdraw invoice', async () => {
     const testServer = getTestServer({ userId: 'U1' })
-    const payDate = format(new Date(), 'yyyy-MM-dd')
     const response = await testServer.executeOperation({
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
-          customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
+          sendDate: formattedDate,
+        },
+        action: 'Withdraw',
+      },
+    })
+    expect(response.errors).toBeUndefined()
+    expect(response.data).toEqual({
+      invoiceUpdate: {
+        id: 'I1',
+      },
+    })
+    const invoice = await prisma.invoice.findUnique({ where: { id: 'I1' } })
+    expect(invoice?.invoiceStatus).toBe('DRAFT')
+    expect(invoice?.sendDate).toBeNull()
+  })
+
+  it('should pay invoice', async () => {
+    const testServer = getTestServer({ userId: 'U1' })
+    const payDate = formattedDate
+    const response = await testServer.executeOperation({
+      query: invoiceUpdateMutation,
+      variables: {
+        id: 'I1',
+        organizationId: '01',
+        data: {
           payDate,
-          organizationId: '01',
         },
         action: 'Pay',
       },
@@ -192,17 +244,13 @@ describe('invoiceUpdateMutation', () => {
 
   it('should throw error when pay date is in the future', async () => {
     const testServer = getTestServer({ userId: 'U1' })
-    const futureDate = format(new Date(Date.now() + 1000 * 60 * 60 * 24), 'yyyy-MM-dd')
     const response = await testServer.executeOperation({
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
-          customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
           payDate: futureDate,
-          organizationId: '01',
         },
         action: 'Pay',
       },
@@ -217,11 +265,9 @@ describe('invoiceUpdateMutation', () => {
       query: invoiceUpdateMutation,
       variables: {
         id: 'I1',
+        organizationId: '01',
         data: {
-          customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
-          organizationId: '01',
+          payDate: formattedDate,
         },
         action: 'ResetPayDate',
       },
@@ -233,33 +279,6 @@ describe('invoiceUpdateMutation', () => {
       },
     })
     const invoice = await prisma.invoice.findUnique({ where: { id: 'I1' } })
-    expect(invoice?.payDate).toBeNull()
-  })
-
-  it('should withdraw invoice', async () => {
-    const testServer = getTestServer({ userId: 'U1' })
-    const response = await testServer.executeOperation({
-      query: invoiceUpdateMutation,
-      variables: {
-        id: 'I1',
-        data: {
-          customerName: 'Customer 1',
-          invoiceWorkFrom: formattedDate,
-          invoiceWorkUntil: formattedDate,
-          organizationId: '01',
-        },
-        action: 'Withdraw',
-      },
-    })
-    expect(response.errors).toBeUndefined()
-    expect(response.data).toEqual({
-      invoiceUpdate: {
-        id: 'I1',
-      },
-    })
-    const invoice = await prisma.invoice.findUnique({ where: { id: 'I1' } })
-    expect(invoice?.invoiceStatus).toBe('DRAFT')
-    expect(invoice?.sendDate).toBeNull()
     expect(invoice?.payDate).toBeNull()
   })
 })

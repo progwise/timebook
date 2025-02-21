@@ -46,7 +46,6 @@ export const SendInvoiceButton = ({ invoice: InvoiceFragment, onSubmit }: Invoic
     await onSubmit({
       sendDate: data.sendDate ? format(new Date(data.sendDate), 'yyyy-MM-dd') : '',
     })
-    dialogReference.current?.close()
   }
 
   return (

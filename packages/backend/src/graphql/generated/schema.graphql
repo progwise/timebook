@@ -212,6 +212,11 @@ type Mutation {
     ID of the invoice
     """
     id: ID!
+
+    """
+    ID of the organization
+    """
+    organizationId: ID!
   ): Invoice!
 
   """
