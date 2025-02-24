@@ -138,11 +138,11 @@ const documents = {
     types.WeekGridTaskRowFragmentDoc,
   '\n  fragment WeekGridTaskRowAllUsers on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n        name\n        image\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowAllUsersFragmentDoc,
-  '\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
+  '\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n':
     types.WeekGridTaskRowSingleUserFragmentDoc,
   '\n  fragment WorkHourCommentFragment on Task {\n    id\n    title\n    workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        comment\n      }\n      isLocked\n    }\n  }\n':
     types.WorkHourCommentFragmentFragmentDoc,
-  '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n':
+  '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n':
     types.CommentUpdateDocument,
   '\n  query accessTokens {\n    accessTokens {\n      id\n      ...AccessTokenRow\n    }\n  }\n':
     types.AccessTokensDocument,
@@ -623,8 +623,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n',
-): (typeof documents)['\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n']
+  source: '\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n',
+): (typeof documents)['\n  fragment WeekGridTaskRowSingleUser on Task {\n    id\n    title\n    project {\n      id\n      isArchived\n      members {\n        id\n      }\n    }\n    taskTotal: workHourOfDays(from: $from, to: $to, userIds: $userIds) {\n      user {\n        id\n      }\n      date\n      workHour {\n        duration\n      }\n      isLocked\n    }\n    tracking {\n      ...TrackingButtonsTracking\n    }\n    isLockedByAdmin\n    ...TrackingButtonsTask\n    ...WorkHourCommentFragment\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -635,8 +635,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n',
-): (typeof documents)['\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment) {\n      comment\n    }\n  }\n']
+  source: '\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n',
+): (typeof documents)['\n  mutation commentUpdate($comment: String!, $date: Date!, $taskId: ID!, $userId: ID) {\n    workHourCommentUpdate(date: $date, taskId: $taskId, comment: $comment, userId: $userId) {\n      comment\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

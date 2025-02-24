@@ -1,4 +1,5 @@
 import { parseISO } from 'date-fns'
+import { useSession } from 'next-auth/react'
 
 import { FormattedDuration } from '@progwise/timebook-ui'
 
@@ -54,6 +55,10 @@ export const WeekGridTaskRowAllUsers = ({
   userIds,
 }: WeekGridTaskRowProps) => {
   const task = useFragment(WeekGridTaskRowAllUsersFragment, taskFragment)
+  const session = useSession()
+  const sessionUserId = session.data?.user.id
+
+  const canUserTrackTask = (userId: string) => userId === sessionUserId
 
   const calculateMemberDuration = (userId: string) =>
     task.taskTotal
@@ -70,7 +75,12 @@ export const WeekGridTaskRowAllUsers = ({
       <div key={`${task.id}-${member.id}`} className="contents" role="row">
         <div className="pl-3" role="cell">
           {!task.isLockedByAdmin && !task.project.isArchived && (
-            <TrackingButtons tracking={task.tracking} taskToTrack={task} interactiveButtons={false} />
+            <TrackingButtons
+              tracking={task.tracking}
+              taskToTrack={task}
+              interactiveButtons={false}
+              canUserTrackTask={canUserTrackTask(member.id)}
+            />
           )}
         </div>
         <div className="flex items-center gap-2 px-3">
@@ -110,7 +120,7 @@ export const WeekGridTaskRowAllUsers = ({
           )}
         </div>
         <div className="px-2" role="cell">
-          <WorkHourCommentButton task={task} />
+          <WorkHourCommentButton task={task} currentUserId={member.id} />
         </div>
       </div>
     )

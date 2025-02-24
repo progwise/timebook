@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 import { gql } from 'apollo-server-core'
 import { addDays, format, subDays } from 'date-fns'
 import { GraphQLError } from 'graphql'
