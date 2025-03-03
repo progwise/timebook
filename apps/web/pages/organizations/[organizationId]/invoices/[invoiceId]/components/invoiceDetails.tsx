@@ -213,7 +213,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
               Print
             </button>
           </div>
-          <div className="text-left">
+          <div>
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">Invoice</div>
               <span className="badge badge-neutral badge-lg print:hidden">{invoice.invoiceStatus}</span>
