@@ -41,9 +41,9 @@ const validatePayDate = async (payDate: Date, invoiceId: string, localNow: Date)
 }
 
 const updateInvoiceItems = async (
-  invoiceWorkFrom: Date | undefined,
-  invoiceWorkUntil: Date | undefined,
   updatedInvoice: { id: string; organizationId: string },
+  invoiceWorkFrom?: Date,
+  invoiceWorkUntil?: Date,
 ) => {
   if (invoiceWorkFrom || invoiceWorkUntil) {
     const existingInvoiceItems = await prisma.invoiceItem.findMany({
@@ -100,23 +100,23 @@ builder.mutationField('invoiceUpdate', (t) =>
       },
     ) => {
       type UpdateData = {
-        customerAddress?: string | null
+        customerAddress?: string
         customerName?: string
         invoiceDate?: Date
         invoiceWorkFrom?: Date
         invoiceWorkUntil?: Date
         invoiceStatus?: 'DRAFT' | 'SENT' | 'PAID'
-        sendDate?: Date | null
-        payDate?: Date | null
+        sendDate?: Date
+        payDate?: Date
       }
 
       const updateData: UpdateData = {
-        customerAddress: customerAddress,
+        customerAddress: customerAddress ?? undefined,
         customerName: customerName ?? undefined,
         invoiceWorkFrom: invoiceWorkFrom ?? undefined,
         invoiceWorkUntil: invoiceWorkUntil ?? undefined,
-        sendDate: sendDate,
-        payDate: payDate,
+        sendDate: sendDate ?? undefined,
+        payDate: payDate ?? undefined,
         invoiceStatus:
           action === InvoiceAction.Withdraw
             ? 'DRAFT'
@@ -133,8 +133,8 @@ builder.mutationField('invoiceUpdate', (t) =>
 
       switch (action) {
         case InvoiceAction.Withdraw:
-          updateData.sendDate = null
-          updateData.payDate = null
+          updateData.sendDate = undefined
+          updateData.payDate = undefined
           break
         case InvoiceAction.Send:
           if (!sendDate) {
@@ -150,7 +150,7 @@ builder.mutationField('invoiceUpdate', (t) =>
           updateData.payDate = await validatePayDate(payDate, invoiceId.toString(), localNow)
           break
         case InvoiceAction.ResetPayDate:
-          updateData.payDate = null
+          updateData.payDate = undefined
           break
       }
 
@@ -164,7 +164,7 @@ builder.mutationField('invoiceUpdate', (t) =>
         throw new Error('Invoice end date must be after the start date')
       }
 
-      await updateInvoiceItems(invoiceWorkFrom ?? undefined, invoiceWorkUntil ?? undefined, updatedInvoice)
+      await updateInvoiceItems(updatedInvoice, invoiceWorkFrom ?? undefined, invoiceWorkUntil ?? undefined)
 
       return updatedInvoice
     },

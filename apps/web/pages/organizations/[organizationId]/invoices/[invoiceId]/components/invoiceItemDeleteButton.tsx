@@ -38,6 +38,7 @@ export const InvoiceItemDeleteButton = ({
     try {
       await invoiceItemDelete({ invoiceItemId: invoiceItem.id, organizationId: invoiceItem.invoice.organization.id })
     } catch {}
+    dialogReference.current?.close()
   }
 
   return (

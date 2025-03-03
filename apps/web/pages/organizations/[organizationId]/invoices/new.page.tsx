@@ -45,7 +45,6 @@ const NewInvoicePage = (): JSX.Element => {
   })
 
   const handleCreateInvoice = async (data: InvoiceInput) => {
-    data.organizationId = organizationId?.toString() ?? ''
     try {
       const result = await invoiceCreate({ data })
       if (result.error) {
