@@ -13,18 +13,10 @@ import { InputField } from '@progwise/timebook-ui'
 import { CalendarSelector } from '../../../../../../frontend/components/calendarSelector'
 import { getDate } from '../../../../../../frontend/components/dateStringValidation'
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
-import { InvoiceSendInput, InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
+import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 import { invoiceUpdateInputSchema } from '../../invoiceInputUpdateSchema'
+import { InvoiceActionButtons } from './invoiceActionButtons'
 import { InvoiceItemList } from './invoiceItemList'
-import { SendOrWithdrawInvoiceButton } from './sendOrWithdrawInvoiceButton'
-
-const invoiceSendMutationDocument = graphql(`
-  mutation invoiceSend($data: InvoiceSendInput!) {
-    invoiceSend(data: $data) {
-      id
-    }
-  }
-`)
 
 const InvoiceDetailsFragment = graphql(`
   fragment InvoiceFragment on Invoice {
@@ -33,23 +25,22 @@ const InvoiceDetailsFragment = graphql(`
     customerName
     customerAddress
     invoiceStatus
-    sendDate
     organization {
       id
     }
     invoiceWorkFrom
     invoiceWorkUntil
-    ...SendOrWithdrawInvoice
     invoiceItems {
       id
     }
     ...InvoiceItemListInvoice
+    ...InvoiceActionButtons
   }
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $data: InvoiceUpdateInput!) {
-    invoiceUpdate(id: $id, data: $data) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {
       id
     }
   }
@@ -73,6 +64,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   } = useForm<InvoiceUpdateInput>({
     resolver: zodResolver(invoiceUpdateInputSchema),
     defaultValues: {
+      organizationId: invoice.organization.id,
       customerName: invoice.customerName,
       customerAddress: invoice.customerAddress,
       invoiceWorkFrom: invoice.invoiceWorkFrom,
@@ -81,14 +73,12 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
   })
   const [{ fetching }, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const [isEditing, setIsEditing] = useState<{ [key: string]: boolean }>({})
-  const [, invoiceSend] = useMutation(invoiceSendMutationDocument)
+
   const handleSubmitForm = async (data: InvoiceUpdateInput) => {
     const updateInvoiceResult = await updateInvoice({
       id: invoice.id,
-      data: {
-        ...data,
-        organizationId: invoice.organization.id,
-      },
+      organizationId: invoice.organization.id,
+      data,
     })
     if (updateInvoiceResult.error) {
       setError('root', { message: 'Network error' })
@@ -121,13 +111,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
         </button>
       </p>
     )
-  const handleSendOrWithdrawInvoice = async (data: InvoiceSendInput) => {
-    try {
-      await invoiceSend({
-        data,
-      })
-    } catch {}
-  }
+
   const renderEditableDateField = (editableDateField: 'invoiceWorkFrom' | 'invoiceWorkUntil') =>
     isEditing[editableDateField] ? (
       <>
@@ -199,8 +183,6 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
 
   const formattedInvoiceDate = format(new Date(invoice.invoiceDate ?? ''), 'd MMMM yyyy')
 
-  const handleUpdateClick = handleSubmit(handleSubmitForm)
-
   return (
     <div className="rounded-lg p-4 text-sm shadow-md">
       <div className="flex justify-between pb-4">
@@ -220,7 +202,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           <div className="flex justify-end">
             <button
               className="btn btn-primary btn-sm mr-2 print:hidden"
-              onClick={handleUpdateClick}
+              onClick={handleSubmit(handleSubmitForm)}
               disabled={fetching}
             >
               <FaArrowRotateRight className={fetching ? 'animate-spin' : ''} />
@@ -250,7 +232,7 @@ export const InvoiceDetails = ({ invoice: invoiceFragment }: InvoiceDetailsProps
           </p>
           <p>Thank you for your business!</p>
         </div>
-        <SendOrWithdrawInvoiceButton invoice={invoice} onSubmit={handleSendOrWithdrawInvoice} />
+        <InvoiceActionButtons invoice={invoice} />
       </div>
     </div>
   )

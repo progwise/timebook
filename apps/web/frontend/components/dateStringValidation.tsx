@@ -10,7 +10,7 @@ export const getDate = (dateString: string | undefined | null): Date | undefined
   if (!usedFormat) {
     return undefined
   }
-  return parse(dateString, usedFormat, new Date().getDate())
+  return parse(dateString, usedFormat, new Date())
 }
 
 export const dateStringValidation = (dateString: string): boolean =>

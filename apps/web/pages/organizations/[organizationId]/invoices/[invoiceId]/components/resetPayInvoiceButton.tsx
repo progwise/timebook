@@ -14,23 +14,24 @@ const InvoiceUpdateMutationDocument = graphql(`
   }
 `)
 
-export const InvoiceWithdrawFragment = graphql(`
-  fragment WithdrawInvoiceButton on Invoice {
+export const InvoiceResetPayFragment = graphql(`
+  fragment ResetPayInvoiceButton on Invoice {
     id
-    customerName
+    payDate
     invoiceStatus
+    customerName
     organization {
       id
     }
   }
 `)
 
-interface InvoiceWithdrawButtonProps {
-  invoice: FragmentType<typeof InvoiceWithdrawFragment>
+interface ResetPayInvoiceButtonProps {
+  invoice: FragmentType<typeof InvoiceResetPayFragment>
 }
 
-export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithdrawButtonProps) => {
-  const invoice = useFragment(InvoiceWithdrawFragment, InvoiceFragment)
+export const ResetPayInvoiceButton = ({ invoice: InvoiceFragment }: ResetPayInvoiceButtonProps): JSX.Element => {
+  const invoice = useFragment(InvoiceResetPayFragment, InvoiceFragment)
   const [, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
   const dialogReference = useRef<HTMLDialogElement>(null)
 
@@ -43,13 +44,13 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
     },
   })
 
-  const handleWithdraw = async () => {
+  const handleResetPayDate = async () => {
     await updateInvoice({
       id: invoice.id,
       organizationId: invoice.organization.id,
       data: {
         organizationId: invoice.organization.id,
-        sendDate: null,
+        payDate: null,
       },
     })
   }
@@ -60,22 +61,28 @@ export const WithdrawInvoiceButton = ({ invoice: InvoiceFragment }: InvoiceWithd
         className="btn btn-secondary btn-sm print:hidden"
         type="button"
         onClick={() => dialogReference.current?.showModal()}
-        disabled={isSubmitting || invoice.invoiceStatus === 'PAID'}
+        disabled={isSubmitting}
       >
-        Withdraw
+        {invoice.invoiceStatus === 'PAID' ? 'Reset Pay Date' : 'Pay'}
       </button>
       <dialog className="modal" ref={dialogReference}>
         <div className="modal-box">
-          <h3 className="text-lg font-bold">Withdraw Invoice</h3>
-          <p className="py-4"> Are you sure you want to withdraw this invoice billed to {invoice.customerName}?</p>
+          <h3 className="text-lg font-bold">Reset Pay Date</h3>
+          <p className="py-4">
+            Are you sure you want to reset the pay date for the invoice billed to {invoice.customerName}?
+          </p>
           <div className="modal-action">
             <form method="dialog">
               <button className="btn btn-ghost btn-sm" disabled={isSubmitting}>
                 Cancel
               </button>
             </form>
-            <button className="btn btn-warning btn-sm" onClick={handleSubmit(handleWithdraw)} disabled={isSubmitting}>
-              Withdraw
+            <button
+              className="btn btn-warning btn-sm"
+              onClick={handleSubmit(handleResetPayDate)}
+              disabled={isSubmitting}
+            >
+              Reset
             </button>
           </div>
         </div>
