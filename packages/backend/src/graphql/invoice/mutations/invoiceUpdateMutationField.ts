@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import { builder } from '../../builder'
 import { prisma } from '../../prisma'
-import { InvoiceAction } from '../invoiceStatusEnum'
 import { InvoiceUpdateInput } from '../invoiceUpdateInput'
 
 const getAdjustedDate = (date: Date): Date => {
@@ -87,71 +86,38 @@ builder.mutationField('invoiceUpdate', (t) =>
       id: t.arg.id({ description: 'ID of the invoice' }),
       organizationId: t.arg.id({ description: 'ID of the organization' }),
       data: t.arg({ type: InvoiceUpdateInput }),
-      action: t.arg({ type: InvoiceAction, description: 'Action to perform on the invoice', required: false }),
     },
     authScopes: (_source, { organizationId }) => ({ isAdminByOrganization: organizationId?.toString() }),
     resolve: async (
       query,
       _source,
-      {
-        id: invoiceId,
-        data: { customerAddress, customerName, invoiceWorkFrom, invoiceWorkUntil, sendDate, payDate },
-        action,
-      },
+      { id: invoiceId, data: { customerAddress, customerName, invoiceWorkFrom, invoiceWorkUntil, sendDate, payDate } },
     ) => {
-      type UpdateData = {
-        customerAddress?: string
-        customerName?: string
-        invoiceDate?: Date
-        invoiceWorkFrom?: Date
-        invoiceWorkUntil?: Date
-        invoiceStatus?: 'DRAFT' | 'SENT' | 'PAID'
-        sendDate?: Date
-        payDate?: Date
-      }
-
-      const updateData: UpdateData = {
-        customerAddress: customerAddress ?? undefined,
+      const updateData = {
+        customerAddress: customerAddress,
         customerName: customerName ?? undefined,
         invoiceWorkFrom: invoiceWorkFrom ?? undefined,
         invoiceWorkUntil: invoiceWorkUntil ?? undefined,
-        sendDate: sendDate ?? undefined,
-        payDate: payDate ?? undefined,
-        invoiceStatus:
-          action === InvoiceAction.Withdraw
-            ? 'DRAFT'
-            : action === InvoiceAction.Send
-              ? 'SENT'
-              : // eslint-disable-next-line unicorn/no-nested-ternary
-                action === InvoiceAction.Pay
-                ? 'PAID'
-                : 'DRAFT',
+        sendDate: sendDate,
+        payDate: payDate,
+        invoiceStatus: 'DRAFT' as 'DRAFT' | 'SENT' | 'PAID',
       }
 
       // Get the current local date
       const localNow = new Date()
 
-      switch (action) {
-        case InvoiceAction.Withdraw:
-          updateData.sendDate = undefined
-          updateData.payDate = undefined
-          break
-        case InvoiceAction.Send:
-          if (!sendDate) {
-            throw new Error('Send date is required')
-          }
-          validateSendDate(sendDate, localNow)
-          updateData.sendDate = getAdjustedDate(sendDate)
-          break
-        case InvoiceAction.Pay:
-          if (!payDate) {
-            throw new Error('Pay date is required')
-          }
-          updateData.payDate = await validatePayDate(payDate, invoiceId.toString(), localNow)
-          break
-        case InvoiceAction.ResetPayDate:
-          updateData.payDate = undefined
-          break
+      if (sendDate === null) {
+        updateData.sendDate = null
+        updateData.payDate = null
+      } else if (sendDate) {
+        validateSendDate(sendDate, localNow)
+        updateData.sendDate = getAdjustedDate(sendDate)
+      }
+
+      if (payDate === null) {
+        updateData.payDate = null
+      } else if (payDate) {
+        updateData.payDate = await validatePayDate(payDate, invoiceId.toString(), localNow)
       }
 
       const updatedInvoice = await prisma.invoice.update({

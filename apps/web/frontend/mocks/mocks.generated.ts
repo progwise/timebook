@@ -49,14 +49,6 @@ export type Invoice = ModifyInterface & {
   sendDate?: Maybe<Scalars['Date']>
 }
 
-/** Actions that can be performed on an invoice */
-export enum InvoiceAction {
-  Pay = 'Pay',
-  ResetPayDate = 'ResetPayDate',
-  Send = 'Send',
-  Withdraw = 'Withdraw',
-}
-
 export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
@@ -229,7 +221,6 @@ export type MutationInvoiceItemUpdateArgs = {
 }
 
 export type MutationInvoiceUpdateArgs = {
-  action?: InputMaybe<InvoiceAction>
   data: InvoiceUpdateInput
   id: Scalars['ID']
   organizationId: Scalars['ID']
@@ -1540,7 +1531,6 @@ export type InvoiceUpdateMutationVariables = Exact<{
   id: Scalars['ID']
   organizationId: Scalars['ID']
   data: InvoiceUpdateInput
-  action?: InputMaybe<InvoiceAction>
 }>
 
 export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
@@ -2599,7 +2589,7 @@ export const mockOrganizationUpdateMutation = (
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
  * mockInvoiceUpdateMutation((req, res, ctx) => {
- *   const { id, organizationId, data, action } = req.variables;
+ *   const { id, organizationId, data } = req.variables;
  *   return res(
  *     ctx.data({ invoiceUpdate })
  *   )

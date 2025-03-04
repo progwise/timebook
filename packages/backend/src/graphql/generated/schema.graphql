@@ -45,16 +45,6 @@ type Invoice implements ModifyInterface {
   sendDate: Date
 }
 
-"""
-Actions that can be performed on an invoice
-"""
-enum InvoiceAction {
-  Pay
-  ResetPayDate
-  Send
-  Withdraw
-}
-
 input InvoiceInput {
   customerAddress: String
   customerName: String!
@@ -202,10 +192,6 @@ type Mutation {
   Update an invoice
   """
   invoiceUpdate(
-    """
-    Action to perform on the invoice
-    """
-    action: InvoiceAction
     data: InvoiceUpdateInput!
 
     """

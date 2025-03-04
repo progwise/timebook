@@ -1,6 +1,5 @@
+/* eslint-disable unicorn/no-null */
 import { useMutation } from 'urql'
-
-import { InvoiceAction } from '@progwise/timebook-backend/src/graphql/invoice/invoiceStatusEnum'
 
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
@@ -21,8 +20,8 @@ const InvoiceActionButtonsFragment = graphql(`
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {
       id
     }
   }
@@ -37,29 +36,25 @@ export const InvoiceActionButtons = ({ invoice: invoiceFragment }: InvoiceAction
   const [, updateInvoice] = useMutation(InvoiceUpdateMutationDocument)
 
   const handleSendOrWithdrawInvoice = async (data: InvoiceUpdateInput) => {
-    const action = invoice.sendDate ? InvoiceAction.Withdraw : InvoiceAction.Send
     try {
       await updateInvoice({
         id: invoice.id,
         organizationId: invoice.organization.id,
         data: {
-          sendDate: data.sendDate,
+          sendDate: invoice.sendDate ? null : data.sendDate,
         },
-        action,
       })
     } catch {}
   }
 
   const handlePayOrResetInvoice = async (data: InvoiceUpdateInput) => {
-    const action = invoice.payDate ? InvoiceAction.ResetPayDate : InvoiceAction.Pay
     try {
       await updateInvoice({
         id: invoice.id,
         organizationId: invoice.organization.id,
         data: {
-          payDate: data.payDate,
+          payDate: invoice.payDate ? null : data.payDate,
         },
-        action,
       })
     } catch {}
   }

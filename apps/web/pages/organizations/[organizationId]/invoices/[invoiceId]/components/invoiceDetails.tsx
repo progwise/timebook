@@ -39,8 +39,8 @@ const InvoiceDetailsFragment = graphql(`
 `)
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {
       id
     }
   }

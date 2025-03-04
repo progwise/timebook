@@ -160,7 +160,7 @@ const documents = {
     types.OrganizationUpdateDocument,
   '\n  fragment InvoiceActionButtons on Invoice {\n    id\n    sendDate\n    payDate\n    organization {\n      id\n    }\n    ...SendOrWithdrawInvoice\n    ...PayOrResetInvoiceButton\n  }\n':
     types.InvoiceActionButtonsFragmentDoc,
-  '\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {\n      id\n    }\n  }\n':
+  '\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {\n      id\n    }\n  }\n':
     types.InvoiceUpdateDocument,
   '\n  fragment InvoiceFragment on Invoice {\n    id\n    invoiceDate\n    customerName\n    customerAddress\n    invoiceStatus\n    organization {\n      id\n    }\n    invoiceWorkFrom\n    invoiceWorkUntil\n    invoiceItems {\n      id\n    }\n    ...InvoiceItemListInvoice\n    ...InvoiceActionButtons\n  }\n':
     types.InvoiceFragmentFragmentDoc,
@@ -689,8 +689,8 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-  source: '\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {\n      id\n    }\n  }\n',
-): (typeof documents)['\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {\n      id\n    }\n  }\n']
+  source: '\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {\n      id\n    }\n  }\n',
+): (typeof documents)['\n  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {\n    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {\n      id\n    }\n  }\n']
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

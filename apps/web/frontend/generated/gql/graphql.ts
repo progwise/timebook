@@ -47,14 +47,6 @@ export type Invoice = ModifyInterface & {
   sendDate?: Maybe<Scalars['Date']>
 }
 
-/** Actions that can be performed on an invoice */
-export enum InvoiceAction {
-  Pay = 'Pay',
-  ResetPayDate = 'ResetPayDate',
-  Send = 'Send',
-  Withdraw = 'Withdraw',
-}
-
 export type InvoiceInput = {
   customerAddress?: InputMaybe<Scalars['String']>
   customerName: Scalars['String']
@@ -227,7 +219,6 @@ export type MutationInvoiceItemUpdateArgs = {
 }
 
 export type MutationInvoiceUpdateArgs = {
-  action?: InputMaybe<InvoiceAction>
   data: InvoiceUpdateInput
   id: Scalars['ID']
   organizationId: Scalars['ID']
@@ -1467,7 +1458,6 @@ export type InvoiceUpdateMutationVariables = Exact<{
   id: Scalars['ID']
   organizationId: Scalars['ID']
   data: InvoiceUpdateInput
-  action?: InputMaybe<InvoiceAction>
 }>
 
 export type InvoiceUpdateMutation = { __typename?: 'Mutation'; invoiceUpdate: { __typename?: 'Invoice'; id: string } }
@@ -7733,11 +7723,6 @@ export const InvoiceUpdateDocument = {
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceUpdateInput' } },
           },
         },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'action' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'InvoiceAction' } },
-        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -7760,11 +7745,6 @@ export const InvoiceUpdateDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'data' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'action' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'action' } },
               },
             ],
             selectionSet: {

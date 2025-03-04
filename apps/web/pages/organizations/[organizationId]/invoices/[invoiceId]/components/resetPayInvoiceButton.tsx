@@ -3,14 +3,12 @@ import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation } from 'urql'
 
-import { InvoiceAction } from '@progwise/timebook-backend/src/graphql/invoice/invoiceStatusEnum'
-
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
 import { InvoiceUpdateInput } from '../../../../../../frontend/generated/gql/graphql'
 
 const InvoiceUpdateMutationDocument = graphql(`
-  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {
       id
     }
   }
@@ -54,7 +52,6 @@ export const ResetPayInvoiceButton = ({ invoice: InvoiceFragment }: ResetPayInvo
         organizationId: invoice.organization.id,
         payDate: null,
       },
-      action: InvoiceAction.ResetPayDate,
     })
   }
 
