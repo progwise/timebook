@@ -112,12 +112,14 @@ builder.mutationField('invoiceUpdate', (t) =>
       } else if (sendDate) {
         validateSendDate(sendDate, localNow)
         updateData.sendDate = getAdjustedDate(sendDate)
+        updateData.invoiceStatus = 'SENT'
       }
 
       if (payDate === null) {
         updateData.payDate = null
       } else if (payDate) {
         updateData.payDate = await validatePayDate(payDate, invoiceId.toString(), localNow)
+        updateData.invoiceStatus = 'PAID'
       }
 
       const updatedInvoice = await prisma.invoice.update({

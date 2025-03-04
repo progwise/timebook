@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { gql } from 'apollo-server-core'
 import { addDays, format, subDays } from 'date-fns'
 import { GraphQLError } from 'graphql'
@@ -9,8 +10,8 @@ import { getTestServer } from '../../../getTestServer'
 const prisma = new PrismaClient()
 
 const invoiceUpdateMutation = gql`
-  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!, $action: InvoiceAction) {
-    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data, action: $action) {
+  mutation invoiceUpdate($id: ID!, $organizationId: ID!, $data: InvoiceUpdateInput!) {
+    invoiceUpdate(id: $id, organizationId: $organizationId, data: $data) {
       id
     }
   }
@@ -161,7 +162,6 @@ describe('invoiceUpdateMutation', () => {
           customerName: 'Customer 1',
           sendDate,
         },
-        action: 'Send',
       },
     })
     expect(response.errors).toBeUndefined()
@@ -185,7 +185,6 @@ describe('invoiceUpdateMutation', () => {
         data: {
           sendDate: futureDate,
         },
-        action: 'Send',
       },
     })
     expect(response.errors).toEqual([new GraphQLError('Invoice send date must not be in the future')])
@@ -200,9 +199,8 @@ describe('invoiceUpdateMutation', () => {
         id: 'I1',
         organizationId: '01',
         data: {
-          sendDate: formattedDate,
+          sendDate: null,
         },
-        action: 'Withdraw',
       },
     })
     expect(response.errors).toBeUndefined()
@@ -227,7 +225,6 @@ describe('invoiceUpdateMutation', () => {
         data: {
           payDate,
         },
-        action: 'Pay',
       },
     })
     expect(response.errors).toBeUndefined()
@@ -251,7 +248,6 @@ describe('invoiceUpdateMutation', () => {
         data: {
           payDate: futureDate,
         },
-        action: 'Pay',
       },
     })
     expect(response.errors).toEqual([new GraphQLError('Invoice pay date must not be in the future')])
@@ -266,9 +262,8 @@ describe('invoiceUpdateMutation', () => {
         id: 'I1',
         organizationId: '01',
         data: {
-          payDate: formattedDate,
+          payDate: null,
         },
-        action: 'ResetPayDate',
       },
     })
     expect(response.errors).toBeUndefined()
