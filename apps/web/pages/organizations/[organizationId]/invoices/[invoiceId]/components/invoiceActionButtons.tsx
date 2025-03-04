@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 import { useMutation } from 'urql'
 
 import { FragmentType, graphql, useFragment } from '../../../../../../frontend/generated/gql'
@@ -41,7 +40,7 @@ export const InvoiceActionButtons = ({ invoice: invoiceFragment }: InvoiceAction
         id: invoice.id,
         organizationId: invoice.organization.id,
         data: {
-          sendDate: invoice.sendDate ? null : data.sendDate,
+          sendDate: invoice.sendDate ?? data.sendDate,
         },
       })
     } catch {}
@@ -53,7 +52,7 @@ export const InvoiceActionButtons = ({ invoice: invoiceFragment }: InvoiceAction
         id: invoice.id,
         organizationId: invoice.organization.id,
         data: {
-          payDate: invoice.payDate ? null : data.payDate,
+          payDate: invoice.payDate ?? data.payDate,
         },
       })
     } catch {}
