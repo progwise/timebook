@@ -12,7 +12,7 @@ export const WeekGridDateHeaderRow = ({ interval }: WeekGridDateHeaderRowProps) 
         className="z-10 min-w-[6.5rem] px-6 pt-1 text-center text-xl font-bold text-base-content [&:nth-child(2)]:rounded-tl-box [&:nth-last-child(2)]:rounded-tr-box"
         key={day.toString()}
       >
-        <div className="relative z-50">
+        <div className="relative z-30">
           {format(day, 'EEE')}
           <br />
           <span className="whitespace-nowrap text-base font-normal">{format(day, 'dd. MMM')}</span>

@@ -11,16 +11,24 @@ export interface ListboxProps<TType> {
   getLabel: (value: TType) => JSX.Element | string
   getKey: (value: TType) => React.Key
   options: ReadonlyArray<TType>
+  zIndex?: number
 }
 
-export const Listbox = <TType = string,>({ getLabel, options, getKey, value, onChange }: ListboxProps<TType>) => {
+export const Listbox = <TType = string,>({
+  getLabel,
+  options,
+  getKey,
+  value,
+  onChange,
+  zIndex = 30,
+}: ListboxProps<TType>) => {
   const { floatingStyles, refs } = useFloating({
     middleware: [flip(), offset(4)],
     whileElementsMounted: autoUpdate,
   })
   return (
     <HuListbox value={value} onChange={onChange}>
-      <div className="z-50 w-64">
+      <div style={{ zIndex }} className="w-64">
         <ListboxButton ref={refs.setReference}>{getLabel(value)}</ListboxButton>
         <ListboxOptions ref={refs.setFloating} style={floatingStyles}>
           {options.map((option) => (
