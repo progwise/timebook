@@ -1,6 +1,6 @@
 import { Listbox, ListboxProps } from './listbox'
 
-type ListboxWithUnselectProps<TType> = Pick<ListboxProps<TType>, 'getKey' | 'getLabel' | 'options'> & {
+type ListboxWithUnselectProps<TType> = Pick<ListboxProps<TType>, 'getKey' | 'getLabel' | 'options' | 'zIndex'> & {
   value: TType | undefined
   onChange: (newValue: TType | undefined) => void
   noOptionLabel: JSX.Element | string
@@ -30,6 +30,7 @@ export const ListboxWithUnselect = <TType = string,>(props: ListboxWithUnselectP
       getLabel={getLabel}
       getKey={getKey}
       options={[NO_OPTION_KEY, ...props.options]}
+      zIndex={props.zIndex}
     />
   )
 }

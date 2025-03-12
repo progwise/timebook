@@ -164,6 +164,7 @@ export const ReportForm = ({ date, projectId, userId }: ReportFormProps) => {
             }
             options={sortedProjects}
             noOptionLabel="Select Project"
+            zIndex={40}
           />
         </div>
 
