@@ -49,7 +49,7 @@
     "react-input-mask": "^3.0.0-alpha.2",
     "sharp": "^0.32.1",
     "urql": "4.2.1",
-    "zod": "^3.20.3"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
